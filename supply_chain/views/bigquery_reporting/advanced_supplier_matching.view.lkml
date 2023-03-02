@@ -141,6 +141,7 @@ view: advanced_supplier_matching {
     description: "This is the identifier of a purchase order. A purchase order is a document, that is sent to a supplier and indicates, which products Flink wants to buy."
     group_label: "IDs"
     sql: ${TABLE}.order_number ;;
+    value_format: "0"
   }
 
   dimension: purchase_order_uuid {
@@ -768,6 +769,13 @@ view: advanced_supplier_matching {
     description: "This field refers to the temperature a product needs to have while being delivered and stored in order to be consumable"
     group_label: "Special Use Cases"
     sql: ${TABLE}.temperature_zone ;;
+  }
+
+  dimension: item_error_description {
+    type: string
+    description: "This field gives information on why certain products could not be delivered.Provided by the supplier"
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_error_description ;;
   }
 
   dimension: vendor_location {

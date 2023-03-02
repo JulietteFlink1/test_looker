@@ -7,7 +7,59 @@
 
 view: auto_assign_trip_state_changed_aggregates {
   sql_table_name: `flink-data-prod.reporting.auto_assign_trip_state_changed_aggregates`;;
-  view_label: "Auto Assign Aggregates"
+  view_label: "1 Auto Assign Aggregates"
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  set: to_include_dimensions {
+    fields: [
+      rider_id,
+      trip_id,
+      offer_id,
+      trip_completed_by,
+      trip_started_by,
+      offer_created_at_timestamp_date,
+      offer_created_at_timestamp_hour,
+      offer_created_at_timestamp_hour_of_day,
+      offer_created_at_timestamp_week,
+      event_date,
+      event_month,
+      event_raw,
+      event_week
+    ]
+  }
+  set: to_include_measures {
+    fields: [
+      total_distinct_rider_id,
+      total_distinct_trip_id,
+      avg_rider_delivery_time_minutes,
+      avg_rider_delivery_time_seconds,
+      avg_rider_pickup_time_minutes,
+      avg_rider_pickup_time_seconds,
+      avg_rider_return_time_minutes,
+      avg_rider_return_time_seconds,
+      avg_rider_accepted_offer_time_minutes,
+      avg_rider_accepted_offer_time_seconds,
+      avg_rider_trip_time_seconds,
+      avg_rider_trip_time_minutes,
+      number_of_offers_created,
+      number_of_offers_declined,
+      number_of_offers_expired,
+      number_of_offers_invalidated,
+      number_of_orders,
+      number_of_trip_started_events,
+      number_of_trips_completed_events,
+      number_of_trips_on_route_events,
+      number_of_trips_rejections_events,
+      number_of_trips_returning_events
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -16,6 +68,7 @@ view: auto_assign_trip_state_changed_aggregates {
   # ======= IDs ======= #
 
   dimension: offer_id {
+    primary_key: yes
     group_label: "IDs"
     label: "Offer ID"
     type: string
@@ -215,170 +268,110 @@ view: auto_assign_trip_state_changed_aggregates {
 
   # ======= Total Numbers of Events ======= #
 
+  measure: total_distinct_rider_id {
+    sql_distinct_key: ${offer_id} ;;
+    group_label: "Total Number"
+    label: "Total Number of Distinct Riders"
+    type: count_distinct
+    description: "Total number of distinct rider IDs"
+    sql: ${TABLE}.rider_id ;;
+  }
+  measure: total_distinct_trip_id {
+    sql_distinct_key: ${offer_id} ;;
+    group_label: "Total Number"
+    label: "Total Number of Distinct Trips"
+    type: count_distinct
+    description: "Total number of distinct trip IDs"
+    sql: ${TABLE}.trip_id ;;
+  }
+
+  # ======= Total Numbers of Events ======= #
+
   measure: number_of_offers_created {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Offers Created Events"
-    type: number
+    type: sum
     description: "The total number of offers created for a given order (from auto assign)."
     sql: ${TABLE}.number_of_offers_created ;;
   }
   measure: number_of_offers_declined {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Offers Declined Events"
-    type: number
+    type: sum
     description: "The total number of offers declined for a given order (from auto assign)."
     sql: ${TABLE}.number_of_offers_declined ;;
   }
   measure: number_of_offers_expired {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Offers Expired Events"
-    type: number
+    type: sum
     description: "The total number of offers expired for a given order (from auto assign)."
     sql: ${TABLE}.number_of_offers_expired ;;
   }
   measure: number_of_offers_invalidated {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Offers Invalidated Events"
-    type: number
+    type: sum
     description: "The total number of offers invalidated for a given order (from auto assign)."
     sql: ${TABLE}.number_of_offers_invalidated ;;
   }
   measure: number_of_orders {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Orders"
-    type: number
+    type: sum
     description: "The total number of orders within a given offer If > 1 then stacked order."
     sql: ${TABLE}.number_of_orders ;;
   }
   measure: number_of_trip_started_events {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Trip Started Events"
-    type: number
+    type: sum
     description: "The total number of trips started events for a given order (emitted by order fulfillment service)."
     sql: ${TABLE}.number_of_trip_started_events ;;
   }
   measure: number_of_trips_completed_events {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Trip Completed Events"
-    type: number
+    type: sum
     description: "The total number of trips completed events for a given order (emitted by order fulfillment service)."
     sql: ${TABLE}.number_of_trips_completed_events ;;
   }
   measure: number_of_trips_on_route_events {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Trip On Route Events"
-    type: number
+    type: sum
     description: "The total number of trips en route events for a given order (emitted by order fulfillment service)."
     sql: ${TABLE}.number_of_trips_on_route_events ;;
   }
   measure: number_of_trips_rejections_events {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Trip Rejected Events"
-    type: number
+    type: sum
     description: "The total number of trips rejected events for a given order (emitted by order fulfillment service)."
     sql: ${TABLE}.number_of_trips_rejections_events ;;
   }
   measure: number_of_trips_returning_events {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "Total Number"
     label: "Total Number of Trip Returning Events"
-    type: number
+    type: sum
     description: "The total number of trips returning evnets for a given order (emitted by order fulfillment service)."
     sql: ${TABLE}.number_of_trips_returning_events ;;
-  }
-  measure: sum_number_of_orders {
-    group_label: "Total Number"
-    label: "SUM Total Number of Orders"
-    type: sum
-    description: "The total SUM of number of orders"
-    sql: ${TABLE}.number_of_orders ;;
-  }
-
-  # ======= Time Calculations ======= #
-
-  measure: rider_accepted_offer_time_minutes {
-    group_label: "Time Calculations"
-    label: "Rider Acceptance Time (Minutes)"
-    type: number
-    description: "Time it took a rider to accept the trip offered to them by auto assign."
-    sql: ${TABLE}.rider_accepted_offer_time_minutes ;;
-    value_format: "0.0"
-  }
-  measure: rider_accepted_offer_time_seconds {
-    group_label: "Time Calculations"
-    label: "Rider Acceptance Time (Seconds)"
-    type: number
-    description: "Time it took a rider to accept the trip offered to them by auto assign."
-    sql: ${TABLE}.rider_accepted_offer_time_seconds ;;
-    value_format: "0.00"
-  }
-  measure: rider_delivery_time_minutes {
-    group_label: "Time Calculations"
-    label: "Rider Delivery Time (Minutes)"
-    type: number
-    description: "Time a rider spent delivering an order in seconds/minutes (difference between trip on route and trip returning)."
-    sql: ${TABLE}.rider_delivery_time_minutes ;;
-    value_format: "0.0"
-  }
-  measure: rider_delivery_time_seconds {
-    group_label: "Time Calculations"
-    label: "Rider Delivery Time (Seconds)"
-    type: number
-    description: "Time a rider spent delivering an order in seconds/minutes (difference between trip on route and trip returning)."
-    sql: ${TABLE}.rider_delivery_time_seconds ;;
-    value_format: "0.00"
-  }
-  measure: rider_pickup_time_minutes {
-    group_label: "Time Calculations"
-    label: "Rider Pickup Time (Minutes)"
-    type: number
-    description: "Time a rider spent picking up the order in seconds/minutes (difference between trip started and trip on route)."
-    sql: ${TABLE}.rider_pickup_time_minutes ;;
-    value_format: "0.0"
-  }
-  measure: rider_pickup_time_seconds {
-    group_label: "Time Calculations"
-    label: "Rider Pickup Time (Seconds)"
-    type: number
-    description: "Time a rider spent picking up the order in seconds/minutes (difference between trip started and trip on route)."
-    sql: ${TABLE}.rider_pickup_time_seconds ;;
-    value_format: "0.00"
-  }
-  measure: rider_return_time_minutes {
-    group_label: "Time Calculations"
-    label: "Rider Return Time (Minutes)"
-    type: number
-    description: "Time a rider spent returning to hub in seconds/minutes (difference between trip returning and trip completed)."
-    sql: ${TABLE}.rider_return_time_minutes ;;
-    value_format: "0.0"
-  }
-  measure: rider_return_time_seconds {
-    group_label: "Time Calculations"
-    label: "Rider Return Time (Seconds)"
-    type: number
-    description: "Time a rider spent returning to hub in seconds/minutes (difference between trip returning and trip completed)."
-    sql: ${TABLE}.rider_return_time_seconds ;;
-    value_format: "0.00"
-  }
-  measure: rider_trip_time_minutes {
-    group_label: "Time Calculations"
-    label: "Rider Trip Time (Minutes)"
-    type: number
-    description: "Time a rider spent for the entire trip in seconds/minutes (difference between trip started and trip completed)."
-    sql: ${TABLE}.rider_trip_time_minutes ;;
-    value_format: "0.0"
-  }
-  measure: rider_trip_time_seconds {
-    group_label: "Time Calculations"
-    label: "Rider Trip Time (Seconds)"
-    type: number
-    description: "Time a rider spent for the entire trip in seconds/minutes (difference between trip started and trip completed)."
-    sql: ${TABLE}.rider_trip_time_seconds ;;
-    value_format: "0.00"
   }
 
   # ======= Averages Time Calculations ======= #
 
   measure: avg_rider_accepted_offer_time_minutes {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Acceptance Time (Minutes)"
     type: average
@@ -387,6 +380,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.0"
   }
   measure: avg_rider_accepted_offer_time_seconds {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Acceptance Time (Seconds)"
     type: average
@@ -395,6 +389,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.00"
   }
   measure: avg_rider_delivery_time_minutes {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Delivery Time (Minutes)"
     type: average
@@ -403,6 +398,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.0"
   }
   measure: avg_rider_delivery_time_seconds {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Delivery Time (Seconds)"
     type: average
@@ -411,6 +407,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.00"
   }
   measure: avg_rider_pickup_time_minutes {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Pickup Time (Minutes)"
     type: average
@@ -419,6 +416,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.0"
   }
   measure: avg_rider_pickup_time_seconds {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Pickup Time (Seconds)"
     type: average
@@ -427,6 +425,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.00"
   }
   measure: avg_rider_return_time_minutes {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Return Time (Minutes)"
     type: average
@@ -435,6 +434,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.0"
   }
   measure: avg_rider_return_time_seconds {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Return Time (Seconds)"
     type: average
@@ -443,6 +443,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.00"
   }
   measure: avg_rider_trip_time_minutes {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Trip Time (Minutes)"
     type: average
@@ -451,6 +452,7 @@ view: auto_assign_trip_state_changed_aggregates {
     value_format: "0.0"
   }
   measure: avg_rider_trip_time_seconds {
+    sql_distinct_key: ${offer_id} ;;
     group_label: "AVG Time Calculations"
     label: "AVG Rider Trip Time (Seconds)"
     type: average

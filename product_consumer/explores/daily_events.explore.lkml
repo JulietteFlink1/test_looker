@@ -1,4 +1,4 @@
-# Owner: Product Analytics, Patricia Mitterova
+# Owner: Product Analytics
 
 # Main Stakeholder:
 # - Consumer Product
@@ -144,7 +144,8 @@ explore: daily_events {
             event_checkout_viewed.amt_order_total_eur,
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
-            event_checkout_viewed.cart_id]
+            event_checkout_viewed.cart_id,
+            event_checkout_viewed.delivery_pdt]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -225,9 +226,15 @@ join: daily_violations_aggregates {
     fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
-             daily_user_aggregates.is_cart_viewed, daily_user_aggregates.is_product_added_to_cart,
+             daily_user_aggregates.is_cart_viewed,
+             daily_user_aggregates.is_product_search_viewed,
+             daily_user_aggregates.is_product_search_executed,
+             daily_user_aggregates.is_product_added_to_cart,
              daily_user_aggregates.is_payment_started,
+             daily_user_aggregates.is_product_details_viewed,
              daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
+             users_with_product_details_viewed, daily_user_aggregates.users_with_product_search_viewed,
+             daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}

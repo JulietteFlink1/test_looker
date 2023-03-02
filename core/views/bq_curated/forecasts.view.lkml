@@ -784,7 +784,7 @@ view: forecasts {
     label: "% Adjusted Unknown Scheduled Hours Deviation"
     description: "The degree of how far # Forecasted Hours (Incl. Airtable Adjustments) is from # Unknown Scheduled Hours (# Scheduled Hours - # Scheduled Extra Hours) in the given period. Formula: ((# Scheduled Hours - # Scheduled Extra Hours) / # Forecasted Hours) - 1"
     type: number
-    sql: (${ops.number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
+    sql: (${number_of_scheduled_hours_by_position_unknown}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)) - 1 ;;
     value_format_name: percent_1
   }
 
@@ -874,6 +874,48 @@ view: forecasts {
     hidden: yes
   }
 
+  measure: number_of_forecasted_minutes_rider_unrounded {
+    label: "# Unrounded Forecasted Rider Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_unrounded ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_rider_unrounded_adjusted{
+    label: "# Unrounded Adjusted Forecasted Rider Minutes"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_rider_unrounded_adjusted ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_excl_no_show_rider {
+    label: "# Forecasted Rider Minutes - Data Science (Excl. No Show)"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_excl_no_show_rider ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_excl_no_show_rider_adjusted {
+    label: "# Adjusted Forecasted Rider Minutes - Data Science (Excl. No Show)"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_excl_no_show_rider_adjusted ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_excl_no_show_rider_unrounded {
+    label: "# Unrounded Forecasted Rider Minutes - Data Science (Excl. No Show)"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_excl_no_show_rider_unrounded ;;
+    hidden: yes
+  }
+
+  measure: number_of_forecasted_minutes_excl_no_show_rider_unrounded_adjusted {
+    label: "# Unrounded Adjusted Forecasted Rider Minutes - Data Science (Excl. No Show)"
+    type: sum
+    sql: ${TABLE}.number_of_forecasted_minutes_excl_no_show_rider_unrounded_adjusted ;;
+    hidden: yes
+  }
+
   measure: number_of_forecasted_minutes_rider_adjusted {
     alias: [number_of_adjusted_forecasted_minutes_rider]
     label: "# Adjusted Forecasted Rider Minutes"
@@ -889,6 +931,78 @@ view: forecasts {
     description: "# Forecasted Hours Needed for Riders"
     type: number
     sql: ${number_of_forecasted_minutes_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_hours_rider_unrounded {
+    group_label: "> Rider Measures"
+    label: "# Unrounded Forecasted Rider Hours"
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic."
+    type: number
+    sql: ${number_of_forecasted_minutes_rider_unrounded}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_hours_added_riders {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Rider Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added for Riders due to rounding logic. Formula: # Forecasted Rider Hours - # Unrounded Forecasted Rider Hours"
+    type: number
+    sql: (${number_of_forecasted_minutes_rider}-${number_of_forecasted_minutes_rider_unrounded})/60;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_hours_added_riders_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Rider Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added for Riders due to rounding logic including Airtable adjustments. Formula: # Adjusted Forecasted Rider Hours - # Unrounded Adjusted Forecasted Rider Hours"
+    type: number
+    sql: (${number_of_forecasted_minutes_rider_adjusted}-${number_of_forecasted_minutes_rider_unrounded_adjusted})/60;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_forecasted_hours_rider_unrounded_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Unrounded Adjusted Forecasted Rider Hours"
+    description: "# Forecasted Hours Needed for Riders without applying rounding logic and including Airtable Adjustments."
+    type: number
+    sql: ${number_of_forecasted_minutes_rider_unrounded_adjusted}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_rider_unrounded {
+    group_label: "> Rider Measures"
+    label: "# Unrounded Forecasted Rider Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours Needed for Riders excluding No Show (it is the output from Data Science calculation) without applying rounding logic."
+    type: number
+    sql: ${number_of_forecasted_minutes_excl_no_show_rider_unrounded}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_rider_unrounded_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Unrounded Adjusted Forecasted Rider Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours Needed for Riders excluding No Show (it is the output from Data Science calculation) without applying rounding logic and including adjustments made by the Rider Ops team using Airtable."
+    type: number
+    sql: ${number_of_forecasted_minutes_excl_no_show_rider_unrounded_adjusted}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_rider {
+    group_label: "> Rider Measures"
+    label: "# Forecasted Rider Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours Needed for Riders excluding No Show. It is the output from Data Science calculation."
+    type: number
+    sql: ${number_of_forecasted_minutes_excl_no_show_rider}/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_rider_adjusted {
+    group_label: "> Rider Measures"
+    label: "# Adjusted Forecasted Rider Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours Needed for Riders excluding No Show and including Airtable Adjustments. It is the output from Data Science calculation."
+    type: number
+    sql: ${number_of_forecasted_minutes_excl_no_show_rider_adjusted}/60;;
     value_format_name: decimal_1
   }
 
@@ -1073,6 +1187,15 @@ view: forecasts {
 
   # =========  Dynamic values   =========
 
+  measure: number_of_scheduled_hours_by_position_unknown {
+    type: number
+    label: "# Unknown Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "# Total Scheduled Hours - # Extra Scheduled Hours (NS+, WFS, EC) - # Adjusted Forecasted Hours"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql: ${ops.number_of_scheduled_hours_by_position}-${ops.number_of_scheduled_hours_by_position_extra}-${number_of_forecasted_hours_by_position_adjusted} ;;
+  }
+
   dimension: number_of_no_show_hours_by_position_dimension {
     type: number
     label: "# Forecasted No Show Hours - Dimension"
@@ -1241,6 +1364,118 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_no_show_hours_by_position_adjusted}/nullif(${number_of_forecasted_hours_by_position_adjusted},0)
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_ds_by_position{
+    type: number
+    label: "# Forecasted Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours excluding No Show. It is the output from Data Science calculation."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_excl_no_show_rider}
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_adjusted_ds_by_position{
+    type: number
+    label: "# Adjusted Forecasted Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours excluding No Show and including Airtable Adjustments. It is the output from Data Science calculation."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_excl_no_show_rider_adjusted}
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_unrounded_ds_by_position{
+    type: number
+    label: "# Unrounded Forecasted Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours Needed for Riders excluding No Show without applying rounding logic. It is the output from Data Science calculation."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_excl_no_show_rider_unrounded}
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_excl_no_show_unrounded_adjusted_ds_by_position{
+    type: number
+    label: "# Unrounded Adjusted Forecasted Hours - Data Science (Excl. No Show)"
+    description: "# Forecasted Hours excluding No Show without applying rounding logic and including Airtable Adjustments. It is the output from Data Science calculation."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_excl_no_show_rider_unrounded_adjusted}
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_unrounded_by_position{
+    type: number
+    label: "# Unrounded Forecasted Hours (Incl. No Show)"
+    description: "# Forecasted Hours without applying rounding logic."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_rider_unrounded}
+          else null
+        end ;;
+  }
+
+  measure: number_of_forecasted_hours_unrounded_adjusted_by_position{
+    type: number
+    label: "# Unrounded Adjusted Forecasted Hours (Incl. No Show)"
+    description: "# Forecasted Hours without applying rounding logic and including Airtable Adjustments."
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_forecasted_hours_rider_unrounded_adjusted}
+          else null
+        end ;;
+  }
+
+  measure: number_of_hours_added_by_position{
+    type: number
+    label: "# Forecasted Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added due to rounding logic. Formula: # Forecasted Rider Hours - # Unrounded Forecasted Rider Hours"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_hours_added_riders}
+          else null
+        end ;;
+  }
+
+  measure: number_of_hours_added_adjusted_by_position{
+    type: number
+    label: "# Adjsuted Forecasted Hours Added (Due to Rounding)"
+    description: "# Forecasted Hours added due to rounding logic including Airtable adjustments. Formula: # Adjusted Forecasted Rider Hours - # Unrounded Adjusted Forecasted Rider Hours"
+    value_format_name: decimal_2
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter ops.position_parameter %} = 'Rider'
+            then ${number_of_hours_added_riders_adjusted}
           else null
         end ;;
   }

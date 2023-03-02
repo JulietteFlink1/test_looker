@@ -307,7 +307,7 @@ view: event_product_added_to_cart {
     sql: ${TABLE}.anonymous_id ;;
   }
   measure: products {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Unique Products"
     description: "Number of unique products added to cart"
     type: count_distinct

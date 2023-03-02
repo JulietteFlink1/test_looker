@@ -9,7 +9,8 @@ include: "/**/global_filters_and_parameters.view"
 include: "/commercial/views/bigquery_curated/hub_demographics.view"
 include: "/**/shipping_methods_ct.view"
 include: "/**/hub_attributes.view"
-
+include: "/**/cr_dynamic_orders_cl_metrics.view"
+include: "/product_consumer/views/bigquery_curated/user_attributes_order_classification.view"
 
 explore: orders_cl {
   from: orders_using_hubs
@@ -134,5 +135,25 @@ explore: orders_cl {
     fields: [shipping_methods_ct.orders_df_fields*]
   }
 
+  join: order_classification {
+    from: user_attributes_order_classification
+    view_label: "Orders"
+    sql_on: ${orders_cl.order_uuid} = ${order_classification.order_uuid}
+        AND {% condition global_filters_and_parameters.datasource_filter %} ${order_classification.order_timestamp_date} {% endcondition %};;
+    relationship: one_to_one
+    type: left_outer
+    fields: [order_classification.order_classification]
+  }
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Cross-Referenced Metrics
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  join: cr_dynamic_orders_cl_metrics {
+    view_label: "Orders"
+    relationship: one_to_one
+    type: left_outer
+    sql:  ;;
+  }
 
 }

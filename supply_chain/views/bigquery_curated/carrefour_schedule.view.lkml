@@ -26,6 +26,19 @@ view: carrefour_schedule {
     sql: ${TABLE}.assortment_end_date ;;
   }
 
+  dimension_group: ingestion {
+    type: time
+    label: "Ingestion (Historical Carrefour Schedule)"
+    group_label: "> Date Dimensions"
+    description: "Date that refers to the historical state of the carrefour-schedule (e.g. what was on the part of the carrefour schedule 1 week ago)"
+    timeframes: [
+      date
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.ingestion_date ;;
+  }
+
   dimension_group: assortment_start {
     type: time
     label: "Assortment Start"

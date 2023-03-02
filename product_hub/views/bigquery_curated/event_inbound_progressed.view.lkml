@@ -135,7 +135,9 @@ view: event_inbound_progressed {
       date,
       week,
       hour_of_day,
-      quarter
+      quarter,
+      minute15,
+      minute30
     ]
     sql: ${TABLE}.event_timestamp ;;
   }
@@ -281,7 +283,18 @@ view: event_inbound_progressed {
     filters: [action: "product_added_to_list"]
     # adding this if to solve a current tracking bug where we are undercounting hu products
     # https://goflink.atlassian.net/browse/HTIN-1296
-    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
+    sql: ${quantity} ;;
+  }
+
+  measure: number_of_products_added_to_list_hu {
+    group_label: "Inbound Total Metrics"
+    label: "Number of Products Added To List in Handling Units"
+    description: "Sum of quantity, when the item was added as hu it's divided handling units (when there is no value for handling units it is divided by 1)."
+    type: sum
+    filters: [action: "product_added_to_list"]
+    value_format: "0.##"
+    hidden: yes
+    sql: if(${is_handling_unit}, SAFE_DIVIDE(${quantity}, coalesce(cast(${products.units_per_handling_unit} as int64),1)), ${quantity}) ;;
   }
 
   measure: number_of_products_removed_from_list {
@@ -290,7 +303,7 @@ view: event_inbound_progressed {
     description: "Sum of quantity of products removed from list (action = product_removed_from_list)."
     type: sum
     filters: [action: "product_removed_from_list"]
-    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
+    sql: ${quantity} ;;
   }
 
   measure: number_of_products_updated {
@@ -299,7 +312,7 @@ view: event_inbound_progressed {
     description: "Sum of quantity of products updated from list (action = product_updated_quantity)."
     type: sum
     filters: [action: "product_updated_quantity"]
-    sql: if(${quantity}=1 and ${is_handling_unit},${quantity}*cast(${products.units_per_handling_unit} as int), ${quantity}) ;;
+    sql: ${quantity} ;;
   }
 
   measure: number_of_products_dropped {

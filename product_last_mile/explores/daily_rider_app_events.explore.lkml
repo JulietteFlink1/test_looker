@@ -8,6 +8,7 @@
 
 include: "/**/*/daily_rider_app_events.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: daily_rider_app_events {
@@ -35,5 +36,11 @@ explore: daily_rider_app_events {
   join: global_filters_and_parameters {
     sql: ;;
     relationship: one_to_one
+  }
+  join: hubs_ct {
+    view_label: "2 Hub Dimensions"
+    sql_on: ${daily_rider_app_events.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: many_to_one
   }
 }
