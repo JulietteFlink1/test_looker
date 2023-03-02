@@ -98,6 +98,27 @@ view: event_trip_state_updated {
     description: "Actor ID is not the same as the Rider ID"
     sql: ${event_trip_state_updated.actor_id} != ${event_trip_state_updated.rider_id}  ;;
   }
+  dimension: generic_value {
+    group_label: "Generic Dimension"
+    label: "Generic Value"
+    type: string
+    description: "Generic value specify a int value corresponding with the generic context."
+    sql: ${TABLE}.generic_value ;;
+  }
+  dimension: generic_context {
+    group_label: "Generic Dimension"
+    label: "Generic Context"
+    type: string
+    description: "Generic field specifiying a passed value e.g. entered geofence area."
+    sql: ${TABLE}.generic_context ;;
+  }
+  dimension: delivery_provider {
+    group_label: "Generic Dimension"
+    label: "Delivery Provider "
+    type: string
+    description: "Delivery provider executing the delivery of the trip."
+    sql: ${TABLE}.delivery_provider ;;
+  }
 
   # ======= Location Dimensions ======= #
 
