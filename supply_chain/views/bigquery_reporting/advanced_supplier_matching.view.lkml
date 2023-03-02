@@ -771,6 +771,13 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.temperature_zone ;;
   }
 
+  dimension: item_error_description {
+    type: string
+    description: "This field gives information on why certain products could not be delivered.Provided by the supplier"
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_error_description ;;
+  }
+
   dimension: vendor_location {
     type: string
     description: "Location from where the Supplier is doing the distribution."
