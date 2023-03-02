@@ -30,8 +30,7 @@ explore: event_rider_equipment_request_state_changed {
 
   always_filter: {
     filters: [
-      event_rider_equipment_request_state_changed.event_timestamp_date: "last 7 days",
-      event_rider_eligible_for_equipment.event_timestamp_date: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 

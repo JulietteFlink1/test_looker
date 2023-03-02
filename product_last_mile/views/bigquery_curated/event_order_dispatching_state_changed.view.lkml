@@ -7,6 +7,27 @@ view: event_order_dispatching_state_changed {
   sql_table_name: `flink-data-prod.curated.event_order_dispatching_state_changed`;;
   view_label: "Event Order Dispatching State Change"
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  set: to_include_dimensions {
+    fields: [
+      order_id,
+      dispatching_state
+    ]
+  }
+
+  set: to_include_measures {
+    fields: [
+      orders,
+      events
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+    }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

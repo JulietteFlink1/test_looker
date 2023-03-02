@@ -6,7 +6,46 @@
 
 view: event_trip_state_updated {
   sql_table_name: `flink-data-prod.curated.event_trip_state_updated`;;
-  view_label: "Event Trip State Updated"
+  view_label: "1 Event Trip State Updated"
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  set: to_include_dimensions {
+    fields: [
+      actor_id,
+      rider_id,
+      trip_id,
+      event_name,
+      is_force_action,
+      event_timestamp_date,
+      event_timestamp_hour_of_day,
+      event_timestamp_month,
+      event_timestamp_quarter,
+      event_timestamp_time,
+      event_timestamp_week
+    ]
+  }
+  set: to_include_measures {
+    fields: [
+      events,
+      number_distinct_trips,
+      number_distinct_riders,
+      number_distinct_actors,
+      total_trip_completed_events,
+      number_of_force_complete_events,
+      total_trip_rejected_events,
+      number_of_force_unassignments_from_dashboard_events,
+      total_trip_started_events,
+      number_of_force_assignments_from_dashboard_events
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
