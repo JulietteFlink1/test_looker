@@ -71,7 +71,7 @@ view: flink_to_competitors_prices {
   dimension: category {
 
     label: "Category"
-    description: "Name of the category to which product was assigned, (not ERP category)."
+    description: "Name of the category to which product was assigned (not ERP category)."
     group_label: "Flink"
 
     type: string
@@ -81,7 +81,7 @@ view: flink_to_competitors_prices {
   dimension: subcategory {
 
     label: "Subcategory"
-    description: "Name of the subcategory to which product was assigned, (not ERP subcategory)."
+    description: "Name of the subcategory to which product was assigned (not ERP subcategory)."
     group_label: "Flink"
 
     type: string
@@ -91,7 +91,7 @@ view: flink_to_competitors_prices {
   dimension: min_flink_price {
 
     label: "Lowest Flink Price"
-    description: "Lowest product price gross amount in Euros before discount"
+    description: "Lowest available price of the product before discount (including VAT)."
     group_label: "Flink"
 
     type: number
@@ -101,7 +101,7 @@ view: flink_to_competitors_prices {
   dimension: max_flink_price {
 
     label: "Highest Flink Price"
-    description: "Highest product price gross amount in Euros before discount"
+    description: "Highest available price of the product before discount (including VAT)."
     group_label: "Flink"
 
     type: number
@@ -114,7 +114,7 @@ view: flink_to_competitors_prices {
   dimension: albert_heijn_product_id {
 
     label: "Product ID - AH"
-    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
     group_label: "Albert Heijn"
 
     type: string
@@ -124,7 +124,7 @@ view: flink_to_competitors_prices {
   dimension: ah_product_name {
 
     label: "Product Name - AH"
-    description: "The product name and unit size provided by the competitor"
+    description: "The product name and unit size provided by the competitor."
     group_label: "Albert Heijn"
 
     type: string
@@ -134,7 +134,7 @@ view: flink_to_competitors_prices {
   dimension: ah_match_type {
 
     label: "Match Type - AH"
-    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
     group_label: "Albert Heijn"
 
     type: string
@@ -144,7 +144,7 @@ view: flink_to_competitors_prices {
   dimension: ah_match_score {
 
     label: "Match Score - AH"
-    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
     group_label: "Albert Heijn"
 
     type: number
@@ -154,7 +154,7 @@ view: flink_to_competitors_prices {
   dimension: min_ah_price {
 
     label: "Lowest Price - AH"
-    description: "Competitor's lowest product price gross amount in Euros before discount"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
     group_label: "Albert Heijn"
 
     type: number
@@ -164,7 +164,7 @@ view: flink_to_competitors_prices {
   dimension: max_ah_price {
 
     label: "Highest Price - AH"
-    description: "Competitor's highest product price gross amount in Euros before discount"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
     group_label: "Albert Heijn"
 
     type: number
@@ -174,7 +174,7 @@ view: flink_to_competitors_prices {
   dimension: ah_conversion_factor {
 
     label: "Conversion Factor - AH"
-    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
     group_label: "Albert Heijn"
 
     type: number
@@ -184,7 +184,7 @@ view: flink_to_competitors_prices {
   dimension: is_ah_prices_converted {
 
     label: "Is Price Converted - AH"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor"
+    description: "Flag to identify if the competitor price has been converted by the price conversion factor."
     group_label: "Albert Heijn"
 
     type: yesno
@@ -194,7 +194,7 @@ view: flink_to_competitors_prices {
   dimension: min_price_dif_ah {
 
     label: "Lowest Price Delta - AH"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price"
+    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
     group_label: "Albert Heijn"
 
     type: number
@@ -204,7 +204,7 @@ view: flink_to_competitors_prices {
   dimension: max_price_dif_ah {
 
     label: "Highest Price Delta - AH"
-    description: "The difference between Flink's highest product price and the competitor's highest product price"
+    description: "The difference between Flink's highest product price and the competitor's highest product price."
     group_label: "Albert Heijn"
 
     type: number
@@ -217,7 +217,7 @@ view: flink_to_competitors_prices {
   dimension: carrefour_city_product_id {
 
     label: "Product ID - CRF City"
-    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
     group_label: "Carrefour City"
 
     type: string
@@ -227,7 +227,7 @@ view: flink_to_competitors_prices {
   dimension: carrefour_city_product_name {
 
     label: "Product Name - CRF City"
-    description: "The product name and unit size provided by the competitor"
+    description: "The product name and unit size provided by the competitor."
     group_label: "Carrefour City"
 
     type: string
@@ -237,7 +237,7 @@ view: flink_to_competitors_prices {
   dimension: carrefour_city_match_type {
 
     label: "Match Type - CRF City"
-    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
     group_label: "Carrefour City"
 
     type: string
@@ -247,7 +247,7 @@ view: flink_to_competitors_prices {
   dimension: carrefour_city_match_score {
 
     label: "Match Score - CRF City"
-    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
     group_label: "Carrefour City"
 
     type: number
@@ -257,7 +257,7 @@ view: flink_to_competitors_prices {
   dimension: min_carrefour_city_price {
 
     label: "Lowest Price - CRF City"
-    description: "Competitor's lowest product price gross amount in Euros before discount"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
     group_label: "Carrefour City"
 
     type: number
@@ -267,7 +267,7 @@ view: flink_to_competitors_prices {
   dimension: max_carrefour_city_price {
 
     label: "Highest Price - CRF City"
-    description: "Competitor's highest product price gross amount in Euros before discount"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
     group_label: "Carrefour City"
 
     type: number
@@ -277,7 +277,7 @@ view: flink_to_competitors_prices {
   dimension: carrefour_city_conversion_factor {
 
     label: "Conversion Factor - CRF City"
-    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
     group_label: "Carrefour City"
 
     type: number
@@ -287,7 +287,7 @@ view: flink_to_competitors_prices {
   dimension: is_carrefour_city_prices_converted {
 
     label: "Is Price Converted - CRF City"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor"
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
     group_label: "Carrefour City"
 
     type: yesno
@@ -297,7 +297,7 @@ view: flink_to_competitors_prices {
   dimension: min_price_dif_carrefour_city {
 
     label: "Lowest Price Delta - CRF City"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price"
+    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
     group_label: "Carrefour City"
 
     type: number
@@ -307,7 +307,7 @@ view: flink_to_competitors_prices {
   dimension: max_price_dif_carrefour_city {
 
     label: "Highest Price Delta - CRF City"
-    description: "The difference between Flink's highest product price and the competitor's highest product price"
+    description: "The difference between Flink's highest product price and the competitor's highest product price."
     group_label: "Carrefour City"
 
     type: number
@@ -320,7 +320,7 @@ view: flink_to_competitors_prices {
   dimension: getir_product_id {
 
     label: "Product ID - Getir"
-    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
     group_label: "Getir"
 
     type: string
@@ -330,7 +330,7 @@ view: flink_to_competitors_prices {
   dimension: getir_product_name {
 
     label: "Product Name - Getir"
-    description: "The product name and unit size provided by the competitor"
+    description: "The product name and unit size provided by the competitor."
     group_label: "Getir"
 
     type: string
@@ -340,7 +340,7 @@ view: flink_to_competitors_prices {
   dimension: getir_match_type {
 
     label: "Match Type - Getir"
-    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
     group_label: "Getir"
 
     type: string
@@ -350,7 +350,7 @@ view: flink_to_competitors_prices {
   dimension: getir_match_score {
 
     label: "Match Score - Getir"
-    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
     group_label: "Getir"
 
     type: number
@@ -360,7 +360,7 @@ view: flink_to_competitors_prices {
   dimension: getir_conversion_factor {
 
     label: "Conversion Factor - Getir"
-    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
     group_label: "Getir"
 
     type: number
@@ -370,7 +370,7 @@ view: flink_to_competitors_prices {
   dimension: min_getir_price {
 
     label: "Lowest Price - Getir"
-    description: "Competitor's lowest product price gross amount in Euros before discount"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
     group_label: "Getir"
 
     type: number
@@ -380,7 +380,7 @@ view: flink_to_competitors_prices {
   dimension: max_getir_price {
 
     label: "Highest Price - Getir"
-    description: "Competitor's highest product price gross amount in Euros before discount"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
     group_label: "Getir"
 
     type: number
@@ -390,7 +390,7 @@ view: flink_to_competitors_prices {
   dimension: is_getir_prices_converted {
 
     label: "Is Price Converted - Getir"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor"
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
     group_label: "Getir"
 
     type: yesno
@@ -400,7 +400,7 @@ view: flink_to_competitors_prices {
   dimension: min_price_dif_getir {
 
     label: "Lowest Price Delta - Getir"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price"
+    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
     group_label: "Getir"
 
     type: number
@@ -410,7 +410,7 @@ view: flink_to_competitors_prices {
   dimension: max_price_dif_getir {
 
     label: "Highest Price Delta - Getir"
-    description: "The difference between Flink's highest product price and the competitor's highest product price"
+    description: "The difference between Flink's highest product price and the competitor's highest product price."
     group_label: "Getir"
 
     type: number
@@ -423,7 +423,7 @@ view: flink_to_competitors_prices {
   dimension: gorillas_product_id {
 
     label: "Product ID - Gorillas"
-    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
     group_label: "Gorillas"
 
     type: string
@@ -433,7 +433,7 @@ view: flink_to_competitors_prices {
   dimension: gorillas_product_name {
 
     label: "Product Name - Gorillas"
-    description: "The product name and unit size provided by the competitor"
+    description: "The product name and unit size provided by the competitor."
     group_label: "Gorillas"
 
     type: string
@@ -443,7 +443,7 @@ view: flink_to_competitors_prices {
   dimension: gorillas_match_type {
 
     label: "Match Type - Gorillas"
-    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
     group_label: "Gorillas"
 
     type: string
@@ -453,7 +453,7 @@ view: flink_to_competitors_prices {
   dimension: gorillas_match_score {
 
     label: "Match Score - Gorillas"
-    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
     group_label: "Gorillas"
 
     type: number
@@ -463,7 +463,7 @@ view: flink_to_competitors_prices {
   dimension: min_gorillas_price {
 
     label: "Lowest Price - Gorillas"
-    description: "Competitor's lowest product price gross amount in Euros before discount"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
     group_label: "Gorillas"
 
     type: number
@@ -473,7 +473,7 @@ view: flink_to_competitors_prices {
   dimension: max_gorillas_price {
 
     label: "Highest Price - Gorillas"
-    description: "Competitor's highest product price gross amount in Euros before discount"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
     group_label: "Gorillas"
 
     type: number
@@ -483,7 +483,7 @@ view: flink_to_competitors_prices {
   dimension: gorillas_conversion_factor {
 
     label: "Conversion Factor - Gorillas"
-    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
     group_label: "Gorillas"
 
     type: number
@@ -493,7 +493,7 @@ view: flink_to_competitors_prices {
   dimension: is_gorillas_prices_converted {
 
     label: "Is Price Converted - Gorillas"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor"
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
     group_label: "Gorillas"
 
     type: yesno
@@ -503,7 +503,7 @@ view: flink_to_competitors_prices {
   dimension: min_price_dif_gorillas {
 
     label: "Lowest Price Delta - Gorillas"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price"
+    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
     group_label: "Gorillas"
 
     type: number
@@ -513,7 +513,7 @@ view: flink_to_competitors_prices {
   dimension: max_price_dif_gorillas {
 
     label: "Highest Price Delta - Gorillas"
-    description: "The difference between Flink's highest product price and the competitor's highest product price"
+    description: "The difference between Flink's highest product price and the competitor's highest product price."
     group_label: "Gorillas"
 
     type: number
@@ -526,7 +526,7 @@ view: flink_to_competitors_prices {
   dimension: rewe_product_id {
 
     label: "Product ID - REWE"
-    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
     group_label: "REWE"
 
     type: string
@@ -536,7 +536,7 @@ view: flink_to_competitors_prices {
   dimension: rewe_product_name {
 
     label: "Product Name - REWE"
-    description: "The product name and unit size provided by the competitor"
+    description: "The product name and unit size provided by the competitor."
     group_label: "REWE"
 
     type: string
@@ -546,7 +546,7 @@ view: flink_to_competitors_prices {
   dimension: rewe_match_type {
 
     label: "Match Type - REWE"
-    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
     group_label: "REWE"
 
     type: string
@@ -556,7 +556,7 @@ view: flink_to_competitors_prices {
   dimension: rewe_match_score {
 
     label: "Match Score - REWE"
-    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
     group_label: "REWE"
 
     type: number
@@ -566,7 +566,7 @@ view: flink_to_competitors_prices {
   dimension: min_rewe_price {
 
     label: "Lowest Price - REWE"
-    description: "Competitor's lowest product price gross amount in Euros before discount"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
     group_label: "REWE"
 
     type: number
@@ -576,7 +576,7 @@ view: flink_to_competitors_prices {
   dimension: max_rewe_price {
 
     label: "Highest Price - REWE"
-    description: "Competitor's highest product price gross amount in Euros before discount"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
     group_label: "REWE"
 
     type: number
@@ -586,7 +586,7 @@ view: flink_to_competitors_prices {
   dimension: rewe_conversion_factor {
 
     label: "Conversion Factor - REWE"
-    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
     group_label: "REWE"
 
     type: number
@@ -596,7 +596,7 @@ view: flink_to_competitors_prices {
   dimension: is_rewe_prices_converted {
 
     label: "Is Price Converted - REWE"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor"
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
     group_label: "REWE"
 
     type: yesno
@@ -606,7 +606,7 @@ view: flink_to_competitors_prices {
   dimension: min_price_dif_rewe {
 
     label: "Lowest Price Delta - REWE"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price"
+    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
     group_label: "REWE"
 
     type: number
@@ -616,24 +616,11 @@ view: flink_to_competitors_prices {
   dimension: max_price_dif_rewe {
 
     label: "Highest Price Delta - REWE"
-    description: "The difference between Flink's highest product price and the competitor's highest product price"
+    description: "The difference between Flink's highest product price and the competitor's highest product price."
     group_label: "REWE"
 
     type: number
     sql: ${TABLE}.max_price_dif_rewe ;;
   }
 
-
-
-  # ----- Sets of fields for drilling ------
-  set: detail {
-    fields: [
-      ah_product_name,
-      product_name,
-      getir_product_name,
-      rewe_product_name,
-      gorillas_product_name,
-      carrefour_city_product_name
-    ]
-  }
 }
