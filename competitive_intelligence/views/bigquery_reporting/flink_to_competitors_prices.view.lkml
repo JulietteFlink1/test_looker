@@ -184,7 +184,7 @@ view: flink_to_competitors_prices {
   dimension: is_ah_prices_converted {
 
     label: "Is Price Converted - AH"
-    description: "Flag to identify if the competitor price has been converted by the price conversion factor."
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
     group_label: "Albert Heijn"
 
     type: yesno
