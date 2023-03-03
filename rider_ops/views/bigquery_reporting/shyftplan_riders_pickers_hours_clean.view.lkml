@@ -183,6 +183,25 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: rider_online_hours {
+    label: "Sum of Online Rider Hours"
+    type: sum
+    sql: ${TABLE}.number_of_online_rider_minutes/60;;
+    filters: [position_name: "rider"]
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_vs_rider_online_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Rider Hours"
+    sql: ${rider_online_hours}/nullif(${rider_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
   measure: onboarding_hours {
     label: "Sum of Onboarding Hours"
     type: sum
@@ -661,6 +680,15 @@ view: shyftplan_riders_pickers_hours_clean {
     type: number
     description: "# Orders (excl. Click & Collect and External Orders) / # Worked Rider Hours (incl. Rider Captains and Onboarding Shifts)"
     sql: ${adjusted_orders_riders} / NULLIF(${rider_hours}+${rider_captain_hours}+${onboarding_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
+  measure: rider_online_utr {
+    label: "AVG Rider UTR (using Online Hours)"
+    type: number
+    description: "# Orders (excl. Click & Collect and External Orders) / # Rider hours spent online (from Rider App)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_online_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }

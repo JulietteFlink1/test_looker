@@ -106,7 +106,7 @@ view: event_rider_eligible_for_equipment {
   measure: events {
     group_label: "Measures"
     label: "# Distinct Events"
-    description: "Number of events triggerd by dispatching service"
+    description: "Number of events triggered by the rider equipment service"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
