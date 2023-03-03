@@ -184,6 +184,13 @@ view: purchase_orders {
     sql: ${TABLE}.vendor_id ;;
   }
 
+  dimension: legacy__supplier_id {
+    label:       "Legacy Supplier ID"
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+    type: string
+    sql: ${TABLE}.legacy__supplier_id ;;
+  }
+
 # In curated.purchase_order (new model) we don't have vendor_id_original and is_vendor_dc
 
 

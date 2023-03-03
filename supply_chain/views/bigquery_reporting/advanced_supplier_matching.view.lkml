@@ -1,5 +1,5 @@
 view: advanced_supplier_matching {
-  sql_table_name: `flink-data-prod.reporting.advanced_supplier_matching`
+  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.advanced_supplier_matching`
     ;;
 
 
@@ -42,7 +42,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.supplier_name ;;
   }
 
-
+  dimension: supplier_parent_name {
+    label: "Supplier Parent Name"
+    description: "The Parent supplier name as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    type: string
+    sql: ${TABLE}.supplier_parent_name ;;
+  }
 
 
 
@@ -166,6 +171,21 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.supplier_id ;;
   }
 
+  dimension: legacy__supplier_id {
+    type: string
+    label: "Legacy Supplier ID"
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+    group_label: "IDs"
+    sql: ${TABLE}.legacy__supplier_id ;;
+  }
+
+  dimension: supplier_location_id {
+    type: string
+    label: "Supplier Location ID"
+    description: "Supplier ID with new Oracle structure, defined as Supplier + Location - unique per Location."
+    group_label: "IDs"
+    sql: ${TABLE}.supplier_location_id ;;
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Dates & Timestamps
