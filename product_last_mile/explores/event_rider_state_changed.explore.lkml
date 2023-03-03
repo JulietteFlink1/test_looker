@@ -8,6 +8,7 @@
 
 include: "/**/*/event_rider_state_changed.view.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 
 explore: event_rider_state_changed {
@@ -28,7 +29,7 @@ explore: event_rider_state_changed {
 
   always_filter: {
     filters: [
-      event_rider_state_changed.event_timestamp_date: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
@@ -41,5 +42,10 @@ explore: event_rider_state_changed {
     sql: ;;
   relationship: one_to_one
 }
-
+  join: hubs_ct {
+    view_label: "1 Hub Dimensions"
+    sql_on: ${event_rider_state_changed.hub_code} = ${hubs_ct.hub_code} ;;
+    type: left_outer
+    relationship: many_to_one
+  }
 }

@@ -193,6 +193,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: pct_rider_hours_vs_rider_online_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Rider Hours"
+    sql: ${rider_online_hours}/nullif(${rider_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
   measure: onboarding_hours {
     label: "Sum of Onboarding Hours"
     type: sum
