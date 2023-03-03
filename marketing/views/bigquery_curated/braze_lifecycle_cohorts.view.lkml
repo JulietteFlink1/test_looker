@@ -4,7 +4,7 @@
 ### This view represents data for reporting on CRM canvas lifecycles efficiency.
 
 view: braze_lifecycle_cohorts {
-  sql_table_name: `flink-data-prod.curated.braze_lifecycle_cohorts`
+  sql_table_name: `flink-data-prod.curated.braze_canvas_reporting`
     ;;
   view_label: "* CRM Lifecycle Canvases *"
 
@@ -240,7 +240,7 @@ view: braze_lifecycle_cohorts {
 
   dimension: canvas_variation_name {
     group_label: "* Cohort Dimensions *"
-    label: "Canvas Variation"
+    label: "Canvas Variation Name"
     description: "Name of the test/control variation within canvas"
     type: string
     sql: ${TABLE}.canvas_variation_name ;;
