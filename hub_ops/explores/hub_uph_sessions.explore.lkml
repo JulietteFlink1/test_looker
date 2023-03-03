@@ -55,7 +55,11 @@ explore: hub_uph_sessions {
     sql_on:
       ${hub_uph_sessions.hub_code} = ${shyftplan_riders_pickers_hours_clean.hub_name}
       and ${hub_uph_sessions.shift_date} = ${shyftplan_riders_pickers_hours_clean.shift_date};;
-    fields: [shyftplan_riders_pickers_hours_clean.ops_associate_utr, shyftplan_riders_pickers_hours_clean.hub_staff_utr, shyftplan_riders_pickers_hours_clean.position_name]
+    fields: [
+      shyftplan_riders_pickers_hours_clean.ops_associate_utr,
+      shyftplan_riders_pickers_hours_clean.hub_staff_utr,
+      shyftplan_riders_pickers_hours_clean.position_name
+    ]
     relationship: many_to_one
     type: left_outer
   }
