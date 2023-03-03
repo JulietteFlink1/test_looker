@@ -37,7 +37,7 @@ explore: cc_contacts {
 #  ,
   # cc_contacts.contact_created_date: "last 60 days"
   join: cc_orders_hourly2 {
-    view_label: "Orders"
+    view_label: "Orders - Hourly"
     sql_on: timestamp_trunc(cast(${cc_contacts.contact_created_time} as timestamp),hour) = cast(${cc_orders_hourly2.order_timestamp_time} as timestamp)
       and ${cc_contacts.country_iso} = ${cc_orders_hourly2.country_iso}
       and {% condition global_filters_and_parameters.datasource_filter %} ${cc_orders_hourly2.order_timestamp_date} {% endcondition %};;
@@ -70,7 +70,12 @@ explore: cc_contacts {
   }
 
   join: orders {
-    fields: [orders.created_date, orders.hub_code, orders.created_week, orders.amt_cancelled_gross, orders.amt_refund_gross]
+    fields: [
+        orders.created_date,
+        orders.hub_code,
+        orders.created_week,
+        orders.amt_cancelled_gross,
+        orders.amt_refund_gross]
     view_label: "Orders"
     sql_on: ${orders.order_number} = ${cc_contacts.order_number}
         and {% condition global_filters_and_parameters.datasource_filter %} ${orders.created_date} {% endcondition %};;
