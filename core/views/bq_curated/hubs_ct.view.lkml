@@ -356,6 +356,8 @@ view: hubs_ct {
     allowed_value: { value: "Region" }
     allowed_value: { value: "regional_cluster"
       label: "Regional Cluster" }
+    allowed_value: { value: "city_manager"
+      label: "City Manager" }
     allowed_value: { value: "Country" }
     default_value: "Country"
   }
@@ -371,6 +373,8 @@ view: hubs_ct {
       ${hub_code}
     {% elsif geographic_data_granularity._parameter_value == 'City' %}
       ${city}
+    {% elsif geographic_data_granularity._parameter_value == 'city_manager' %}
+      ${city_manager}
     {% elsif geographic_data_granularity._parameter_value == 'Region' %}
       ${region}
     {% elsif geographic_data_granularity._parameter_value == 'regional_cluster' %}
