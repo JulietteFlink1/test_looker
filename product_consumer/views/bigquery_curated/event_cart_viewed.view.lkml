@@ -42,6 +42,13 @@ view: event_cart_viewed {
     sql: ${TABLE}.shipping_method_id ;;
   }
 
+  dimension: is_empty_cart {
+    type: yesno
+    description: "Yes if there is no product in cart at the time of cart_viewed event"
+    sql: ${TABLE}.is_empty_cart ;;
+  }
+
+
 # ======= Generic Dimensions ======= #
 
   dimension: has_selected_address {
