@@ -76,6 +76,13 @@ view: erp_supplier {
     description: "The Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
   }
 
+  dimension: legacy__supplier_id {
+    label: "Legacy Supplier ID"
+    type: number
+    sql: ${TABLE}.legacy__supplier_id ;;
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+  }
+
 #############################################
 ############## General Dimensions ###########
 #############################################
@@ -188,6 +195,13 @@ view: erp_supplier {
     type: string
     sql: ${TABLE}.supplier_name ;;
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
+  }
+
+  dimension: supplier_parent_name {
+    label: "Supplier Parent Name"
+    type: string
+    sql: ${TABLE}.supplier_parent_name ;;
+    description: "The Parent supplier name as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
   }
 
   dimension: supplier_site {
