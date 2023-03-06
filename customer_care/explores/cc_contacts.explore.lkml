@@ -70,13 +70,7 @@ explore: cc_contacts {
   }
 
   join: orders {
-    fields: [
-        orders.created_date,
-        orders.hub_code,
-        orders.created_week,
-        orders.amt_cancelled_gross,
-        orders.amt_refund_gross]
-    view_label: "Orders"
+    view_label: ""
     sql_on: ${orders.order_number} = ${cc_contacts.order_number}
         and {% condition global_filters_and_parameters.datasource_filter %} ${orders.created_date} {% endcondition %};;
     relationship: many_to_one
