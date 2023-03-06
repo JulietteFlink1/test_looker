@@ -26,16 +26,21 @@ view: ndt_handling_unit_rotation {
     hidden: yes
   }
   dimension: hub_code {
-    description: ""
+    label: "Hub Code"
+    group_label: ""
+    description: "Code of a hub identical to back-end source tables."
     hidden: yes
   }
   dimension: parent_sku {
+    label: "Parent SKU"
+    group_label: ""
     description: "The Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
     hidden: yes
   }
   dimension: handling_unit_rotation_ratio {
     label: "Supply Chain Master Handling unit rotation ratio"
-    description: ""
+    group_label: "Special Use Case"
+    description: "Ratio that shows the quantity of units we need to sell before we discard the items. It's defined as the relation between Purchase Units and Max Shelf Life"
     hidden: yes
   }
   dimension: sum_items_sold {
