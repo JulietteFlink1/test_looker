@@ -4,8 +4,7 @@
 # - Supply Chain team
 #
 # Questions that can be answered
-# - All questions around demand planning
-# - Questions around availability, waste and OTIFIQ topics
+# - All questions around waste waterfall bucketing
 
 include: "/**/*.view"
 
@@ -20,11 +19,10 @@ explore: waste_waterfall_explore {
 
 from: waste_waterfall
 view_name: waste_waterfall
-  group_label: "Waste Waterfall"
-  label:       "Waste Waterfall Dashboard"
-  hidden: no
+group_label: "Waste Waterfall"
+label: "Waste Waterfall Dashboard"
+hidden: no
 
-# take all fields from the Supply Chain Master Explore and the required fields from other joined views
   fields: [ALL_FIELDS*]
 
 
