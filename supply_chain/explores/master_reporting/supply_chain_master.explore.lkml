@@ -14,7 +14,8 @@
 
 
 include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
-include: "/supply_chain/explores/master_reporting/ndt_waste_risk_index_calculation.view"
+include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_waste_risk_index_calculation.view"
+include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_handling_unit_rotation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
 include: "/**/hubs_ct.view"
 
@@ -59,6 +60,16 @@ explore: supply_chain_master {
     sql_on: ${supply_chain_master.hub_code}     = ${ndt_waste_risk_index_calculation.hub_code} and
             ${supply_chain_master.parent_sku}   = ${ndt_waste_risk_index_calculation.parent_sku} and
             ${supply_chain_master.report_date}  = ${ndt_waste_risk_index_calculation.report_date};;
+    relationship: many_to_one
+    type: left_outer
+
+  }
+
+  join: ndt_handling_unit_rotation {
+    view_label: "Supply Chain Master"
+    sql_on: ${supply_chain_master.hub_code}     = ${ndt_handling_unit_rotation.hub_code} and
+            ${supply_chain_master.parent_sku}   = ${ndt_handling_unit_rotation.parent_sku} and
+            ${supply_chain_master.report_date}  = ${ndt_handling_unit_rotation.report_date};;
     relationship: many_to_one
     type: left_outer
 
