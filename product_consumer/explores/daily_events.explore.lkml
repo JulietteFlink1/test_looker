@@ -111,7 +111,8 @@ explore: daily_events {
             event_cart_viewed.shipping_method_id,
             event_cart_viewed.cart_id,
             event_cart_viewed.screen_name,
-            event_cart_viewed.products]
+            event_cart_viewed.products,
+            event_cart_viewed.is_empty_cart]
     sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
