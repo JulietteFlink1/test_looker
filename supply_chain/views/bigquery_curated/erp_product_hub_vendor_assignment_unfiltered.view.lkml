@@ -358,22 +358,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.item_hub_type_nl ;;
   }
 
-  dimension_group: item_introduction {
-    type: time
-    description: "The date, when a given product was listed initially"
-    group_label: "Item"
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.item_introduction_date ;;
-  }
-
   dimension: item_is_orderable {
     type: yesno
     description: "This boolean field is an indicator, whether an SKU is orderable by the Supply Chain department"
