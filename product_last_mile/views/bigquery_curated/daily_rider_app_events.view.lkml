@@ -5,7 +5,7 @@
 
 view: daily_rider_app_events {
   sql_table_name: `flink-data-prod.curated.daily_rider_app_events`;;
-  view_label: "Daily Rider App Events "
+  view_label: "1 Daily Rider App Events "
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -136,7 +136,20 @@ view: daily_rider_app_events {
     type: string
     sql: ${TABLE}.locale ;;
   }
-
+  dimension: country_iso {
+    group_label: "Location Dimension"
+    label: "Country Iso"
+    type: string
+    description: "Country ISO."
+    sql: ${TABLE}.country_iso ;;
+  }
+  dimension: hub_code {
+    group_label: "Location Dimension"
+    label: "Hub Code"
+    type: string
+    description: "Code of a hub."
+    sql: ${TABLE}.hub_code ;;
+  }
 
   # ======= Dates / Timestamps =======
 

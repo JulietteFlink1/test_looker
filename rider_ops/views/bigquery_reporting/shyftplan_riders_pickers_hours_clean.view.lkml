@@ -708,7 +708,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
-    group_label: "UTR"
+    group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
   }
 
   measure: ops_associate_utr {
@@ -718,7 +718,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "# Orders (incl. Click & Collect and External Orders) / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${ops_associate_hours}, 0);;
     value_format_name: decimal_2
-    group_label: "UTR"
+    group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
   }
 
   measure: wh_ops_utr {

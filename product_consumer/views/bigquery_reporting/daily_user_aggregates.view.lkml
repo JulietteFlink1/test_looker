@@ -273,7 +273,7 @@ view: daily_user_aggregates {
   }
   dimension: is_cart_viewed {
     group_label: "Flags | Conversion"
-    description: "Yes if user has viewed cart at least once"
+    description: "Yes if user has viewed non-empty cart at least once"
     type: yesno
     sql: ${TABLE}.is_cart_viewed ;;
   }
@@ -784,7 +784,7 @@ view: daily_user_aggregates {
   measure: number_of_cart_viewed {
     group_label: "Event Metrics"
     label: "# Cart Viewed"
-    description: "Number of times a user has viewed cart in a day"
+    description: "Number of times a user has viewed non-empty cart in a day"
     type: sum
     hidden: no
     sql: ${dim_number_of_cart_viewed} ;;

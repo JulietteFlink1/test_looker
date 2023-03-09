@@ -33,7 +33,8 @@ set: drill_fields_set {
     timeframes: [
       date,
       week,
-      month
+      month,
+      day_of_week
     ]
     convert_tz: no
     datatype: date
@@ -184,6 +185,22 @@ set: drill_fields_set {
     group_label: ""
     description: "The name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
     drill_fields: [drill_fields_set*]
+  }
+
+  dimension: purchase_unit {
+    type: string
+    sql: ${TABLE}.purchase_unit ;;
+    label: "Purchase Units"
+    group_label: "Product Data"
+    description: "The ERP defined puchase unit of a product. It defines, which aggregation was bought."
+  }
+
+  dimension: handling_unit_rotation_ratio {
+    type: string
+    sql: ${TABLE}.handling_unit_rotation_ratio ;;
+    label: "Handling unit Rotation Ratio"
+    group_label: "Product Data"
+    description: "Ratio that shows the quantity of units we need to sell before we discard the items. It's defined as the relation between Purchase Units and Max Shelf Life"
   }
 
   dimension: erp_category {
