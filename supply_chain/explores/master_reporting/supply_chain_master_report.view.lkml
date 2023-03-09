@@ -11,7 +11,7 @@
 # GMV
 
 view: supply_chain_master_report {
-  sql_table_name: `flink-data-prod.reporting.supply_chain_master_report`
+  sql_table_name: `flink-data-dev.cbt_lruiz_reporting.supply_chain_master_report`
     ;;
 
 set: drill_fields_set {
@@ -181,14 +181,11 @@ set: drill_fields_set {
   dimension_group: item_termination {
     type: time
     datatype: date
+    label: "Item Termination"
     description: "The date, when a given product was delisted in the location."
     group_label: "Product Data"
     timeframes: [
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: ${TABLE}.item_termination_date ;;
   }
