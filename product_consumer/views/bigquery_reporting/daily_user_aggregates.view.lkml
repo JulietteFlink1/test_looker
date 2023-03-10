@@ -83,7 +83,7 @@ view: daily_user_aggregates {
     label: "Event Date (Dynamic)"
     label_from_parameter: timeframe_picker
     type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
-    hidden:  yes
+    hidden:  no
     sql:
       {% if timeframe_picker._parameter_value == 'Day' %}
         ${event_date_at_date}
@@ -1015,7 +1015,7 @@ view: daily_user_aggregates {
   }
   measure: active_users {
     group_label: "User Metrics - Unique"
-    label: "# Unqiue Active Users"
+    label: "# Unique Active Users"
     description: "Number of Unique Active Users within selected timeframe (note: an active user is a user who generated at least 2 various events when browsing Flink app/web.)"
     type: count_distinct
     sql: ${user_uuid} ;;
@@ -1350,7 +1350,7 @@ view: daily_user_aggregates {
 
   measure: daily_cvr {
     group_label: "Conversions - Daily (%)"
-    label: "Daily CVR"
+    label: "% DAU CVR"
     type: number
     description: "Unlike the CVR metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
     value_format_name: percent_1
