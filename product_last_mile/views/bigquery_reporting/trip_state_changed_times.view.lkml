@@ -8,6 +8,33 @@ view: trip_state_changed_times {
   sql_table_name: `flink-data-prod.reporting.trip_state_changed_times` ;;
   view_label: "Trip State Changed Times"
 
+  set: to_include_dimensions {
+    fields: [
+      actor_id,
+      rider_id,
+      trip_id,
+      event_date_date,
+      event_date_month,
+      event_date_week,
+      order_type
+    ]
+  }
+
+  set: to_include_measures {
+    fields: [
+      trip_id_count,
+      avg_rider_delivery_time_minutes,
+      avg_rider_delivery_time_seconds,
+      avg_rider_pickup_time_minutes,
+      avg_rider_pickup_time_seconds,
+      avg_rider_return_time_minutes,
+      avg_rider_return_time_seconds
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -16,6 +43,8 @@ view: trip_state_changed_times {
   # ======= IDs ======= #
 
   dimension: actor_id {
+    group_label: "IDs"
+    label: "Actor ID"
     type: string
     description: "Unique identifier for a hub employee performing a given action."
     sql: ${TABLE}.actor_id ;;
@@ -28,6 +57,7 @@ view: trip_state_changed_times {
     sql: ${TABLE}.rider_id ;;
   }
   dimension: trip_id {
+    primary_key: yes
     group_label: "IDs"
     label: "Trip ID"
     description: "A unique identifier of each trip."
@@ -136,7 +166,8 @@ view: trip_state_changed_times {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: sum_rider_delivery_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Delivery Time (minutes)"
     type: sum
     description: "Time a rider spent delivering an order in minutes (difference between trip on route and trip returning)."
@@ -144,7 +175,8 @@ view: trip_state_changed_times {
     value_format: "0.0"
   }
   measure: sum_rider_delivery_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Delivery Time (seconds)"
     type: sum
     description: "Time a rider spent delivering an order in seconds (difference between trip on route and trip returning)."
@@ -152,7 +184,8 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: sum_rider_pickup_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Pickup Time (minutes)"
     type: sum
     description: "Time a rider spent picking up the order in minutes (difference between trip started and trip on route)."
@@ -160,7 +193,8 @@ view: trip_state_changed_times {
     value_format: "0.0"
   }
   measure: sum_rider_pickup_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Pickup Time (seconds)"
     type: sum
     description: "Time a rider spent picking up the order in seconds (difference between trip started and trip on route)."
@@ -168,14 +202,16 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: sum_rider_return_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Return Time (minutes)"
     type: sum
     sql: ${TABLE}.rider_return_time_minutes ;;
     value_format: "0.0"
   }
   measure: sum_rider_return_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "SUM Measures"
     label: "SUM Return Time (seconds)"
     type: sum
     description: "Time a rider spent returning to hub in minutes (difference between trip returning and trip completed)."
@@ -183,7 +219,8 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: avg_rider_delivery_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Delivery Time (minutes)"
     type: average
     description: "Time a rider spent delivering an order in minutes (difference between trip on route and trip returning)."
@@ -191,7 +228,8 @@ view: trip_state_changed_times {
     value_format: "0.0"
   }
   measure: avg_rider_delivery_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Delivery Time (seconds)"
     type: average
     description: "Time a rider spent delivering an order in seconds (difference between trip on route and trip returning)."
@@ -199,7 +237,8 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: avg_rider_pickup_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Pickup Time (minutes)"
     type: average
     description: "Time a rider spent picking up the order in minutes (difference between trip started and trip on route)."
@@ -207,7 +246,8 @@ view: trip_state_changed_times {
     value_format: "0.0"
   }
   measure: avg_rider_pickup_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Pickup Time (seconds)"
     type: average
     description: "Time a rider spent picking up the order in seconds (difference between trip started and trip on route)."
@@ -215,14 +255,16 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: avg_rider_return_time_minutes {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Return Time (minutes)"
     type: average
     sql: ${TABLE}.rider_return_time_minutes ;;
     value_format: "0.0"
   }
   measure: avg_rider_return_time_seconds {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "AVG Measures"
     label: "AVG Return Time (seconds)"
     type: average
     description: "Time a rider spent returning to hub in minutes (difference between trip returning and trip completed)."
@@ -230,7 +272,8 @@ view: trip_state_changed_times {
     value_format: "0.00"
   }
   measure: trip_id_count {
-    group_label: "Measures"
+    sql_distinct_key: ${trip_id} ;;
+    group_label: "Absolute Measures"
     label: "Total # Distinct Trips "
     type: count_distinct
     description: "Total count of distinct trips"

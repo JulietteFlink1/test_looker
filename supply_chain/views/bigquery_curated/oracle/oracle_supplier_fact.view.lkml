@@ -182,6 +182,13 @@ view: oracle_supplier_fact {
     sql: ${TABLE}.supplier_parent_id ;;
   }
 
+  dimension: legacy__supplier_id {
+    label: "Legacy Supplier ID"
+    type: string
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+    sql: ${TABLE}.legacy__supplier_id ;;
+  }
+
   dimension: table_uuid {
     type: string
     description: "Generic identifier of a table in BigQuery that represent 1 unique row of this table."
