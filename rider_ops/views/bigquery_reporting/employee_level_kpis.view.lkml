@@ -1371,7 +1371,7 @@ view: employee_level_kpis {
     type: sum
     label: "# Justified Early Overpunched Hours"
     sql: ${TABLE}.number_of_justified_start_early_minutes/60;;
-    description: "Number of minutes when a rider claimed an order before shift start date.
+    description: "Number of hours when a rider claimed an order before shift start time.
     This early punch-in is justified as rider was busy. Calculated as a difference between first rider claimed timestamp and shift starts timestamp and 5 minutes added due to preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
   }
@@ -1381,7 +1381,7 @@ view: employee_level_kpis {
     type: sum
     label: "# Justified Late Overpunched Hours"
     sql: ${TABLE}.number_of_justified_end_late_minutes/60;;
-    description: "Number of minutes when a rider arrived at hub (after delivering an order) after shift end date.
+    description: "Number of hours when a rider arrived at hub (after delivering an order) after shift end time.
     This late punch-out is justified as rider was busy. Calculated as a difference between last rider arrived at hub timestamp and shift ends timestamp and 5 minutes added due to preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
   }
@@ -1392,7 +1392,7 @@ view: employee_level_kpis {
     label: "# Justified Overpunched Hours"
     sql: ${number_of_justified_end_late_hours};;
     description: "Sum of # Justified Late Overpunched Hours. If the rider was asked to start before the shift was scheduled,
-    then Hub Manager should adjust the shift start timestamo on Quinyx.
+    then Hub Manager should adjust the shift start timestamp in Quinyx.
     Therefore, # Justified Start Early Minutes are not included in this metric."
     value_format_name: decimal_1
   }
@@ -1411,7 +1411,7 @@ view: employee_level_kpis {
     type: number
     label: "% Justified Overpunched Hours"
     sql: ${number_of_justified_overpunched_hours}/${number_of_overpunched_hours};;
-    description: "Share of overtime rider spent working during overtime. Formula: # Justified Overpunched Hours / # Overpunched Hours"
+    description: "Share of justified overtime rider spent working during overtime. Formula: # Justified Overpunched Hours / # Overpunched Hours"
     value_format_name: percent_2
   }
 
