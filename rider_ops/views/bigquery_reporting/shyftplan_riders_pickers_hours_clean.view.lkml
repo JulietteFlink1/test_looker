@@ -967,7 +967,7 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Rider Performance"
     label: "% Worked Time Spent Idle (Riders)"
     description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
-    hidden:  no
+    hidden:  yes
     type: number
     sql: ${employee_level_kpis.pct_rider_idle_time};;
     value_format_name: percent_2
