@@ -2112,7 +2112,7 @@ view: staffing {
   measure: number_of_worked_hours_rider_wfs_shift_end {
     group_label: "> Rider Measures"
     label: "# Punched WFS Rider Hours - End Shift"
-    description: "# Punched Rider Hours from shifts with project code = 'WFS shift extend end 1/2/4'. Only includes the extended hours at the end of the shift."
+    description: "# Punched Rider Hours from shifts with project code = 'WFS shift extend end 1/2/4'. Only includes the extended hours at the end of the shift (e.g. 2 for project code WFS extend end 2)."
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_wfs_shift_end_rider/60;;
     value_format_name: decimal_1
