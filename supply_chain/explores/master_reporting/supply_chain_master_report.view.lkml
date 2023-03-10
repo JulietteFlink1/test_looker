@@ -178,6 +178,18 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+  dimension_group: item_location_termination {
+    type: time
+    datatype: date
+    label: "Item Location Termination"
+    description: "The date, when a given product was delisted in the location."
+    group_label: "Product Data"
+    timeframes: [
+      date
+    ]
+    sql: ${TABLE}.item_location_termination_date ;;
+  }
+
   dimension: vendor_name {
     type: string
     sql: ${TABLE}.vendor_name ;;
