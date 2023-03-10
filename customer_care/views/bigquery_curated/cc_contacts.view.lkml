@@ -127,11 +127,14 @@ view: cc_contacts {
   }
 
   dimension: contact_uuid {
-    type: number
+    type: string
     primary_key: yes
-    value_format_name: id
     label: "Contact ID"
     sql: ${TABLE}.contact_uuid ;;
+    link: {
+      label: "See Contact in Intercom"
+      url: "https://app.intercom.com/a/apps/swruvbnw/inbox/inbox/all/conversations/{{ contact_uuid._value | url_encode }}"
+    }
   }
 
   dimension: country_iso {
