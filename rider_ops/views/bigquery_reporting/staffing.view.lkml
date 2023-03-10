@@ -2103,7 +2103,7 @@ view: staffing {
   measure: number_of_worked_hours_rider_wfs_shift_beginning {
     group_label: "> Rider Measures"
     label: "# Punched WFS Rider Hours - Beginning Shift"
-    description: "# Punched Rider Hours from shifts with project code = 'WFS shift extend beg 1/2/4'. Only includes the extended hours at the beginning of the shift."
+    description: "# Punched Rider Hours from shifts with project code = 'WFS shift extend beg 1/2/4'. Only includes the extended hours at the beginning of the shift (e.g. 2 for project code WFS extend beg 2)."
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_wfs_shift_beginning_rider/60;;
     value_format_name: decimal_1
