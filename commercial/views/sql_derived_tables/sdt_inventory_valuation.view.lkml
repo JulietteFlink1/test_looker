@@ -43,18 +43,25 @@ base_data as (
         + inv.number_of_unspecified           as number_of_change_reasons,
         coalesce(
             price.amt_buying_price_weighted_rolling_average_net_eur,
+            price.amt_buying_price_net_eur,
             -- currently only gross - aligning with Brandon if we should add net prices
             -- to curated.product_prices
-            price.avg_amt_selling_price_gross_eur
+            safe_divide(prod.amt_product_price_gross,coalesce(1+ prod.tax_rate, 1))
         )                                     as amt_buying_price_weighted_rolling_average_net_eur
 
     from flink-data-prod.reporting.inventory_daily
     as inv
 
-    left join flink-data-prod.reporting.product_prices_daily
+    left join flink-data-prod.curated.products
+    as prod
+    on
+        prod.sku = inv.sku and
+        prod.country_iso = inv.country_iso
+
+    left join flink-data-prod.curated.erp_buying_prices
     as price
     on
-        price.reporting_date = inv.report_date and
+        price.ingestion_date = inv.report_date and
         price.hub_code       = inv.hub_code    and
         price.sku            = inv.sku
 
@@ -291,7 +298,9 @@ select * from aggregated_data
   }
 
   dimension: is_change_reason_explain_change_quantity {
+    label: "Is Change Quantity explained by Change Reasons"
     type: yesno
+    group_label: "Debugging"
     sql: ${number_of_change_reasons} = ${number_of_quantity_change} ;;
   }
 
@@ -327,6 +336,7 @@ select * from aggregated_data
   dimension: number_of_quantity_change {
     type: number
     hidden: yes
+    sql: ${end_stock_level} - ${start_stock_level} ;;
   }
   dimension: number_of_change_reasons {
     type: number
@@ -362,6 +372,7 @@ select * from aggregated_data
     required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
+    sql: ${amt_end_stock_level} - ${amt_start_stock_level} ;;
   }
   dimension: amt_number_of_change_reasons {
     required_access_grants: [can_view_buying_information]
@@ -554,6 +565,14 @@ select * from aggregated_data
     type: sum
     sql: ${amt_number_of_number_of_unspecified} ;;
     value_format_name: eur
+  }
+
+  measure: amt_difference_quantity_change_vs_change_reasons {
+    label: "€ Difference (Change Quantity vs. Change Reasons)"
+    type: number
+    group_label: "Debugging"
+    sql: ${sum_of_amt_number_of_quantity_change} - ${sum_of_amt_number_of_change_reasons} ;;
+    value_format_name: eur_0
   }
 
 }
