@@ -70,9 +70,15 @@ view: order_placement_aggregates {
 
 # ======= BOOLEANS for order placement ======= #
 
+  dimension: is_order_from_any_recommendation {
+    group_label: "Placement Dimensions"
+    description: "Where at least one item was added from recommendation or last_bought"
+    type: yesno
+    sql: ${is_order_from_last_bought} or ${is_order_from_recommendation} ;;
+  }
   dimension: is_order_from_recommendation {
     group_label: "Placement Dimensions"
-    description: "Where at least one item was added from m_recommendation."
+    description: "Where at least one item was added from recommendation."
     type: yesno
     sql: ${TABLE}.is_order_from_recommendation ;;
   }
@@ -185,6 +191,34 @@ view: order_placement_aggregates {
     description: "Average Item Value (net) - excluding fees."
     type: number
     value_format_name: eur
-    sql: ${amt_total_price_net} / ${number_of_orders} ;;
+    sql: safe_divide(${amt_total_price_net}, ${number_of_orders}) ;;
+  }
+
+  measure: amt_total_price_net_incl_reco {
+    group_label: "Monetary Metrics"
+    label: "SUM Total Item Price (net)"
+    description: "Total value of all items (net) excluding fees. Calcuated as Unit Item Value * Quantity Purchased."
+    type: sum
+    value_format_name: decimal_2
+    sql: ${TABLE}.amt_total_price_net ;;
+    hidden: yes
+    filters: [is_order_from_recommendation: "yes"]
+  }
+  measure: number_of_orders_incl_reco {
+    group_label: "Basic Counts"
+    label: "# Orders"
+    type: sum
+    sql: ${TABLE}.number_of_orders ;;
+    hidden: yes
+    filters: [is_order_from_recommendation: "yes"]
+  }
+  measure: aiv_incl_reco {
+    group_label: "Monetary Metrics"
+    label: "AIV (net) Reco Orders Only"
+    description: "Average Item Value (net) - excluding fees."
+    type: number
+    value_format_name: eur
+    sql: safe_divide(${amt_total_price_net_incl_reco}, ${number_of_orders_incl_reco});;
+    # filters: [is_order_from_recommendation: "true"]
   }
 }
