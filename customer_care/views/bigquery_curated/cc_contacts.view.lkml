@@ -381,6 +381,15 @@ view: cc_contacts {
     sql: ${TABLE}.time_to_agent_reply_seconds ;;
   }
 
+  dimension: time_to_agent_reply_minutes_tier {
+    group_label: "> Contact Statistics"
+    label: "Time to Agent Reply (tiered)"
+    type: tier
+    tiers: [2, 5, 10, 15, 20, 40]
+    style: relational
+    sql: ${time_to_agent_reply_minutes} ;;
+  }
+
   dimension: time_to_agent_reply_minutes {
     hidden: no
     label: "Time to Agent Reply"
