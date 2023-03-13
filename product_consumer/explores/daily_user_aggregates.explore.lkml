@@ -10,6 +10,7 @@
 include: "/product_consumer/views/bigquery_reporting/daily_user_aggregates.view"
 include: "/product_consumer/views/bigquery_reporting/web_attribution.view"
 include: "/**/global_filters_and_parameters.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 explore: daily_user_aggregates {
   from:  daily_user_aggregates
@@ -58,5 +59,11 @@ explore: daily_user_aggregates {
     relationship: one_to_one
   }
 
+  join: hubs_ct {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${daily_user_aggregates.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
 
 }
