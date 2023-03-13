@@ -29,7 +29,7 @@ view: waste_waterfall {
     sql: ${TABLE}.delisted_flag ;;
     label: "Delisted Flag"
     group_label: "Markers"
-    description: "Marker for delisted PLs"
+    description: "Shows flag for delisted Product-Locations"
     hidden: no
   }
 
@@ -83,7 +83,7 @@ view: waste_waterfall {
     sql: ${TABLE}.incorrect_PU_flag ;;
     label: "Incorrect PU Flag"
     group_label: "Markers"
-    description: "Marker for incorrect flag"
+    description: "Shows flag for incorrect flag"
     hidden: no
   }
 
@@ -101,7 +101,7 @@ view: waste_waterfall {
     sql: ${TABLE}.inventory_changes_daily_hub_code ;;
     label: "Hub Code"
     group_label: ""
-    description: "Hub Code for PL"
+    description: "Hub Code for Product-Location"
     hidden: no
   }
 
@@ -118,7 +118,7 @@ view: waste_waterfall {
     sql: ${TABLE}.inventory_changes_daily_inventory_change_week ;;
     label: "Reporting Week"
     group_label: ""
-    description: "Reporting week for th PL"
+    description: "Reporting week for th Product-Location"
     hidden: no
   }
 
@@ -127,7 +127,7 @@ view: waste_waterfall {
     sql: cast(${TABLE}.inventory_changes_daily_parent_sku as string) ;;
     label: "Parent SKU"
     group_label: ""
-    description: "Parent SKU for PL"
+    description: "Parent SKU for Product-Location"
     hidden: no
   }
 
@@ -136,7 +136,7 @@ view: waste_waterfall {
     sql: ${TABLE}.inventory_changes_daily_sku ;;
     label: "SKU"
     group_label: ""
-    description: "SKU for PL"
+    description: "SKU for Product-Location"
     hidden: no
   }
 
@@ -145,7 +145,7 @@ view: waste_waterfall {
     sql: ${TABLE}.inventory_changes_daily_sum_outbound_waste_eur ;;
     label: "Sum Outbound Waste (eur)"
     group_label: ""
-    description: "Amount of Waste for PL"
+    description: "Amount of Waste for Product-Location"
     hidden: no
   }
 
@@ -154,7 +154,7 @@ view: waste_waterfall {
     sql: ${TABLE}.low_performer ;;
     label: "Low performer flag"
     group_label: "Markers"
-    description: "Flag for low performing PLs"
+    description: "Flag for low performing Product-Locations"
     hidden: no
   }
 
@@ -163,7 +163,7 @@ view: waste_waterfall {
     sql: ${TABLE}.over_forecast_flag ;;
     label: "Over Forecast flag"
     group_label: "Markers"
-    description: "Flag for over forecasted PLs"
+    description: "Flag for over forecasted Product-Location"
     hidden: no
   }
 
@@ -172,7 +172,7 @@ view: waste_waterfall {
     sql: ${TABLE}.over_inbound ;;
     label: "Over Inbound flag"
     group_label: "Markers"
-    description: "Flag for over inbounded PLs"
+    description: "Flag for over inbounded Product-Location"
     hidden: no
   }
 
@@ -181,7 +181,7 @@ view: waste_waterfall {
     sql: ${TABLE}.products_category ;;
     label: "Products Category"
     group_label: ""
-    description: "Products Category for PL"
+    description: "Products Category for Product-Location"
     hidden: no
   }
 
@@ -190,7 +190,7 @@ view: waste_waterfall {
     sql: ${TABLE}.Promotion_flag ;;
     label: "Promotion Flag"
     group_label: "Markers"
-    description: "Marker for PLs with promotion + waste "
+    description: "Shows flag for Product-Locations with promotion + waste "
     hidden: no
   }
 
@@ -199,7 +199,7 @@ view: waste_waterfall {
     sql: ${TABLE}.shelf_life ;;
     label: "Shelf Life"
     group_label: ""
-    description: "Shelf Life of PL"
+    description: "Shelf Life of Product-Location"
     hidden: no
   }
 
@@ -208,7 +208,7 @@ view: waste_waterfall {
     sql: ${TABLE}.sku_hub_day_level_orders_product_name ;;
     label: "Orders Product Name"
     group_label: ""
-    description: "Orders Product Name for PL"
+    description: "Orders Product Name for Product-Location"
     hidden: no
   }
 
@@ -217,7 +217,7 @@ view: waste_waterfall {
     sql: ${TABLE}.SL1_Too_early_flag ;;
     label: "Too Early Flag"
     group_label: "Markers"
-    description: "Too Early Flag for PL"
+    description: "Too Early Flag for Product-Location"
     hidden: no
   }
 
@@ -226,7 +226,7 @@ view: waste_waterfall {
     sql: ${TABLE}.too_early_out_SLgreater1_flag ;;
     label: "Too Early Outbound SL>1 flag"
     group_label: ""
-    description: "Too Early Outbound SL>1 flag for PL"
+    description: "Too Early Outbound SL>1 flag for Product-Location"
     hidden: no
   }
 
@@ -235,7 +235,7 @@ view: waste_waterfall {
     sql: ${TABLE}.volatility_index ;;
     label: "Volatility Index"
     group_label: ""
-    description: "Volatility index for PL"
+    description: "Volatility index for Product-Location"
     hidden: no
   }
 
@@ -243,7 +243,7 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.Week ;;
     label: "Week Number"
-    group_label: "Week number for PLs registered in waste"
+    group_label: "Week number for Product-Locations registered in waste"
     hidden: no
   }
 

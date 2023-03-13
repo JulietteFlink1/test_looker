@@ -39,7 +39,7 @@ view: availability_waterfall {
     sql: ${TABLE}.category_master ;;
     label: "Category Master"
     group_label: ""
-    description: "Master Category of PL"
+    description: "Master Category of Product-Location"
     hidden: no
   }
 
@@ -48,7 +48,7 @@ view: availability_waterfall {
     sql: ${TABLE}.co_mrp_flag ;;
     label: "CO-MRP Flag"
     group_label: "Markers"
-    description: "Flag that marks PL as CO-MRP in Relex Order Type"
+    description: "Flag that shows Product-Location as 'CO-MRP' in Relex Order Type"
     hidden: no
   }
 
@@ -57,7 +57,7 @@ view: availability_waterfall {
     sql: ${TABLE}.country_iso ;;
     label: "Country ISO"
     group_label: ""
-    description: "Geographical information of PL"
+    description: "Geographical information of Product-Location"
     hidden: no
   }
 
@@ -66,7 +66,7 @@ view: availability_waterfall {
     sql: ${TABLE}.country_sum_of_hours_oos ;;
     label: "Sum # Hours OOS - Country"
     group_label: ""
-    description: "Sum of Hours OOS based on Knime Raw Availability Data on Country lvl"
+    description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
 
@@ -75,7 +75,7 @@ view: availability_waterfall {
     sql: ${TABLE}.country_sum_of_hours_open ;;
     label: "Sum # Hours Open - Country"
     group_label: ""
-    description: "Sum of Hours OOS based on Knime Raw Availability Data on Country lvl"
+    description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
 
@@ -84,7 +84,7 @@ view: availability_waterfall {
     sql: ${TABLE}.ct_substitute_group ;;
     label: "Substitute Group CT"
     group_label: ""
-    description: "Substitute Group as shown in CT"
+    description: "Substitute Group as shown in CommerceTools"
     hidden: no
   }
 
@@ -93,7 +93,7 @@ view: availability_waterfall {
     sql: ${TABLE}.delivery_issue_flag ;;
     label: "Delivery Issues Flag"
     group_label: "Markers"
-    description: "Flag for PLs that are marked as having delivery issues"
+    description: "Flag for Product-Locations that are marked as having delivery issues"
     hidden: no
   }
 
@@ -102,7 +102,7 @@ view: availability_waterfall {
     sql: ${TABLE}.first_inbound_flag ;;
     label: "First Inbound Flag"
     group_label: "Markers"
-    description: "Flag to mark if the PL has had its first inbound in the reporting week"
+    description: "Flag to mark if the Product-Location has had its first inbound in the reporting week"
     hidden: no
   }
 
@@ -111,7 +111,7 @@ view: availability_waterfall {
     sql: ${TABLE}.fr_missing_ods ;;
     label: "FR Missing ODS"
     group_label: "Markers"
-    description: "Flag to mark if the PL has been identified as missing in Carrefour ODS"
+    description: "Flag to mark if the Product-Location has been identified as missing in Carrefour Order Delivery Schedule"
     hidden: no
   }
 
@@ -120,7 +120,7 @@ view: availability_waterfall {
     sql: ${TABLE}.frequent_oos_flag ;;
     label: "Frequent OOS Flag"
     group_label: "Markers"
-    description: "Flag to mark if the PL has been identified as going OOS atleast 3 times in the reporting week"
+    description: "Flag to mark if the Product-Location has been identified as going OOS at least 3 times in the reporting week"
     hidden: no
   }
 
@@ -138,7 +138,7 @@ view: availability_waterfall {
     sql: ${TABLE}.hub_status ;;
     label: "Hub Status"
     group_label: ""
-    description: "Marks the status of the hub"
+    description: "Shows the status of the hub"
     hidden: no
   }
 
@@ -147,7 +147,7 @@ view: availability_waterfall {
     sql: ${TABLE}.hubs_ct_is_active_hub ;;
     label: "Hubs CT Is Active Hub"
     group_label: ""
-    description: "Marks if hub is active on CT side"
+    description: "Shows if hub is active on CommerceTools side"
     hidden: no
   }
 
@@ -156,7 +156,7 @@ view: availability_waterfall {
     sql: ${TABLE}.incorrect_pu_flag ;;
     label: "Incorrect PU Flag"
     group_label: "Markers"
-    description: "Marks if PL has Incorrect PUs assigned"
+    description: "Shows if PL has Incorrect Purchase Units assigned"
     hidden: no
   }
 
@@ -173,7 +173,7 @@ view: availability_waterfall {
     sql: ${TABLE}.ingestion_date ;;
     label: "Ingestion Date"
     group_label: ""
-    description: "Marks the ingestion date in BQ from the Avalablility Knime flow"
+    description: "Shows the ingestion date in BQ from the Avalablility Knime flow"
     hidden: no
   }
 
@@ -182,7 +182,7 @@ view: availability_waterfall {
     sql: ${TABLE}.late_inbound_flag ;;
     label: "Late Inbound Flag"
     group_label: "Markers"
-    description: "Marks if PL has had a late inbound"
+    description: "Shows if Product Location has had a late inbound"
     hidden: no
   }
 
@@ -191,7 +191,7 @@ view: availability_waterfall {
     sql: ${TABLE}.long_term_oos_flag ;;
     label: "Long Term OOS flag"
     group_label: "Markers"
-    description: "Marks if the PL has has long term Out of stock"
+    description: "Shows if the Product Location has has long term Out of stock"
     hidden: no
   }
 
@@ -200,7 +200,7 @@ view: availability_waterfall {
     sql: ${TABLE}.new_hub_flag ;;
     label: "New Hub Flag"
     group_label: "Markers"
-    description: "Marks if hub is recently created (14 days) -> new hub"
+    description: "Shows if hub is recently created (14 days) -> new hub"
     hidden: no
   }
 
@@ -209,7 +209,7 @@ view: availability_waterfall {
     sql: ${TABLE}.newly_reactived_flag ;;
     label: "Newly (RE)activated flag"
     group_label: "Markers"
-    description: "Marks if the PL has been newly (re)activated"
+    description: "Shows if the Product Location has been newly (re)activated"
     hidden: no
   }
 
@@ -218,7 +218,7 @@ view: availability_waterfall {
     sql: ${TABLE}.no_inbound_all_hubs_flag ;;
     label: "No Inbound All Hubs Flag"
     group_label: "Markers"
-    description: "Marks if there has been no inbound in all hubs for PL"
+    description: "Shows if there has been no inbound in all hubs for Product Location"
     hidden: no
   }
 
@@ -227,7 +227,7 @@ view: availability_waterfall {
     sql: ${TABLE}.no_orders_flag ;;
     label: "No Orders Flag"
     group_label: "Markers"
-    description: "Marks if PL has had no orders in the week"
+    description: "Shows if Product Location has had no orders in the week"
     hidden: no
   }
 
@@ -236,7 +236,7 @@ view: availability_waterfall {
     sql: ${TABLE}.oos_hours ;;
     label: "Sum # Hours OOS"
     group_label: ""
-    description: "Sum of Hours OOS based on Knime Raw Availability Data"
+    description: "Sum of Hours out of stock based on Knime Raw Availability Data"
     hidden: no
   }
 
@@ -245,7 +245,7 @@ view: availability_waterfall {
     sql: ${TABLE}.opening_hours ;;
     label: "Sum # Hours Open"
     group_label: ""
-    description: "Sum of Hours OOS based on Knime Raw Availability Data on Country lvl"
+    description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
 
@@ -263,7 +263,7 @@ view: availability_waterfall {
     sql: ${TABLE}.parent_category ;;
     label: "Parent Category"
     group_label: ""
-    description: "Parent Category of PL"
+    description: "Parent Category of Product Location"
     hidden: no
   }
 
@@ -281,7 +281,7 @@ view: availability_waterfall {
     sql: ${TABLE}.pct_oos ;;
     label: "% Out Of Stock"
     group_label: ""
-    description: "% OOS based on Knime Raw Availability Data"
+    description: "% Out of stock based on Knime Raw Availability Data"
     hidden: no
   }
 
@@ -290,7 +290,7 @@ view: availability_waterfall {
     sql: ${TABLE}.po_inbound_less_80pct_flag ;;
     label: "PO Inbound <80% Flag"
     group_label: "Markers"
-    description: "If inbound was less than 80% of what PO information was promised for PL -> marked"
+    description: "Shows if quantity inbounded was less than 80% compared to PO information for Product Location"
     hidden: no
   }
 
@@ -308,7 +308,7 @@ view: availability_waterfall {
     sql: ${TABLE}.promotion_filter ;;
     label: "Promotion Filter"
     group_label: ""
-    description: "Promotion Filtering for Availability PLs"
+    description: "Promotion Filtering for Availability Product-Locations"
     hidden: no
   }
 
@@ -317,7 +317,7 @@ view: availability_waterfall {
     sql: ${TABLE}.promotion_flag ;;
     label: "Promotion Flag"
     group_label: ""
-    description: "Flag for the promotion on Availability PLs"
+    description: "Flag for the promotion on Availability Product-Locations"
     hidden: no
   }
 
@@ -335,7 +335,7 @@ view: availability_waterfall {
     sql: ${TABLE}.really_long_term_oos_flag ;;
     label: "Really Long Term OOS Flag"
     group_label: "Markers"
-    description: "Marked if PL is 2 weeks OOS"
+    description: "Marked if Product Location is 2 weeks out of stock"
     hidden: no
   }
 
@@ -361,7 +361,7 @@ view: availability_waterfall {
     sql: ${TABLE}.report_week ;;
     label: "Report Week"
     group_label: ""
-    description: "Report Week used to assign the PL information to buckets"
+    description: "Report Week used to assign the product-location information to buckets"
     hidden: no
   }
 
@@ -370,7 +370,7 @@ view: availability_waterfall {
     sql: ${TABLE}.risky_flag ;;
     label: "Volatile Products Flag"
     group_label: "Markers"
-    description: "Marker for Volatile PLs"
+    description: "Marker for Volatile Product-Locations"
     hidden: no
   }
 
@@ -379,7 +379,7 @@ view: availability_waterfall {
     sql: ${TABLE}.sales_greater_forecast ;;
     label: "Sales > Forecast"
     group_label: "Markers"
-    description: "Sum of Hours OOS based on Knime Raw Availability Data on Country lvl"
+    description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
 
@@ -397,7 +397,7 @@ view: availability_waterfall {
     sql: ${TABLE}.sl1_too_early_out_flag ;;
     label: "SL1 Too Early Outbound Flag"
     group_label: ""
-    description: "Marks if the Shelf Life 1 Product has been outbounded early"
+    description: "Shows if the Shelf Life 1 Product has been outbounded early"
     hidden: no
   }
 
@@ -406,7 +406,7 @@ view: availability_waterfall {
     sql: ${TABLE}.sl1_too_late_inb_flag ;;
     label: "SL1 Too Late Inbounded Flag"
     group_label: "Markers"
-    description: "Marks if Shelf Life 1 Product has been inbounded too late"
+    description: "Shows if Shelf Life 1 Product has been inbounded too late"
     hidden: no
   }
 
@@ -415,7 +415,7 @@ view: availability_waterfall {
     sql: ${TABLE}.space_rest_flag ;;
     label: "Space Restrictions Flag"
     group_label: "Markers"
-    description: "Marks the PLs with Space Restrictions found on RELEX"
+    description: "Shows the Product-Locations with Space Restrictions found on RELEX"
     hidden: no
   }
 
@@ -451,7 +451,7 @@ view: availability_waterfall {
     sql: ${TABLE}.supplier_oos_flag ;;
     label: "Supplier Out Of Stock Flag"
     group_label: "Markers"
-    description: "Flags the Rewe supplier OOS"
+    description: "Flags the Rewe supplier out of stock"
     hidden: no
   }
 
@@ -460,7 +460,7 @@ view: availability_waterfall {
     sql: ${TABLE}.technical_issue_flag ;;
     label: "Technical Issue Flag"
     group_label: "Markers"
-    description: "Marks PLs that encountered a technical issue for the week (Order Status = NotSent)"
+    description: "Shows Product-Locations that encountered a technical issue for the week (Order Status = NotSent)"
     hidden: no
   }
 
@@ -469,7 +469,7 @@ view: availability_waterfall {
     sql: ${TABLE}.too_early_out_slgreater1_flag ;;
     label: "Too Early Outbounded SL>1 flag"
     group_label: "Markers"
-    description: "Flag for Shelf Life 1 PLs that are outbounded too early"
+    description: "Flag for Shelf Life 1 Product-Locations that are outbounded too early"
     hidden: no
   }
 
@@ -478,7 +478,7 @@ view: availability_waterfall {
     sql: ${TABLE}.under_fcst_flag ;;
     label: "Under Forecast Flag"
     group_label: "Markers"
-    description: "Marks if PL has been underforecasted in RELEX"
+    description: "Shows if product-location has been underforecasted in RELEX"
     hidden: no
   }
 

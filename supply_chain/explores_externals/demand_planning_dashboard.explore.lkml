@@ -9,14 +9,15 @@
 # - All questions around demand planning
 # - Questions around availability, waste and OTIFIQ topics
 
-include: "/**/*.view"
-
-#include: "/**/products_hub_assignment.view"
-#include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
-#include: "/core/views/config/global_filters_and_parameters.view"
-
-#include: "/supply_chain/explores/master_reporting/supply_chain_master.explore"
-
+include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/views_externals/availability_waterfall.view.lkml"
+include: "/supply_chain/views_externals/promotions.view.lkml"
+include: "/**/products_hub_assignment.view"
+include: "/core/views/config/global_filters_and_parameters.view"
+include: "/supply_chain/supply_chain_config.view.lkml"
+include: "/core/views/bq_curated/hubs_ct.view.lkml"
+include: "/pricing/views/bigquery_reporting/key_value_items.view.lkml"
+include: "/core/views/bq_curated/products.view.lkml"
 
 explore: demand_planning_dashboard_explore {
 
@@ -32,6 +33,7 @@ explore: demand_planning_dashboard_explore {
 
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${demand_planning_dashboard_explore.report_date} {% endcondition %} ;;
   always_filter: {filters: [global_filters_and_parameters.datasource_filter: "8 days ago for 7 days"]}
+
   access_filter: {
     field: country_iso
     user_attribute: country_iso
@@ -41,12 +43,10 @@ explore: demand_planning_dashboard_explore {
   relationship: one_to_one
 }
 
-
   join: supply_chain_config {
   sql: ;;
   relationship: one_to_one
 }
-
 
 ####################################################################################################################################
 ###################### Join hubs in order to get the city + hub is active (yes/no) fields ##########################################
@@ -56,9 +56,8 @@ join: hubs_ct {
   from: hubs_ct
   type: left_outer
   relationship: many_to_one
-
   sql_on:
-     ${hubs_ct.hub_code}        = ${demand_planning_dashboard_explore.hub_code}
+     ${hubs_ct.hub_code} = ${demand_planning_dashboard_explore.hub_code}
     ;;
 
   fields: [hubs_ct.city, hubs_ct.city_tier,hubs_ct.is_active_hub]
@@ -74,12 +73,13 @@ join: key_value_items {
   relationship: many_to_one
 
   sql_on:
-     ${key_value_items.sku}        = ${demand_planning_dashboard_explore.parent_sku} and
+     ${key_value_items.sku} = ${demand_planning_dashboard_explore.parent_sku} and
      ${key_value_items.kvi_date} >= current_date() - 6
     ;;
 
   fields: [key_value_items.is_kvi, key_value_items.kvi_ranking]
 }
+
 ####################################################################################################################################
 ###################### Join products_ct_merged_skus in order to get the rezeptkarte filtering fields ###############################
 ####################################################################################################################################
@@ -112,7 +112,6 @@ join: key_value_items {
     relationship: one_to_one
     type: left_outer
   }
-
 
 ####################################################################################################################################
 ###################### Join availability_waterfall in order to get the avail. buckets fields #######################################

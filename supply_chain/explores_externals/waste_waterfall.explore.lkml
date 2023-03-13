@@ -6,13 +6,7 @@
 # Questions that can be answered
 # - All questions around waste waterfall bucketing
 
-include: "/**/*.view"
-
-include: "/**/products_hub_assignment.view"
-include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
-include: "/core/views/config/global_filters_and_parameters.view"
-
-include: "/supply_chain/explores/master_reporting/supply_chain_master.explore"
+include: "/supply_chain/views_externals/waste_waterfall.view.lkml"
 
 
 explore: waste_waterfall_explore {
