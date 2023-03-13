@@ -863,18 +863,18 @@ view: advanced_supplier_matching {
 
   dimension: introduction_date  {
     type: string
-    label: "Introduction Date"
+    label: "Item Location Introduction Date"
     description: "The date, when a given product was listed initially."
     group_label: "Special Use Cases"
-    sql: ${TABLE}.introduction_date ;;
+    sql: ${TABLE}.item_location_introduction_date ;;
   }
 
   dimension: termination_date {
     type: string
-    label: "Termination Date"
+    label: "Item Location Termination Date"
     description: "The date, when a given product was delisted."
     group_label: "Special Use Cases"
-    sql: ${TABLE}.termination_date ;;
+    sql: ${TABLE}.item_location_termination_date ;;
   }
 
   dimension: item_at_location_status {

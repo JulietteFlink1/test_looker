@@ -224,9 +224,10 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.item_temperature_zone ;;
   }
 
-  dimension_group: item_termination {
+  dimension_group: item_location_termination {
     type: time
     datatype: date
+    label: "Item Location Termination"
     description: "Date when a hub was launched."
     group_label: "Item"
     timeframes: [
@@ -236,7 +237,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
       quarter,
       year
     ]
-    sql: ${TABLE}.item_termination_date ;;
+    sql: ${TABLE}.item_location_termination_date ;;
   }
 
   dimension: item_base_uom {
@@ -356,22 +357,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     description: "The type of hub, an SKU is sold in (in the Netherlands)"
     group_label: "Item"
     sql: ${TABLE}.item_hub_type_nl ;;
-  }
-
-  dimension_group: item_introduction {
-    type: time
-    description: "The date, when a given product was listed initially"
-    group_label: "Item"
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.item_introduction_date ;;
   }
 
   dimension: item_is_orderable {
