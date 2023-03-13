@@ -238,6 +238,7 @@ join: daily_violations_aggregates {
              daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed,
              daily_user_aggregates.users_with_add_to_cart,
              daily_user_aggregates.users_with_address,
+             daily_user_aggregates.daily_users_with_address,
              daily_user_aggregates.daily_users_with_product_search_viewed,
             daily_user_aggregates.daily_users_with_cart_viewed,
             daily_user_aggregates.daily_users_with_home_viewed,
