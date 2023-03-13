@@ -249,7 +249,7 @@ join: daily_violations_aggregates {
     view_label: "Hubs"
     sql_on: ${hubs_ct.hub_code} = ${daily_events.hub_code};;
     type: left_outer
-    relationship: one_to_one
+    relationship: many_to_one
   }
 
 }
