@@ -241,8 +241,11 @@ join: daily_violations_aggregates {
              daily_user_aggregates.daily_users_with_address,
              daily_user_aggregates.daily_users_with_product_search_viewed,
             daily_user_aggregates.daily_users_with_cart_viewed,
+            daily_user_aggregates.daily_users_with_add_to_cart,
             daily_user_aggregates.daily_users_with_home_viewed,
-            daily_user_aggregates.daily_users_with_product_details_viewed
+            daily_user_aggregates.daily_users_with_product_details_viewed,
+            daily_user_aggregates.is_active_user,
+            daily_user_aggregates.daily_active_users
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
