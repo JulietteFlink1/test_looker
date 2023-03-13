@@ -1021,8 +1021,8 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
   }
   measure: active_users {
-    group_label: "User Metrics"
-    label: "# Active Unique Users"
+    group_label: "User Metrics - Unique"
+    label: "# Unique Active Users"
     description: "Number of Unique Active Users within selected timeframe (note: an active user is a user who generated at least 2 various events when browsing Flink app/web.)"
     type: count_distinct
     sql: ${user_uuid} ;;
@@ -1854,8 +1854,23 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_swimlane_placement: "yes"]
   }
-  measure: users_with_any_reco_atc {
+  measure: users_with_last_bought_atc {
     group_label: "User Metrics"
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_last_bought_placement: "yes"]
+  }
+  measure: users_with_recommendation_atc {
+    group_label: "User Metrics"
+    type: count_distinct
+    hidden:  yes
+    sql: ${user_uuid} ;;
+    filters: [is_recommendation_placement: "yes"]
+  }
+
+  measure: daily_users_with_any_reco_atc {
+    group_label: "User Metrics - Daily"
     label: "# Daily Users with ATC from any recommendation lane including last-bought on homoe"
     description: "count of users with ATC from any reco lane including last bought from home"
     type: count_distinct
@@ -1863,21 +1878,21 @@ view: daily_user_aggregates {
     sql: ${daily_user_uuid} ;;
     filters: [is_any_recommendation_placement: "yes"]
   }
-  measure: users_with_last_bought_atc {
-    group_label: "User Metrics"
-    label: "# Daily Users with ATC from last-bought on home"
-    type: count_distinct
-    hidden:  no
-    sql: ${daily_user_uuid} ;;
-    filters: [is_last_bought_placement: "yes"]
-  }
-  measure: users_with_recommendation_atc {
-    group_label: "User Metrics"
+  measure: daily_users_with_recommendation_atc {
+    group_label: "User Metrics - Daily"
     label: "# Daily Users with ATC from any recommendation lane (excluding last-bought on home)"
     type: count_distinct
     hidden:  no
     sql: ${daily_user_uuid} ;;
     filters: [is_recommendation_placement: "yes"]
+  }
+  measure: daily_users_with_last_bought_atc {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Users with ATC from last-bought on home"
+    type: count_distinct
+    hidden:  no
+    sql: ${daily_user_uuid} ;;
+    filters: [is_last_bought_placement: "yes"]
   }
   measure: users_with_recipes_atc {
     group_label: "User Metrics"

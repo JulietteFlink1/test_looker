@@ -193,14 +193,22 @@ view: order_placement_aggregates {
     value_format_name: eur
     sql: safe_divide(${amt_total_price_net}, ${number_of_orders}) ;;
   }
-
-  measure: amt_total_price_net_incl_reco {
+  measure: aiv_gross {
     group_label: "Monetary Metrics"
-    label: "SUM Total Item Price (net)"
-    description: "Total value of all items (net) excluding fees. Calcuated as Unit Item Value * Quantity Purchased."
+    label: "AIV (gross)"
+    description: "Average Item Value (gross) - excluding fees."
+    type: number
+    value_format_name: eur
+    sql: safe_divide(${amt_total_price_net}, ${number_of_orders}) ;;
+  }
+
+  measure: amt_total_price_gross_incl_reco {
+    group_label: "Monetary Metrics"
+    label: "SUM Total Item Price (gross)"
+    description: "Total value of all items (gross) excluding fees. Calcuated as Unit Item Value * Quantity Purchased."
     type: sum
     value_format_name: decimal_2
-    sql: ${TABLE}.amt_total_price_net ;;
+    sql: ${TABLE}.amt_total_price_gross ;;
     hidden: yes
     filters: [is_order_from_recommendation: "yes"]
   }
@@ -214,11 +222,10 @@ view: order_placement_aggregates {
   }
   measure: aiv_incl_reco {
     group_label: "Monetary Metrics"
-    label: "AIV (net) Reco Orders Only"
-    description: "Average Item Value (net) - excluding fees."
+    label: "AIV (gross) Reco Orders Only"
+    description: "Average Item Value (gross) - excluding fees."
     type: number
     value_format_name: eur
-    sql: safe_divide(${amt_total_price_net_incl_reco}, ${number_of_orders_incl_reco});;
-    # filters: [is_order_from_recommendation: "true"]
+    sql: safe_divide(${amt_total_price_gross_incl_reco}, ${number_of_orders_incl_reco});;
   }
 }
