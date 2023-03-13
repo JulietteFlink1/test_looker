@@ -385,7 +385,7 @@ view: cc_contacts {
     group_label: "> Contact Statistics"
     label: "Time to Agent Reply (tiered)"
     type: tier
-    tiers: [2, 5, 10, 15, 20, 40]
+    tiers: [5, 10, 15, 20, 40]
     style: relational
     sql: ${time_to_agent_reply_minutes} ;;
   }
