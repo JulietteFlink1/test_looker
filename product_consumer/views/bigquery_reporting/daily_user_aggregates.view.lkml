@@ -1871,7 +1871,7 @@ view: daily_user_aggregates {
 
   measure: daily_users_with_any_reco_atc {
     group_label: "User Metrics - Daily"
-    label: "# Daily Users with ATC from any recommendation lane including last-bought on homoe"
+    label: "# Daily Users with ATC from any recommendation lane including last-bought on home"
     description: "count of users with ATC from any reco lane including last bought from home"
     type: count_distinct
     hidden:  no
@@ -1880,7 +1880,7 @@ view: daily_user_aggregates {
   }
   measure: daily_users_with_recommendation_atc {
     group_label: "User Metrics - Daily"
-    label: "# Daily Users with ATC from any recommendation lane (excluding last-bought on home)"
+    label: "# Daily Users with ATC from recommendation lanes (excluding last-bought on home)"
     type: count_distinct
     hidden:  no
     sql: ${daily_user_uuid} ;;
