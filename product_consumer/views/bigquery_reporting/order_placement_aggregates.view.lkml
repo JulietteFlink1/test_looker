@@ -225,7 +225,7 @@ view: order_placement_aggregates {
     description: "Total value of all items (gross) excluding fees for orders that include ATC from any recommendation lane"
     type: sum
     value_format_name: eur
-    sql: ${amt_total_price_gross};;
+    sql: ${TABLE}.amt_total_price_gross;;
     hidden: yes
     filters: [is_order_from_any_recommendation: "yes"]
   }
