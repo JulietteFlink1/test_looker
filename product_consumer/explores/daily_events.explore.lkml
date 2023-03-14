@@ -225,7 +225,7 @@ join: daily_violations_aggregates {
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
-    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_deliverable,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
              daily_user_aggregates.is_cart_viewed,
