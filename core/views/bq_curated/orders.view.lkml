@@ -679,7 +679,7 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Withheld From Rider + Waiting For Rider Time"
+    description: "Withheld From Picking + Waiting For Picker Time + Pick-Pack Handling Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
@@ -1946,8 +1946,8 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG Waiting For Picker Time"
     description:
-    "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
-    Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
+      "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
+      Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     type: average
     sql:${waiting_for_picker_time};;
     value_format_name: decimal_1
