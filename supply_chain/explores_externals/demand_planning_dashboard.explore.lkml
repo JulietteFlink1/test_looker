@@ -91,7 +91,7 @@ join: products {
      ${demand_planning_dashboard_explore.parent_sku} = ${products.replenishment_substitute_group_parent_sku} and
      ${demand_planning_dashboard_explore.country_iso} = ${products.country_iso}
     ;;
-  relationship: one_to_one
+  relationship: many_to_one
   type: left_outer
   fields: [products.is_rezeptkarte]
  }
