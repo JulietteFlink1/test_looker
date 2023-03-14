@@ -340,18 +340,12 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
-  dimension: is_recommendation_placement {
-    group_label: "Flags | Product Placement"
-    hidden:  yes
-    type: yesno
-    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
-  }
   dimension: is_any_recommendation_placement {
     group_label: "Flags | Product Placement"
     description: "Is ATC from any recommendation placement including last bought from home?"
     hidden:  yes
     type: yesno
-    sql: ${is_recommendation_placement} or ${is_last_bought_placement} ;;
+    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement or ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
   dimension: is_recipes_placement {
     group_label: "Flags | Product Placement"
@@ -1227,7 +1221,7 @@ view: daily_user_aggregates {
   measure: daily_users_with_product_search_viewed {
     group_label: "User Metrics - Daily"
     label: "# Daily Active Users with Product Search Viewed"
-    description: "Number of Daily Active Users who viewed product search at least once"
+    description: "Number of Daily Active Users who viewed product search at least once. NOTE: only available for app"
     type: count_distinct
     sql: ${daily_user_uuid} ;;
     filters: [is_product_search_viewed: "yes"]
@@ -1510,7 +1504,7 @@ view: daily_user_aggregates {
     hidden: no
     description: "# users with add-to-cart from Recommendation, compared to the total number of users with an address"
     value_format_name: percent_1
-    sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
+    sql: ${users_with_any_recommendation_atc} / nullif(${users_with_address},0);;
   }
   measure: mcvr_2_recipes {
     group_label: "Conversions | Product Placement mCVR2 (%)"
@@ -1855,18 +1849,16 @@ view: daily_user_aggregates {
     filters: [is_swimlane_placement: "yes"]
   }
   measure: users_with_last_bought_atc {
-    group_label: "User Metrics"
     type: count_distinct
     hidden:  yes
     sql: ${user_uuid} ;;
     filters: [is_last_bought_placement: "yes"]
   }
-  measure: users_with_recommendation_atc {
-    group_label: "User Metrics"
+  measure: users_with_any_recommendation_atc {
     type: count_distinct
     hidden:  yes
     sql: ${user_uuid} ;;
-    filters: [is_recommendation_placement: "yes"]
+    filters: [is_any_recommendation_placement: "yes"]
   }
 
   measure: daily_users_with_any_reco_atc {
@@ -1877,22 +1869,6 @@ view: daily_user_aggregates {
     hidden:  no
     sql: ${daily_user_uuid} ;;
     filters: [is_any_recommendation_placement: "yes"]
-  }
-  measure: daily_users_with_recommendation_atc {
-    group_label: "User Metrics - Daily"
-    label: "# Daily Users with ATC from recommendation lanes (excluding last-bought on home)"
-    type: count_distinct
-    hidden:  no
-    sql: ${daily_user_uuid} ;;
-    filters: [is_recommendation_placement: "yes"]
-  }
-  measure: daily_users_with_last_bought_atc {
-    group_label: "User Metrics - Daily"
-    label: "# Daily Users with ATC from last-bought on home"
-    type: count_distinct
-    hidden:  no
-    sql: ${daily_user_uuid} ;;
-    filters: [is_last_bought_placement: "yes"]
   }
   measure: users_with_recipes_atc {
     group_label: "User Metrics"

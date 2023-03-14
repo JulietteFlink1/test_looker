@@ -177,15 +177,32 @@ view: order_placement_aggregates {
     type: sum
     sql: ${TABLE}.number_of_users ;;
   }
+  measure: number_of_orders_incl_reco {
+    group_label: "Basic Counts"
+    label: "# Orders"
+    type: sum
+    sql: ${TABLE}.number_of_orders ;;
+    hidden: yes
+    filters: [is_order_from_any_recommendation: "yes"]
+  }
+
   measure: amt_total_price_net {
     group_label: "Monetary Metrics"
     label: "SUM Total Item Price (net)"
     description: "Total value of all items (net) excluding fees. Calcuated as Unit Item Value * Quantity Purchased."
     type: sum
-    value_format_name: decimal_2
+    value_format_name: eur
     sql: ${TABLE}.amt_total_price_net ;;
   }
-  measure: aiv {
+  measure: amt_total_price_gross {
+    group_label: "Monetary Metrics"
+    label: "SUM Total Item Price (gross)"
+    description: "Total value of all items (gross) excluding fees. Calculated as Unit Item Value * Quantity Purchased."
+    type: sum
+    value_format_name: eur
+    sql: ${TABLE}.amt_total_price_gross ;;
+  }
+  measure: aiv_net {
     group_label: "Monetary Metrics"
     label: "AIV (net)"
     description: "Average Item Value (net) - excluding fees."
@@ -199,27 +216,20 @@ view: order_placement_aggregates {
     description: "Average Item Value (gross) - excluding fees."
     type: number
     value_format_name: eur
-    sql: safe_divide(${amt_total_price_net}, ${number_of_orders}) ;;
+    sql: safe_divide(${amt_total_price_gross}, ${number_of_orders}) ;;
   }
 
   measure: amt_total_price_gross_incl_reco {
     group_label: "Monetary Metrics"
-    label: "SUM Total Item Price (gross)"
-    description: "Total value of all items (gross) excluding fees. Calcuated as Unit Item Value * Quantity Purchased."
+    label: "SUM Total Item Price (gross) for Reco Orders"
+    description: "Total value of all items (gross) excluding fees for orders that include ATC from any recommendation lane"
     type: sum
-    value_format_name: decimal_2
-    sql: ${TABLE}.amt_total_price_gross ;;
+    value_format_name: eur
+    sql: ${amt_total_price_gross};;
     hidden: yes
-    filters: [is_order_from_recommendation: "yes"]
+    filters: [is_order_from_any_recommendation: "yes"]
   }
-  measure: number_of_orders_incl_reco {
-    group_label: "Basic Counts"
-    label: "# Orders"
-    type: sum
-    sql: ${TABLE}.number_of_orders ;;
-    hidden: yes
-    filters: [is_order_from_recommendation: "yes"]
-  }
+
   measure: aiv_incl_reco {
     group_label: "Monetary Metrics"
     label: "AIV (gross) Reco Orders Only"

@@ -301,21 +301,21 @@ view: event_product_added_to_cart {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Total Products"
     description: "Number of events trigegred by users"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: logged_in_users {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: count_distinct
     sql: ${TABLE}.user_id ;;
   }
   measure: anonymous_users {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: count_distinct
