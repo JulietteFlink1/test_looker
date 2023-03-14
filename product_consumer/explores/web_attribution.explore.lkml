@@ -32,7 +32,7 @@ explore: web_attribution {
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
-    fields: [daily_user_aggregates.is_address_set, daily_user_aggregates.is_product_added_to_cart,
+    fields: [daily_user_aggregates.is_address_deliverable, daily_user_aggregates.is_product_added_to_cart,
       daily_user_aggregates.is_cart_viewed,daily_user_aggregates.is_checkout_viewed,
       daily_user_aggregates.is_order_placed,daily_user_aggregates.is_account_registration_viewed,
       daily_user_aggregates.is_account_registration_succeeded,daily_user_aggregates.is_account_login_succeeded,
