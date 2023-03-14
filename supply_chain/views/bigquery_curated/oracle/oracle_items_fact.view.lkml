@@ -13,10 +13,10 @@ view: oracle_items_fact {
   sql_table_name: `flink-data-prod.curated.oracle_items_fact`
     ;;
 
-  dimension: class_name {
+  dimension: current_state__class_name {
     type: string
     description: "The class name relates to the 3rd highest order of grouping for products in Oracle"
-    sql: ${TABLE}.class_name ;;
+    sql: ${TABLE}.current_state.class_name ;;
   }
 
   dimension: current_state__base_uom {
@@ -169,15 +169,15 @@ view: oracle_items_fact {
     sql: ${TABLE}.current_state.valid_to_timestamp ;;
   }
 
-  dimension: department_name {
+  dimension: current_state__department_name {
     type: string
     description: "The department name relates to the 2nd highest order of grouping for products in Oracle"
-    sql: ${TABLE}.department_name ;;
+    sql: ${TABLE}.current_state.department_name ;;
   }
 
-  dimension: division_name {
+  dimension: current_state__division_name {
     type: string
-    sql: ${TABLE}.division_name ;;
+    sql: ${TABLE}.current_state.division_name ;;
   }
 
   dimension: ean_13 {
@@ -192,10 +192,10 @@ view: oracle_items_fact {
     sql: ${TABLE}.ean_8 ;;
   }
 
-  dimension: group_name {
+  dimension: current_state__group_name {
     type: string
     description: "The group name relates to the higher order of grouping for products in Oracle"
-    sql: ${TABLE}.group_name ;;
+    sql: ${TABLE}.current_state.group_name ;;
   }
 
   dimension: history {
@@ -284,10 +284,10 @@ view: oracle_items_fact {
     sql: ${TABLE}.storage_types ;;
   }
 
-  dimension: subclass_name {
+  dimension: current_state__subclass_name {
     type: string
     description: "The sub-class name relates to the 4th highest order of grouping for products in Oracle"
-    sql: ${TABLE}.subclass_name ;;
+    sql: ${TABLE}.current_state.subclass_name ;;
   }
 
   dimension: table_uuid {
@@ -326,11 +326,11 @@ view: oracle_items_fact {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-      group_name,
-      department_name,
-      division_name,
-      subclass_name,
-      class_name,
+      current_state__group_name,
+      current_state__department_name,
+      current_state__division_name,
+      current_state__subclass_name,
+      current_state__class_name,
       current_state__item_name
     ]
   }

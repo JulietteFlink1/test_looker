@@ -22,6 +22,7 @@ include: "/**/daily_violations_aggregates.view.lkml"
 include: "/**/event_sponsored_product_impressions.view.lkml"
 include: "/**/event_payment_failed.view.lkml"
 include: "/**/event_order_tracking_viewed.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -111,7 +112,8 @@ explore: daily_events {
             event_cart_viewed.shipping_method_id,
             event_cart_viewed.cart_id,
             event_cart_viewed.screen_name,
-            event_cart_viewed.products]
+            event_cart_viewed.products,
+            event_cart_viewed.is_empty_cart]
     sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
@@ -223,7 +225,7 @@ join: daily_violations_aggregates {
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
-    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_deliverable,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
              daily_user_aggregates.is_cart_viewed,
@@ -239,6 +241,13 @@ join: daily_violations_aggregates {
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
       and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %}  ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: hubs_ct {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${daily_events.hub_code};;
     type: left_outer
     relationship: many_to_one
   }

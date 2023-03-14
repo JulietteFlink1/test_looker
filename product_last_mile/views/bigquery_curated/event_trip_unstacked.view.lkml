@@ -7,6 +7,26 @@ view: event_trip_unstacked {
   sql_table_name: `flink-data-prod.curated.event_trip_unstacked`;;
   view_label: "Event Order Trip Unstacked"
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  set: to_include_dimensions {
+    fields: [
+      trip_order_ids,
+      type
+    ]
+  }
+  set: to_include_measures {
+    fields: [
+      orders,
+      events
+    ]
+  }
+
+  set: to_include_set {
+    fields: [to_include_dimensions*, to_include_measures*]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -21,7 +41,6 @@ view: event_trip_unstacked {
     type: string
     sql: ${TABLE}.event_uuid ;;
   }
-
   dimension: auth_zero_id {
     group_label: "IDs"
     label: "Auth0 ID"
@@ -29,13 +48,22 @@ view: event_trip_unstacked {
     type: string
     sql: ${TABLE}.auth_zero_id ;;
   }
-
   dimension: trip_order_ids {
     group_label: "IDs"
     label: "Order ID"
     description: "Order ID for respective order"
     type: string
     sql: ${TABLE}.trip_order_ids ;;
+  }
+
+  # ======= Generic Dimension ======= #
+
+  dimension: type {
+    group_label: "Generic Dimension"
+    label: "Unstack Type"
+    description: "Indicating the unstack type"
+    type: string
+    sql: ${TABLE}.type ;;
   }
 
   # ======= Location Dimension ======= #
@@ -47,7 +75,6 @@ view: event_trip_unstacked {
     type: string
     sql: ${TABLE}.country_iso ;;
   }
-
   dimension: hub_code {
     group_label: "Location Dimension"
     label: "Hub Code"
@@ -78,13 +105,11 @@ view: event_trip_unstacked {
     type: string
     sql: ${TABLE}.attributes ;;
   }
-
   dimension: message_id {
     hidden:  yes
     type: string
     sql: ${TABLE}.message_id ;;
   }
-
   dimension_group: published_at_timestamp {
     hidden:  yes
     type: time
@@ -96,19 +121,11 @@ view: event_trip_unstacked {
     ]
     sql: ${TABLE}.published_at_timestamp ;;
   }
-
   dimension: subscription_name {
     hidden:  yes
     type: string
     sql: ${TABLE}.subscription_name ;;
   }
-
-  dimension: type {
-    hidden:  yes
-    type: string
-    sql: ${TABLE}.type ;;
-  }
-
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
@@ -126,6 +143,4 @@ view: event_trip_unstacked {
     type: count_distinct
     sql: ${TABLE}.trip_order_ids ;;
   }
-
-
 }
