@@ -108,7 +108,7 @@ view: promotions {
     sql: ${TABLE}.Expected_uplift ;;
     label: "Expected Uplift"
     group_label: ""
-    description: "Displays expected Uplift in percentage"
+    description: "Shows expected Uplift in percentage"
     hidden: no
   }
 
@@ -126,7 +126,7 @@ view: promotions {
     sql: ${TABLE}.National_List ;;
     label: "National List"
     group_label: ""
-    description: "Displays if on national list"
+    description: "Shows if on national list"
     hidden: no
   }
 
@@ -145,7 +145,7 @@ view: promotions {
     sql: ${TABLE}.Promo_range_filter ;;
     label: "Promo Range Filter"
     group_label: ""
-    description: "Filter for displaying either pure or added shelf-life promotion"
+    description: "Filter for showing either pure or added shelf-life promotion"
     hidden: no
   }
 
@@ -171,7 +171,7 @@ view: promotions {
     sql: ${TABLE}.report_date ;;
     label: "Report Date"
     group_label: ""
-    description: "Displays report date"
+    description: "Shows report date of product"
     hidden: no
   }
 
@@ -189,7 +189,7 @@ view: promotions {
     sql: ${TABLE}.shelf_life ;;
     label: "Shelf Life"
     group_label: ""
-    description: "Shows shelf life"
+    description: "Shows number of days the product can be on stock before expiring"
     hidden: no
   }
 
@@ -198,7 +198,7 @@ view: promotions {
     sql: cast(${TABLE}.SKU as string);;
     label: "SKU"
     group_label: ""
-    description: "Shows SKU number"
+    description: "Shows the number of a product"
     hidden: no
   }
 
@@ -224,7 +224,7 @@ view: promotions {
     sql: ${TABLE}.Status ;;
     label: "Status"
     group_label: ""
-    description: "Shows the status of promotion"
+    description: "Shows the status of promotion (ex: ended, etc)"
     hidden: no
   }
 

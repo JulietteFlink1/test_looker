@@ -154,7 +154,7 @@ view: waste_waterfall {
     sql: ${TABLE}.low_performer ;;
     label: "Low performer flag"
     group_label: "Markers"
-    description: "Flag for low performing Product-Locations"
+    description: "Flag that shows low performing Product-Locations"
     hidden: no
   }
 

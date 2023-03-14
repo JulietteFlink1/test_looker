@@ -41,12 +41,12 @@ explore: demand_planning_dashboard_explore {
   join: global_filters_and_parameters {
     sql: ;;
   relationship: one_to_one
-}
+ }
 
   join: supply_chain_config {
   sql: ;;
   relationship: one_to_one
-}
+ }
 
 ####################################################################################################################################
 ###################### Join hubs in order to get the city + hub is active (yes/no) fields ##########################################
@@ -61,7 +61,7 @@ join: hubs_ct {
     ;;
 
   fields: [hubs_ct.city, hubs_ct.city_tier,hubs_ct.is_active_hub]
-}
+ }
 
 ####################################################################################################################################
 ###################### Join key_value_times in order to get the is_kvi and kvi_date fields #########################################
@@ -78,56 +78,52 @@ join: key_value_items {
     ;;
 
   fields: [key_value_items.is_kvi, key_value_items.kvi_ranking]
-}
+ }
 
 ####################################################################################################################################
 ###################### Join products_ct_merged_skus in order to get the rezeptkarte filtering fields ###############################
 ####################################################################################################################################
 
-  join: products {
+join: products {
 
-    view_label: "Products (CT)"
-
-    sql_on:
-        ${demand_planning_dashboard_explore.parent_sku} = ${products.replenishment_substitute_group_parent_sku} and
-       ${demand_planning_dashboard_explore.country_iso} = ${products.country_iso}
-        ;;
-    relationship: one_to_many
-    type: left_outer
-
-    fields: [products.is_rezeptkarte]
-    }
+  view_label: "Products (CT)"
+  sql_on:
+     ${demand_planning_dashboard_explore.parent_sku} = ${products.replenishment_substitute_group_parent_sku} and
+     ${demand_planning_dashboard_explore.country_iso} = ${products.country_iso}
+    ;;
+  relationship: one_to_many
+  type: left_outer
+  fields: [products.is_rezeptkarte]
+ }
 
 ####################################################################################################################################
 ###################### Join promotions in order to get the Product-Locations info on Promotion SKUs #######################################
 ####################################################################################################################################
 
-  join: promotions {
-    view_label: "Promotions Data"
-
-    sql_on:
-       ${demand_planning_dashboard_explore.parent_sku} = ${promotions.sku} and
-       ${demand_planning_dashboard_explore.report_date} = ${promotions.report_date}
-        ;;
-    relationship: one_to_one
-    type: left_outer
-  }
+join: promotions {
+  view_label: "Promotions Data"
+  sql_on:
+     ${demand_planning_dashboard_explore.parent_sku} = ${promotions.sku} and
+     ${demand_planning_dashboard_explore.report_date} = ${promotions.report_date}
+    ;;
+  relationship: one_to_one
+  type: left_outer
+ }
 
 ####################################################################################################################################
 ###################### Join availability_waterfall in order to get the avail. buckets fields #######################################
 ####################################################################################################################################
 
-  join: availability_waterfall {
-    view_label: "Availability waterfall"
-    sql_on:
-       ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall.sku} and
-       ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall.hub_code} and
-       ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall.report_week_week} and
-      ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall.supplier_id}
-      ;;
-    relationship: one_to_one
-    type: left_outer
-
-  }
+join: availability_waterfall {
+  view_label: "Availability waterfall"
+  sql_on:
+     ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall.sku} and
+     ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall.hub_code} and
+     ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall.report_week_week} and
+     ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall.supplier_id}
+    ;;
+  relationship: one_to_one
+  type: left_outer
+ }
 
 }
