@@ -1108,7 +1108,7 @@ view: daily_user_aggregates {
   measure: users_with_product_search {
     group_label: "User Metrics - Unique"
     label: "# Users with Executed Search"
-    description: "Number of users with started the payment process at least once"
+    description: "Number of users with at least one product search"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_executed: "yes"]
@@ -1116,7 +1116,7 @@ view: daily_user_aggregates {
   measure: users_with_product_search_viewed {
     group_label: "User Metrics - Unique"
     label: "# Users with Search Viewed"
-    description: "Number of users with at least one product search"
+    description: "Number of users with at least one view of the product search page"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_viewed: "yes"]
