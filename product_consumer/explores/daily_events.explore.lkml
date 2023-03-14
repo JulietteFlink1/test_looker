@@ -77,7 +77,7 @@ explore: daily_events {
       event_product_added_to_cart.discount, event_product_added_to_cart.is_discount_applied,
       event_product_added_to_cart.list_position, event_product_added_to_cart.original_price, event_product_added_to_cart.original_product_price,
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
-      event_product_added_to_cart.search_query_id]
+      event_product_added_to_cart.search_query_id, event_product_added_to_cart.product_sku_per_user]
     sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_product_added_to_cart.event_date} {% endcondition %};;
     type: left_outer
@@ -225,7 +225,7 @@ join: daily_violations_aggregates {
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
-    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_deliverable,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
              daily_user_aggregates.is_cart_viewed,
@@ -236,7 +236,17 @@ join: daily_violations_aggregates {
              daily_user_aggregates.is_product_details_viewed,
              daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
              users_with_product_details_viewed, daily_user_aggregates.users_with_product_search_viewed,
-             daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed
+             daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed,
+             daily_user_aggregates.users_with_add_to_cart,
+             daily_user_aggregates.users_with_address,
+             daily_user_aggregates.daily_users_with_address,
+             daily_user_aggregates.daily_users_with_product_search_viewed,
+            daily_user_aggregates.daily_users_with_cart_viewed,
+            daily_user_aggregates.daily_users_with_add_to_cart,
+            daily_user_aggregates.daily_users_with_home_viewed,
+            daily_user_aggregates.daily_users_with_product_details_viewed,
+            daily_user_aggregates.is_active_user,
+            daily_user_aggregates.daily_active_users
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}

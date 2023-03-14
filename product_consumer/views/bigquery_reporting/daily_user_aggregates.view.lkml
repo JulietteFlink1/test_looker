@@ -259,7 +259,7 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_web_app_opened ;;
   }
-  dimension: is_address_set {
+  dimension: is_address_deliverable {
     group_label: "Flags | Conversion"
     description: "Yes if user has a valid hub set"
     type: yesno
@@ -340,11 +340,12 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
-  dimension: is_recommendation_placement {
+  dimension: is_any_recommendation_placement {
     group_label: "Flags | Product Placement"
+    description: "Is ATC from any recommendation placement including last bought from home?"
     hidden:  yes
     type: yesno
-    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
+    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement or ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
   dimension: is_recipes_placement {
     group_label: "Flags | Product Placement"
@@ -1052,10 +1053,10 @@ view: daily_user_aggregates {
   measure: users_with_address {
     group_label: "User Metrics - Unique"
     label: "# Users with Address Set"
-    description: "Number of users with at least one address set"
+    description: "Number of users with at least one deliverable address set"
     type: count_distinct
     sql: ${user_uuid} ;;
-    filters: [is_address_set: "yes"]
+    filters: [is_address_deliverable: "yes"]
   }
   measure: users_with_add_to_cart {
     group_label: "User Metrics - Unique"
@@ -1108,7 +1109,7 @@ view: daily_user_aggregates {
   measure: users_with_product_search {
     group_label: "User Metrics - Unique"
     label: "# Users with Executed Search"
-    description: "Number of users with started the payment process at least once"
+    description: "Number of users with at least one product search"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_executed: "yes"]
@@ -1116,7 +1117,7 @@ view: daily_user_aggregates {
   measure: users_with_product_search_viewed {
     group_label: "User Metrics - Unique"
     label: "# Users with Search Viewed"
-    description: "Number of users with at least one product search"
+    description: "Number of users with at least one view of the product search page"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_viewed: "yes"]
@@ -1129,6 +1130,7 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_product_details_viewed: "yes"]
   }
+
   measure: active_app_users {
     group_label: "User Metrics - Unique"
     label: "# Active Unique Users in Apps"
@@ -1171,10 +1173,10 @@ view: daily_user_aggregates {
   measure: daily_users_with_address {
     group_label: "User Metrics - Daily"
     label: "# Daily Active Users with Address Set"
-    description: "Number of daily users with at least one address set"
+    description: "Number of daily users with at least one deliverable address set"
     type: count_distinct
     sql: ${daily_user_uuid} ;;
-    filters: [is_address_set: "yes"]
+    filters: [is_address_deliverable: "yes"]
   }
   measure: daily_users_with_add_to_cart {
     group_label: "User Metrics - Daily"
@@ -1215,6 +1217,22 @@ view: daily_user_aggregates {
     type: count_distinct
     sql: ${daily_user_uuid} ;;
     filters: [is_home_viewed: "yes"]
+  }
+  measure: daily_users_with_product_search_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Product Search Viewed"
+    description: "Number of Daily Active Users who viewed product search at least once. NOTE: only available for app"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_product_search_viewed: "yes"]
+  }
+  measure: daily_users_with_product_details_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Product Details Viewed"
+    description: "Number of Daily Active Users who viewed produt details at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_product_details_viewed: "yes"]
   }
   measure: daily_active_app_users {
     group_label: "User Metrics - Daily"
@@ -1486,7 +1504,7 @@ view: daily_user_aggregates {
     hidden: no
     description: "# users with add-to-cart from Recommendation, compared to the total number of users with an address"
     value_format_name: percent_1
-    sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
+    sql: ${users_with_any_recommendation_atc} / nullif(${users_with_address},0);;
   }
   measure: mcvr_2_recipes {
     group_label: "Conversions | Product Placement mCVR2 (%)"
@@ -1836,13 +1854,25 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_last_bought_placement: "yes"]
   }
-  measure: users_with_recommendation_atc {
+  measure: users_with_any_recommendation_atc {
     type: count_distinct
     hidden:  yes
     sql: ${user_uuid} ;;
-    filters: [is_recommendation_placement: "yes"]
+    filters: [is_any_recommendation_placement: "yes"]
+  }
+
+  measure: daily_users_with_any_reco_atc {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Users with ATC from any recommendation lane including last-bought on home"
+    description: "count of users with ATC from any reco lane including last bought from home"
+    type: count_distinct
+    hidden:  no
+    sql: ${daily_user_uuid} ;;
+    filters: [is_any_recommendation_placement: "yes"]
   }
   measure: users_with_recipes_atc {
+    group_label: "User Metrics"
+    label: "# Users with ATC from Recipes"
     type: count_distinct
     hidden:  no
     sql: ${user_uuid} ;;
