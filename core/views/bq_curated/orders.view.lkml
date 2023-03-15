@@ -1343,7 +1343,7 @@ view: orders {
     sql: ${TABLE}.skip_container_to_skip_shelf_time_seconds ;;
   }
 
-  dimension: picking_time_seconds {
+  dimension: picking_time_seconds_actual {
     group_label: "* Operations / Logistics *"
     label: "Picking Time (Seconds)"
     description: "Duration between the times at which the picker clicked on 'Start Picking'
@@ -2059,7 +2059,17 @@ view: orders {
     description: "AVG Duration between the times at which the picker clicked on 'Start Picking'
     and 'Scan Container' (if not available, the last item scan timestamp is used). In seconds."
     type: average
-    sql: ${picking_time_seconds} ;;
+    sql: ${picking_time_seconds_actual} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picking Time (Minutes)"
+    description: "AVG Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In minutes."
+    type: average
+    sql: ${picking_time_minutes_actual} ;;
     value_format_name: decimal_1
   }
 
@@ -2070,6 +2080,16 @@ view: orders {
     and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In seconds."
     type: average
     sql: ${packing_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_packing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Packing Time (Minutes)"
+    description: "AVG Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In minutes."
+    type: average
+    sql: ${packing_time_minutes} ;;
     value_format_name: decimal_1
   }
 
