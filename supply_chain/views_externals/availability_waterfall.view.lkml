@@ -29,7 +29,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.bucket ;;
     label: "Bucket"
-    group_label: ""
     description: "Bucket allocated to product-location for availability topics"
     hidden: no
   }
@@ -38,7 +37,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.category_master ;;
     label: "Category Master"
-    group_label: ""
     description: "Master Category of Product-Location"
     hidden: no
   }
@@ -56,7 +54,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.country_iso ;;
     label: "Country ISO"
-    group_label: ""
     description: "Geographical information of Product-Location"
     hidden: no
   }
@@ -65,7 +62,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.country_sum_of_hours_oos ;;
     label: "Sum # Hours OOS - Country"
-    group_label: ""
     description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
@@ -74,7 +70,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.country_sum_of_hours_open ;;
     label: "Sum # Hours Open - Country"
-    group_label: ""
     description: "Sum of Hours out of stock based on Knime Raw Availability Data on Country level"
     hidden: no
   }
@@ -83,7 +78,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.ct_substitute_group ;;
     label: "Substitute Group CT"
-    group_label: ""
     description: "Substitute Group as shown in CommerceTools"
     hidden: no
   }
@@ -102,7 +96,7 @@ view: availability_waterfall {
     sql: ${TABLE}.first_inbound_flag ;;
     label: "First Inbound Flag"
     group_label: "Flags"
-    description: "Flag that shows if the Product-Location has had its first inbound in the reporting week"
+    description: "Flag that shows if the Product-Location has had its first inbound in the reporting week. Used for New Product Location bucket"
     hidden: no
   }
 
@@ -128,7 +122,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.hub_code ;;
     label: "Hub Code"
-    group_label: ""
     description: "Code of a hub identical to back-end source tables."
     hidden: no
   }
@@ -137,7 +130,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.hub_status ;;
     label: "Hub Status"
-    group_label: ""
     description: "Shows the status of the hub (ex: hub is active / inactive)"
     hidden: no
   }
@@ -146,7 +138,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.hubs_ct_is_active_hub ;;
     label: "Hubs CT Is Active Hub"
-    group_label: ""
     description: "Shows if hub is active on CommerceTools side"
     hidden: no
   }
@@ -172,7 +163,6 @@ view: availability_waterfall {
     datatype: date
     sql: ${TABLE}.ingestion_date ;;
     label: "Ingestion Date"
-    group_label: ""
     description: "Shows the ingestion date in BQ from the Avalablility Knime flow"
     hidden: no
   }
@@ -235,7 +225,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.oos_hours ;;
     label: "Sum # Hours OOS"
-    group_label: ""
     description: "Sum of Hours out of stock based on Knime Raw Availability Data"
     hidden: no
   }
@@ -244,7 +233,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.opening_hours ;;
     label: "Sum # Hours Open"
-    group_label: ""
     description: "Sum of Hours out of stock based on Knime Raw Availability Data"
     hidden: no
   }
@@ -253,7 +241,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.parent_bucket ;;
     label: "Parent Bucket"
-    group_label: ""
     description: "Department represented for tackling the availability bucket main issue"
     hidden: no
   }
@@ -262,7 +249,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.parent_category ;;
     label: "Parent Category"
-    group_label: ""
     description: "Parent Category of Product Location"
     hidden: no
   }
@@ -271,7 +257,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.pct_in_stock ;;
     label: "% In Stock"
-    group_label: ""
     description: "Percentage In Stock based on Knime Raw Availability Data"
     hidden: no
   }
@@ -280,7 +265,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.pct_oos ;;
     label: "% Out Of Stock"
-    group_label: ""
     description: "Percentage Out of stock based on Knime Raw Availability Data"
     hidden: no
   }
@@ -298,7 +282,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.product_name ;;
     label: "Product Name"
-    group_label: ""
     description: "Product Name based on Knime Raw Availability Data"
     hidden: no
   }
@@ -307,7 +290,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.promotion_filter ;;
     label: "Promotion Filter"
-    group_label: ""
     description: "Filter that shows if promotion exists for Availability Product-Locations"
     hidden: no
   }
@@ -316,7 +298,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.promotion_flag ;;
     label: "Promotion Flag"
-    group_label: ""
     description: "Flag that shows the promotion on Availability Product-Locations"
     hidden: no
   }
@@ -343,7 +324,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.replenishment_group ;;
     label: "Replenishment Group"
-    group_label: ""
     description: "Replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
     hidden: no
   }
@@ -360,7 +340,6 @@ view: availability_waterfall {
     datatype: date
     sql: ${TABLE}.report_week ;;
     label: "Report Week"
-    group_label: ""
     description: "Report Week used to assign the product-location information to buckets"
     hidden: no
   }
@@ -387,8 +366,7 @@ view: availability_waterfall {
     type: string
     sql: cast(${TABLE}.sku as string) ;;
     label: "SKU"
-    group_label: ""
-    description: ""
+    description: "product number used for identification"
     hidden: no
   }
 
@@ -396,7 +374,6 @@ view: availability_waterfall {
     type: number
     sql: ${TABLE}.sl1_too_early_out_flag ;;
     label: "SL1 Too Early Outbound Flag"
-    group_label: ""
     description: "Shows if the Shelf Life 1 Product has been outbounded early"
     hidden: no
   }
@@ -423,7 +400,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.sub_category ;;
     label: "Sub Category"
-    group_label: ""
     description: "Subcategory of the product, as available in the backend tables."
     hidden: no
   }
@@ -432,7 +408,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.supplier_id ;;
     label: "Supplier ID"
-    group_label: ""
     description: "ID of a supplier/vendor as define in our ERP system"
     hidden: no
   }
@@ -441,7 +416,6 @@ view: availability_waterfall {
     type: string
     sql: ${TABLE}.supplier_name ;;
     label: "Supplier Name"
-    group_label: ""
     description: "Name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
     hidden: no
   }

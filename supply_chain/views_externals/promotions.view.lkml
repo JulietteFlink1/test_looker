@@ -18,7 +18,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.campaign_category_placement ;;
     label: "Category Placement"
-    group_label: ""
     description: "Shows the campaign category placement"
     hidden: no
   }
@@ -27,7 +26,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.campaign_class ;;
     label: "Campaign Class"
-    group_label: ""
     description: "Shows the class of the campaign"
     hidden: no
   }
@@ -36,7 +34,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.campaign_name ;;
     label: "Campaign Name"
-    group_label: ""
     description: "Shows the name of the campaign "
     hidden: no
   }
@@ -45,7 +42,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.campaign_type_channel ;;
     label: "Campaign Type Channel"
-    group_label: ""
     description: "Shows the campaign type channel of product-location"
     hidden: no
   }
@@ -55,7 +51,6 @@ view: promotions {
     map_layer_name: countries
     sql: ${TABLE}.country ;;
     label: "Country"
-    group_label: ""
     description: "Geographical information of product-location"
     hidden: no
   }
@@ -64,7 +59,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.created_time ;;
     label: "Created Time"
-    group_label: ""
     description: "Shows the created time of the promotion"
     hidden: no
   }
@@ -81,7 +75,6 @@ view: promotions {
     datatype: date
     sql: ${TABLE}.end_date ;;
     label: "End Date"
-    group_label: ""
     description: "Shows the end date of the promotion"
     hidden: no
   }
@@ -98,7 +91,6 @@ view: promotions {
     datatype: date
     sql: ${TABLE}.end_date_with_shelf_life ;;
     label: "End Date with Shelf Life"
-    group_label: ""
     description: "Shows the end date taking into addition the shelf life of the product"
     hidden: no
   }
@@ -107,7 +99,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.Expected_uplift ;;
     label: "Expected Uplift"
-    group_label: ""
     description: "Shows expected Uplift in percentage"
     hidden: no
   }
@@ -116,7 +107,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.Hub_List ;;
     label: "Hub List"
-    group_label: ""
     description: "Shows the hub list of promotion"
     hidden: no
   }
@@ -125,7 +115,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.National_List ;;
     label: "National List"
-    group_label: ""
     description: "Shows if on national list"
     hidden: no
   }
@@ -134,7 +123,6 @@ view: promotions {
     type: number
     sql: ${TABLE}.promo_max_waste_range ;;
     label: "Promo Max Waste Range"
-    group_label: ""
     description: "Shows the promotion maximum waste range"
     hidden: no
   }
@@ -144,7 +132,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.Promo_range_filter ;;
     label: "Promo Range Filter"
-    group_label: ""
     description: "Filter for showing either pure or added shelf-life promotion"
     hidden: no
   }
@@ -153,7 +140,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.Promotion_category ;;
     label: "Promotion Category"
-    group_label: ""
     description: "Shows the promotion category"
     hidden: no
   }
@@ -170,7 +156,6 @@ view: promotions {
     datatype: date
     sql: ${TABLE}.report_date ;;
     label: "Report Date"
-    group_label: ""
     description: "Shows report date of product"
     hidden: no
   }
@@ -179,7 +164,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.requested_by ;;
     label: "Requested By"
-    group_label: ""
     description: "Shows the Flink person that has requested the promotion addition"
     hidden: no
   }
@@ -188,7 +172,6 @@ view: promotions {
     type: number
     sql: ${TABLE}.shelf_life ;;
     label: "Shelf Life"
-    group_label: ""
     description: "Shows number of days the product can be on stock before expiring"
     hidden: no
   }
@@ -197,7 +180,6 @@ view: promotions {
     type: string
     sql: cast(${TABLE}.SKU as string);;
     label: "SKU"
-    group_label: ""
     description: "Shows the number of a product"
     hidden: no
   }
@@ -214,7 +196,6 @@ view: promotions {
     datatype: date
     sql: ${TABLE}.start_date ;;
     label: "Start Date"
-    group_label: ""
     description: "Shows the start date of the promotion"
     hidden: no
   }
@@ -223,7 +204,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.Status ;;
     label: "Status"
-    group_label: ""
     description: "Shows the status of promotion (ex: ended, etc)"
     hidden: no
   }
@@ -232,7 +212,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.sub_type_discountValue ;;
     label: "Sub Type Discount Value"
-    group_label: ""
     description: "Shows the sub type discount value of the product location promotion"
     hidden: no
   }
@@ -241,8 +220,6 @@ view: promotions {
     type: string
     sql: ${TABLE}.sub_type_discountValue_1 ;;
     label: "Sub Type Discount Value 1"
-    group_label: ""
-    description: ""
     hidden: yes
     }
 

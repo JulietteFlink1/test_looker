@@ -19,7 +19,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.bucket ;;
     label: "Bucket"
-    group_label: ""
     description: "Bucket allocated to product-location for waste topics"
     hidden: no
   }
@@ -37,7 +36,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.erp_demand_planning_master_category ;;
     label: "Master Category"
-    group_label: ""
     description: "Global Master Category for product-location"
     hidden: no
   }
@@ -46,7 +44,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.erp_product_hub_vendor_assignment_v2_vendor_id ;;
     label: "Vendor ID"
-    group_label: ""
     description: "Vendor ID of product-location"
     hidden: no
   }
@@ -55,7 +52,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.erp_product_hub_vendor_assignment_v2_vendor_name ;;
     label: "Vendor Name"
-    group_label: ""
     description: "Vendor Name of product-location"
     hidden: no
   }
@@ -64,7 +60,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.HU_Rotation ;;
     label: "HU Rotation"
-    group_label: ""
     description: "HU Rotation for product-location"
     hidden: no
   }
@@ -73,7 +68,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.hubs_ct_country_iso ;;
     label: "Country ISO"
-    group_label: ""
     description: "Geographical information of product-location"
     hidden: no
   }
@@ -91,7 +85,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.inventory_changes_daily_change_reason ;;
     label: "Inventory change reason"
-    group_label: ""
     description: "Inventory change reason as per Stock Changelog"
     hidden: no
   }
@@ -100,7 +93,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.inventory_changes_daily_hub_code ;;
     label: "Hub Code"
-    group_label: ""
     description: "Hub Code for Product-Location"
     hidden: no
   }
@@ -117,7 +109,6 @@ view: waste_waterfall {
     datatype: date
     sql: ${TABLE}.inventory_changes_daily_inventory_change_week ;;
     label: "Reporting Week"
-    group_label: ""
     description: "Reporting week for th Product-Location"
     hidden: no
   }
@@ -135,7 +126,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.inventory_changes_daily_sku ;;
     label: "SKU"
-    group_label: ""
     description: "SKU for Product-Location"
     hidden: no
   }
@@ -144,7 +134,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.inventory_changes_daily_sum_outbound_waste_eur ;;
     label: "Sum Outbound Waste (eur)"
-    group_label: ""
     description: "Amount of Waste for Product-Location"
     hidden: no
   }
@@ -198,7 +187,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.shelf_life ;;
     label: "Shelf Life"
-    group_label: ""
     description: "Shelf Life of Product-Location"
     hidden: no
   }
@@ -207,7 +195,6 @@ view: waste_waterfall {
     type: string
     sql: ${TABLE}.sku_hub_day_level_orders_product_name ;;
     label: "Orders Product Name"
-    group_label: ""
     description: "Orders Product Name for Product-Location"
     hidden: no
   }
@@ -225,7 +212,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.too_early_out_SLgreater1_flag ;;
     label: "Too Early Outbound SL>1 flag"
-    group_label: ""
     description: "Too Early Outbound SL>1 flag for Product-Location"
     hidden: no
   }
@@ -234,7 +220,6 @@ view: waste_waterfall {
     type: number
     sql: ${TABLE}.volatility_index ;;
     label: "Volatility Index"
-    group_label: ""
     description: "Volatility index for Product-Location"
     hidden: no
   }

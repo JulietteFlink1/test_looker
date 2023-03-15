@@ -24,7 +24,7 @@ explore: demand_planning_dashboard_explore {
   from: supply_chain_master_report
 
   group_label: "Demand Planning"
-  label: "Demand Planning Dashboard"
+  label: "Demand Planning Explore (Owned by Supply Chain team)"
   description: "Extended Supply Chain explore used for the Demand Planning Dashboard"
   hidden: no
 
@@ -106,7 +106,7 @@ join: promotions {
      ${demand_planning_dashboard_explore.parent_sku} = ${promotions.sku} and
      ${demand_planning_dashboard_explore.report_date} = ${promotions.report_date}
     ;;
-  relationship: one_to_one
+  relationship: many_to_one
   type: left_outer
  }
 
