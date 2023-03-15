@@ -3,7 +3,7 @@
 # This view contains daily aggregation of shift, Customer NPS and ops related kpis as well as employment info per distinct hub employee and position
 
 view: employee_level_kpis {
-  sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
+  sql_table_name: `flink-data-dev.reporting.employee_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1366,23 +1366,36 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: number_of_justified_start_early_hours {
+  measure: number_of_unjustified_start_early_hours {
     group_label: "> Shift Related"
     type: sum
-    label: "# Justified Early Overpunched Hours"
-    sql: ${TABLE}.number_of_justified_start_early_minutes/60;;
-    description: "Number of hours when a rider claimed an order before shift start time.
-    This early punch-in is justified as rider was busy. Calculated as a difference between first rider claimed timestamp and shift starts timestamp and 5 minutes added due to preparation time (e.g. changing clothes, packing bag, etc.)."
+    label: "# Unjustified Early Overpunched Hours"
+    sql: ${TABLE}.number_of_unjustified_start_early_minutes/60;;
+    description: "Number of hours when a rider punched in earlier than shift start time. When rider starts early to the shift,
+      it will be unjustified even if the rider has worked. In these cases, hub manager should adjust shift start time in Quinyx.
+      Calculated as a difference between shift start timestamp and first punch in timestamp.
+      5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
   }
 
-  measure: number_of_justified_end_late_hours {
+  measure: number_of_unjustified_end_late_hours {
     group_label: "> Shift Related"
     type: sum
-    label: "# Justified Late Overpunched Hours"
-    sql: ${TABLE}.number_of_justified_end_late_minutes/60;;
-    description: "Number of hours when a rider arrived at hub (after delivering an order) after shift end time.
-    This late punch-out is justified as rider was busy. Calculated as a difference between last rider arrived at hub timestamp and shift ends timestamp and 5 minutes added due to preparation time (e.g. changing clothes, packing bag, etc.)."
+    label: "# Unjustified Late Overpunched Hours"
+    sql: ${TABLE}.number_of_unjustified_end_late_minutes/60;;
+    description: "Number of hours when a rider punched out later than shift end time.
+      This late punch-out is unjustified as rider was idle.
+      Calculated as a difference between last rider arrived at hub timestamp and punch out timestamp.
+      5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unjustified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "# Total Unjustified Overpunched Hours"
+    sql: ${number_of_unjustified_end_late_hours} + ${number_of_unjustified_start_early_hours};;
+    description: "Sum of # Unjustified Late Overpunched Hours and # Unjustified Early Overpunched Hours."
     value_format_name: decimal_1
   }
 
@@ -1390,19 +1403,8 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: number
     label: "# Justified Overpunched Hours"
-    sql: ${number_of_justified_end_late_hours};;
-    description: "Sum of # Justified Late Overpunched Hours. If the rider was asked to start before the shift was scheduled,
-    then Hub Manager should adjust the shift start timestamp in Quinyx.
-    Therefore, # Justified Start Early Minutes are not included in this metric."
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_unjustified_overpunched_hours {
-    group_label: "> Shift Related"
-    type: number
-    label: "# Unjustified Overpunched Hours"
-    sql: ${number_of_overpunched_hours} - ${number_of_justified_overpunched_hours};;
-    description: "Difference between # Overpunched Hours and # Justified End Late Hours"
+    sql: ${number_of_overpunched_hours} - ${number_of_unjustified_overpunched_hours};;
+    description: "Difference between # Overpunched Hours and # Unjustified Overpunched Hours"
     value_format_name: decimal_1
   }
 
