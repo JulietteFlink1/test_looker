@@ -13,7 +13,8 @@ view: event_stock_correction_started {
     fields: [
       origin,
       product_sku,
-      shelf_number
+      shelf_number,
+      screen_name
     ]
   }
 
