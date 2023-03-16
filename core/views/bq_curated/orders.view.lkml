@@ -3427,6 +3427,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     sql:count (distinct ${rider_id});;
     value_format_name: decimal_0
+    description: "Number of distinct riders delivering orders based on Workforce app (not based on punched hours)"
   }
 
 
