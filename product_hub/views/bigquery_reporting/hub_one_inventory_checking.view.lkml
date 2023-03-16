@@ -151,6 +151,21 @@ view: hub_one_inventory_checking {
     sql: if(${quantity_after_correction}-${quantity_before_correction}>0 and ${task_status}='DONE', true, false) ;;
   }
 
+  dimension: screen_name {
+    description: "  Type of task. Corresponds to the type in hub_task schema. Possible values are: STOCK_CHECK, FRESHNESS_CHECK."
+    group_label: "Task Attributes"
+    type: string
+    sql: ${TABLE}.screen_name ;;
+  }
+
+  dimension: next_expiration_date {
+    label: "BBD next expiration date"
+    description: "When the check's reason is BBD this is the date entered by the operator for the next BBD check."
+    group_label: "Task Attributes"
+    type: string
+    sql: ${TABLE}.next_expiration_date ;;
+  }
+
   # =========  Backend Quantities   =========
 
   dimension: expected_quantity {
@@ -364,7 +379,6 @@ view: hub_one_inventory_checking {
     group_label: "Quantities Metrics"
     type: sum
     filters: [task_status: "done"]
-
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
@@ -399,6 +413,14 @@ view: hub_one_inventory_checking {
     filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_tgtg ;;
   }
+
+  # measure: fe_quantity_outbounded {
+  #   description: "Sum of fe_quantity_damaged, fe_quantity_expired, fe_quantity_corrected and fe_quantity_tgtg."
+  #   group_label: "Quantities Metrics"
+  #   type: sum
+  #   filters: [task_status: "done"]
+  #   sql: (${TABLE}.fe_quantity_damaged + ${TABLE}.fe_quantity_expired + ${TABLE}.fe_quantity_corrected + ${TABLE}.fe_quantity_tgtg) ;;
+  # }
 
  # For the following two we dont need the filter cause the measures are only valid for stock_corrections and no for checks
 

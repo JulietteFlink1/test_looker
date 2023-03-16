@@ -18,7 +18,8 @@ view: event_stock_correction_finished {
       quantity_expired,
       quantity_corrected,
       quantity_tgtg,
-      quantity_after_correction
+      quantity_after_correction,
+      screen_name
     ]
   }
 
