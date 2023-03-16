@@ -3,7 +3,7 @@
 # This view contains daily aggregation of shift, Customer NPS and ops related kpis as well as employment info per distinct hub employee and position
 
 view: employee_level_kpis {
-  sql_table_name: `flink-data-dev.reporting.employee_level_kpis`
+  sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
