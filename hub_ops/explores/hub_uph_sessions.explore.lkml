@@ -41,27 +41,27 @@ explore: hub_uph_sessions {
     type: left_outer
   }
 
-  join: hub_monthly_orders {
-    view_label: "Hubs"
-    sql_on:
-      ${hub_uph_sessions.hub_code} = ${hub_monthly_orders.hub_code} and
-      date_trunc(${hub_uph_sessions.shift_date},month) = ${hub_monthly_orders.created_month} ;;
-    relationship: many_to_one
-    type: left_outer
-  }
+  # join: hub_monthly_orders {
+  #   view_label: "Hubs"
+  #   sql_on:
+  #     ${hub_uph_sessions.hub_code} = ${hub_monthly_orders.hub_code} and
+  #     date_trunc(${hub_uph_sessions.shift_date},month) = ${hub_monthly_orders.created_month} ;;
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
-  join: shyftplan_riders_pickers_hours_clean {
-    view_label: "Hub UPH Sessions"
-    sql_on:
-      ${hub_uph_sessions.hub_code} = ${shyftplan_riders_pickers_hours_clean.hub_name}
-      and ${hub_uph_sessions.shift_date} = ${shyftplan_riders_pickers_hours_clean.shift_date};;
-    fields: [
-      shyftplan_riders_pickers_hours_clean.ops_associate_utr,
-      shyftplan_riders_pickers_hours_clean.hub_staff_utr,
-      shyftplan_riders_pickers_hours_clean.position_name
-    ]
-    relationship: many_to_one
-    type: left_outer
-  }
+  # join: shyftplan_riders_pickers_hours_clean {
+  #   view_label: "Hub UPH Sessions"
+  #   sql_on:
+  #     ${hub_uph_sessions.hub_code} = ${shyftplan_riders_pickers_hours_clean.hub_name}
+  #     and ${hub_uph_sessions.shift_date} = ${shyftplan_riders_pickers_hours_clean.shift_date};;
+  #   fields: [
+  #     shyftplan_riders_pickers_hours_clean.ops_associate_utr,
+  #     shyftplan_riders_pickers_hours_clean.hub_staff_utr,
+  #     shyftplan_riders_pickers_hours_clean.position_name
+  #   ]
+  #   relationship: many_to_one
+  #   type: left_outer
+  # }
 
   }
