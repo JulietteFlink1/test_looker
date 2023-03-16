@@ -1371,9 +1371,9 @@ view: employee_level_kpis {
     type: sum
     label: "# Unjustified Early Overpunched Hours"
     sql: ${TABLE}.number_of_unjustified_start_early_minutes/60;;
-    description: "Number of hours when a rider punched in earlier than planned shift start time. When rider starts early to the shift,
-      it will be unjustified even if the rider has worked. In these cases, hub manager should adjust shift start time in Quinyx.
-      Calculated as a difference between shift start timestamp and first punch in timestamp.
+    description: "Number of hours when a rider punched in earlier than planned shift start time even if the rider has worked.
+      In these cases, hub manager should adjust shift start time in Quinyx.
+      Calculated as a difference between planned shift start timestamp and first punch in timestamp.
       5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
   }
@@ -1383,7 +1383,7 @@ view: employee_level_kpis {
     type: sum
     label: "# Unjustified Late Overpunched Hours"
     sql: ${TABLE}.number_of_unjustified_end_late_minutes/60;;
-    description: "Number of hours when a rider punched out later than shift end time.
+    description: "Number of hours when a rider punched out later than planned shift end time.
       This late punch-out is unjustified as rider was idle.
       Calculated as a difference between last rider arrived at hub timestamp and punch out timestamp.
       5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
