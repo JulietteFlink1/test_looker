@@ -2080,6 +2080,16 @@ view: orders {
     value_format_name: decimal_1
   }
 
+  measure: avg_pick_pack_handling_time_seconds  {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pick-Pack Handling Time (Seconds)"
+    description: "AVG time it took for the picker to pick the order and pack it. In seconds. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: average
+    sql:${pick_pack_handling_time_seconds};;
+    value_format_name: decimal_1
+  }
+
   measure: avg_pick_pack_handling_time_minutes  {
     alias: [avg_picking_time]
     group_label: "* Operations / Logistics *"
@@ -2385,7 +2395,7 @@ view: orders {
     description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
     hidden:  no
     type: average
-    sql: ${item_value_net};;
+      sql: ${item_value_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -2990,7 +3000,7 @@ view: orders {
     filters: [
       external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
-    ]
+      ]
   }
 
   measure: number_of_unique_flink_delivered_orders {
