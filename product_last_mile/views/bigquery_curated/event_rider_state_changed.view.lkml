@@ -6,7 +6,7 @@
 
 view: event_rider_state_changed {
   sql_table_name: `flink-data-prod.curated.event_rider_state_changed`;;
-  view_label: "Event Rider State Changed"
+  view_label: "2 Event Rider State Changed"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
@@ -72,6 +72,13 @@ view: event_rider_state_changed {
     type: string
     description: "Indicates the state a rider is in at a given point in time."
     sql: ${TABLE}.rider_state ;;
+  }
+  dimension: rider_state_changed_reason {
+    group_label: "Generic Dimension"
+    label: "Rider State Changed Reason"
+    type: string
+    description: "Indicates the reason for a rider state change."
+    sql: ${TABLE}.rider_state_changed_reason ;;
   }
 
   # ======= Location Dimensions ======= #
