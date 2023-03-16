@@ -21,7 +21,7 @@ explore: daily_user_address_aggregates {
       , location_attributes*
       , user_uuid
       , is_new_user
-      , is_address_set
+      , is_address_deliverable
       , is_address_confirmed
       , is_home_viewed
       , is_checkout_viewed

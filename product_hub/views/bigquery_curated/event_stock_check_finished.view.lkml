@@ -12,7 +12,8 @@ view: event_stock_check_finished {
   set: to_include_dimensions {
     fields: [
       check_id,
-      product_sku
+      product_sku,
+      next_expiration_date
     ]
   }
 
@@ -202,6 +203,14 @@ view: event_stock_check_finished {
     group_label: "Stock Check Finished Dimensions"
     description: "Quantity reported as expired."
     sql: ${TABLE}.quantity_expired ;;
+  }
+
+  dimension: next_expiration_date {
+    label: "BBD next expiration date"
+    type: date
+    group_label: "Stock Check Finished Dimensions"
+    description: "When the check's reason is BBD this is the date entered by the operator for the next BBD check."
+    sql: ${TABLE}.next_expiration_date ;;
   }
 
   # =========  Other Dimensions   =========
