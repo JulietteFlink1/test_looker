@@ -1274,6 +1274,7 @@ view: orders {
     In seconds."
     type: number
     sql: ${TABLE}.start_picking_to_first_scan_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: first_item_scan_to_last_item_scan_time_seconds {
@@ -1282,6 +1283,7 @@ view: orders {
     description: "Duration between the first and last items scanned. In seconds."
     type: number
     sql: ${TABLE}.first_item_scan_to_last_item_scan_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: last_item_to_click_scan_container_time_seconds {
@@ -1291,6 +1293,7 @@ view: orders {
     picker clicked on 'Scan Container'. In seconds."
     type: number
     sql: ${TABLE}.last_item_to_click_scan_container_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: click_scan_container_to_validate_container_scan_time_seconds {
@@ -1300,6 +1303,7 @@ view: orders {
     and on 'Next Step' to validate the containers scanned. In seconds."
     type: number
     sql: ${TABLE}.click_scan_container_to_validate_container_scan_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: click_scan_container_to_skip_container_time_seconds {
@@ -1309,6 +1313,7 @@ view: orders {
     and 'Skip Scanning' to skip the containers' scanning. In seconds."
     type: number
     sql: ${TABLE}.click_scan_container_to_skip_container_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: validate_container_scan_to_validate_shelf_scan_time_seconds {
@@ -1318,6 +1323,7 @@ view: orders {
     and 'Finish Picking' to assign the scanned shelves. In seconds."
     type: number
     sql: ${TABLE}.validate_container_scan_to_validate_shelf_scan_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: skip_container_to_skip_shelf_time_seconds {
@@ -1327,6 +1333,7 @@ view: orders {
     and 'Skip Scanning' (on the Assign Shelves screen) to skip the shelves' scanning. In seconds."
     type: number
     sql: ${TABLE}.skip_container_to_skip_shelf_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: picking_time_seconds_actual {
@@ -1336,6 +1343,7 @@ view: orders {
     and 'Scan Container' (if not available, the last item scan timestamp is used). In seconds."
     type: number
     sql: ${TABLE}.picking_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: picking_time_minutes_actual {
@@ -1345,6 +1353,7 @@ view: orders {
     and 'Scan Container' (if not available, the last item scan timestamp is used). In minutes."
     type: number
     sql: ${TABLE}.picking_time_minutes ;;
+    value_format_name: decimal_2
   }
 
   dimension: packing_time_seconds {
@@ -1354,6 +1363,7 @@ view: orders {
     and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In seconds."
     type: number
     sql: ${TABLE}.packing_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: packing_time_minutes {
@@ -1363,6 +1373,7 @@ view: orders {
     and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In minutes."
     type: number
     sql: ${TABLE}.packing_time_minutes ;;
+    value_format_name: decimal_2
   }
 
   dimension: pick_pack_handling_time_seconds {
@@ -1372,6 +1383,7 @@ view: orders {
     It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
     type: number
     sql: ${TABLE}.pick_pack_handling_time_seconds ;;
+    value_format_name: decimal_1
   }
 
   dimension: pick_pack_handling_time_minutes {
@@ -1382,6 +1394,7 @@ view: orders {
     It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
     type: number
     sql: ${TABLE}.pick_pack_handling_time_minutes ;;
+    value_format_name: decimal_2
   }
 
   dimension: waiting_for_picker_time {
