@@ -14,7 +14,7 @@ view: event_trip_unstacked {
   set: to_include_dimensions {
     fields: [
       trip_order_ids,
-      type
+      unstack_type
     ]
   }
   set: to_include_measures {
@@ -58,12 +58,12 @@ view: event_trip_unstacked {
 
   # ======= Generic Dimension ======= #
 
-  dimension: type {
+  dimension: unstack_type {
     group_label: "Generic Dimension"
     label: "Unstack Type"
     description: "Indicating the unstack type"
     type: string
-    sql: ${TABLE}.type ;;
+    sql: ${TABLE}.unstack_type ;;
   }
 
   # ======= Location Dimension ======= #

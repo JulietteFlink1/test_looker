@@ -5,7 +5,7 @@ include: "/**/hubs_ct.view.lkml"
 explore: hub_closure {
   hidden: yes
   view_name: hub_closure_rate
-  label: "Hub Closure"
+  label: "Hub Closure [DEPRECATED]"
   view_label: "Hub Closure"
 
   access_filter: {
