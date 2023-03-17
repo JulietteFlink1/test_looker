@@ -5,7 +5,7 @@
 ### other campaign performance-related measures.
 
 view: customer_acquisition_cost {
-  sql_table_name: `flink-data-prod.reporting.customer_acquisition_cost`
+  sql_table_name: `flink-data-dev.dbt_jdavies_reporting.customer_acquisition_cost`
     ;;
   view_label: "* Customer Acquisition Cost Data *"
 
@@ -201,7 +201,7 @@ view: customer_acquisition_cost {
     label: "SUM Spend, App only"
     description: "Total of online marketing spend, app campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
+    filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
     hidden: yes
@@ -214,7 +214,7 @@ view: customer_acquisition_cost {
     label: "SUM Spend, Web Only"
     description: "Total of online marketing spend, web campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "Google Ads - SEM (Web only)"  ]
+    filters: [partner_name: "Google Ads - SEM"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
     hidden: yes
@@ -240,7 +240,7 @@ view: customer_acquisition_cost {
     label: "# Installs, App only"
     description: "Total of installs, app campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
+    filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_installs} ;;
     hidden: yes
@@ -265,7 +265,7 @@ view: customer_acquisition_cost {
     label: "# Acquisitions, App only"
     description: "Total of acquisitions, app campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
+    filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_acquisitions} ;;
     hidden: yes
@@ -302,7 +302,7 @@ view: customer_acquisition_cost {
     label: "# Clicks, App only"
     description: "Total of clicks, app campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "-Google Ads - SEM (Web only), -Google Ads - SEM (App only)"  ]
+    filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_clicks} ;;
     hidden: yes
@@ -315,7 +315,7 @@ view: customer_acquisition_cost {
     label: "# Orders, Web Only"
     description: "Number of Orders, web campaigns only"
     group_label: "* CAC Measures *"
-    filters: [partner_name: "Google Ads - SEM (Web only)" ]
+    filters: [partner_name: "Google Ads - SEM" ]
 
     type: sum
     sql: ${number_of_orders} ;;
@@ -332,12 +332,15 @@ view: customer_acquisition_cost {
     value_format_name: euro_accounting_2_precision
   }
 
+###Cost per install includes costs of both app and web campaigns, even though the majority of the web campaign output is measured
+### in web orders
+
   measure: cpi {
     type: number
     label: "CPI"
-    description: "Cost Per Install: how much do marketing spend on app campaigns to get an install? "
+    description: "Cost Per Install: how much do marketing spend on app or web campaigns to get an install? "
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend_eur_app} / NULLIF(${total_installs_app}, 0);;
+    sql: ${total_amt_spend_eur} / NULLIF(${total_installs}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -378,6 +381,8 @@ view: customer_acquisition_cost {
     value_format_name: percent_2
   }
 
+###Install conversion rate needs to be for App campaigns only (no SEM) as the over 100% rate for SEM would distort the conversion rate
+
   measure: install_conversion_rate {
     type: number
     label: "% Install-to-First Order CVR"
@@ -387,12 +392,14 @@ view: customer_acquisition_cost {
     value_format_name: percent_2
   }
 
+###SEM is still included here, although the conversion rate will be very low (most clicks for SEM result in web orders not measured here)
+
   measure: click_conversion_rate {
     type: number
     label: "% Click-to-Install CVR"
-    description: "Click Conversion Rate: what % of clicks result in installs for app campaigns only."
+    description: "Click Conversion Rate: what % of clicks result in installs for app and web campaigns."
     group_label: "* CAC Measures *"
-    sql: NULLIF(${total_installs_app}, 0) / NULLIF(${total_clicks_app}, 0);;
+    sql: NULLIF(${total_installs}, 0) / NULLIF(${total_clicks}, 0);;
     value_format_name: percent_2
   }
 
