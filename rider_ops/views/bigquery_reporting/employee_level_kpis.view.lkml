@@ -1127,7 +1127,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: number
     label: "# Worked Employees"
-    description:"Number of distinct employees punched in Quinyx"
+    description:"Number of distinct employees punched in Quinyx excluding one-time externals since they dont punch in Quinyx"
     sql: count(distinct case when ${TABLE}.number_of_worked_minutes > 0 then ${employment_id} end) ;;
     value_format_name: decimal_1
   }
