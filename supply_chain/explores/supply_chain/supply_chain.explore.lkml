@@ -86,9 +86,8 @@ explore: supply_chain {
                 or
              coalesce(${products_hub_assignment.item_location_introduction_date},
                    ${products_hub_assignment.item_introduction_date}) is null)
-        and (${products_hub_assignment.item_location_termination_date} > date_sub(${products_hub_assignment.report_date}, interval 7 day)
-                or
-             ${products_hub_assignment.item_location_termination_date} is null)
+        and (coalesce(${products_hub_assignment.item_location_termination_date}, date('9999-12-31'))  >
+             date_sub(${products_hub_assignment.report_date}, interval 7 day))
 
 
       ;;
