@@ -151,6 +151,25 @@ view: hub_one_inventory_checking {
     sql: if(${quantity_after_correction}-${quantity_before_correction}>0 and ${task_status}='DONE', true, false) ;;
   }
 
+  dimension: screen_name {
+    description: "  Type of task. Corresponds to the type in hub_task schema. Possible values are: STOCK_CHECK, FRESHNESS_CHECK."
+    group_label: "Task Attributes"
+    type: string
+    sql: ${TABLE}.screen_name ;;
+  }
+
+  dimension_group: next_expiration {
+    label: "BBD next expiration"
+    description: "When the check's reason is BBD this is the date entered by the operator for the next BBD check."
+    group_label: "Task Attributes"
+    type: time
+    convert_tz: no
+    timeframes: [
+      date
+    ]
+    sql: ${TABLE}.next_expiration_date ;;
+  }
+
   # =========  Backend Quantities   =========
 
   dimension: expected_quantity {
@@ -353,7 +372,7 @@ view: hub_one_inventory_checking {
 
   measure: fe_quantity_expected {
     description: "Expected amount of units before the task (only checks). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_expected ;;
@@ -361,16 +380,15 @@ view: hub_one_inventory_checking {
 
   measure: fe_quantity_counted {
     description: "Number of units counted by the employee while performing the task (only checks). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     filters: [task_status: "done"]
-
     sql: ${TABLE}.fe_quantity_counted ;;
   }
 
   measure: fe_quantity_damaged {
     description: "Number of units reported as damaged by the employee while performing the task (checks and corrections). Value coming from Hub One."
-    group_label: "Frontend Quantities"
+    group_label: "Quantities Metrics"
     type: sum
     filters: [task_status: "done"]
     sql: ${TABLE}.fe_quantity_damaged ;;
@@ -400,10 +418,19 @@ view: hub_one_inventory_checking {
     sql: ${TABLE}.fe_quantity_tgtg ;;
   }
 
+  # measure: fe_quantity_outbounded {
+  #   description: "Sum of fe_quantity_damaged, fe_quantity_expired, fe_quantity_corrected and fe_quantity_tgtg."
+  #   group_label: "Quantities Metrics"
+  #   type: sum
+  #   filters: [task_status: "done"]
+  #   sql: (${TABLE}.fe_quantity_damaged + ${TABLE}.fe_quantity_expired + ${TABLE}.fe_quantity_corrected + ${TABLE}.fe_quantity_tgtg) ;;
+  # }
+
  # For the following two we dont need the filter cause the measures are only valid for stock_corrections and no for checks
 
   measure: sum_of_quantity_before_correction {
-    description: "Amount of units before the inventory correction."
+    label: "Quantity before Correction"
+    description: "Amount of units before the inventory correction (only available for stock_corrections)."
     group_label: "Quantities Metrics"
     type: sum
     filters: [is_automatic_check: "No"]
@@ -411,7 +438,8 @@ view: hub_one_inventory_checking {
   }
 
   measure: sum_of_quantity_after_correction {
-    description: "New amount of units after the inventory correction."
+    label: "Quantity after Correction"
+    description: "New amount of units after the inventory correction (only available for stock_corrections)."
     group_label: "Quantities Metrics"
     type: sum
     filters: [is_automatic_check: "No"]
@@ -513,7 +541,7 @@ view: hub_one_inventory_checking {
     value_format: "0%"
     group_label: "Rate Metrics (only checks)"
     label: "% of Completion"
-    description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks + # of Skipped Tasks)"
+    description: "# of Completed Tasks/ (# of Completed Tasks + # of Open Tasks)"
     sql: ${number_of_completed_checks}/nullif((${number_of_open_completed_skipped_checks}),0) ;;
   }
 
