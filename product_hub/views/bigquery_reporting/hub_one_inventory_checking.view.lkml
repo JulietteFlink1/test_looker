@@ -158,11 +158,15 @@ view: hub_one_inventory_checking {
     sql: ${TABLE}.screen_name ;;
   }
 
-  dimension: next_expiration_date {
-    label: "BBD next expiration date"
+  dimension_group: next_expiration {
+    label: "BBD next expiration"
     description: "When the check's reason is BBD this is the date entered by the operator for the next BBD check."
     group_label: "Task Attributes"
-    type: string
+    type: time
+    convert_tz: no
+    timeframes: [
+      date
+    ]
     sql: ${TABLE}.next_expiration_date ;;
   }
 

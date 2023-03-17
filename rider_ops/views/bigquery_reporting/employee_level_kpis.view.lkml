@@ -1123,6 +1123,15 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_employees {
+    group_label: "> Shift Related"
+    type: number
+    label: "# Worked Employees"
+    description:"Number of distinct employees punched in Quinyx"
+    sql: count(distinct case when ${TABLE}.number_of_worked_minutes > 0 then ${employment_id} end) ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_employees_with_availability_provided {
     group_label: "> Shift Related"
     type: number
