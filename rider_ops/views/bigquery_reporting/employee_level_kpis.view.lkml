@@ -1385,7 +1385,8 @@ view: employee_level_kpis {
       Calculated as a difference between planned shift start timestamp and first punch in timestamp.
       5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
-  }
+    hidden: yes
+    }
 
   measure: number_of_unjustified_end_late_hours {
     group_label: "> Shift Related"
@@ -1397,6 +1398,8 @@ view: employee_level_kpis {
       Calculated as a difference between last rider arrived at hub timestamp and punch out timestamp.
       5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
     value_format_name: decimal_1
+    hidden: yes
+
   }
 
   measure: number_of_unjustified_overpunched_hours {
