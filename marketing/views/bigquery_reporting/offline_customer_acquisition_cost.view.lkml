@@ -4,13 +4,13 @@ view: offline_customer_acquisition_cost {
   view_label: "* Offline Customer Acquisition Cost Data *"
 
   # =========  hidden   =========
-  dimension: acquisitions {
+  dimension: number_of_acquisitions {
     type: number
     sql: ${TABLE}.number_of_acquisitions ;;
     hidden: yes
   }
 
-  dimension: amt_spend {
+  dimension: amt_spend_net {
     type: number
     sql: ${TABLE}.amt_spend_net ;;
     hidden: yes
@@ -34,7 +34,6 @@ view: offline_customer_acquisition_cost {
     label: "Report"
     group_label: "* Dates *"
     timeframes: [
-      raw,
       week,
       month,
       quarter,
@@ -122,36 +121,36 @@ view: offline_customer_acquisition_cost {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  measure: total_amt_spend {
+  measure: sum_of_amt_spend_net {
 
     label: "SUM Offline Spend"
     description: "Total of online marketing spend"
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${amt_spend} ;;
+    sql: ${amt_spend_net} ;;
 
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: total_acquisitions {
+  measure: sum_of_number_of_acquisitions {
 
     label: "# Offline Acquisitions"
     description: "Total of acquisitions, offline sources only"
     group_label: "* CAC Measures *"
 
     type: sum
-    sql: ${acquisitions} ;;
+    sql: ${number_of_acquisitions} ;;
 
     value_format_name: decimal_0
   }
 
-  measure: cac {
+  measure: share_of_spend_with_acquisitions {
     type: number
     label: "Offline CAC"
     description: "Customer Acquisition Cost: how much does it cost marketing to get a conversion, offline sources only"
     group_label: "* CAC Measures *"
-    sql: ${total_amt_spend} / NULLIF(${total_acquisitions}, 0);;
+    sql: ${sum_of_amt_spend_net} / NULLIF(${sum_of_number_of_acquisitions}, 0);;
     value_format_name: euro_accounting_2_precision
   }
 }
