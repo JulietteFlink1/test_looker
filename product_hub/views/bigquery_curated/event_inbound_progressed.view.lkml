@@ -19,7 +19,8 @@ view: event_inbound_progressed {
       dropping_list_id,
       product_sku,
       is_handling_unit,
-      quantity
+      quantity,
+      sscc
     ]
   }
 
@@ -211,6 +212,12 @@ view: event_inbound_progressed {
     type: yesno
     description: "True when the action was perform at handling unit."
     sql: ${TABLE}.is_handling_unit ;;
+  }
+
+  dimension: sscc {
+    type: string
+    description: "Serial Shipping Container Code. A delivery is usually delivered on multiple rollies. This field relates to the ID of each rolli."
+    sql: ${TABLE}.sscc ;;
   }
 
   # =========  Other Dimensions   =========
