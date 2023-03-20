@@ -2100,6 +2100,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_rider_wfs_shift_extended {
+    group_label: "> Rider Measures"
+    label: "# Extended Punched WFS Rider Hours"
+    description: "# Extended Punched Rider Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_wfs_shift_extended_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_worked_hours_rider_ns_shift {
     group_label: "> Rider Measures"
     label: "# Punched NS+ Rider Hours"
@@ -2199,6 +2208,15 @@ view: staffing {
     description: "# Punched Ops Associate Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_worked_hours_ops_associate_wfs_shift_extended {
+    group_label: "> Ops Associate Measures"
+    label: "# Extended Punched WFS Ops Associate Hours"
+    description: "# Extended Punched Ops Associate Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_wfs_shift_extended_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -2692,6 +2710,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_picker_wfs_shift_extended {
+    group_label: "> Picker Measures"
+    label: "# Extended Open WFS Picker Hours"
+    description: "# Extended Open Picker Hours from shifts with project code = 'WFS extend beg/end 1/2/4'. "
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_extended_picker/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_unassigned_hours_picker_ns_shift {
     group_label: "> Picker Measures"
     label: "# Open NS+ Picker Hours"
@@ -2707,6 +2734,15 @@ view: staffing {
     description: "# Open Rider Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_rider_wfs_shift_extended {
+    group_label: "> Rider Measures"
+    label: "# Extended Open WFS Rider Hours"
+    description: "# Extended Open Rider Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_extended_rider/60;;
     value_format_name: decimal_1
   }
 
@@ -2734,6 +2770,15 @@ view: staffing {
     description: "# Open Ops Associate Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_wfs_shift_extended {
+    group_label: "> Ops Associate Measures"
+    label: "# Extended Open WFS Ops Associate Hours"
+    description: "# Extended Open Ops Associate Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_wfs_shift_extended_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -2849,6 +2894,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_ops_associate_wfs_shift_extended {
+    group_label: "> Ops Associate Measures"
+    label: "# Extended Filled (Assigned) WFS Ops Associate Hours"
+    description: "# Extended Filled Ops Associate Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_extended_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_planned_hours_ops_associate_ns_shift {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) NS+ Ops Associate Hours"
@@ -2934,6 +2988,16 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_planned_hours_rider_wfs_shift_extended {
+    group_label: "> Rider Measures"
+    label: "# Extended Filled (Assigned) WFS Rider Hours"
+    description: "# Extended Filled Rider Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_extended_rider/60;;
+    value_format_name: decimal_1
+  }
+
+
   measure: number_of_planned_hours_rider_ns_shift {
     group_label: "> Rider Measures"
     label: "# Filled (Assigned) NS+ Rider Hours"
@@ -3011,6 +3075,15 @@ view: staffing {
     description: "# Filled Picker Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_wfs_shift_picker/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_picker_wfs_shift_extended {
+    group_label: "> Picker Measures"
+    label: "# Extended Filled (Assigned) WFS Picker Hours"
+    description: "# Extended Filled Picker Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_wfs_shift_extended_picker/60;;
     value_format_name: decimal_1
   }
 
@@ -3431,6 +3504,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_rider_wfs_shift_extended {
+    group_label: "> Rider Measures"
+    label: "# Extended Scheduled WFS Rider Hours"
+    description: "# Extended Scheduled Rider Hours (Assigned + Unassigned WFS shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_wfs_shift_extended}+${number_of_planned_hours_rider_wfs_shift_extended};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_rider_ns_shift {
     group_label: "> Rider Measures"
     label: "# Scheduled NS+ Rider Hours"
@@ -3474,6 +3556,15 @@ view: staffing {
     description: "# Scheduled Picker Hours (Assigned + Unassigned WFS shift hours)"
     type: number
     sql: ${number_of_unassigned_hours_picker_wfs_shift}+${number_of_planned_hours_picker_wfs_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_scheduled_hours_picker_wfs_shift_extended {
+    group_label: "> Picker Measures"
+    label: "# Extended Scheduled WFS Picker Hours"
+    description: "# Extended Scheduled Picker Hours (Assigned + Unassigned WFS shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_picker_wfs_shift_extended}+${number_of_planned_hours_picker_wfs_shift_extended};;
     value_format_name: decimal_1
   }
 
@@ -3573,6 +3664,16 @@ view: staffing {
     sql: ${number_of_unassigned_hours_ops_associate_wfs_shift}+${number_of_planned_hours_ops_associate_wfs_shift};;
     value_format_name: decimal_1
   }
+
+  measure: number_of_scheduled_hours_ops_associate_wfs_shift_extended {
+    group_label: "> Ops Associate Measures"
+    label: "# Extended Scheduled WFS Ops Associate Hours"
+    description: "# Extended Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned WFS Shift Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_wfs_shift_extended}+${number_of_planned_hours_ops_associate_wfs_shift_extended};;
+    value_format_name: decimal_1
+  }
+
 
   measure: number_of_scheduled_hours_ops_associate_ns_shift {
     group_label: "> Ops Associate Measures"
@@ -3750,6 +3851,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_rider_wfs_shift_extended {
+    group_label: "> Rider Measures"
+    label: "# Extended No Show WFS Rider Hours"
+    description: "# Extended No Show Rider Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_wfs_shift_extended_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_rider_ns_shift {
     group_label: "> Rider Measures"
     label: "# No Show NS+ Rider Hours"
@@ -3774,6 +3884,15 @@ view: staffing {
     description: "# No Show Ops Associate Hours from shifts with project code = 'WFS shift'"
     type: sum
     sql: ${TABLE}.number_of_no_show_minutes_wfs_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_ops_associate_wfs_shift_extended {
+    group_label: "> Ops Associate Measures"
+    label: "# Extended No Show WFS Ops Associate Hours"
+    description: "# Extended No Show Ops Associate Hours from shifts with project code = 'WFS extend beg/end 1/2/4'."
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_wfs_shift_extended_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -4751,6 +4870,21 @@ view: staffing {
           when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_wfs_shift}
           when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_wfs_shift}
           when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_wfs_shift}
+          else null
+        end ;;
+  }
+
+  measure: number_of_scheduled_hours_by_position_wfs_shift_extended {
+    type: number
+    label: "# Extended WFS Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Extended Assigned and Unassigned (Open) Shift Hours from WFS shifts (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_wfs_shift_extended}
+          when {% parameter position_parameter %} = 'Picker' THEN ${number_of_scheduled_hours_picker_wfs_shift_extended}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_wfs_shift_extended}
           else null
         end ;;
   }
