@@ -105,7 +105,7 @@ view: inventory_changes_daily_extended {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: abs(${quantity_change}) * ${product_prices_daily.buying_price};;
+    sql: ${amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur};;
     required_access_grants: [can_view_buying_information]
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
@@ -120,7 +120,7 @@ view: inventory_changes_daily_extended {
     group_label: ">> Waste Metrics"
 
     type: sum
-    sql: abs(${quantity_change}) * ${product_prices_daily.buying_price} * ( 1 + ${products.tax_rate});;
+    sql: ${amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur} * ( 1 + ${products.tax_rate});;
     required_access_grants: [can_view_buying_information]
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur

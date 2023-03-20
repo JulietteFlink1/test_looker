@@ -11,7 +11,7 @@
 # GMV
 
 view: supply_chain_master_report {
-  sql_table_name: `flink-data-prod.reporting.supply_chain_master_report`
+  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.supply_chain_master_report`
     ;;
 
 set: drill_fields_set {
@@ -479,7 +479,7 @@ set: drill_fields_set {
 
   dimension: number_of_items_sold {
     type: number
-    sql: ${TABLE}.number_of_items_sold ;;
+    sql: ${TABLE}.sum_quantity_outbound_order ;;
     hidden: yes
     label: "Number of Items Sold"
     group_label: "GMV Metrics"
