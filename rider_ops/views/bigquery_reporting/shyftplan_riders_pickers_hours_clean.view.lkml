@@ -209,6 +209,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "onboarding"]
     value_format_name: decimal_1
     group_label: "Working Hours"
+    hidden: yes
   }
 
   measure: rider_captain {
@@ -217,6 +218,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider captain"]
     group_label: "Counts"
+    hidden: yes
   }
 
 
@@ -227,6 +229,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider captain"]
     value_format_name: decimal_1
     group_label: "Working Hours"
+    hidden: yes
   }
 
   measure: riders {
@@ -235,6 +238,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: ops_associates {
@@ -243,6 +247,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "ops associate"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: ops_associates_external {
@@ -251,6 +256,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "ops associate"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: riders_external {
@@ -259,6 +265,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "rider"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: picker_hours {
@@ -465,6 +472,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${number_of_worked_employees};;
     filters: [position_name: "picker"]
+    hidden: yes
     group_label: "Counts"
   }
 
@@ -473,6 +481,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "picker"]
+    hidden: yes
     group_label: "Counts"
   }
 
