@@ -2,7 +2,7 @@ view: inventory_changes_daily {
 
   view_label: "* Inventory Changes Daily *"
 
-  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.inventory_changes_daily`
+  sql_table_name: `flink-data-prod.reporting.inventory_changes_daily`
     ;;
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,7 +175,7 @@ view: inventory_changes_daily {
   dimension: amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur {
     sql: ${TABLE}.amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur ;;
     type: number
-    label: "€ Inventory Quantity Change (Buying Price)"
+    label: "€ Inventory Quantity Change (Buying Price Net)"
     description: "Total quantity of inventory changes valuated on weighted buying prices net of the current stock."
     hidden: yes
     required_access_grants: [can_view_buying_information]
@@ -184,8 +184,16 @@ view: inventory_changes_daily {
   dimension: amt_quantity_change_valuated_on_selling_price_average_gross_eur {
     sql: ${TABLE}.amt_quantity_change_valuated_on_selling_price_average_gross_eur ;;
     type: number
-    label: "€ Inventory Quantity Change (Selling Price)"
+    label: "€ Inventory Quantity Change (Selling Price Gross)"
     description: "Total quantity of inventory changes valuated on selling prices gross."
+    hidden: yes
+  }
+
+  dimension: amt_quantity_change_valuated_on_selling_price_average_net_eur {
+    sql: ${TABLE}.amt_quantity_change_valuated_on_selling_price_average_net_eur ;;
+    type: number
+    label: "€ Inventory Quantity Change (Selling Price Net)"
+    description: "Total quantity of inventory changes valuated on selling prices net."
     hidden: yes
   }
 
@@ -225,7 +233,7 @@ view: inventory_changes_daily {
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
     group_label: ">> Waste Metrics"
     type: sum
-    sql: ${amt_quantity_change_valuated_on_selling_price_average_gross_eur};;
+    sql: abs(${amt_quantity_change_valuated_on_selling_price_average_gross_eur});;
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }
