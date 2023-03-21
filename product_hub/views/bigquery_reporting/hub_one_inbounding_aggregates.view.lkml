@@ -108,6 +108,14 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.number_of_distinct_products_dropped ;;
   }
 
+  dimension: is_less_than_x_skus {
+    type: yesno
+    label: "Is one product dropping_list"
+    group_label: "Dropping List Attributes"
+    description: "True when the dropping list has only one product_sku dropped."
+    sql: if(${distinct_products_dropped}=1,true, false) ;;
+  }
+
   # =========  Dates and Timestamps   =========
 
   dimension_group: event {
