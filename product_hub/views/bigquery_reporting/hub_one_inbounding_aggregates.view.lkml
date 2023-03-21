@@ -63,6 +63,20 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.quinyx_badge_number ;;
   }
 
+  # =========  Inbounding Properties   =========
+
+  dimension: sscc {
+    type: string
+    description: "Serial Shipping Container Code. A delivery is usually delivered on multiple rollies. This field relates to the ID of each rolli."
+    sql: ${TABLE}.sscc ;;
+  }
+
+  dimension: inbounding_type {
+    type: string
+    description: "Type of the inbounding selected in hub one app. Possible values for DE and FR: REWE or CARREFOUR (main supplier), delivered-today, not-part-of-a-delivery and for NL delivered-today and not-delivered-today."
+    sql: ${TABLE}.inbounding_type ;;
+  }
+
   # =========  Dates and Timestamps   =========
 
   dimension_group: event {
@@ -74,7 +88,8 @@ view: hub_one_inbounding_aggregates {
       week,
       day_of_week,
       month,
-      week_of_year
+      week_of_year,
+      hour_of_day
     ]
     convert_tz: no
     datatype: date
@@ -91,6 +106,7 @@ view: hub_one_inbounding_aggregates {
       day_of_week,
       week_of_year
     ]
+    convert_tz: no
     sql: ${TABLE}.list_preparation_started_at ;;
   }
 
@@ -104,6 +120,7 @@ view: hub_one_inbounding_aggregates {
       day_of_week,
       week_of_year
     ]
+    convert_tz: no
     sql: ${TABLE}.dropping_list_started_at ;;
   }
 
@@ -118,6 +135,7 @@ view: hub_one_inbounding_aggregates {
       day_of_week,
       week_of_year
     ]
+    convert_tz: no
     sql: ${TABLE}.dropping_list_finished_at ;;
   }
 

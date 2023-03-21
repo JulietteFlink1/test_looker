@@ -16,7 +16,9 @@ view: event_inbound_state_updated {
   set: to_include_dimensions {
     fields: [
       dropping_list_id,
-      state
+      state,
+      sscc,
+      inbounding_type
     ]
   }
 
@@ -189,6 +191,19 @@ view: event_inbound_state_updated {
     description: "State to which the inbound process has been updated. It can be list_preparation_started, dropping_list_started or dropping_list_finished."
     sql: ${TABLE}.state ;;
   }
+
+  dimension: sscc {
+    type: string
+    description: "Serial Shipping Container Code. A delivery is usually delivered on multiple rollies. This field relates to the ID of each rolli."
+    sql: ${TABLE}.sscc ;;
+  }
+
+  dimension: inbounding_type {
+    type: string
+    description: "Type of the inbounding selected in hub one app. Possible values for DE and FR: REWE or CARREFOUR (main supplier), delivered-today, not-part-of-a-delivery and for NL delivered-today and not-delivered-today."
+    sql: ${TABLE}.inbounding_type ;;
+  }
+
 
 # =========  Other Dimensions   =========
 
