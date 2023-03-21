@@ -2,16 +2,9 @@ view: ctr_chargeback_orders {
   sql_table_name: `flink-data-prod.reporting.ctr_chargeback_orders`
     ;;
 
-  dimension_group: booking_month_time {
-    type: time
-    timeframes: [month]
-    datatype: date
-    sql: ${TABLE}.booking_month ;;
-  }
-
-  dimension: booking_month_string {
+  dimension: booking_month {
     type: string
-    sql:${TABLE}.booking_month;;
+    sql: ${TABLE}.booking_month ;;
   }
 
   dimension: country_iso {
