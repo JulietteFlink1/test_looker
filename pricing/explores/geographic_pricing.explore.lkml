@@ -12,7 +12,8 @@ explore: geographic_pricing {
   hidden: no
 
   join: geographic_pricing_sku_cluster {
-    sql_on: ${geographic_pricing_sku_cluster.sku}           = ${orderline.product_sku} ;;
+    sql_on: ${geographic_pricing_sku_cluster.sku}           = ${orderline.product_sku}
+    and ${geographic_pricing_sku_cluster.country_iso}       = ${orderline.country_iso};;
     relationship: many_to_one #changed from one_to_many
   }
 
@@ -28,6 +29,7 @@ explore: geographic_pricing {
 
     sql_on:
            ${key_value_items.sku} =  ${orderline.product_sku}
+        and ${key_value_items.country_iso} =  ${orderline.country_iso}
            -- get only the most recent KVIs (they are upadted every Monday)
        and ${key_value_items.kvi_date} >= current_date() - 6
     ;;
