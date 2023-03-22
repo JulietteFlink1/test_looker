@@ -13,9 +13,9 @@ view: ctr_chargeback_orders {
     group_label: "Booking Time"
     type: time
     timeframes: [
-      week,
       month,
-      quarter
+      quarter,
+      year
     ]
     sql: ${booking_month_} ;;
   }
