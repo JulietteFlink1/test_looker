@@ -2,9 +2,22 @@ view: ctr_chargeback_orders {
   sql_table_name: `flink-data-prod.reporting.ctr_chargeback_orders`
     ;;
 
-  dimension: booking_month {
+  dimension: booking_month_ {
     type: string
-    sql: ${TABLE}.booking_month ;;
+    hidden:  yes
+    sql: cast(concat(${TABLE}.booking_month,'-01 00:00:01 UTC') as timestamp) ;;
+    # we need to convert the date string in yyyyMM format into a timestamp so that we can apply the filter as a proper date filter and not as a string
+  }
+
+  dimension_group: booking {
+    group_label: "Booking Time"
+    type: time
+    timeframes: [
+      week,
+      month,
+      quarter
+    ]
+    sql: ${booking_month_} ;;
   }
 
   dimension: country_iso {
