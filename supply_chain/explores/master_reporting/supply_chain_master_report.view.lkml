@@ -479,7 +479,7 @@ set: drill_fields_set {
 
   dimension: number_of_items_sold {
     type: number
-    sql: ${TABLE}.number_of_items_sold ;;
+    sql: ${TABLE}.sum_quantity_outbound_order ;;
     hidden: yes
     label: "Number of Items Sold"
     group_label: "GMV Metrics"

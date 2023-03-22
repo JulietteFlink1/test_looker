@@ -18,6 +18,11 @@ view: geographic_pricing_sku_cluster {
     sql: cast(${TABLE}.sku as string) ;;
   }
 
+  dimension: country_iso {
+    type: string
+    sql:${TABLE}.country_iso;;
+  }
+
   dimension: price_sku_cluster_actual {
     type: string
     sql: ${TABLE}.price_sku_cluster_actual ;;

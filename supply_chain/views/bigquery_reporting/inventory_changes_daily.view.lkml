@@ -149,7 +149,7 @@ view: inventory_changes_daily {
   dimension: price_gross {
     label: "Product Price Gross (Used for Waste)"
     type: number
-    sql: ${products.amt_product_price_gross} ;;
+    sql: ${TABLE}.avg_amt_selling_price_gross_eur ;;
     hidden: no
   }
 
@@ -169,6 +169,31 @@ view: inventory_changes_daily {
     sql: ${TABLE}.purchase_unit ;;
     type: number
     label: "Purchase Unit"
+    hidden: yes
+  }
+
+  dimension: amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur {
+    sql: ${TABLE}.amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur ;;
+    type: number
+    label: "€ Inventory Quantity Change (Buying Price Net)"
+    description: "Total quantity of inventory changes valuated on weighted buying prices net of the current stock."
+    hidden: yes
+    required_access_grants: [can_view_buying_information]
+  }
+
+  dimension: amt_quantity_change_valuated_on_selling_price_average_gross_eur {
+    sql: ${TABLE}.amt_quantity_change_valuated_on_selling_price_average_gross_eur ;;
+    type: number
+    label: "€ Inventory Quantity Change (Selling Price Gross)"
+    description: "Total quantity of inventory changes valuated on selling prices gross."
+    hidden: yes
+  }
+
+  dimension: amt_quantity_change_valuated_on_selling_price_average_net_eur {
+    sql: ${TABLE}.amt_quantity_change_valuated_on_selling_price_average_net_eur ;;
+    type: number
+    label: "€ Inventory Quantity Change (Selling Price Net)"
+    description: "Total quantity of inventory changes valuated on selling prices net."
     hidden: yes
   }
 
@@ -208,7 +233,7 @@ view: inventory_changes_daily {
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross)"
     group_label: ">> Waste Metrics"
     type: sum
-    sql: abs(${quantity_change}) * ${price_gross};;
+    sql: abs(${amt_quantity_change_valuated_on_selling_price_average_gross_eur});;
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }
