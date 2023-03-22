@@ -78,6 +78,24 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.item_location_introduction_date ;;
   }
 
+  dimension: source_method {
+    label: "Source Method"
+    description: "This value will be used to specify how the ad-hoc PO/TSF creation process should source the item/location request. If the value is Warehouse, the process will attempt to fill the request by creating a transfer from the warehouse mentioned in the source_wh field. If this warehouse doesn't have enough inventory to fill the request, a purchase order will be created for the item/location's primary supplier. For warehouses, it is used by Oracle Retail Allocation to determine the valid sources and destinations for warehouse to warehouse allocations."
+    group_label: "Item-Location"
+    type: string
+    sql: ${TABLE}.source_method ;;
+    hidden: no
+  }
+
+  dimension: source_warehouse {
+    label: "Source Warehouse"
+    description: "This value will be used by the ad-hoc PO/Transfer creation process to determine which warehouse to fill the stores request from. It will also be used by the Allocation process to support warehouse to warehouse allocations. A value will be required in this field if the sourcing method is Warehouse."
+    group_label: "Item-Location"
+    type: number
+    sql: ${TABLE}.source_warehouse ;;
+    hidden: no
+  }
+
 
 
 
@@ -639,6 +657,209 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     description: "Terms of the supplier according to our ERP system Oracle"
     group_label: "Supplier"
     sql: ${TABLE}.supplier_terms ;;
+  }
+
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Item-Supplier Data
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: unit_cost {
+    label: "Unit Cost"
+    description: "The buying price of a product we buy from the suppliers - this information is hub-specific."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.unit_cost ;;
+    hidden: no
+  }
+
+  dimension: vpn {
+    label: "Vpn"
+    description: "Transaction codes that correspond to information in business documents between Flink and Suppliers."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.vpn ;;
+    hidden: no
+  }
+
+  dimension: vpn2 {
+    label: "Vpn2"
+    description: "Supplier facing vpn number"
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.vpn2 ;;
+    hidden: no
+  }
+
+  dimension: manufacturer_id {
+    label: "Manufacturer Id"
+    description: "Identifies partner type of supplier hierarchy level 1.This field will always have the partner type S1 which indicates manufacturer."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.manufacturer_id ;;
+    hidden: no
+  }
+
+  dimension: manufacturer_name {
+    label: "Manufacturer Name"
+    description: "Highest level of supplier hierarchy which is uder to indicate a partner, such as a manufacturer, in the supply chain that gives rebates to the retailer. This information is stored on item_supp_country for defaulting into item_supp_country_loc."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.manufacturer_name ;;
+    hidden: no
+  }
+
+  dimension: distributor_id {
+    label: "Distributor Id"
+    description: "Identifies partner type of supplier hierarchy level 2 . This field will always have the partner type S2 which indicates distributor."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.distributor_id ;;
+    hidden: no
+  }
+
+  dimension: distributor_name {
+    label: "Distributor Name"
+    description: "Second highest level of supplier hierarchy which is uder to indicate a partner, such as a distributor in the supply chain that gives rebates to the retailer. This information is stored on item_supp_country for defaulting into item_supp_country_loc."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.distributor_name ;;
+    hidden: no
+  }
+
+  dimension: wholesaler_id {
+    label: "Wholesaler Id"
+    description: "Identifies partner type of supplier hierarchy level 3. This field will always have the partner type S3 which indicates wholesaler."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.wholesaler_id ;;
+    hidden: no
+  }
+
+  dimension: wholesaler_name {
+    label: "Wholesaler Name"
+    description: "Third highest level of supplier hierarchy which is uder to indicate a partner, such as a wholesaler in the supply chain that gives rebates to the retailer. This information is stored on item_supp_country for defaulting into item_supp_country_loc."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.wholesaler_name ;;
+    hidden: no
+  }
+
+  dimension: hu_pack_size {
+    label: "Hu Pack Size"
+    description: "This field contains the quantity that orders must be placed in multiples of for the supplier for the item."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.hu_pack_size ;;
+    hidden: no
+  }
+
+  dimension: inner_pack_size {
+    label: "Inner Pack Size"
+    description: "This field contains the units of an item contained in an inner pack supplied by the supplier."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.inner_pack_size ;;
+    hidden: no
+  }
+
+  dimension: item_presentation_method {
+    label: "Item Presentation Method"
+    description: "Describes the packaging (if any) being taken into consideration in the specified dimensions. Valid values for this field are in the code type PCKT on the code_head and code_detail tables."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.item_presentation_method ;;
+    hidden: no
+  }
+
+  dimension: min_order_quantity {
+    label: "Min Order Quantity"
+    description: "Minimun quantity of a product that needs to be ordered from a supplier"
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.min_order_quantity ;;
+    hidden: no
+  }
+
+  dimension: max_order_quantity {
+    label: "Max Order Quantity"
+    description: "This field contains the maximum quantity that can be ordered at one time from the supplier for the item."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.max_order_quantity ;;
+    hidden: no
+  }
+
+  dimension: item_lwh_uom {
+    label: "Item Lwh Uom"
+    description: "Unit of measurement for length, width, and height (e.g. inches, centimeters, feet). Valid values for this field are contained in uom field on uom_class table where uom_class field = DIMEN."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.item_lwh_uom ;;
+    hidden: no
+  }
+
+  dimension: item_net_weight {
+    label: "Item Net Weight"
+    description: "Net weight of the dim_object (weight without packaging) measured in units specified in weight_uom."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.item_net_weight ;;
+    hidden: no
+  }
+
+  dimension: item_weight_uom {
+    label: "Item Weight Uom"
+    description: "Unit of measurement for weight (e.g. pounds, kilograms). Valid values for this field are contained in uom field on uom_class table where uom_class field = MASS."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.item_weight_uom ;;
+    hidden: no
+  }
+
+  dimension: item_liquid_volume {
+    label: "Item Liquid Volume"
+    description: "Liquid volume, or capacity, of dim_object measured in units specified in volume_uom. Liquid volumes are only convertible to other liquid volumes."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.item_liquid_volume ;;
+    hidden: no
+  }
+
+  dimension: item_liquid_volume_uom {
+    label: "Item Liquid Volume Uom"
+    description: "Unit of measurement for liquid_volume (e.g. ounces, liters). Liquid volumes are only convertible to other liquid volumes. Valid values for this field are contained in uom field on uom_class table where uom_class field = LVOL."
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.item_liquid_volume_uom ;;
+    hidden: no
+  }
+
+  dimension: item_stat_cube {
+    label: "Item Stat Cube"
+    description: "Statistical value of the dim_objects dimensions to be used for loading purposes."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.item_stat_cube ;;
+    hidden: no
+  }
+
+  dimension: item_tare_weight {
+    label: "Item Tare Weight"
+    description: "Amount of weight to be subtracted for packaging materials. Used to calculate the true net weight of the dim_object."
+    group_label: "Item-Supplier"
+    type: number
+    sql: ${TABLE}.item_tare_weight ;;
+    hidden: no
+  }
+
+  dimension: item_tare_type {
+    label: "Item Tare Type"
+    description: "TARE_TYPE - Indicates if tare weight for this dim_object is wet or dry. Valid values are found on the code_detail table with the code_type TARE and include: W = Wet tare weight D = Dry tare weight"
+    group_label: "Item-Supplier"
+    type: string
+    sql: ${TABLE}.item_tare_type ;;
+    hidden: no
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
