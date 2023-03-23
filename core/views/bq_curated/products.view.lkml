@@ -718,6 +718,15 @@ view: products {
   #  - - - - - - - - - -    New fields from curated.erp_item
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  dimension: erp_item_brand_name {
+    label: "Item Brand Name"
+    description: "The brand of a product as defined in the ERP system"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_brand_name ;;
+    hidden: no
+  }
+
   dimension: erp_item_division_name {
     label: "Item Division Name"
     description: "Level 1 of new item class hierarchie: indicates, if the product is food or non-food"
