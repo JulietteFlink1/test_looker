@@ -32,7 +32,7 @@ view: offline_customer_acquisition_cost {
   dimension_group: report {
     type: time
     label: "Report"
-    group_label: "* Dates *"
+    group_label: "* Dates and Timestamps *"
     timeframes: [
       week,
       month,
@@ -45,7 +45,7 @@ view: offline_customer_acquisition_cost {
   }
 
   dimension: country_iso {
-    label: "Spend Country"
+    label: "Marketing Country"
     group_label: "* Dimensions *"
     description: "Country of marketing activity"
     type: string
@@ -73,6 +73,7 @@ view: offline_customer_acquisition_cost {
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
+    hidden:  yes
     type: unquoted
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
@@ -104,7 +105,7 @@ view: offline_customer_acquisition_cost {
     group_label: "* Parameters *"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
-    hidden: no
+    hidden: yes
     sql:
             {% if date_granularity._parameter_value == 'Week' %}
               "Week"
@@ -124,7 +125,7 @@ view: offline_customer_acquisition_cost {
   measure: sum_of_amt_spend_net {
 
     label: "SUM Offline Spend"
-    description: "Total of online marketing spend"
+    description: "Total of marketing spend, offline sources only"
     group_label: "* CAC Measures *"
 
     type: sum
