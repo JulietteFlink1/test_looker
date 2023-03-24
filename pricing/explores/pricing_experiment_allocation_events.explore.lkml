@@ -7,8 +7,8 @@ include: "/**/orders_cl.explore"
 include: "/**/product_consumer/views/bigquery_reporting/daily_user_aggregates.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 include: "/core/views/bq_curated/orders.view.lkml"
-##include: "/core/views/bq_curated/orderline.view.lkml"
-##include: "/core/views/bq_curated/products.view.lkml"
+include: "/core/views/bq_curated/orderline.view.lkml"
+include: "/core/views/bq_curated/products.view.lkml"
 
 
 explore: pricing_experiment_allocation_events {
@@ -58,14 +58,22 @@ explore: pricing_experiment_allocation_events {
     relationship: many_to_one
   }
 
-##  join: orderline {
-##
-##    sql_on: ${orderline.country_iso} = ${pricing_experiment_allocation_events.country_iso}
-##      AND   ${orderline.order_uuid}  = ${pricing_experiment_allocation_events.order_uuid}
-##      AND  {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %};;
-##    type: left_outer
-##    relationship: one_to_many
-##  }
+  join: orderline {
+
+    sql_on: ${orderline.country_iso} = ${pricing_experiment_allocation_events.country_iso}
+      AND   ${orderline.order_uuid}  = ${pricing_experiment_allocation_events.order_uuid}
+      AND  {% condition global_filters_and_parameters.datasource_filter %} ${orderline.created_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: products {
+
+    sql_on: ${orderline.country_iso} = ${products.country_iso}
+      AND   ${orderline.product_sku}  = ${products.product_sku};;
+    type: left_outer
+    relationship: many_to_one
+  }
 
 
   }
