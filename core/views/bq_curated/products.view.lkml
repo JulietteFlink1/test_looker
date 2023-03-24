@@ -469,12 +469,13 @@ view: products {
     hidden: yes
   }
 
-  dimension: product_erp_brand {
-    description: "The brand of a product as defined in the ERP tool"
-    type: string
-    sql: ${TABLE}.product_erp_brand ;;
-    hidden: yes
-  }
+#Does not exist anymore in dbt
+  #dimension: product_erp_brand {
+  #  description: "The brand of a product as defined in the ERP tool"
+  #  type: string
+  #  sql: ${TABLE}.product_erp_brand ;;
+  #  hidden: yes
+  #}
 
 
   # =========  Price Data   =========
