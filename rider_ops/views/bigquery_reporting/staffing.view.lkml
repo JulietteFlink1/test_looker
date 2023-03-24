@@ -6,7 +6,7 @@
 # on a hub + 30-min slot level
 
 view: staffing {
-  sql_table_name: `flink-data-prod.reporting.staffing`
+  sql_table_name: `flink-data-dev.dbt_jgrammatikas_reporting.staffing`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1639,7 +1639,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Punched Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_worked_minutes_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_worked_minutes_ops_associate_plus/60 ;;
     value_format_name: decimal_1
   }
 
@@ -1648,7 +1648,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Punched Internal Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_worked_minutes_internal_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_worked_minutes_internal_ops_associate_plus/60 ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1658,7 +1658,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# External Punched Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_worked_minutes_external_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_worked_minutes_external_ops_associate_plus/60 ;;
     value_format_name: decimal_1
   }
 
@@ -1697,7 +1697,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_no_show_minutes_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1706,7 +1706,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Internal No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_internal_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_no_show_minutes_internal_ops_associate_plus/60;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1716,7 +1716,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# External No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_external_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_no_show_minutes_external_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1725,7 +1725,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Excused No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_excused_no_show_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_excused_no_show_minutes_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1734,7 +1734,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Deleted Excused No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_deleted_excused_no_show_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_deleted_excused_no_show_minutes_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1743,7 +1743,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Unexcused No Show Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_unexcused_no_show_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_unexcused_no_show_minutes_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1752,7 +1752,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Deleted Unexcused No Show Ops Associate + Hours (Excl. in No Show metric)"
     type: sum
-    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_deleted_unexcused_no_show_minutes_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
@@ -1791,7 +1791,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Unassigned (Open) Internal Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_unassigned_minutes_internal_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_unassigned_minutes_internal_ops_associate_plus/60;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1801,7 +1801,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Open External Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_unassigned_minutes_external_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_unassigned_minutes_external_ops_associate_plus/60;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1820,7 +1820,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Planned External Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_external_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_planned_minutes_external_ops_associate_plus/60 ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1830,7 +1830,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Planned Internal Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_internal_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_planned_minutes_internal_ops_associate_plus/60 ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1840,7 +1840,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) Planned Ops Associate + Hours"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_deputy_shift_lead/60 ;;
+    sql: ${TABLE}.number_of_planned_minutes_ops_associate_plus/60 ;;
     value_format_name: decimal_1
   }
 
@@ -1879,7 +1879,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) Ops Associate + Hours Based on Availability"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_ops_associate_plus/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Ops Associate +)"
     value_format_name: decimal_1
   }
@@ -1899,7 +1899,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) External Ops Associate + Hours Based on Availability"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate_plus/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Ops Associate +)"
     value_format_name: decimal_1
   }
@@ -1909,7 +1909,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) Internal Ops Associate + Hours Based on Availability"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate_plus/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Ops Associate +)"
     value_format_name: decimal_1
   }
@@ -1919,7 +1919,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Ops Associate + Availability Hours"
     type: sum
-    sql: ${TABLE}.number_of_availability_minutes_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_availability_minutes_ops_associate_plus/60;;
     description:"Number of hours that were provided as available by the employee (Ops Associate +)"
     value_format_name: decimal_1
   }
@@ -2919,7 +2919,7 @@ view: staffing {
     label: "# Filled (Assigned) EC Ops Associate + Hours"
     description: "# Filled Ops Associate + Hours from shifts with project code = 'EC shift'"
     type: sum
-    sql: ${TABLE}.number_of_planned_minutes_ec_shift_deputy_shift_lead/60;;
+    sql: ${TABLE}.number_of_planned_minutes_ec_shift_ops_associate_plus/60;;
     value_format_name: decimal_1
   }
 
