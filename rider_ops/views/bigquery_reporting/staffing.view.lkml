@@ -1609,7 +1609,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Planned Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_planned_employees_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_planned_employees_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1619,7 +1619,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Planned Internal Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_planned_employees_internal_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_planned_employees_internal_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1629,7 +1629,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Planned External Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_planned_employees_external_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_planned_employees_external_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1667,7 +1667,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# No Show Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_no_show_employees_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_no_show_employees_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1677,7 +1677,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# No Show Internal Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_no_show_employees_internal_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_no_show_employees_internal_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1687,7 +1687,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# No Show External Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_no_show_employees_external_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_no_show_employees_external_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1761,7 +1761,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Unassigned (Open) Internal Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_unassigned_employees_internal_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_unassigned_employees_internal_ops_associate_plus ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1771,7 +1771,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Unassigned External Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_unassgined_employees_external_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_unassgined_employees_external_ops_associate_plus ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1849,7 +1849,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Punched Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_worked_employees_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_worked_employees_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1859,7 +1859,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Punched Internal Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_worked_employees_internal_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_worked_employees_internal_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
@@ -1869,7 +1869,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "# Punched External Ops Associate +"
     type: sum
-    sql: ${TABLE}.number_of_worked_employees_external_deputy_shift_lead;;
+    sql: ${TABLE}.number_of_worked_employees_external_ops_associate_plus ;;
     value_format_name: decimal_0
     hidden: yes
   }
