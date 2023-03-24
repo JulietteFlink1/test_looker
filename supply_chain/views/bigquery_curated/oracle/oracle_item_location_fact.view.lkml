@@ -1,3 +1,8 @@
+# Background:
+
+  # Used in order_orderline_cl.explore and supply_chain.explore to get the most "Up to date" item_at_location_status record.
+
+
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 # explore: oracle_item_location_fact {
 #   hidden: yes
