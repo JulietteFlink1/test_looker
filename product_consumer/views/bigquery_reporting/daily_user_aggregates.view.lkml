@@ -1052,7 +1052,7 @@ view: daily_user_aggregates {
   }
   measure: users_with_address {
     group_label: "User Metrics - Unique"
-    label: "# Users with Address Set"
+    label: "# Users with Deliverable Address"
     description: "Number of users with at least one deliverable address set"
     type: count_distinct
     sql: ${user_uuid} ;;
@@ -1172,7 +1172,7 @@ view: daily_user_aggregates {
   }
   measure: daily_users_with_address {
     group_label: "User Metrics - Daily"
-    label: "# Daily Active Users with Address Set"
+    label: "# Daily Active Users with Deliverable Address"
     description: "Number of daily users with at least one deliverable address set"
     type: count_distinct
     sql: ${daily_user_uuid} ;;
