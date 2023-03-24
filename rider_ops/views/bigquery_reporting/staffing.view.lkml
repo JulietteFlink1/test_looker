@@ -1949,7 +1949,7 @@ view: staffing {
     group_label: "> Ops Associate + Measures"
     label: "% No Show Shift Lead Hours (# No Show Hours / (# Planned Hours - # Planned EC Hours))"
     type: number
-    sql:(${number_of_no_show_hours_ops_associate_plus})/nullif(${number_of_planned_hours_ops_associate_plus}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
+    sql:(${number_of_no_show_hours_ops_associate_plus})/nullif(${number_of_planned_hours_ops_associate_plus}-${number_of_planned_hours_ops_associate_plus_ec_shift},0) ;;
     value_format_name: percent_1
   }
 
@@ -2914,7 +2914,8 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_hours_deputy_shift_lead_ec_shift {
+  measure: number_of_planned_hours_ops_associate_plus_ec_shift {
+    alias: [number_of_planned_hours_deputy_shift_lead_ec_shift]
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) EC Ops Associate + Hours"
     description: "# Filled Ops Associate + Hours from shifts with project code = 'EC shift'"
@@ -3450,7 +3451,7 @@ view: staffing {
     description: "# Filled Hub Staff Hours from shifts with project code = 'EC shift'"
     type: number
     sql: ${number_of_planned_hours_ops_associate_ec_shift} + ${number_of_planned_hours_shift_lead_ec_shift}
-      + ${number_of_planned_hours_deputy_shift_lead_ec_shift};;
+      + ${number_of_planned_hours_ops_associate_plus_ec_shift};;
     value_format_name: decimal_1
   }
 
@@ -3459,7 +3460,7 @@ view: staffing {
     label: "# Filled (Assigned) Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
-      ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_ops_associate_plus)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Hub Staff)"
     value_format_name: decimal_1
   }
@@ -3478,7 +3479,7 @@ view: staffing {
     label: "# Filled (Assigned) External Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
-      ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate_plus)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Hub Staff)"
     value_format_name: decimal_1
   }
@@ -3488,7 +3489,7 @@ view: staffing {
     label: "# Filled (Assigned) Internal Hub Staff Hours Based on Availability"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
-      ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate_plus)/60;;
     description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Hub Staff)"
     value_format_name: decimal_1
   }
@@ -3498,7 +3499,7 @@ view: staffing {
     label: "# Hub Staff Availability Hours"
     type: sum
     sql: (${TABLE}.number_of_availability_minutes_ops_associate +
-      ${TABLE}.number_of_availability_minutes_shift_lead + ${TABLE}.number_of_availability_minutes_deputy_shift_lead)/60;;
+      ${TABLE}.number_of_availability_minutes_shift_lead + ${TABLE}.number_of_availability_minutes_ops_associate_plus)/60;;
     description:"Number of hours that were provided as available by the employee (Hub Staff)"
     value_format_name: decimal_1
   }
@@ -4375,7 +4376,7 @@ view: staffing {
     label: "% No Show Shift Lead Hours"
     description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
     type: number
-    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead}-${number_of_planned_hours_deputy_shift_lead_ec_shift},0) ;;
+    sql:(${number_of_no_show_hours_shift_lead})/nullif(${number_of_planned_hours_shift_lead}-${number_of_planned_hours_ops_associate_plus_ec_shift},0) ;;
     value_format_name: percent_1
   }
   measure: pct_no_show_hours_rider_captain {
@@ -4644,7 +4645,7 @@ view: staffing {
           when {% parameter position_parameter %} = 'Rider' THEN ${number_of_planned_hours_rider_ec_shift}
           when {% parameter position_parameter %} = 'Picker' THEN ${number_of_planned_hours_picker_ec_shift}
           when {% parameter position_parameter %} = 'Shift Lead' THEN ${number_of_planned_hours_shift_lead_ec_shift}
-          when {% parameter position_parameter %} = 'Ops Associate +' THEN ${number_of_planned_hours_deputy_shift_lead_ec_shift}
+          when {% parameter position_parameter %} = 'Ops Associate +' THEN ${number_of_planned_hours_ops_associate_plus_ec_shift}
           when {% parameter position_parameter %} = 'Rider Captain' THEN ${number_of_planned_hours_rider_captain_ec_shift}
           when {% parameter position_parameter %} = 'WH' THEN ${number_of_planned_hours_wh_ec_shift}
           when {% parameter position_parameter %} = 'Hub Staff' THEN ${number_of_planned_hours_hub_staff_ec_shift}
