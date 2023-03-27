@@ -262,10 +262,10 @@ set: drill_fields_set {
 
   dimension: product_erp_brand {
     type: string
-    sql: ${TABLE}.product_erp_brand ;;
+    sql: ${TABLE}.erp_item_brand_name ;;
     label: "Product Brand (ERP)"
     group_label: "Product Data"
-    description: "The brand a product belongs to (ERP)."
+    description: "The brand of a product as defined in the ERP system."
     drill_fields: [drill_fields_set*]
   }
 

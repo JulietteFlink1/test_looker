@@ -275,6 +275,13 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.item_division_name ;;
   }
 
+  dimension: item_brand_name {
+    type: string
+    description: "The brand of a product as defined in the ERP System"
+    group_label: "Item"
+    sql: ${TABLE}.item_brand_name ;;
+  }
+
   dimension: item_ean_13 {
     type: string
     description: "The 13 digit long EAN (European Article Number) code to identify a product"
