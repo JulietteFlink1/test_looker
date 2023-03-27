@@ -469,12 +469,13 @@ view: products {
     hidden: yes
   }
 
-  dimension: product_erp_brand {
-    description: "The brand of a product as defined in the ERP tool"
-    type: string
-    sql: ${TABLE}.product_erp_brand ;;
-    hidden: yes
-  }
+#Does not exist anymore in dbt
+  #dimension: product_erp_brand {
+  #  description: "The brand of a product as defined in the ERP tool"
+  #  type: string
+  #  sql: ${TABLE}.product_erp_brand ;;
+  #  hidden: yes
+  #}
 
 
   # =========  Price Data   =========
@@ -717,6 +718,15 @@ view: products {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    New fields from curated.erp_item
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  dimension: erp_item_brand_name {
+    label: "Item Brand Name"
+    description: "The brand of a product as defined in the ERP system"
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.erp_item_brand_name ;;
+    hidden: no
+  }
 
   dimension: erp_item_division_name {
     label: "Item Division Name"

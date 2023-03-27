@@ -50,7 +50,7 @@ view: daily_user_aggregates {
     group_label: "IDs"
     label: "User UUID"
     type: string
-    description: "Unique user identifier: if user was logged in, the identifier is 'user_id' populated upon registration, else 'anonymous_id' populated by Segment"
+    description: "Unique user identifier: refers to 'anonymous_id' populated by Segment"
     sql: ${TABLE}.anonymous_id ;;
   }
   dimension: order_uuids {
@@ -83,7 +83,7 @@ view: daily_user_aggregates {
     label: "Event Date (Dynamic)"
     label_from_parameter: timeframe_picker
     type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
-    hidden:  yes
+    hidden:  no
     sql:
       {% if timeframe_picker._parameter_value == 'Day' %}
         ${event_date_at_date}
@@ -259,7 +259,7 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_web_app_opened ;;
   }
-  dimension: is_address_set {
+  dimension: is_address_deliverable {
     group_label: "Flags | Conversion"
     description: "Yes if user has a valid hub set"
     type: yesno
@@ -340,11 +340,12 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
-  dimension: is_recommendation_placement {
+  dimension: is_any_recommendation_placement {
     group_label: "Flags | Product Placement"
+    description: "Is ATC from any recommendation placement including last bought from home?"
     hidden:  yes
     type: yesno
-    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement ;;
+    sql: ${TABLE}.is_add_to_cart_from_recommendation_placement or ${TABLE}.is_add_to_cart_from_last_bought_placement ;;
   }
   dimension: is_recipes_placement {
     group_label: "Flags | Product Placement"
@@ -1004,66 +1005,61 @@ view: daily_user_aggregates {
   }
 
   # Basic counts
-  measure: daily_user_events {
-    group_label: "User Metrics"
-    label: "# Daily Users"
-    description: "Number of unique daily users. When a user browses in two different days he/she is considered as two separate daily users"
-    type: count_distinct
-    sql: ${daily_user_uuid} ;;
-  }
+    ## Based on Unique Users (anonymous_id)
   measure: unique_users {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Unique Users"
-    description: "Number of unique users"
+    description: "Number of Unique Users in selected Timeframe"
+    hidden: yes
     type: count_distinct
     sql: ${user_uuid} ;;
   }
   measure: active_users {
-    group_label: "User Metrics"
-    label: "# Active Users (unique)"
+    group_label: "User Metrics - Unique"
+    label: "# Unique Active Users"
     description: "Number of Unique Active Users within selected timeframe (note: an active user is a user who generated at least 2 various events when browsing Flink app/web.)"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_active_user: "yes"]
   }
+    ## Based on Daily Users (daily_user_uuid)
+  measure: daily_users {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Users"
+    description: "Number of Daily Users. Unlike the Unique Users metric, where a single user is counted once per selected date granularity, this metric counts each user each day."
+    hidden: yes
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+  }
   measure: daily_active_users {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Daily"
     label: "# Daily Active Users"
-    description: "Number of unique Active Users per day. Unlike the Active Users metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
+    description: "Number of Daily Active Users. Unlike the Unique Active Users metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
     type: count_distinct
     sql: ${daily_user_uuid} ;;
     filters: [is_active_user: "yes"]
   }
 
-  #### User Metrics  ####
+  #### Unique User Metrics  ####
 
   measure: users_with_order {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Orders"
     description: "Number of users with at least one order"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_order_placed: "yes"]
   }
-  measure: daily_users_with_order {
-    group_label: "User Metrics"
-    label: "# Daily Users with Orders"
-    hidden: yes
-    description: "Unlike the Users with orders metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active"
-    type: count_distinct
-    sql: ${daily_user_uuid} ;;
-    filters: [is_order_placed: "yes"]
-  }
   measure: users_with_address {
-    group_label: "User Metrics"
-    label: "# Users with Address Set"
-    description: "Number of users with at least one address set"
+    group_label: "User Metrics - Unique"
+    label: "# Users with Deliverable Address"
+    description: "Number of users with at least one deliverable address set"
     type: count_distinct
     sql: ${user_uuid} ;;
-    filters: [is_address_set: "yes"]
+    filters: [is_address_deliverable: "yes"]
   }
   measure: users_with_add_to_cart {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Add-to-Cart"
     description: "Number of users who at least one product added to cart"
     type: count_distinct
@@ -1071,7 +1067,7 @@ view: daily_user_aggregates {
     filters: [is_product_added_to_cart: "yes"]
   }
   measure: users_with_cart_viewed {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Cart Viewed"
     description: "Number of users who viewed their cart at least once"
     type: count_distinct
@@ -1079,7 +1075,7 @@ view: daily_user_aggregates {
     filters: [is_cart_viewed: "yes"]
   }
   measure: users_with_checkout_viewed {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Checkout Viewed"
     description: "Number of users who viewed checkout at least once"
     type: count_distinct
@@ -1087,7 +1083,7 @@ view: daily_user_aggregates {
     filters: [is_checkout_viewed: "yes"]
   }
   measure: users_with_payment_started {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Payment Started"
     description: "Number of users who started the payment process at least once"
     type: count_distinct
@@ -1095,7 +1091,7 @@ view: daily_user_aggregates {
     filters: [is_payment_started: "yes"]
   }
   measure: users_with_home_viewed {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Home Viewed"
     description: "Number of users who viewed home at least once"
     type: count_distinct
@@ -1103,7 +1099,7 @@ view: daily_user_aggregates {
     filters: [is_home_viewed: "yes"]
   }
   measure: users_with_category_selected {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Category Selected"
     description: "Number of users who clicked on a category at least once"
     type: count_distinct
@@ -1111,23 +1107,23 @@ view: daily_user_aggregates {
     filters: [is_category_selected: "yes"]
   }
   measure: users_with_product_search {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Executed Search"
-    description: "Number of users with started the payment process at least once"
+    description: "Number of users with at least one product search"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_executed: "yes"]
   }
   measure: users_with_product_search_viewed {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Search Viewed"
-    description: "Number of users with started the payment process at least once"
+    description: "Number of users with at least one view of the product search page"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_product_search_viewed: "yes"]
   }
   measure: users_with_product_details_viewed {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Product Details Viewed"
     description: "Number of users who viewed (PDP) a product at least once"
     type: count_distinct
@@ -1136,7 +1132,7 @@ view: daily_user_aggregates {
   }
 
   measure: active_app_users {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Active Unique Users in Apps"
     description: "Number of active unique users in apps"
     type: count_distinct
@@ -1145,9 +1141,8 @@ view: daily_user_aggregates {
     filters: [is_active_user: "yes",
         platform: "-web"]
   }
-
   measure: users_with_temporary_unavailable_hub {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Temporary Unavailable Hub"
     description: "Number of users who saw a message about hub temporary unavailability"
     type: count_distinct
@@ -1155,14 +1150,121 @@ view: daily_user_aggregates {
     filters: [is_hub_temporary_unavailable: "yes"]
   }
   measure: users_with_regular_unavailable_hub {
-    group_label: "User Metrics"
+    group_label: "User Metrics - Unique"
     label: "# Users with Regularly Unavailable Hub"
     description: "Number of users who saw a message about hub regular unavailability"
     type: count_distinct
     sql: ${user_uuid} ;;
     filters: [is_hub_regular_unavailable: "yes"]
   }
-  #### Conversions ###
+
+
+  #### Daily User Metrics  ####
+
+  measure: daily_users_with_order {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Orders"
+    hidden: no
+    description: "Unlike the Users with orders metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_order_placed: "yes"]
+  }
+  measure: daily_users_with_address {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Deliverable Address"
+    description: "Number of daily users with at least one deliverable address set"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_address_deliverable: "yes"]
+  }
+  measure: daily_users_with_add_to_cart {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Add-to-Cart"
+    description: "Number of Daily Active Users who have at least one product added to cart"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_product_added_to_cart: "yes"]
+  }
+  measure: daily_users_with_cart_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Cart Viewed"
+    description: "Number of Daily Active Users who viewed their cart at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_cart_viewed: "yes"]
+  }
+  measure: daily_users_with_checkout_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Checkout Viewed"
+    description: "Number of Daily Active Users who viewed checkout at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_checkout_viewed: "yes"]
+  }
+  measure: daily_users_with_payment_started {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Payment Started"
+    description: "Number of Daily Active Users who started the payment process at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_payment_started: "yes"]
+  }
+  measure: daily_users_with_home_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Home Viewed"
+    description: "Number of Daily Active Users who viewed home at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_home_viewed: "yes"]
+  }
+  measure: daily_users_with_product_search_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Product Search Viewed"
+    description: "Number of Daily Active Users who viewed product search at least once. NOTE: only available for app"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_product_search_viewed: "yes"]
+  }
+  measure: daily_users_with_product_details_viewed {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Product Details Viewed"
+    description: "Number of Daily Active Users who viewed produt details at least once"
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_product_details_viewed: "yes"]
+  }
+  measure: daily_active_app_users {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users in Apps"
+    description: "Number of active unique users in apps"
+    type: count_distinct
+    hidden: yes
+    sql: ${daily_user_uuid} ;;
+    filters: [is_active_user: "yes",
+      platform: "-web"]
+  }
+  measure: daily_users_with_temporary_unavailable_hub {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Temporary Unavailable Hub"
+    description: "Number of Daily Active Users who saw a message about hub temporary unavailability"
+    hidden: no
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_hub_temporary_unavailable: "yes"]
+  }
+  measure: daily_users_with_regular_unavailable_hub {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Regularly Unavailable Hub"
+    description: "Number of Daily Active Users who saw a message about hub regular unavailability"
+    hidden: no
+    type: count_distinct
+    sql: ${daily_user_uuid} ;;
+    filters: [is_hub_regular_unavailable: "yes"]
+  }
+
+
+  #### Conversions - Unique Users ###
 
   measure: cvr {
     group_label: "Conversions - All Active Users (%)"
@@ -1171,14 +1273,6 @@ view: daily_user_aggregates {
     description: "# users with at least one order / # active users"
     value_format_name: percent_1
     sql: ${users_with_order} / nullif(${active_users},0) ;;
-  }
-  measure: daily_cvr {
-    group_label: "Conversions - All Active Users (%)"
-    label: "Daily CVR"
-    type: number
-    description: "Unlike the CVR metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
-    value_format_name: percent_1
-    sql: ${daily_users_with_order} / nullif(${daily_active_users},0) ;;
   }
   measure: mcvr_1 {
     group_label: "Conversions - All Active Users (%)"
@@ -1240,7 +1334,7 @@ view: daily_user_aggregates {
     group_label: "Conversions - All Active Users (%)"
     label: "mCVR3 [AAU]"
     type: number
-    description: "# users with checkout started, compared to # of all active users"
+    description: "# users with checkout viewed, compared to # of all active users"
     value_format_name: percent_1
     sql: ${users_with_checkout_viewed} / nullif(${active_users},0);;
   }
@@ -1248,7 +1342,7 @@ view: daily_user_aggregates {
     group_label: "Conversions - Subsequent Steps (%)"
     label: "mCVR4"
     type: number
-    description: "# users with payment started, compared to users with checkout started"
+    description: "# users with payment started, compared to users with checkout viewed"
     value_format_name: percent_1
     sql: ${users_with_payment_started} / nullif(${users_with_checkout_viewed},0);;
   }
@@ -1256,7 +1350,7 @@ view: daily_user_aggregates {
     group_label: "Conversions - All Active Users (%)"
     label: "mCVR4 [AAU]"
     type: number
-    description: "# users with payment started, compared to users with checkout started"
+    description: "# users with payment started, compared to # of all active users"
     value_format_name: percent_1
     sql: ${users_with_payment_started} / nullif(${active_users},0);;
   }
@@ -1269,6 +1363,60 @@ view: daily_user_aggregates {
     sql: ${users_with_order} / nullif(${users_with_payment_started},0);;
   }
 
+
+  #### Conversions - Daily Active Users ###
+
+  measure: daily_cvr {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU CVR"
+    type: number
+    description: "Unlike the CVR metric, where a single user is counted once per the given date granularity, this metric counts each user each day that they are active."
+    value_format_name: percent_1
+    sql: ${daily_users_with_order} / nullif(${daily_active_users},0) ;;
+  }
+  measure: daily_mcvr_1 {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU with Address"
+    type: number
+    description: "# DAU with an address compared to the total # Daily Active Users"
+    value_format_name: percent_1
+    sql: ${daily_users_with_address} / nullif(${daily_active_users},0);;
+  }
+
+  measure: daily_mcvr_2_add_to_cart_all_active_users {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU with Add To Cart"
+    type: number
+    description: "# DAU with add-to-cart, compared to total # Daily Active Users"
+    value_format_name: percent_1
+    sql: ${daily_users_with_add_to_cart} / nullif(${daily_active_users},0);;
+  }
+
+  measure: daily_mcvr_2_cart_viewed_all_active_users {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU with Cart Viewed"
+    type: number
+    description: "# DAU with cart-viewed, compared to total # Daily Active Users"
+    value_format_name: percent_1
+    sql: ${daily_users_with_cart_viewed} / nullif(${daily_active_users},0);;
+  }
+
+  measure: daily_mcvr_3_all_active_users {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU with Checkout Viewed"
+    type: number
+    description: "# DAU with checkout viewed, compared to total # Daily Active Users"
+    value_format_name: percent_1
+    sql: ${daily_users_with_checkout_viewed} / nullif(${daily_active_users},0);;
+  }
+  measure: daily_mcvr_4_all_active_users {
+    group_label: "Conversions - Daily (%)"
+    label: "% DAU with Payment Started"
+    type: number
+    description: "# DAU with payment started, compared to total # Daily Active Users"
+    value_format_name: percent_1
+    sql: ${daily_users_with_payment_started} / nullif(${daily_active_users},0);;
+  }
 
 
   #### Abandonment Rates ###
@@ -1356,7 +1504,7 @@ view: daily_user_aggregates {
     hidden: no
     description: "# users with add-to-cart from Recommendation, compared to the total number of users with an address"
     value_format_name: percent_1
-    sql: ${users_with_recommendation_atc} / nullif(${users_with_address},0);;
+    sql: ${users_with_any_recommendation_atc} / nullif(${users_with_address},0);;
   }
   measure: mcvr_2_recipes {
     group_label: "Conversions | Product Placement mCVR2 (%)"
@@ -1525,7 +1673,7 @@ view: daily_user_aggregates {
     type: number
     description: "Average number of daily visits per user"
     value_format_name: decimal_1
-    sql: ${daily_user_events} / ${unique_users} ;;
+    sql: ${daily_users} / ${unique_users} ;;
   }
 
   measure: re_order_rate {
@@ -1706,13 +1854,25 @@ view: daily_user_aggregates {
     sql: ${user_uuid} ;;
     filters: [is_last_bought_placement: "yes"]
   }
-  measure: users_with_recommendation_atc {
+  measure: users_with_any_recommendation_atc {
     type: count_distinct
     hidden:  yes
     sql: ${user_uuid} ;;
-    filters: [is_recommendation_placement: "yes"]
+    filters: [is_any_recommendation_placement: "yes"]
+  }
+
+  measure: daily_users_with_any_reco_atc {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Users with ATC from any recommendation lane including last-bought on home"
+    description: "count of users with ATC from any reco lane including last bought from home"
+    type: count_distinct
+    hidden:  no
+    sql: ${daily_user_uuid} ;;
+    filters: [is_any_recommendation_placement: "yes"]
   }
   measure: users_with_recipes_atc {
+    group_label: "User Metrics"
+    label: "# Users with ATC from Recipes"
     type: count_distinct
     hidden:  no
     sql: ${user_uuid} ;;

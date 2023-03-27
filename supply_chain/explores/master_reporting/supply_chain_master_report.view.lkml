@@ -178,6 +178,18 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+  dimension_group: item_location_termination {
+    type: time
+    datatype: date
+    label: "Item Location Termination"
+    description: "The date, when a given product was delisted in the location."
+    group_label: "Product Data"
+    timeframes: [
+      date
+    ]
+    sql: ${TABLE}.item_location_termination_date ;;
+  }
+
   dimension: vendor_name {
     type: string
     sql: ${TABLE}.vendor_name ;;
@@ -250,10 +262,10 @@ set: drill_fields_set {
 
   dimension: product_erp_brand {
     type: string
-    sql: ${TABLE}.product_erp_brand ;;
+    sql: ${TABLE}.erp_item_brand_name ;;
     label: "Product Brand (ERP)"
     group_label: "Product Data"
-    description: "The brand a product belongs to (ERP)."
+    description: "The brand of a product as defined in the ERP system."
     drill_fields: [drill_fields_set*]
   }
 
@@ -467,7 +479,7 @@ set: drill_fields_set {
 
   dimension: number_of_items_sold {
     type: number
-    sql: ${TABLE}.number_of_items_sold ;;
+    sql: ${TABLE}.sum_quantity_outbound_order ;;
     hidden: yes
     label: "Number of Items Sold"
     group_label: "GMV Metrics"

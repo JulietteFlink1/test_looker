@@ -1123,6 +1123,15 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_employees {
+    group_label: "> Shift Related"
+    type: number
+    label: "# Worked Employees"
+    description:"Number of distinct employees punched in Quinyx excluding one-time externals since they dont punch in Quinyx"
+    sql: count(distinct case when ${TABLE}.number_of_worked_minutes > 0 then ${employment_id} end) ;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_employees_with_availability_provided {
     group_label: "> Shift Related"
     type: number
@@ -1361,11 +1370,60 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Overpunched Hours"
-    sql: case when ${TABLE}.number_of_worked_minutes > ${TABLE}.number_of_planned_minutes
-          then (${TABLE}.number_of_worked_minutes - ${TABLE}.number_of_planned_minutes)/60
-          else 0 end;;
+    sql: ${TABLE}.number_of_overtime_minutes/60;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
+  }
+
+  measure: number_of_unjustified_start_early_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Unjustified Early Overpunched Hours"
+    sql: ${TABLE}.number_of_unjustified_start_early_minutes/60;;
+    description: "Number of hours when a rider punched in earlier than planned shift start time even if the rider has worked.
+      In these cases, hub manager should adjust shift start time in Quinyx.
+      Calculated as a difference between planned shift start timestamp and first punch in timestamp.
+      5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
+    value_format_name: decimal_1
+    }
+
+  measure: number_of_unjustified_end_late_hours {
+    group_label: "> Shift Related"
+    type: sum
+    label: "# Unjustified Late Overpunched Hours"
+    sql: ${TABLE}.number_of_unjustified_end_late_minutes/60;;
+    description: "Number of hours when a rider punched out later than planned shift end time.
+      This late punch-out is unjustified as rider was idle.
+      Calculated as a difference between last rider arrived at hub timestamp and punch out timestamp.
+      5 minutes are deducted due to tolerance for preparation time (e.g. changing clothes, packing bag, etc.)."
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unjustified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "# Total Unjustified Overpunched Hours"
+    sql: ${number_of_unjustified_end_late_hours} + ${number_of_unjustified_start_early_hours};;
+    description: "Sum of # Unjustified Late Overpunched Hours and # Unjustified Early Overpunched Hours."
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_justified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "# Justified Overpunched Hours"
+    sql: ${number_of_overpunched_hours} - ${number_of_unjustified_overpunched_hours};;
+    description: "Difference between # Overpunched Hours and # Unjustified Overpunched Hours"
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_justified_overpunched_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Justified Overpunched Hours"
+    sql: ${number_of_justified_overpunched_hours}/${number_of_overpunched_hours};;
+    description: "Share of justified overtime rider spent working during overtime. Formula: # Justified Overpunched Hours / # Overpunched Hours"
+    value_format_name: percent_2
   }
 
   measure: number_of_no_show_hours {
