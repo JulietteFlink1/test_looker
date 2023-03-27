@@ -76,4 +76,10 @@ explore: pricing_experiment_allocation_events {
   }
 
 
+  join: geographic_pricing_sku_cluster {
+    sql_on: ${geographic_pricing_sku_cluster.sku}           = ${orderline.product_sku}
+      and ${geographic_pricing_sku_cluster.country_iso}       = ${orderline.country_iso};;
+    relationship: many_to_one
+  }
+
   }
