@@ -80,6 +80,15 @@ explore: supply_chain {
           and (${hubs_ct.termination_date} > ${products_hub_assignment.report_date} or ${hubs_ct.termination_date} is null)
         {% endif %}
         -- Filter for terminated hubs is {% parameter supply_chain_config.filter_terminated_hubs %}
+
+        and coalesce(${products_hub_assignment.item_location_introduction_date},
+                      ${products_hub_assignment.item_introduction_date},
+                      date('2000-01-01')) <= ${products_hub_assignment.report_date}
+
+        and coalesce(${products_hub_assignment.item_location_termination_date}, date('9999-12-31'))  >
+             date_sub(${products_hub_assignment.report_date}, interval 7 day)
+
+
       ;;
 
 

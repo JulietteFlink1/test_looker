@@ -3675,11 +3675,12 @@ view: orders {
 
 
   measure: cnt_rider {
-    label: "# Riders Delivering Orders"
+    label: "# Employees Delivering Orders"
     type: number
     group_label: "* Operations / Logistics *"
     sql:count (distinct ${rider_id});;
     value_format_name: decimal_0
+    description: "Number of distinct employees delivered at least one order based on Workforce app (not based on punched hours) include none riders if they deliver orders"
   }
 
 
