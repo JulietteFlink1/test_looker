@@ -216,6 +216,7 @@ view: event_inbound_progressed {
 
   dimension: sscc {
     type: string
+    group_label: "Inbound Progressed Dimensions"
     description: "Serial Shipping Container Code. A delivery is usually delivered on multiple rollies. This field relates to the ID of each rolli."
     sql: ${TABLE}.sscc ;;
   }
