@@ -99,7 +99,7 @@ view: vehicle_suppliers {
     label: "License Plate"
     description: "License plate written on the bike frame."
     type: string
-    sql: ${TABLE}.vehicle_id ;;
+    sql: ${TABLE}.license_plate ;;
   }
 
   dimension: is_archived_bike {
