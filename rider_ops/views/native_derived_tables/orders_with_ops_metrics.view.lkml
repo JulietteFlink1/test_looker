@@ -456,7 +456,7 @@ view: orders_with_ops_metrics {
   measure: avg_pick_pack_handling_time_minutes  {
     alias: [avg_picking_time]
     group_label: "> Operations / Logistics"
-    label: "AVG Picking Time"
+    label: "AVG Pick-Pack Handling Time (Minutes)"
     description: "AVG time it took for the picker to pick the order and pack it. In minutes. Outliers excluded (<0min or >30min).
     It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
     value_format_name: decimal_1
