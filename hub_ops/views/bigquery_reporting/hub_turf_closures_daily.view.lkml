@@ -97,6 +97,18 @@ view: hub_turf_closures_daily {
     sql: ${TABLE}.amt_estimated_lost_gmv_eur ;;
   }
 
+  dimension: number_of_last_mile_missed_orders_forced_closure {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_forced_closure ;;
+  }
+
+  dimension: amt_estimated_last_mile_lost_gmv_eur {
+    hidden:  yes
+    type: number
+    sql: ${TABLE}.amt_estimated_last_mile_lost_gmv_eur ;;
+  }
+
   dimension: number_of_successful_non_external_orders  {
     hidden: yes
     type: number
@@ -156,6 +168,23 @@ view: hub_turf_closures_daily {
     value_format_name: eur
   }
 
+  measure: sum_number_of_last_mile_missed_orders_forced_closure {
+    label: "# Estimated Last Mile Missed Orders (Daily)"
+    description: "Estimated number of last mile missed orders due to the forced closures. Forced closures are unplanned closures of the hub/turf done
+    by Ops when the service levels go down due to a hub not being able to keep up with the orders."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_amt_estimated_last_mile_lost_gmv_eur {
+    label: "€ Estimated Last Mile Lost GMV (Daily)"
+    description: "Estimated lost GMV. Computed as number of missed orders due to emergency closure multiplied by average order value."
+    type: sum
+    sql: ${amt_estimated_last_mile_lost_gmv_eur} ;;
+    value_format_name: eur
+  }
+
   measure: sum_number_of_open_hours {
     label: "# Planned Open Hours (Daily)"
     description: "Number of hours the hub/turf was supposed to be open."
@@ -188,6 +217,15 @@ view: hub_turf_closures_daily {
     type: number
     sql: safe_divide(${sum_number_of_missed_orders_forced_closure},
       (${sum_number_of_successful_non_external_orders} + ${sum_number_of_missed_orders_forced_closure}));;
+    value_format_name: percent_1
+  }
+
+  measure: share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders {
+    label: "% Last Mile Missed orders (Daily)"
+    description: "# Last Mile Missed Orders / (# Last Mile Missed Orders + # Succesful Non External Orders per hub)"
+    type: number
+    sql: safe_divide(${sum_number_of_last_mile_missed_orders_forced_closure},
+      (${sum_number_of_successful_non_external_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure}));;
     value_format_name: percent_1
   }
 
