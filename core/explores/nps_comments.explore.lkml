@@ -2,6 +2,7 @@ include: "/**/nps_comments_words_count.view"
 include: "/**/nps_comments_words_ranked.view"
 include: "/**/nps_comments_labeled.view"
 include: "/**/nps_after_order_cl.view"
+include: "/pricing/views/bigquery_reporting/hub_specific_price_hub_cluster.view.lkml"
 
 explore: nps_comments {
   view_name: nps_comments_words_count
@@ -35,4 +36,12 @@ explore: nps_comments {
     fields: [nps_after_order_cl.order_number]
 
   }
+
+  join: geographic_pricing_hub_cluster {
+    from: geographic_pricing_hub_cluster
+    sql_on: ${nps_comments_labeled.hub_code} = ${geographic_pricing_hub_cluster.hub_code};;
+    type: left_outer
+    relationship: many_to_one
+  }
+
 }

@@ -175,11 +175,25 @@ view: +supply_chain_master_report {
     value_format_name: percent_1
   }
 
+
 ## DESADVs <> Inbounds
+
+# This calculation is needed in order to get the total quantities inbounded with DESADVs assigned.
+# This is because we don't have DESADVs for every Supplier, that's why we need to exclude those inbounds from Suppliers without DESADVs.
+
+  measure: sum_units_inbounded_for_desadv_fill_rate_calculation{
+    type: sum
+    sql: ${number_of_items_inbounded} ;;
+    label: "# Units Inbounded (with DESADVs)"
+    group_label: "Inventory Metrics"
+    description: "Total number of items inbounded during the inbounding process with DESADVs assigned."
+    value_format_name: decimal_1
+    filters: [is_dispatch_notifications_assigned_for_inbound_calculation: "yes"]
+  }
 
   measure: pct_fill_rate_desadvs_inbounds{
     type: number
-    sql: safe_divide(${sum_units_inbounded}, ${sum_selling_units_delivered}) ;;
+    sql: safe_divide(${sum_units_inbounded_for_desadv_fill_rate_calculation}, ${sum_selling_units_delivered}) ;;
     label: "% Fill Rate (DESADVs<>Inbounds)"
     group_label: "Inventory Metrics"
     description: "The percentage of selling units on a dispatch notification that were actually inbounded"
