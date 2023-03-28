@@ -30,7 +30,7 @@ explore: order_orderline_cl {
 
   join: products {
 
-    view_label: "Product Data (CT)"
+    view_label: "Product Data"
 
     sql_on:
         ${products.product_sku} = ${orderline.product_sku} and
@@ -53,7 +53,8 @@ explore: order_orderline_cl {
   }
 
   join: oracle_item_location_fact {
-    view_label: "Product-Hub Data (as of today)"
+    # HIDDEN - DEPRECATE IN FAVOR OF erp_product_hub_vendor_assignment_unfiltered_current
+    view_label: ""
     type: left_outer
     relationship: many_to_one
     sql_on:
@@ -76,17 +77,22 @@ explore: order_orderline_cl {
         ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${orderline.product_sku}
     and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${orderline.hub_code}
     and ${erp_product_hub_vendor_assignment_unfiltered.report_date}    = ${orderline.created_date}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${erp_product_hub_vendor_assignment_unfiltered.report_date} {% endcondition %}
     ;;
     type: left_outer
-    relationship: one_to_many
-    fields: [erp_product_hub_vendor_assignment_unfiltered.edi,
-             erp_product_hub_vendor_assignment_unfiltered.item_at_location_status,
-             erp_product_hub_vendor_assignment_unfiltered.supplier_site,
-             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_name,
-             erp_product_hub_vendor_assignment_unfiltered.supplier_parent_id,
-             erp_product_hub_vendor_assignment_unfiltered.supplier_name,
-             erp_product_hub_vendor_assignment_unfiltered.supplier_id
-            ]
+    relationship: many_to_one
+  }
+
+  join: erp_product_hub_vendor_assignment_unfiltered_current {
+    from: erp_product_hub_vendor_assignment_unfiltered
+    view_label: "Product-Hub Data (as of today)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered_current.sku}            = ${orderline.product_sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered_current.hub_code}       = ${orderline.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered_current.report_date}    = current_date()
+    ;;
+    type: left_outer
+    relationship: many_to_one
   }
 
   join: erp_product_hub_vendor_assignment {

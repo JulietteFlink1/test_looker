@@ -1,7 +1,7 @@
 include: "/marketing/views/bigquery_curated/crm_braze_data.view.lkml"
 
 explore: crm_braze_data {
-  hidden: no
+  hidden: yes
   view_name: crm_braze_data
   label: "[CRM] Campaigns (Braze)"
   view_label: "CRM Email Data"
