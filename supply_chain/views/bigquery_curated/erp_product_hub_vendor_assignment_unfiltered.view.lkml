@@ -116,25 +116,11 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.ean_hu ;;
   }
 
-  dimension: temperature_zone {
-    type: string
-    description: "Temperature a product needs to have while being delivered and stored in order to be consumable"
-    group_label: "Item"
-    sql: ${TABLE}.temperature_zone ;;
-  }
-
   dimension: max_shelf_life_days {
     type: number
     description: "SKU's max amount of days on shelf."
     group_label: "Item"
     sql: ${TABLE}.max_shelf_life_days ;;
-  }
-
-  dimension: purchase_unit {
-    type: number
-    description: "The ERP defined puchase unit code of a product. It defines, which aggregation was bought (examples: STÜCK, PK14, PK06)"
-    group_label: "Item"
-    sql: ${TABLE}.purchase_unit ;;
   }
 
   dimension: item_replenishment_substitute_group {
@@ -177,13 +163,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     description: "The producing company of a product."
     group_label: "Item"
     sql: ${TABLE}.item_producer ;;
-  }
-
-  dimension: item_purchase_uom {
-    type: string
-    description: "The unit of measure of a product"
-    group_label: "Item"
-    sql: ${TABLE}.item_purchase_uom ;;
   }
 
   dimension: item_shelf_life {
@@ -236,6 +215,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
   }
 
   dimension: item_temperature_zone {
+    alias: [temperature_zone]
     type: string
     description: "Temperature a product needs to have while being delivered and stored in order to be consumable"
     group_label: "Item"
@@ -578,6 +558,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
 
   dimension: supplier_currency {
     type: string
+    group_label: "Supplier"
     description: "Currency ISO code."
     sql: ${TABLE}.supplier_currency ;;
   }
@@ -755,15 +736,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     hidden: no
   }
 
-  dimension: hu_pack_size {
-    label: "Hu Pack Size"
-    description: "This field contains the quantity that orders must be placed in multiples of for the supplier for the item."
-    group_label: "Item-Supplier"
-    type: number
-    sql: ${TABLE}.hu_pack_size ;;
-    hidden: no
-  }
-
   dimension: inner_pack_size {
     label: "Inner Pack Size"
     description: "This field contains the units of an item contained in an inner pack supplied by the supplier."
@@ -870,6 +842,14 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     type: string
     sql: ${TABLE}.item_tare_type ;;
     hidden: no
+  }
+
+  dimension: purchase_unit {
+    label: "Units per Handling Unit"
+    type: number
+    description: "The ERP defined puchase unit code of a product. It defines, which aggregation was bought (examples: STÜCK, PK14, PK06)"
+    group_label: "Item-Supplier"
+    sql: ${TABLE}.purchase_unit ;;
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
