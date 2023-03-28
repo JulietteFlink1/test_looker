@@ -429,6 +429,20 @@ set: drill_fields_set {
     group_label: "Absolut Metrics"
   }
 
+# This flag is needed to exclude from inbounds those Suppliers with no DESADVs.
+  dimension: is_dispatch_notifications_assigned_for_inbound_calculation{
+    type: yesno
+    sql: case
+            when ${number_of_selling_units_delivered} > 0 then true
+            else false
+            end;;
+    hidden: yes
+    label: "Is Dispatch Notification Assigned for Inbound Calculation"
+    description: "Shows if there is a DESADVs assigned for a given SKU-Location on a particular day.
+                  It is used to exclude from Inbounds those suppliers with no DESADVs."
+    group_label: "Absolut Metrics"
+  }
+
   dimension: number_of_handling_units_ordered {
     type: number
     sql: ${TABLE}.number_of_handling_units_ordered ;;
