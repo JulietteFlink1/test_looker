@@ -26,7 +26,7 @@ view: orders_with_ops_metrics {
       column: avg_delivery_time_estimate {}
       column: avg_promised_eta {}
       column: avg_pdt_mm_ss {}
-      column: avg_picking_time {}
+      column: avg_pick_pack_handling_time_minutes {}
       column: avg_potential_rider_handling_time_without_stacking {}
       column: avg_pre_riding_time {}
       column: avg_targeted_delivery_time {}
@@ -185,8 +185,8 @@ view: orders_with_ops_metrics {
 
   measure: avg_picking_time_per_item {
     group_label: "> Operations / Logistics"
-    label: "AVG Picking Time Per Item (Seconds)"
-    description: "Computed as Picking Time / # Items Picked. Outliers excluded (<0min or >30min)"
+    label: "AVG Pick-Pack Handling Time Per Item (Seconds)"
+    description: "Computed as Pick-Pack Handling Time / # Items Picked. Outliers excluded (<0min or >30min)"
     value_format_name: decimal_1
     type: average
   }
@@ -453,10 +453,12 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_picking_time {
+  measure: avg_pick_pack_handling_time_minutes  {
+    alias: [avg_picking_time]
     group_label: "> Operations / Logistics"
-    label: "AVG Picking Time"
-    description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
+    label: "AVG Pick-Pack Handling Time (Minutes)"
+    description: "AVG time it took for the picker to pick the order and pack it. In minutes. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
     value_format_name: decimal_1
     type: average
   }
