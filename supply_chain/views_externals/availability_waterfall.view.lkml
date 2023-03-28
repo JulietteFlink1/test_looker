@@ -10,7 +10,6 @@
 view: availability_waterfall {
   sql_table_name: `flink-supplychain-prod.curated.availability_waterfall`
     ;;
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -461,4 +460,5 @@ view: availability_waterfall {
     drill_fields: [product_name, supplier_name]
     hidden: yes
   }
+
 }
