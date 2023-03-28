@@ -247,7 +247,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     datatype: date
     label: "Item Location Termination"
     description: "Date when a hub was launched."
-    group_label: "Item"
+    group_label: "Item-Location"
     timeframes: [
       date,
       week,
