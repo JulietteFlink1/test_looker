@@ -627,7 +627,7 @@ view: forecasts {
     label: "% Last Mile Missed Orders - Planned Closure"
     description: "Last Mile Missed orders (planned closure) divided by Flink Delivered orders, percentage."
     type: number
-    sql: ${number_of_last_mile_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${sum_number_of_last_mile_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
