@@ -13,7 +13,7 @@ explore: waste_waterfall_explore {
 
 from: waste_waterfall
 view_name: waste_waterfall
-group_label: "Waste Waterfall"
+group_label: "Supply Chain"
 label: "Waste Waterfall Explore (Owned by Supply Chain team)"
 hidden: no
 
