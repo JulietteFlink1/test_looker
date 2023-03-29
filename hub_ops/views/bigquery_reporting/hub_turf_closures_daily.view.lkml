@@ -2,7 +2,7 @@
 ## This model provides closure information on a hub-turf-day-closure_reason granularity,
 ## and contains all historical data
 view: hub_turf_closures_daily {
-  sql_table_name: `flink-data-prod.reporting.hub_turf_closures_daily` ;;
+  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.hub_turf_closures_daily` ;;
 
   ############
   # Dimensions
