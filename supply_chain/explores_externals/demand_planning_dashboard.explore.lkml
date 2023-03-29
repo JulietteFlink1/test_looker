@@ -120,7 +120,8 @@ join: availability_waterfall {
      ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall.sku} and
      ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall.hub_code} and
      ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall.report_week_week} and
-     ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall.supplier_id}
+     ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall.supplier_id} and
+     ${availability_waterfall.ingestion_date} = date_trunc(current_date(),isoweek)
     ;;
   relationship: one_to_one
   type: left_outer
