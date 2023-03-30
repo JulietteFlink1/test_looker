@@ -666,7 +666,7 @@ view: forecasts {
     label: "# Cancelled and Last Mile Missed Orders (Forecast-Related)"
     description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures."
     type: number
-    sql: ${number_of_cancelled_orders} + ${number_of_last_mile_missed_orders_forced_closure} ;;
+    sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
 
