@@ -609,8 +609,8 @@ view: orders {
   }
 
   dimension: estimated_picking_time_minutes {
-    label: "Picking Time Estimate (min)"
-    description: "The internally predicted time in minutes for the picking"
+    label: "Pick-Pack Handling Time Estimate (min)"
+    description: "The internally predicted time in minutes for the pick-pack handling time."
     group_label: "* Operations / Logistics *"
     type: number
     sql: ${TABLE}.estimated_picking_time_minutes;;
@@ -679,10 +679,10 @@ view: orders {
 
   dimension: pre_riding_time {
     label: "Pre Riding Time (min)"
-    description: "Withheld From Picking + Waiting For Picker Time + Picking Time + Withheld From Rider + Waiting For Rider Time"
+    description: "Withheld From Picking + Waiting For Picker Time + Pick-Pack Handling Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${picking_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
+    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -875,20 +875,6 @@ view: orders {
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${waiting_for_picker_time} > 30 ;;
-  }
-
-  dimension: is_picking_less_than_0_minute {
-    hidden: yes
-    group_label: "* Operations / Logistics *"
-    type: yesno
-    sql: ${picking_time_minutes} < 0 ;;
-  }
-
-  dimension: is_picking_more_than_30_minute {
-    hidden: yes
-    group_label: "* Operations / Logistics *"
-    type: yesno
-    sql: ${picking_time_minutes} > 30 ;;
   }
 
   dimension: is_internal_order {
@@ -1281,11 +1267,134 @@ view: orders {
     sql: ${TABLE}.picker_id ;;
   }
 
-  dimension: picking_time_minutes {
+  dimension: start_picking_to_first_scan_time_seconds {
     group_label: "* Operations / Logistics *"
-    label: "Picking Time Minutes"
+    label: "Start Picking to First Item Scan Time (Seconds)"
+    description: "Duration between the timestamp at which the picker clicked on 'Start Picking' and the first item scanned.
+    In seconds."
+    type: number
+    sql: ${TABLE}.start_picking_to_first_scan_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: first_item_scan_to_last_item_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "First Item Scan to Last Item Scan Time (Seconds)"
+    description: "Duration between the first and last items scanned. In seconds."
+    type: number
+    sql: ${TABLE}.first_item_scan_to_last_item_scan_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: last_item_to_click_scan_container_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Last Item Scan to Click Scan Container Time (Seconds)"
+    description: "Duration between the last item scanned and the timestamp at which the
+    picker clicked on 'Scan Container'. In seconds."
+    type: number
+    sql: ${TABLE}.last_item_to_click_scan_container_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: click_scan_container_to_validate_container_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Click Scan Container to Validate Container Scan Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Scan Container'
+    and on 'Next Step' to validate the containers scanned. In seconds."
+    type: number
+    sql: ${TABLE}.click_scan_container_to_validate_container_scan_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: click_scan_container_to_skip_container_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Click Scan Container to Skip Container Scan Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Skip Scanning' to skip the containers' scanning. In seconds."
+    type: number
+    sql: ${TABLE}.click_scan_container_to_skip_container_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: validate_container_scan_to_validate_shelf_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Validate Container Scan to Validate Shelf Scan Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Next Step' (after scanning the containers)
+    and 'Finish Picking' to assign the scanned shelves. In seconds."
+    type: number
+    sql: ${TABLE}.validate_container_scan_to_validate_shelf_scan_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: skip_container_to_skip_shelf_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Skip Containers Scan to Skip Shelves Scan Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Skip Scanning' (on the Scan Container screen)
+    and 'Skip Scanning' (on the Assign Shelves screen) to skip the shelves' scanning. In seconds."
+    type: number
+    sql: ${TABLE}.skip_container_to_skip_shelf_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: picking_time_seconds_actual {
+    group_label: "* Operations / Logistics *"
+    label: "Picking Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In seconds."
+    type: number
+    sql: ${TABLE}.picking_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: picking_time_minutes_actual {
+    group_label: "* Operations / Logistics *"
+    label: "Picking Time (Minutes)"
+    description: "Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In minutes."
     type: number
     sql: ${TABLE}.picking_time_minutes ;;
+    value_format_name: decimal_2
+  }
+
+  dimension: packing_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Packing Time (Seconds)"
+    description: "Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In seconds."
+    type: number
+    sql: ${TABLE}.packing_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: packing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Packing Time (Minutes)"
+    description: "Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In minutes."
+    type: number
+    sql: ${TABLE}.packing_time_minutes ;;
+    value_format_name: decimal_2
+  }
+
+  dimension: pick_pack_handling_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "Pick-Pack Handling Time (Seconds)"
+    description: "Time it took for the picker to pick the order and pack it. In seconds. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: number
+    sql: ${TABLE}.pick_pack_handling_time_seconds ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: pick_pack_handling_time_minutes {
+    alias: [picking_time_minutes]
+    group_label: "* Operations / Logistics *"
+    label: "Pick-Pack Handling Time (Minutes)"
+    description: "Time it took for the picker to pick the order and pack it. In minutes. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: number
+    sql: ${TABLE}.pick_pack_handling_time_minutes ;;
+    value_format_name: decimal_2
   }
 
   dimension: waiting_for_picker_time {
@@ -1843,30 +1952,174 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_picking_time {
+
+  measure: sum_pick_pack_handling_time_minutes {
+    alias: [sum_picking_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Picking Time"
-    description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
+    label: "SUM Pick-Pack Handling Time (Minutes)"
+    description: "SUM of time it took for the picker to pick the order and pack it. In minutes. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: sum
+    sql:${pick_pack_handling_time_minutes};;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_picking_time_minutes_actual {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Picking Time (Minutes)"
+    description: "SUM Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In minutes."
+    type: sum
+    sql:${picking_time_minutes_actual};;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_packing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Packing Time (Minutes)"
+    description: " SUM Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In minutes."
+    type: sum
+    sql:${packing_time_minutes};;
+    value_format_name: decimal_2
+  }
+
+  measure: avg_start_picking_to_first_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Start Picking to First Item Scan Time (Seconds)"
+    description: "AVG Duration between the timestamp at which the picker clicked on 'Start Picking' and the first item scanned.
+    In seconds."
     type: average
-    sql:${picking_time_minutes};;
+    sql: ${start_picking_to_first_scan_time_seconds} ;;
     value_format_name: decimal_1
   }
 
-  measure: sum_picking_time_minutes {
+  measure: avg_first_item_scan_to_last_item_scan_time_seconds {
     group_label: "* Operations / Logistics *"
-    label: "SUM Picking Time (Minutes)"
-    description: "SUM Picking Time in minutes considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
-    type: sum
-    sql:${picking_time_minutes};;
-    value_format_name: decimal_2
+    label: "AVG First Item Scan to Last Item Scan (Seconds)"
+    description: "AVG Duration between the first and last items scanned. In seconds."
+    type: average
+    sql: ${first_item_scan_to_last_item_scan_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_last_item_to_click_scan_container_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Last Item Scan to Click Scan Container Time (Seconds)"
+    description: "AVG Duration between the last item scanned and the timestamp at which the
+    picker clicked on 'Scan Container'. In seconds."
+    type: average
+    sql: ${last_item_to_click_scan_container_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_click_scan_container_to_validate_container_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Click Scan Container to Validate Containers Scan Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Scan Container'
+    and on 'Next Step' to validate the containers scanned. In seconds."
+    type: average
+    sql: ${click_scan_container_to_validate_container_scan_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_click_scan_container_to_skip_container_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Click Scan Container to Skip Container Scan Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Skip Scanning' to skip the containers' scanning. In seconds."
+    type: average
+    sql: ${click_scan_container_to_skip_container_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_validate_container_scan_to_validate_shelf_scan_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Validate Containers Scan to Validate Shelves Scan Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Next Step' (after scanning the containers)
+    and 'Finish Picking' to assign the scanned shelves. In seconds."
+    type: average
+    sql: ${validate_container_scan_to_validate_shelf_scan_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_skip_container_to_skip_shelf_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Skip Containers Scan to Skip Shelves Scan Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Skip Scanning' (on the Scan Container screen)
+    and 'Skip Scanning' (on the Assign Shelves screen) to skip the shelves' scanning. In seconds."
+    type: average
+    sql: ${skip_container_to_skip_shelf_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picking Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In seconds."
+    type: average
+    sql: ${picking_time_seconds_actual} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_picking_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Picking Time (Minutes)"
+    description: "AVG Duration between the times at which the picker clicked on 'Start Picking'
+    and 'Scan Container' (if not available, the last item scan timestamp is used). In minutes."
+    type: average
+    sql: ${picking_time_minutes_actual} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_packing_time_seconds {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Packing Time (Seconds)"
+    description: "AVG Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In seconds."
+    type: average
+    sql: ${packing_time_seconds} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_packing_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Packing Time (Minutes)"
+    description: "AVG Duration between the times at which the picker clicked on 'Scan Container'
+    and 'Finish Picking' (if 'Scan Container' is not available, the last item scan timestamp is used). In minutes."
+    type: average
+    sql: ${packing_time_minutes} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_pick_pack_handling_time_seconds  {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pick-Pack Handling Time (Seconds)"
+    description: "AVG time it took for the picker to pick the order and pack it. In seconds. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: average
+    sql:${pick_pack_handling_time_seconds};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_pick_pack_handling_time_minutes  {
+    alias: [avg_picking_time]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Pick-Pack Handling Time (Minutes)"
+    description: "AVG time it took for the picker to pick the order and pack it. In minutes. Outliers excluded (<0min or >30min).
+    It corresponds to the duration between the times at which the picker clicked on 'Start Picking' and 'Finish Picking'."
+    type: average
+    sql:${pick_pack_handling_time_minutes};;
+    value_format_name: decimal_1
   }
 
   measure: avg_picking_time_per_item {
     group_label: "* Operations / Logistics *"
-    label: "AVG Picking Time Per Item (Seconds)"
-    description: "Computed as Picking Time / # Items Picked. Outliers excluded (<0min or >30min)"
+    label: "AVG Pick-Pack Handling Time Per Item (Seconds)"
+    description: "Computed as Pick-Pack Handling Time / # Items Picked. Outliers excluded (<0min or >30min)"
     type: number
-    sql:nullif(${sum_picking_time_minutes}*60,0)/nullif(${sum_quantity_fulfilled},0);;
+    sql:nullif(${sum_pick_pack_handling_time_minutes}*60,0)/nullif(${sum_quantity_fulfilled},0);;
     value_format_name: decimal_1
   }
 
@@ -2155,7 +2408,7 @@ view: orders {
     description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
     hidden:  no
     type: average
-    sql: ${item_value_net};;
+      sql: ${item_value_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -2165,7 +2418,7 @@ view: orders {
     description: "AIV represents the Average value of items (excl. VAT). Excludes fees (net), before deducting cart discount. After deducting product (commercial) discounts"
     hidden:  no
     type: average
-      sql: ${item_value_after_product_discount_net};;
+    sql: ${item_value_after_product_discount_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -2253,11 +2506,11 @@ view: orders {
 
   measure: picking_time_estimate_mae {
     group_label: "* Operations / Logistics *"
-    label: "Mean Absolute Error Picking Time Estimate"
-    description: "The mean absolute error between actual picking time and estimated picking time"
+    label: "Mean Absolute Error Pick-Pack Handling Time Estimate"
+    description: "The mean absolute error between actual pick-pack handling time and estimated picking time"
     hidden:  no
     type: average
-    sql: abs(${picking_time_minutes} - ${estimated_picking_time_minutes});;
+    sql: abs(${pick_pack_handling_time_minutes} - ${estimated_picking_time_minutes});;
     value_format_name: decimal_1
   }
 

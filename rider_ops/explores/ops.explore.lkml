@@ -133,7 +133,9 @@ explore: ops {
     fields: [hub_turf_closures_30min.sum_number_of_closed_hours,
       hub_turf_closures_30min.share_closed_hours_per_open_hours,
       hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure,
-      hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders]
+      hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders,
+      hub_turf_closures_30min.sum_number_of_last_mile_missed_orders_forced_closure,
+      hub_turf_closures_30min.share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders]
   }
 
   join: hub_turf_closures_daily {

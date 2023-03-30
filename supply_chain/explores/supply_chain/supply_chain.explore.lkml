@@ -156,7 +156,7 @@ explore: supply_chain {
 
   join: products {
 
-    view_label: "Products (CT)"
+    view_label: "Products"
 
     type: left_outer
     relationship: many_to_one
@@ -169,7 +169,8 @@ explore: supply_chain {
 
   join: lexbizz_item {
 
-    view_label: "Products (ERP)"
+    # HIDDEN - Deprecate in favor of the products table
+    view_label: ""
     from: erp_item
 
     type: left_outer
@@ -374,39 +375,6 @@ explore: supply_chain {
   }
 
 
-  #join: mean_and_std {
-  #  view_label: "07 Order Lineitems"
-  #  type: left_outer
-  #  relationship: many_to_one
-  #  sql_on:  ${mean_and_std.hub_code}     = ${products_hub_assignment.hub_code}
-  #      and  ${mean_and_std.product_sku}  = ${products_hub_assignment.sku};;
-  #}
-
-
-  #join: waste_index {
-  #  view_label: "07 Order Lineitems"
-  #  type: left_outer
-  #  relationship: many_to_one
-  #  sql_on: ${waste_index.hub_code} = ${products_hub_assignment.hub_code}
-  #  and ${waste_index.product_sku} = ${products_hub_assignment.sku} ;;
-#}
-
-  #join: avg_waste_index_per_hub {
-  #  view_label: "07 Order Lineitems"
-  #  type: left_outer
-  #  relationship: many_to_one
-  #  sql_on: ${avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code}
-  #    and ${avg_waste_index_per_hub.product_sku} = ${products_hub_assignment.sku} ;;
-  #}
-
-  #join: v2_avg_waste_index_per_hub {
-  #  view_label: "07 Order Lineitems"
-  #  type: left_outer
-  #  relationship: many_to_one
-  #  sql_on: ${v2_avg_waste_index_per_hub.hub_code} = ${products_hub_assignment.hub_code} ;;
-  #}
-
-
   join: key_value_items {
 
     view_label: "13 Key Value Items"
@@ -437,7 +405,7 @@ explore: supply_chain {
 
   join: geographic_pricing_hub_cluster{
 
-    view_label: "15 Pricing Hub Cluster"
+    view_label: "15 Pricing Cluster"
 
     type: left_outer
     relationship: many_to_one
@@ -449,7 +417,7 @@ explore: supply_chain {
 
   join: geographic_pricing_sku_cluster{
 
-    view_label: "15 Pricing SKU Cluster"
+    view_label: "15 Pricing Cluster"
 
     type: left_outer
     relationship: many_to_one
@@ -491,6 +459,30 @@ explore: supply_chain {
     sql_on:
           ${hubs_ct.shipping_method_id} = ${shipping_methods_ct.shipping_method_id}
       and ${hubs_ct.country_iso}        = ${shipping_methods_ct.country_iso};;
+  }
+
+  join: erp_product_hub_vendor_assignment_unfiltered {
+    view_label: "Product-Hub Data (historized)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${products_hub_assignment.sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${products_hub_assignment.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered.report_date}    = ${products_hub_assignment.report_date}
+    and {% condition global_filters_and_parameters.datasource_filter %} ${erp_product_hub_vendor_assignment_unfiltered.report_date} {% endcondition %}
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: erp_product_hub_vendor_assignment_unfiltered_current {
+    from: erp_product_hub_vendor_assignment_unfiltered
+    view_label: "Product-Hub Data (as of today)"
+    sql_on:
+        ${erp_product_hub_vendor_assignment_unfiltered_current.sku}            = ${products_hub_assignment.sku}
+    and ${erp_product_hub_vendor_assignment_unfiltered_current.hub_code}       = ${products_hub_assignment.hub_code}
+    and ${erp_product_hub_vendor_assignment_unfiltered_current.report_date}    = current_date()
+    ;;
+    type: left_outer
+    relationship: many_to_one
   }
 
 }

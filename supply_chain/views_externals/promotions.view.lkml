@@ -130,7 +130,7 @@ view: promotions {
 
   dimension: promo_range_filter {
     type: string
-    sql: ${TABLE}.Promo_range_filter ;;
+    sql: coalesce(${TABLE}.Promo_range_filter,'No Promo') ;;
     label: "Promo Range Filter"
     description: "Filter for showing either pure or added shelf-life promotion"
     hidden: no

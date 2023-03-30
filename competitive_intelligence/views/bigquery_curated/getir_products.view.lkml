@@ -48,6 +48,15 @@ view: getir_products {
     sql: ${TABLE}.price_gross ;;
   }
 
+  dimension: amt_product_discount_price_gross {
+
+    label: "Discount Price"
+    description: "Product price gross if product discount exists."
+
+    type: number
+    sql: ${TABLE}.amt_product_discount_price_gross ;;
+  }
+
   dimension: price_per_unit_of_measure {
     type: number
     sql: ${TABLE}.price_per_unit_of_measure ;;

@@ -27,7 +27,7 @@ explore: order_orderline_cl_retail_customized {
 
   join: commercial_department_names {
     view_label: "Order Lineitems"
-    sql_on: lower(${commercial_department_names.category}) = lower(${products.category})
+    sql_on: lower(${commercial_department_names.category}) = rtrim(lower(${products.category}), ' ')
       and lower(${commercial_department_names.subcategory}) = rtrim(lower(${products.subcategory}), ' ')
       and lower(${commercial_department_names.country_iso}) = lower(${products.country_iso});;
     relationship: many_to_one
@@ -152,6 +152,21 @@ explore: order_orderline_cl_retail_customized {
     sql:  ;;
   }
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #  - - - - - - - - - -    Geographic Pricing
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  join: geographic_pricing_hub_cluster {
+    view_label: "Geographic Pricing"
+
+    type: left_outer
+    relationship: many_to_one
+
+    sql_on:
+        ${geographic_pricing_hub_cluster.hub_code}         =  ${orders_cl.hub_code}
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
+    ;;
+  }
 
 
 }

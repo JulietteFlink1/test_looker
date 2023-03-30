@@ -11,6 +11,7 @@ include: "/**/products.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 include: "/**/event_inbound_progressed.view.lkml"
 include: "/**/product_added_to_list_times.view.lkml"
+include: "/**/product_added_to_list_times_clean.view.lkml"
 include: "/**/hub_one_inbounding_aggregates.view.lkml"
 
 explore: event_inbound_progressed {
@@ -61,6 +62,13 @@ join: hub_one_inbounding_aggregates {
   join: product_added_to_list {
     view_label: "2 Product Added To List Times"
     sql_on: ${product_added_to_list.primary_key}= concat(${dropping_list_id}, ${country_iso},${product_sku}, ${method}) ;;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: product_added_to_list_clean {
+    view_label: "2 Product Added To List Times"
+    sql_on: ${product_added_to_list_clean.primary_key}= concat(${dropping_list_id}, ${hub_code},${product_sku}, ${method}) ;;
     type: left_outer
     relationship: one_to_many
   }
