@@ -1,5 +1,5 @@
 view: discounts {
-  sql_table_name: `flink-data-prod.curated.discounts`;;
+  sql_table_name: `flink-data-dev.dbt_jdavies_curated.discounts`;;
 
   dimension: discount_id {
     hidden: yes
