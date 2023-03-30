@@ -214,6 +214,7 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${customer_uuid} ;;
   }
 
+
   measure: total_orders {
     group_label: "Counts (#)"
     label: "# Total Orders"
@@ -358,5 +359,8 @@ view: user_attributes_jobs_to_be_done_last28days {
     value_format_name: percent_1
     sql: ${unclassified_orders} / nullif(${total_orders},0);;
   }
+
+
+
 
 }
