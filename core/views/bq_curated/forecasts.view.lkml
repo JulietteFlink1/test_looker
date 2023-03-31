@@ -62,6 +62,26 @@ view: forecasts {
     hidden: no
   }
 
+  # =========  Dimensions to be used in metrics   =========
+
+  dimension: number_of_last_mile_missed_orders {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders ;;
+  }
+
+  dimension: number_of_last_mile_missed_orders_planned_closure {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_planned_closure ;;
+  }
+
+  dimension: number_of_last_mile_missed_orders_forced_closure {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_forced_closure ;;
+  }
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
@@ -498,6 +518,16 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_last_mile_missed_orders {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders"
+    description: "# Last Mile Missed orders due to planned or forced closures."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${number_of_last_mile_missed_orders};;
+    value_format_name: decimal_0
+  }
+
   measure: pct_cancelled_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
@@ -516,6 +546,15 @@ view: forecasts {
     value_format_name: percent_2
   }
 
+  measure: pct_last_mile_missed_orders{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders"
+    description: "Last Mile Missed orders divided by Flink Delivered orders, percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    value_format_name: percent_2
+  }
+
   measure: number_of_missed_orders_forced_closure {
     group_label: "> Order Measures"
     label: "# Missed Orders - Forced Closure"
@@ -526,12 +565,31 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_last_mile_missed_orders_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - Forced Closure"
+    description: "# Last Mile Missed orders due to forced closure."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${number_of_last_mile_missed_orders_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
   measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
     description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_forced_closure{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - Forced Closure"
+    description: "Last Mile Missed orders (forced closure) divided by Flink Delivered orders, percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -545,12 +603,31 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_last_mile_missed_orders_planned_closure {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - Planned Closure"
+    description: "# Last Mile Missed orders due to planned closure."
+    type: sum_distinct
+    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    sql: ${number_of_last_mile_missed_orders_planned_closure} ;;
+    value_format_name: decimal_0
+  }
+
   measure: pct_missed_orders_planned_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
     description: "Missed orders (planned closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_planned_closure{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - Planned Closure"
+    description: "Last Mile Missed orders (planned closure) divided by Flink Delivered orders, percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -567,7 +644,7 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-Related)"
-    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Missed orders (due to forced closures)."
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures)."
     type: sum_distinct
     sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_actual_orders;;
@@ -586,10 +663,10 @@ view: forecasts {
 
   measure: number_of_cancelled_and_missed_orders {
     group_label: "> Order Measures"
-    label: "# Cancelled and Missed Orders (Forecast-Related)"
-    description: "# Cancelled and Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and orders missed due to forced closures."
+    label: "# Cancelled and Last Mile Missed Orders (Forecast-Related)"
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures."
     type: number
-    sql: ${number_of_cancelled_orders} + ${number_of_missed_orders_forced_closure} ;;
+    sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
 
