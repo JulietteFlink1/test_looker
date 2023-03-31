@@ -8,7 +8,7 @@ view: flink_to_competitors_prices {
   sql_table_name: `flink-data-dev.dbt_bbeckett_reporting.flink_to_competitors_prices` ;;
 
 
-# ===========  Metadata  ===========
+# ===========  Metadata  =====================================================================
 
   dimension: table_uuid {
 
@@ -166,7 +166,7 @@ view: flink_to_competitors_prices {
   }
 
 
-# ===========  Albert Heijn  ===========
+# ===========  Albert Heijn  ================================================================
 
   dimension: albert_heijn_product_id {
 
@@ -394,7 +394,7 @@ view: flink_to_competitors_prices {
   }
 
 
-# ===========  Carrefour City  ========================================================
+# ===========  Carrefour City  ==============================================================
 
   dimension: carrefour_city_product_id {
 
@@ -1082,9 +1082,9 @@ view: flink_to_competitors_prices {
 
   dimension: rewe_product_id {
 
-    label: "Product ID - REWE"
+    label: "Product ID - Rewe"
     description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: string
     sql: ${TABLE}.rewe_product_id ;;
@@ -1092,9 +1092,9 @@ view: flink_to_competitors_prices {
 
   dimension: rewe_product_name {
 
-    label: "Product Name - REWE"
+    label: "Product Name - Rewe"
     description: "The product name and unit size provided by the competitor."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: string
     sql: ${TABLE}.rewe_product_name ;;
@@ -1102,9 +1102,9 @@ view: flink_to_competitors_prices {
 
   dimension: rewe_match_type {
 
-    label: "Match Type - REWE"
+    label: "Match Type - Rewe"
     description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: string
     sql: ${TABLE}.rewe_match_type ;;
@@ -1112,9 +1112,9 @@ view: flink_to_competitors_prices {
 
   dimension: rewe_match_score {
 
-    label: "Match Score - REWE"
+    label: "Match Score - Rewe"
     description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: number
     sql: ${TABLE}.rewe_match_score ;;
@@ -1122,9 +1122,9 @@ view: flink_to_competitors_prices {
 
   dimension: min_rewe_price {
 
-    label: "Lowest Price - REWE"
+    label: "Lowest Price - Rewe"
     description: "Competitor's lowest available price of the product before discount (including VAT)."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: number
     value_format: "€0.00"
@@ -1133,9 +1133,9 @@ view: flink_to_competitors_prices {
 
   dimension: avg_rewe_price {
 
-    label: "Average Price - REWE"
+    label: "Average Price - Rewe"
     description: "Competitor's average price of the product before discount (including VAT)."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: number
     value_format: "€0.00"
@@ -1144,9 +1144,9 @@ view: flink_to_competitors_prices {
 
   dimension: max_rewe_price {
 
-    label: "Highest Price - REWE"
+    label: "Highest Price - Rewe"
     description: "Competitor's highest available price of the product before discount (including VAT)."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: number
     value_format: "€0.00"
@@ -1155,9 +1155,9 @@ view: flink_to_competitors_prices {
 
   dimension: rewe_conversion_factor {
 
-    label: "Conversion Factor - REWE"
+    label: "Conversion Factor - Rewe"
     description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: number
     sql: ${TABLE}.rewe_conversion_factor ;;
@@ -1165,9 +1165,9 @@ view: flink_to_competitors_prices {
 
   dimension: is_rewe_prices_converted {
 
-    label: "Is Price Converted - REWE"
+    label: "Is Price Converted - Rewe"
     description: "Yes, if the competitor price has been converted by the price conversion factor."
-    group_label: "REWE"
+    group_label: "Rewe"
 
     type: yesno
     sql: ${TABLE}.is_rewe_prices_converted ;;
@@ -1303,6 +1303,276 @@ view: flink_to_competitors_prices {
     type: number
     value_format: "0.0%"
     sql: ${TABLE}.pct_highest_price_delta_with_rewe_max ;;
+  }
+
+# ================ Measures ====================
+
+  parameter: competitor_price_value {
+    type: unquoted
+    allowed_value: {
+      label: "Lowest Price"
+      value: "min"
+    }
+    allowed_value: {
+      label: "Average Price"
+      value: "avg"
+    }
+    allowed_value: {
+      label: "Highest Price"
+      value: "max"
+    }
+  }
+
+  parameter: competitor {
+    type: unquoted
+    allowed_value: {
+      label: "Albert Heijn"
+      value: "ah"
+    }
+    allowed_value: {
+      label: "Carrefour City"
+      value: "carrefour_city"
+    }
+    allowed_value: {
+      label: "Getir"
+      value: "getir"
+    }
+    allowed_value: {
+      label: "Gorillas"
+      value: "gorillas"
+    }
+    allowed_value: {
+      label: "Rewe"
+      value: "rewe"
+    }
+  }
+
+  measure: average_low_price_delta_with_competitor{
+
+    label: "Average Flink Low Price Tier Delta with Competitor (Dynamic)"
+    description: "Average of all Flink low tier product price deltas between with the competitor."
+    group_label: "Dynamic Measures"
+
+    type: average
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_ah_min}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_ah_avg}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_ah_max}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_carrefour_city_min}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_carrefour_city_avg}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_carrefour_city_max}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_getir_min}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_getir_avg}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_getir_max}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_gorillas_min}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_gorillas_avg}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_gorillas_max}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_rewe_min}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_rewe_avg}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_rewe_max}
+    {% endif %};;
+  }
+
+  measure: average_mid_price_delta_with_competitor{
+
+    label: "Average Flink Mid Price Tier Delta with Competitor (Dynamic)"
+    description: "Average of all Flink mid tier product price deltas between with the competitor."
+    group_label: "Dynamic Measures"
+
+    type: average
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_ah_min}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_ah_avg}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_ah_max}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_carrefour_city_min}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_carrefour_city_avg}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_carrefour_city_max}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_getir_min}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_getir_avg}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_getir_max}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_gorillas_min}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_gorillas_avg}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_gorillas_max}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_rewe_min}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_rewe_avg}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_rewe_max}
+    {% endif %};;
+  }
+
+  measure: average_high_price_delta_with_competitor{
+
+    label: "Average Flink High Price Tier Delta with Competitor (Dynamic)"
+    description: "Average of all Flink high tier product price deltas between with the competitor."
+    group_label: "Dynamic Measures"
+
+    type: average
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_ah_min}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_ah_avg}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_ah_max}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_carrefour_city_min}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_carrefour_city_avg}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_carrefour_city_max}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_getir_min}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_getir_avg}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_getir_max}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_gorillas_min}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_gorillas_avg}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_gorillas_max}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_rewe_min}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_rewe_avg}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_rewe_max}
+    {% endif %};;
+  }
+
+  measure: average_highest_price_delta_with_competitor{
+
+    label: "Average Flink Highest Price Tier Delta with Competitor (Dynamic)"
+    description: "Average of all Flink highest tier product price deltas between with the competitor."
+    group_label: "Dynamic Measures"
+
+    type: average
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_ah_min}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_ah_avg}
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_ah_max}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_carrefour_city_min}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_carrefour_city_avg}
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_carrefour_city_max}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_getir_min}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_getir_avg}
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_getir_max}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_gorillas_min}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_gorillas_avg}
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_gorillas_max}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_rewe_min}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_rewe_avg}
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_rewe_max}
+    {% endif %};;
   }
 
 }
