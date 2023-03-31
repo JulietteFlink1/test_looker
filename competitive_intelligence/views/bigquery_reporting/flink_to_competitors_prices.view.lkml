@@ -16,40 +16,9 @@ view: flink_to_competitors_prices {
     description: "Generic identifier of a table in BigQuery that represent 1 unique row of this table."
     group_label: "Metadata"
 
-
     primary_key: yes
     type: string
     sql: ${TABLE}.table_uuid ;;
-  }
-
-  dimension: number_of_unique_skus_de {
-
-    label: "Number of Unique SKUs DE"
-    description: "Total number of active SKUs in Germany."
-    group_label: "Flink"
-
-    type: number
-    sql: ${TABLE}.number_of_unique_skus_de ;;
-  }
-
-  dimension: number_of_unique_skus_nl {
-
-    label: "Number of Unique SKUs NL"
-    description: "Total number of active SKUs in the Netherlands."
-    group_label: "Flink"
-
-    type: number
-    sql: ${TABLE}.number_of_unique_skus_nl ;;
-  }
-
-  dimension: number_of_unique_skus_fr {
-
-    label: "Number of Unique SKUs FR"
-    description: "Total number of active SKUs in France."
-    group_label: "Flink"
-
-    type: number
-    sql: ${TABLE}.number_of_unique_skus_fr ;;
   }
 
   dimension_group: reporting {
@@ -127,6 +96,7 @@ view: flink_to_competitors_prices {
     group_label: "Flink"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.low_flink_price ;;
   }
 
@@ -137,6 +107,7 @@ view: flink_to_competitors_prices {
     group_label: "Flink"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.mid_flink_price ;;
   }
 
@@ -147,6 +118,7 @@ view: flink_to_competitors_prices {
     group_label: "Flink"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.high_flink_price ;;
   }
 
@@ -157,7 +129,40 @@ view: flink_to_competitors_prices {
     group_label: "Flink"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.highest_flink_price ;;
+  }
+
+  dimension: number_of_unique_skus_by_country {
+
+    label: "Number of Unique SKUs by Country"
+    description: "Total number of active SKUs based on the country."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.number_of_unique_skus_by_country ;;
+  }
+
+  dimension: share_of_product_revenue {
+
+    label: "% Share of Product Revenue"
+    description: "The percent share of the product price gross sold over the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_price_gross_sold ;;
+  }
+
+  dimension: share_of_product_quantity_sold {
+
+    label: "% Share of Product Quantity Sold"
+    description: "The percent share of the product quantity sold over the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_quantity_sold ;;
   }
 
 
@@ -210,7 +215,19 @@ view: flink_to_competitors_prices {
     group_label: "Albert Heijn"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_ah_price ;;
+  }
+
+  dimension: avg_ah_price {
+
+    label: "Average Price - AH"
+    description: "Competitor's average price of the product before discount (including VAT)."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.avg_ah_price ;;
   }
 
   dimension: max_ah_price {
@@ -220,6 +237,7 @@ view: flink_to_competitors_prices {
     group_label: "Albert Heijn"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.max_ah_price ;;
   }
 
@@ -243,28 +261,140 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_ah_prices_converted ;;
   }
 
-  dimension: min_price_dif_ah {
+  dimension: pct_low_price_delta_with_ah_min {
 
-    label: "Lowest Price Delta - AH"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
-    group_label: "Albert Heijn"
-
-    type: number
-    sql: ${TABLE}.min_price_dif_ah ;;
-  }
-
-  dimension: max_price_dif_ah {
-
-    label: "Highest Price Delta - AH"
-    description: "The difference between Flink's highest product price and the competitor's highest product price."
-    group_label: "Albert Heijn"
+    label: "% Low Tier Price Delta - Ah Min"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
+    group_label:  "Albert Heijn"
 
     type: number
-    sql: ${TABLE}.max_price_dif_ah ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_ah_min ;;
+  }
+
+  dimension: pct_low_price_delta_with_ah_avg {
+
+    label: "% Low Tier Price Delta - Ah Avg"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_ah_avg ;;
+  }
+
+  dimension: pct_low_price_delta_with_ah_max {
+
+    label: "% Low Tier Price Delta - Ah Max"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_ah_max ;;
+  }
+
+  dimension: pct_mid_price_delta_with_ah_min {
+
+    label: "% Mid Tier Price Delta - Ah Min"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_ah_min ;;
+  }
+
+  dimension: pct_mid_price_delta_with_ah_avg {
+
+    label: "% Mid Tier Price Delta - Ah Avg"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_ah_avg ;;
+  }
+
+  dimension: pct_mid_price_delta_with_ah_max {
+
+    label: "% Mid Tier Price Delta - Ah Max"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_ah_max ;;
+  }
+
+  dimension: pct_high_price_delta_with_ah_min {
+
+    label: "% High Tier Price Delta - Ah Min"
+    description: "The percent difference between Flink's High Tier product price and the competitor's lowest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_ah_min ;;
+  }
+
+  dimension: pct_high_price_delta_with_ah_avg {
+
+    label: "% High Tier Price Delta - Ah Avg"
+    description: "The percent difference between Flink's High Tier product price and the competitor's average product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_ah_avg ;;
+  }
+
+  dimension: pct_high_price_delta_with_ah_max {
+
+    label: "% High Tier Price Delta - Ah Max"
+    description: "The percent difference between Flink's High Tier product price and the competitor's highest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_ah_max ;;
+  }
+
+  dimension: pct_highest_price_delta_with_ah_min {
+
+    label: "% Highest Tier Price Delta - Ah Min"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's lowest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_ah_min ;;
+  }
+
+  dimension: pct_highest_price_delta_with_ah_avg {
+
+    label: "% Highest Tier Price Delta - Ah Avg"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's average product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_ah_avg ;;
+  }
+
+  dimension: pct_highest_price_delta_with_ah_max {
+
+    label: "% Highest Tier Price Delta - Ah Max"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's highest product price."
+    group_label:  "Albert Heijn"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_ah_max ;;
   }
 
 
-# ===========  Carrefour City  ===========
+# ===========  Carrefour City  ========================================================
 
   dimension: carrefour_city_product_id {
 
@@ -313,7 +443,19 @@ view: flink_to_competitors_prices {
     group_label: "Carrefour City"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_carrefour_city_price ;;
+  }
+
+  dimension: avg_carrefour_city_price {
+
+    label: "Average Price - CRF City"
+    description: "Competitor's average price of the product before discount (including VAT)."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.avg_carrefour_city_price ;;
   }
 
   dimension: max_carrefour_city_price {
@@ -323,6 +465,7 @@ view: flink_to_competitors_prices {
     group_label: "Carrefour City"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.max_carrefour_city_price ;;
   }
 
@@ -346,28 +489,140 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_carrefour_city_prices_converted ;;
   }
 
-  dimension: min_price_dif_carrefour_city {
+  dimension: pct_low_price_delta_with_carrefour_city_min {
 
-    label: "Lowest Price Delta - CRF City"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
+    label: "% Low Tier Price Delta - Carrefour CityMin"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
     group_label: "Carrefour City"
 
     type: number
-    sql: ${TABLE}.min_price_dif_carrefour_city ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_carrefour_city_min ;;
   }
 
-  dimension: max_price_dif_carrefour_city {
+  dimension: pct_low_price_delta_with_carrefour_city_avg {
 
-    label: "Highest Price Delta - CRF City"
-    description: "The difference between Flink's highest product price and the competitor's highest product price."
+    label: "% Low Tier Price Delta - Carrefour CityAvg"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
     group_label: "Carrefour City"
 
     type: number
-    sql: ${TABLE}.max_price_dif_carrefour_city ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_carrefour_city_avg ;;
+  }
+
+  dimension: pct_low_price_delta_with_carrefour_city_max {
+
+    label: "% Low Tier Price Delta - Carrefour CityMax"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_carrefour_city_max ;;
+  }
+
+  dimension: pct_mid_price_delta_with_carrefour_city_min {
+
+    label: "% Mid Tier Price Delta - Carrefour CityMin"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_carrefour_city_min ;;
+  }
+
+  dimension: pct_mid_price_delta_with_carrefour_city_avg {
+
+    label: "% Mid Tier Price Delta - Carrefour CityAvg"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_carrefour_city_avg ;;
+  }
+
+  dimension: pct_mid_price_delta_with_carrefour_city_max {
+
+    label: "% Mid Tier Price Delta - Carrefour CityMax"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_carrefour_city_max ;;
+  }
+
+  dimension: pct_high_price_delta_with_carrefour_city_min {
+
+    label: "% High Tier Price Delta - Carrefour CityMin"
+    description: "The percent difference between Flink's High Tier product price and the competitor's lowest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_carrefour_city_min ;;
+  }
+
+  dimension: pct_high_price_delta_with_carrefour_city_avg {
+
+    label: "% High Tier Price Delta - Carrefour CityAvg"
+    description: "The percent difference between Flink's High Tier product price and the competitor's average product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_carrefour_city_avg ;;
+  }
+
+  dimension: pct_high_price_delta_with_carrefour_city_max {
+
+    label: "% High Tier Price Delta - Carrefour CityMax"
+    description: "The percent difference between Flink's High Tier product price and the competitor's highest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_carrefour_city_max ;;
+  }
+
+  dimension: pct_highest_price_delta_with_carrefour_city_min {
+
+    label: "% Highest Tier Price Delta - Carrefour CityMin"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's lowest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_carrefour_city_min ;;
+  }
+
+  dimension: pct_highest_price_delta_with_carrefour_city_avg {
+
+    label: "% Highest Tier Price Delta - Carrefour CityAvg"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's average product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_carrefour_city_avg ;;
+  }
+
+  dimension: pct_highest_price_delta_with_carrefour_city_max {
+
+    label: "% Highest Tier Price Delta - Carrefour CityMax"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's highest product price."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_carrefour_city_max ;;
   }
 
 
-# ===========  Getir  ===========
+# ===========  Getir  ======================================================================
 
   dimension: getir_product_id {
 
@@ -426,7 +681,19 @@ view: flink_to_competitors_prices {
     group_label: "Getir"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_getir_price ;;
+  }
+
+  dimension: avg_getir_price {
+
+    label: "Average Price - Getir"
+    description: "Competitor's average price of the product before discount (including VAT)."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.avg_getir_price ;;
   }
 
   dimension: max_getir_price {
@@ -436,6 +703,7 @@ view: flink_to_competitors_prices {
     group_label: "Getir"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.max_getir_price ;;
   }
 
@@ -449,28 +717,140 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_getir_prices_converted ;;
   }
 
-  dimension: min_price_dif_getir {
+  dimension: pct_low_price_delta_with_getir_min {
 
-    label: "Lowest Price Delta - Getir"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
+    label: "% Low Tier Price Delta - Getir Min"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
     group_label: "Getir"
 
     type: number
-    sql: ${TABLE}.min_price_dif_getir ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_getir_min ;;
   }
 
-  dimension: max_price_dif_getir {
+  dimension: pct_low_price_delta_with_getir_avg {
 
-    label: "Highest Price Delta - Getir"
-    description: "The difference between Flink's highest product price and the competitor's highest product price."
+    label: "% Low Tier Price Delta - Getir Avg"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
     group_label: "Getir"
 
     type: number
-    sql: ${TABLE}.max_price_dif_getir ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_getir_avg ;;
+  }
+
+  dimension: pct_low_price_delta_with_getir_max {
+
+    label: "% Low Tier Price Delta - Getir Max"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_getir_max ;;
+  }
+
+  dimension: pct_mid_price_delta_with_getir_min {
+
+    label: "% Mid Tier Price Delta - Getir Min"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_getir_min ;;
+  }
+
+  dimension: pct_mid_price_delta_with_getir_avg {
+
+    label: "% Mid Tier Price Delta - Getir Avg"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_getir_avg ;;
+  }
+
+  dimension: pct_mid_price_delta_with_getir_max {
+
+    label: "% Mid Tier Price Delta - Getir Max"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_getir_max ;;
+  }
+
+  dimension: pct_high_price_delta_with_getir_min {
+
+    label: "% High Tier Price Delta - Getir Min"
+    description: "The percent difference between Flink's High Tier product price and the competitor's lowest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_getir_min ;;
+  }
+
+  dimension: pct_high_price_delta_with_getir_avg {
+
+    label: "% High Tier Price Delta - Getir Avg"
+    description: "The percent difference between Flink's High Tier product price and the competitor's average product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_getir_avg ;;
+  }
+
+  dimension: pct_high_price_delta_with_getir_max {
+
+    label: "% High Tier Price Delta - Getir Max"
+    description: "The percent difference between Flink's High Tier product price and the competitor's highest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_getir_max ;;
+  }
+
+  dimension: pct_highest_price_delta_with_getir_min {
+
+    label: "% Highest Tier Price Delta - Getir Min"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's lowest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_getir_min ;;
+  }
+
+  dimension: pct_highest_price_delta_with_getir_avg {
+
+    label: "% Highest Tier Price Delta - Getir Avg"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's average product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_getir_avg ;;
+  }
+
+  dimension: pct_highest_price_delta_with_getir_max {
+
+    label: "% Highest Tier Price Delta - Getir Max"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's highest product price."
+    group_label: "Getir"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_getir_max ;;
   }
 
 
-# ===========  Gorillas  ===========
+# ===========  Gorillas  ===============================================================
 
   dimension: gorillas_product_id {
 
@@ -519,6 +899,7 @@ view: flink_to_competitors_prices {
     group_label: "Gorillas"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_gorillas_price ;;
   }
 
@@ -529,6 +910,7 @@ view: flink_to_competitors_prices {
     group_label: "Gorillas"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_gorillas_price ;;
   }
 
@@ -539,6 +921,7 @@ view: flink_to_competitors_prices {
     group_label: "Gorillas"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.max_gorillas_price ;;
   }
 
@@ -694,28 +1077,8 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.pct_highest_price_delta_with_gorillas_max ;;
   }
 
-  # dimension: min_price_dif_gorillas {
 
-  #   label: "Lowest Price Delta - Gorillas"
-  #   description: "The difference between Flink's lowest product price and the competitor's lowest product price."
-  #   group_label: "Gorillas"
-
-  #   type: number
-  #   sql: ${TABLE}.min_price_dif_gorillas ;;
-  # }
-
-  # dimension: max_price_dif_gorillas {
-
-  #   label: "Highest Price Delta - Gorillas"
-  #   description: "The difference between Flink's highest product price and the competitor's highest product price."
-  #   group_label: "Gorillas"
-
-  #   type: number
-  #   sql: ${TABLE}.max_price_dif_gorillas ;;
-  # }
-
-
-# ===========  REWE  ===========
+# ===========  REWE  ==============================================================
 
   dimension: rewe_product_id {
 
@@ -764,7 +1127,19 @@ view: flink_to_competitors_prices {
     group_label: "REWE"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.min_rewe_price ;;
+  }
+
+  dimension: avg_rewe_price {
+
+    label: "Average Price - REWE"
+    description: "Competitor's average price of the product before discount (including VAT)."
+    group_label: "REWE"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.avg_rewe_price ;;
   }
 
   dimension: max_rewe_price {
@@ -774,6 +1149,7 @@ view: flink_to_competitors_prices {
     group_label: "REWE"
 
     type: number
+    value_format: "€0.00"
     sql: ${TABLE}.max_rewe_price ;;
   }
 
@@ -797,24 +1173,136 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_rewe_prices_converted ;;
   }
 
-  dimension: min_price_dif_rewe {
+  dimension: pct_low_price_delta_with_rewe_min {
 
-    label: "Lowest Price Delta - REWE"
-    description: "The difference between Flink's lowest product price and the competitor's lowest product price."
-    group_label: "REWE"
+    label: "% Low Tier Price Delta - Rewe Min"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
+    group_label: "Rewe"
 
     type: number
-    sql: ${TABLE}.min_price_dif_rewe ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_rewe_min ;;
   }
 
-  dimension: max_price_dif_rewe {
+  dimension: pct_low_price_delta_with_rewe_avg {
 
-    label: "Highest Price Delta - REWE"
-    description: "The difference between Flink's highest product price and the competitor's highest product price."
-    group_label: "REWE"
+    label: "% Low Tier Price Delta - Rewe Avg"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
+    group_label: "Rewe"
 
     type: number
-    sql: ${TABLE}.max_price_dif_rewe ;;
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_rewe_avg ;;
+  }
+
+  dimension: pct_low_price_delta_with_rewe_max {
+
+    label: "% Low Tier Price Delta - Rewe Max"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_rewe_max ;;
+  }
+
+  dimension: pct_mid_price_delta_with_rewe_min {
+
+    label: "% Mid Tier Price Delta - Rewe Min"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_rewe_min ;;
+  }
+
+  dimension: pct_mid_price_delta_with_rewe_avg {
+
+    label: "% Mid Tier Price Delta - Rewe Avg"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_rewe_avg ;;
+  }
+
+  dimension: pct_mid_price_delta_with_rewe_max {
+
+    label: "% Mid Tier Price Delta - Rewe Max"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_rewe_max ;;
+  }
+
+  dimension: pct_high_price_delta_with_rewe_min {
+
+    label: "% High Tier Price Delta - Rewe Min"
+    description: "The percent difference between Flink's High Tier product price and the competitor's lowest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_rewe_min ;;
+  }
+
+  dimension: pct_high_price_delta_with_rewe_avg {
+
+    label: "% High Tier Price Delta - Rewe Avg"
+    description: "The percent difference between Flink's High Tier product price and the competitor's average product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_rewe_avg ;;
+  }
+
+  dimension: pct_high_price_delta_with_rewe_max {
+
+    label: "% High Tier Price Delta - Rewe Max"
+    description: "The percent difference between Flink's High Tier product price and the competitor's highest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_rewe_max ;;
+  }
+
+  dimension: pct_highest_price_delta_with_rewe_min {
+
+    label: "% Highest Tier Price Delta - Rewe Min"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's lowest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_rewe_min ;;
+  }
+
+  dimension: pct_highest_price_delta_with_rewe_avg {
+
+    label: "% Highest Tier Price Delta - Rewe Avg"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's average product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_rewe_avg ;;
+  }
+
+  dimension: pct_highest_price_delta_with_rewe_max {
+
+    label: "% Highest Tier Price Delta - Rewe Max"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's highest product price."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_rewe_max ;;
   }
 
 }
