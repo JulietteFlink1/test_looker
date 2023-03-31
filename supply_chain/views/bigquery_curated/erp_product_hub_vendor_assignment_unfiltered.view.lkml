@@ -754,24 +754,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     hidden: no
   }
 
-  dimension: min_order_quantity {
-    label: "Min Order Quantity"
-    description: "Minimun quantity of a product that needs to be ordered from a supplier"
-    group_label: "Item-Supplier"
-    type: number
-    sql: ${TABLE}.min_order_quantity ;;
-    hidden: no
-  }
-
-  dimension: max_order_quantity {
-    label: "Max Order Quantity"
-    description: "This field contains the maximum quantity that can be ordered at one time from the supplier for the item."
-    group_label: "Item-Supplier"
-    type: number
-    sql: ${TABLE}.max_order_quantity ;;
-    hidden: no
-  }
-
   dimension: item_lwh_uom {
     label: "Item Lwh Uom"
     description: "Unit of measurement for length, width, and height (e.g. inches, centimeters, feet). Valid values for this field are contained in uom field on uom_class table where uom_class field = DIMEN."
