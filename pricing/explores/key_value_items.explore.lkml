@@ -26,8 +26,7 @@ explore: key_value_items {
     sql_on:
             ${products_hub_assignment_v2.sku}           = ${orderline.product_sku} and
             ${products_hub_assignment_v2.hub_code}      = ${orderline.hub_code} and
-            ${products_hub_assignment_v2.report_date}   = ${orderline.created_date}
-    ;;
+            ${products_hub_assignment_v2.report_date}   = ${orderline.created_date}    ;;
     type: left_outer
     relationship: many_to_many
   }
