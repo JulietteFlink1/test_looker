@@ -42,6 +42,8 @@ view: event_cart_viewed {
     sql: ${TABLE}.shipping_method_id ;;
   }
 
+
+
 # ======= Generic Dimensions ======= #
 
   dimension: has_selected_address {
@@ -165,6 +167,15 @@ view: event_cart_viewed {
     type: string
     description: "The products in the users cart at the time the event was triggered."
     sql: ${TABLE}.products ;;
+  }
+
+
+  # ======= Cart Status ======= #
+  dimension: is_empty_cart {
+    group_label: "Cart Status Dimension"
+    type: yesno
+    description: "Yes if there is no product in cart at the time of cart_viewed event"
+    sql: ${TABLE}.is_empty_cart ;;
   }
 
 # ======= Dates / Timestamps =======

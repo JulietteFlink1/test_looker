@@ -1,3 +1,8 @@
+# Background:
+
+  # Used in order_orderline_cl.explore and supply_chain.explore to get the most "Up to date" item_at_location_status record.
+
+
 # Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
 # explore: oracle_item_location_fact {
 #   hidden: yes
@@ -42,11 +47,10 @@ view: oracle_item_location_fact {
   }
 
   dimension: current_state__item_at_location_status {
+    label: "Item At Location Status (of today)"
     type: string
-    description: "The assignment status of a given product to a given hub as defined in Oracle"
+    description: "The assignment status of a given product to a given hub as defined in Oracle. This field shows the status as of today and NOT the history of status changes"
     sql: ${TABLE}.current_state.item_at_location_status ;;
-    group_label: "Current State"
-    group_item_label: "Item At Location Status"
   }
 
   dimension: current_state__item_status {

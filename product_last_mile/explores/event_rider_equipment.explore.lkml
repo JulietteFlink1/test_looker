@@ -30,8 +30,7 @@ explore: event_rider_equipment_request_state_changed {
 
   always_filter: {
     filters: [
-      event_rider_equipment_request_state_changed.event_timestamp_date: "last 7 days",
-      event_rider_eligible_for_equipment.event_timestamp_date: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days"
     ]
   }
 
@@ -47,7 +46,9 @@ explore: event_rider_equipment_request_state_changed {
 
   join: event_rider_eligible_for_equipment {
     view_label: "2 Rider Eligble For Equipment Events"
-    sql_on: ${event_rider_equipment_request_state_changed.hub_code} = ${event_rider_eligible_for_equipment.hub_code} ;;
+    sql_on: ${event_rider_equipment_request_state_changed.hub_code} = ${event_rider_eligible_for_equipment.hub_code}
+              and {% condition global_filters_and_parameters.datasource_filter %}
+            ${event_rider_eligible_for_equipment.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }

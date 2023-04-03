@@ -42,7 +42,12 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.supplier_name ;;
   }
 
-
+  dimension: supplier_parent_name {
+    label: "Supplier Parent Name"
+    description: "The Parent supplier name as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
+    type: string
+    sql: ${TABLE}.supplier_parent_name ;;
+  }
 
 
 
@@ -166,6 +171,21 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.supplier_id ;;
   }
 
+  dimension: legacy__supplier_id {
+    type: string
+    label: "Legacy Supplier ID"
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+    group_label: "IDs"
+    sql: ${TABLE}.legacy__supplier_id ;;
+  }
+
+  dimension: supplier_location_id {
+    type: string
+    label: "Supplier Location ID"
+    description: "Supplier ID with new Oracle structure, defined as Supplier + Location - unique per Location."
+    group_label: "IDs"
+    sql: ${TABLE}.supplier_location_id ;;
+  }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Dates & Timestamps
@@ -771,6 +791,13 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.temperature_zone ;;
   }
 
+  dimension: item_error_description {
+    type: string
+    description: "This field gives information on why certain products could not be delivered.Provided by the supplier"
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_error_description ;;
+  }
+
   dimension: vendor_location {
     type: string
     description: "Location from where the Supplier is doing the distribution."
@@ -836,18 +863,18 @@ view: advanced_supplier_matching {
 
   dimension: introduction_date  {
     type: string
-    label: "Introduction Date"
+    label: "Item Location Introduction Date"
     description: "The date, when a given product was listed initially."
     group_label: "Special Use Cases"
-    sql: ${TABLE}.introduction_date ;;
+    sql: ${TABLE}.item_location_introduction_date ;;
   }
 
   dimension: termination_date {
     type: string
-    label: "Termination Date"
+    label: "Item Location Termination Date"
     description: "The date, when a given product was delisted."
     group_label: "Special Use Cases"
-    sql: ${TABLE}.termination_date ;;
+    sql: ${TABLE}.item_location_termination_date ;;
   }
 
   dimension: item_at_location_status {

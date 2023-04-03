@@ -168,6 +168,13 @@ view: event_product_added_to_cart {
     type: string
     sql: ${TABLE}.product_sku ;;
   }
+  dimension: product_sku_per_user {
+    group_label: "Product Dimensions"
+    label: "Product SKU + Anonymous ID"
+    description: "SKU of the product concatenated with Anonymous ID. Necessary to count distinct SKUs per user"
+    type: string
+    sql: ${product_sku} || " - " || ${anonymous_id} ;;
+  }
   dimension: product_name {
     group_label: "Product Dimensions"
     label: "Product Name"
@@ -231,6 +238,14 @@ view: event_product_added_to_cart {
        else ${TABLE}.product_placement
        end;;
   }
+  dimension: is_product_placement_any_reco {
+    group_label: "Product Dimensions"
+    label: "Is Recommendation Product Placement"
+    description: "Whether product placement was recommendation or last bought"
+    type: yesno
+    # this was a temporary fix af a tracking issue
+    sql: ${product_placement}="recommendation" or ${product_placement}="last_bought";;
+  }
   dimension: screen_name {
     group_label: "Product Dimensions"
     label: "Screen Name"
@@ -286,28 +301,28 @@ view: event_product_added_to_cart {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   measure: events {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Total Products"
     description: "Number of events trigegred by users"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
   measure: logged_in_users {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Registered Users"
     description: "Number of users who logged-in during a day"
     type: count_distinct
     sql: ${TABLE}.user_id ;;
   }
   measure: anonymous_users {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# All Users"
     description: "Number of all users regardless of their login status."
     type: count_distinct
     sql: ${TABLE}.anonymous_id ;;
   }
   measure: products {
-    group_label: "Bacis Counts"
+    group_label: "Basic Counts"
     label: "# Unique Products"
     description: "Number of unique products added to cart"
     type: count_distinct
@@ -415,6 +430,14 @@ view: event_product_added_to_cart {
     sql: ${TABLE}.event_uuid ;;
     filters: [product_placement: "recommendation"]
   }
+  measure: placement_any_recommendation {
+    group_label: "# Add-to-cart Events per Placement"
+    label: "# Products - Any Recommendation"
+    description: "Number of events trigegred by users from recommendation OR last-bought product placement"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [is_product_placement_any_reco: "yes"]
+  }
   measure: placement_recipes {
     group_label: "# Add-to-cart Events per Placement"
     label: "# Products - Recipes"
@@ -500,6 +523,14 @@ view: event_product_added_to_cart {
     sql: ${TABLE}.anonymous_id ;;
     filters: [product_placement: "recommendation"]
   }
+  measure: placement_any_recommendation_users {
+    group_label: "# Users per Placement"
+    label: "# Users - Any Recommendation"
+    description: "Number of users who added to the cart from recommendation OR last-bought placement"
+    type: count_distinct
+    sql: ${TABLE}.anonymous_id ;;
+    filters: [is_product_placement_any_reco: "yes"]
+  }
   measure: placement_recipes_users {
     group_label: "# Users per Placement"
     label: "# Users - Recipes"
@@ -584,6 +615,14 @@ view: event_product_added_to_cart {
     type: number
     value_format_name: percent_1
     sql: ${placement_recommendation_users} / ${anonymous_users};;
+  }
+  measure: atc_any_recommendation {
+    group_label: "Add-to-cart Rates"
+    label: "ATC rate - Any Recommendation"
+    description: "Number of users with add-to-cart with Recommendation or Last-Bought product placement / # total users"
+    type: number
+    value_format_name: percent_1
+    sql: ${placement_any_recommendation_users} / ${anonymous_users};;
   }
   measure: atc_recipes {
     group_label: "Add-to-cart Rates"

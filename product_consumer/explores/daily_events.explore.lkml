@@ -1,4 +1,4 @@
-# Owner: Product Analytics, Patricia Mitterova
+# Owner: Product Analytics
 
 # Main Stakeholder:
 # - Consumer Product
@@ -22,6 +22,7 @@ include: "/**/daily_violations_aggregates.view.lkml"
 include: "/**/event_sponsored_product_impressions.view.lkml"
 include: "/**/event_payment_failed.view.lkml"
 include: "/**/event_order_tracking_viewed.view.lkml"
+include: "/**/hubs_ct.view.lkml"
 
 explore: daily_events {
   from:  daily_events
@@ -76,7 +77,7 @@ explore: daily_events {
       event_product_added_to_cart.discount, event_product_added_to_cart.is_discount_applied,
       event_product_added_to_cart.list_position, event_product_added_to_cart.original_price, event_product_added_to_cart.original_product_price,
       event_product_added_to_cart.product_placement, event_product_added_to_cart.product_position,
-      event_product_added_to_cart.search_query_id]
+      event_product_added_to_cart.search_query_id, event_product_added_to_cart.product_sku_per_user]
     sql_on: ${event_product_added_to_cart.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_product_added_to_cart.event_date} {% endcondition %};;
     type: left_outer
@@ -111,7 +112,8 @@ explore: daily_events {
             event_cart_viewed.shipping_method_id,
             event_cart_viewed.cart_id,
             event_cart_viewed.screen_name,
-            event_cart_viewed.products]
+            event_cart_viewed.products,
+            event_cart_viewed.is_empty_cart]
     sql_on: ${event_cart_viewed.event_uuid} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_cart_viewed.event_date} {% endcondition %};;
     type: left_outer
@@ -144,7 +146,8 @@ explore: daily_events {
             event_checkout_viewed.amt_order_total_eur,
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
-            event_checkout_viewed.cart_id]
+            event_checkout_viewed.cart_id,
+            event_checkout_viewed.delivery_pdt]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -222,16 +225,39 @@ join: daily_violations_aggregates {
 
   join: daily_user_aggregates {
     view_label: "Daily User Aggregates"
-    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_set,
+    fields: [daily_user_aggregates.is_address_confirmed, daily_user_aggregates.is_address_deliverable,
              daily_user_aggregates.is_checkout_started, daily_user_aggregates.is_checkout_viewed,
              daily_user_aggregates.is_order_placed,
-             daily_user_aggregates.is_cart_viewed, daily_user_aggregates.is_product_added_to_cart,
+             daily_user_aggregates.is_cart_viewed,
+             daily_user_aggregates.is_product_search_viewed,
+             daily_user_aggregates.is_product_search_executed,
+             daily_user_aggregates.is_product_added_to_cart,
              daily_user_aggregates.is_payment_started,
+             daily_user_aggregates.is_product_details_viewed,
              daily_user_aggregates.is_account_registration_viewed, is_home_viewed, is_new_user,
+             users_with_product_details_viewed, daily_user_aggregates.users_with_product_search_viewed,
+             daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed,
+             daily_user_aggregates.users_with_add_to_cart,
+             daily_user_aggregates.users_with_address,
+             daily_user_aggregates.daily_users_with_address,
+             daily_user_aggregates.daily_users_with_product_search_viewed,
+            daily_user_aggregates.daily_users_with_cart_viewed,
+            daily_user_aggregates.daily_users_with_add_to_cart,
+            daily_user_aggregates.daily_users_with_home_viewed,
+            daily_user_aggregates.daily_users_with_product_details_viewed,
+            daily_user_aggregates.is_active_user,
+            daily_user_aggregates.daily_active_users
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
       and {% condition global_filters_and_parameters.datasource_filter %} ${daily_user_aggregates.event_date_at_date} {% endcondition %}  ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: hubs_ct {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${daily_events.hub_code};;
     type: left_outer
     relationship: many_to_one
   }

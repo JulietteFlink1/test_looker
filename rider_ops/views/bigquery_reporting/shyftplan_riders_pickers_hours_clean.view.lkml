@@ -183,6 +183,25 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: rider_online_hours {
+    label: "Sum of Online Rider Hours"
+    type: sum
+    sql: ${TABLE}.number_of_online_rider_minutes/60;;
+    filters: [position_name: "rider"]
+    description: "Number of hours rider spent online in Workforce app (Rider app)."
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: pct_rider_hours_vs_rider_online_hours {
+    group_label: "> Shift Related"
+    type: number
+    label: "% Online Rider Hours vs Worked Rider Hours"
+    sql: ${rider_online_hours}/nullif(${rider_hours},0);;
+    description: "hours rider spent online in Workforce app (Rider app)/ Punched Rider Hours (from Quinyx)"
+    value_format_name: percent_1
+  }
+
   measure: onboarding_hours {
     label: "Sum of Onboarding Hours"
     type: sum
@@ -190,6 +209,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "onboarding"]
     value_format_name: decimal_1
     group_label: "Working Hours"
+    hidden: yes
   }
 
   measure: rider_captain {
@@ -198,6 +218,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider captain"]
     group_label: "Counts"
+    hidden: yes
   }
 
 
@@ -208,6 +229,7 @@ view: shyftplan_riders_pickers_hours_clean {
     filters: [position_name: "rider captain"]
     value_format_name: decimal_1
     group_label: "Working Hours"
+    hidden: yes
   }
 
   measure: riders {
@@ -216,6 +238,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "rider"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: ops_associates {
@@ -224,6 +247,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees};;
     filters: [position_name: "ops associate"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: ops_associates_external {
@@ -232,6 +256,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "ops associate"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: riders_external {
@@ -240,6 +265,7 @@ view: shyftplan_riders_pickers_hours_clean {
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "rider"]
     group_label: "Counts"
+    hidden: yes
   }
 
   measure: picker_hours {
@@ -251,11 +277,12 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
-  measure: deputy_shift_lead_hours {
-    label: "Sum of Deputy Shift Lead Hours"
+  measure: ops_associate_plus_hours {
+    alias: [deputy_shift_lead_hours]
+    label: "Sum of Ops Associate + Hours"
     type: sum
     sql:${TABLE}.number_of_worked_minutes/60;;
-    filters: [position_name: "deputy shift lead"]
+    filters: [position_name: "ops associate +"]
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
@@ -270,9 +297,9 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate, Shift Lead and Deputy Shift Lead)"
+    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate, Shift Lead and Ops Associate +)"
     type: number
-    sql: ${ops_associate_hours}+${shift_lead_hours}+${deputy_shift_lead_hours};;
+    sql: ${ops_associate_hours}+${shift_lead_hours}+${ops_associate_plus_hours};;
     value_format_name: decimal_1
     group_label: "Working Hours"
   }
@@ -446,6 +473,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${number_of_worked_employees};;
     filters: [position_name: "picker"]
+    hidden: yes
     group_label: "Counts"
   }
 
@@ -454,6 +482,7 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql:${number_of_worked_employees_external};;
     filters: [position_name: "picker"]
+    hidden: yes
     group_label: "Counts"
   }
 
@@ -665,6 +694,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "UTR"
   }
 
+  measure: rider_online_utr {
+    label: "AVG Rider UTR (using Online Hours)"
+    type: number
+    description: "# Orders (excl. Click & Collect and External Orders) / # Rider hours spent online (from Rider App)"
+    sql: ${adjusted_orders_riders} / NULLIF(${rider_online_hours}, 0);;
+    value_format_name: decimal_2
+    group_label: "UTR"
+  }
+
   measure: picker_utr {
     label: "AVG Picker UTR"
     type: number
@@ -680,7 +718,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
-    group_label: "UTR"
+    group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
   }
 
   measure: ops_associate_utr {
@@ -690,7 +728,7 @@ view: shyftplan_riders_pickers_hours_clean {
     description: "# Orders (incl. Click & Collect and External Orders) / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
     sql: ${adjusted_orders_pickers} / NULLIF(${ops_associate_hours}, 0);;
     value_format_name: decimal_2
-    group_label: "UTR"
+    group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
   }
 
   measure: wh_ops_utr {
@@ -773,8 +811,8 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: all_staff_utr {
     label: "AVG All Staff UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Deputy Shift Lead) Hours"
-    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${deputy_shift_lead_hours}+${onboarding_hours}, 0);;
+    description: "# Orders (incl. Click & Collect and External Orders) / # Worked All Staff (incl. Rider,Picker,WH Ops, Rider Captain, Ops Associate, Shift Lead and Ops Associate +) Hours"
+    sql: ${adjusted_orders_pickers} / NULLIF(${rider_hours}+${shift_lead_hours}+${ops_associate_hours}+${ops_associate_plus_hours}+${onboarding_hours}, 0);;
     value_format_name: decimal_2
     group_label: "UTR"
   }
@@ -938,8 +976,8 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_rider_idle_time {
     group_label: "Rider Performance"
     label: "% Worked Time Spent Idle (Riders)"
-    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
-    hidden:  no
+    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time of orders deliverd by riders only (exclude orders delivered by non riders) (min) with total worked time (min)"
+    hidden:  yes
     type: number
     sql: ${employee_level_kpis.pct_rider_idle_time};;
     value_format_name: percent_2

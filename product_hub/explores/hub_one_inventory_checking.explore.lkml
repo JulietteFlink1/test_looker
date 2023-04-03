@@ -27,7 +27,7 @@ explore: hub_one_inventory_checking {
     user_attribute: country_iso
   }
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${created_at_timestamp_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${scheduled_at_date} {% endcondition %};;
 
   always_filter: {
     filters: [

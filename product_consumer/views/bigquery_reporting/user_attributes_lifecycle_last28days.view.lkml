@@ -808,6 +808,14 @@ view: user_attributes_lifecycle_last28days {
     sql: ${customer_uuid} ;;
     filters: [number_of_orders: ">0"]
   }
+  # }
+
+  measure: avg_number_of_orders {
+    label: "Avg # of Orders"
+    type: average_distinct
+    sql: if(${number_of_days_ordering}>0,${number_of_orders},null) ;;
+    value_format_name: decimal_2
+  }
 
   measure: count {
     type: count
@@ -821,6 +829,7 @@ view: user_attributes_lifecycle_last28days {
     description: "Average of the total GMV over customers"
     type: average
     sql: ${amt_gmv_gross} ;;
+    value_format_name: eur
   }
 
   measure: total_gmv_gross {
@@ -830,6 +839,7 @@ view: user_attributes_lifecycle_last28days {
     description: "Sum of the total GMV over customers"
     type: sum
     sql: ${amt_gmv_gross} ;;
+    value_format_name: eur
   }
 
   measure: total_gmv_min {

@@ -94,6 +94,14 @@ view: vehicle_suppliers {
     sql: ${TABLE}.vehicle_id ;;
   }
 
+  dimension: license_plate {
+    group_label: "> Vehicle Properties"
+    label: "License Plate"
+    description: "License plate written on the bike frame."
+    type: string
+    sql: ${TABLE}.license_plate ;;
+  }
+
   dimension: is_archived_bike {
     group_label: "> Vehicle Properties"
     type: yesno

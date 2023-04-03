@@ -33,7 +33,8 @@ set: drill_fields_set {
     timeframes: [
       date,
       week,
-      month
+      month,
+      day_of_week
     ]
     convert_tz: no
     datatype: date
@@ -177,6 +178,18 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+  dimension_group: item_location_termination {
+    type: time
+    datatype: date
+    label: "Item Location Termination"
+    description: "The date, when a given product was delisted in the location."
+    group_label: "Product Data"
+    timeframes: [
+      date
+    ]
+    sql: ${TABLE}.item_location_termination_date ;;
+  }
+
   dimension: vendor_name {
     type: string
     sql: ${TABLE}.vendor_name ;;
@@ -184,6 +197,22 @@ set: drill_fields_set {
     group_label: ""
     description: "The name of the supplier/vendor of a product (e.g. REWE or Carrefour)."
     drill_fields: [drill_fields_set*]
+  }
+
+  dimension: purchase_unit {
+    type: string
+    sql: ${TABLE}.purchase_unit ;;
+    label: "Purchase Units"
+    group_label: "Product Data"
+    description: "The ERP defined puchase unit of a product. It defines, which aggregation was bought."
+  }
+
+  dimension: handling_unit_rotation_ratio {
+    type: string
+    sql: ${TABLE}.handling_unit_rotation_ratio ;;
+    label: "Handling unit Rotation Ratio"
+    group_label: "Product Data"
+    description: "Ratio that shows the quantity of units we need to sell before we discard the items. It's defined as the relation between Purchase Units and Max Shelf Life"
   }
 
   dimension: erp_category {
@@ -233,10 +262,10 @@ set: drill_fields_set {
 
   dimension: product_erp_brand {
     type: string
-    sql: ${TABLE}.product_erp_brand ;;
+    sql: ${TABLE}.erp_item_brand_name ;;
     label: "Product Brand (ERP)"
     group_label: "Product Data"
-    description: "The brand a product belongs to (ERP)."
+    description: "The brand of a product as defined in the ERP system."
     drill_fields: [drill_fields_set*]
   }
 
@@ -400,6 +429,20 @@ set: drill_fields_set {
     group_label: "Absolut Metrics"
   }
 
+# This flag is needed to exclude from inbounds those Suppliers with no DESADVs.
+  dimension: is_dispatch_notifications_assigned_for_inbound_calculation{
+    type: yesno
+    sql: case
+            when ${number_of_selling_units_delivered} > 0 then true
+            else false
+            end;;
+    hidden: yes
+    label: "Is Dispatch Notification Assigned for Inbound Calculation"
+    description: "Shows if there is a DESADVs assigned for a given SKU-Location on a particular day.
+                  It is used to exclude from Inbounds those suppliers with no DESADVs."
+    group_label: "Absolut Metrics"
+  }
+
   dimension: number_of_handling_units_ordered {
     type: number
     sql: ${TABLE}.number_of_handling_units_ordered ;;
@@ -450,7 +493,7 @@ set: drill_fields_set {
 
   dimension: number_of_items_sold {
     type: number
-    sql: ${TABLE}.number_of_items_sold ;;
+    sql: ${TABLE}.sum_quantity_outbound_order ;;
     hidden: yes
     label: "Number of Items Sold"
     group_label: "GMV Metrics"
@@ -604,6 +647,15 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_inbounded_limited__desadv {
+    type: number
+    sql: ${TABLE}.sum_of_items_inbounded_limited__desadv ;;
+    label: "# Inbounded Items lim (DESADVs <> Inbounds)"
+    group_label: "DESADVs <> Inbounds"
+    description: "Total quantity fullfilled limited (DESADV > Inbound)"
+    hidden: yes
+  }
+
   dimension: items_inbounded_in_quality__desadv {
     type: number
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__desadv ;;
@@ -676,6 +728,15 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_inbounded_limited__po {
+    type: number
+    sql: ${TABLE}.sum_of_items_inbounded_limited__po ;;
+    label: "# Inbounded Items lim. (PO <> Inbounds)"
+    group_label: "PO <> Inbounds"
+    description: "Total quantity fullfilled Limited (PO > Inbound)"
+    hidden: yes
+  }
+
   dimension: items_inbounded_in_quality__po {
     type: number
     sql: ${TABLE}.sum_of_items_inbounded_in_quality__po ;;
@@ -730,6 +791,14 @@ set: drill_fields_set {
     hidden: yes
   }
 
+  dimension: items_ordered_desadv_with_po_limited__po_desadv {
+    type: number
+    sql: ${TABLE}.sum_of_items_ordered_desadv_with_po_limited__po_desadv ;;
+    label: "# Filled Quantities lim. (PO > DESADV)"
+    group_label: "PO <> DESADVs"
+    description: "Total quantity fullfilled limited (PO > DESADV)"
+    hidden: yes
+  }
 
 
 

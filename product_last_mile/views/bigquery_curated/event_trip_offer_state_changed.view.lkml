@@ -6,7 +6,7 @@
 
 view: event_trip_offer_state_changed {
   sql_table_name: `flink-data-prod.curated.event_trip_offer_state_changed`;;
-  view_label: "Event Trip Offer State Changed"
+  view_label: "1 Event Trip Offer State Changed"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #

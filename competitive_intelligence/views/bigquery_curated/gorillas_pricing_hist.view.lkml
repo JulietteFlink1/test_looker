@@ -59,6 +59,15 @@ view: gorillas_pricing_hist {
     value_format: "€0.00"
   }
 
+  dimension: amt_product_discount_price_gross {
+
+    label: "Discount Price"
+    description: "Product price gross if product discount exists."
+
+    type: number
+    sql: ${TABLE}.amt_product_discount_price_gross ;;
+  }
+
   dimension: strikethrough_price {
     type: number
     sql: ${TABLE}.strikethrough_price ;;

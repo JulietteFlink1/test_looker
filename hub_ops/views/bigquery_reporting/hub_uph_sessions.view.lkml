@@ -127,6 +127,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -143,6 +144,7 @@ view: hub_uph_sessions {
       raw,
       date,
       week,
+      day_of_week,
       month,
       minute30,
       hour_of_day
@@ -168,6 +170,7 @@ view: hub_uph_sessions {
     type: time
     timeframes: [
       date,
+      day_of_week,
       week,
       month,
       year
@@ -222,7 +225,7 @@ view: hub_uph_sessions {
   measure: sum_of_number_of_checks {
     group_label: "> Quantities"
     label: "# Checks"
-    description: "Number of Checks finished. Based on Hub One data."
+    description: "Number of Checks finished. 1 check = 1 SKU. Based on Hub One data."
     type: sum
     sql: ${number_of_checks} ;;
   }

@@ -131,6 +131,17 @@ view: dispatch_notifications {
   }
 
 
+#For DESADVs this field is irrelevant since the data we receive from SI is already on Legacy IDs
+  dimension: legacy__supplier_id {
+    label: "Legacy Supplier ID"
+    description: "Legacy: The supplier ID as defined in Lexbizz"
+    group_label: ">> IDs"
+    type: string
+    sql: ${TABLE}.legacy__supplier_id ;;
+    hidden: yes
+  }
+
+
   dimension: product_name {
     type: string
     sql: ${TABLE}.product_name ;;

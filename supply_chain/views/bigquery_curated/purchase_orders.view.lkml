@@ -142,7 +142,7 @@ view: purchase_orders {
 
   dimension_group: order_timestamp {
     alias: [order]
-    label:       "Order"
+    label: "Order"
     description: "Date. when the order was created"
     group_label: ">> Dates & Timestamps"
     type: time
@@ -178,10 +178,17 @@ view: purchase_orders {
 
 
   dimension: vendor_id {
-    label:       "Supplier ID"
+    label: "Supplier ID"
     description: "The Id of the supplier"
     type: string
     sql: ${TABLE}.vendor_id ;;
+  }
+
+  dimension: legacy__supplier_id {
+    label: "Legacy Supplier ID"
+    description: "Legacy: The supplier ID as defined in Lexbizz."
+    type: string
+    sql: ${TABLE}.legacy__supplier_id ;;
   }
 
 # In curated.purchase_order (new model) we don't have vendor_id_original and is_vendor_dc
@@ -195,7 +202,7 @@ view: purchase_orders {
   }
 
   dimension: vendor_location {
-    label:       "Supplier Location"
+    label: "Supplier Location"
     description: "Location of the supplier"
     type: string
     sql: ${TABLE}.vendor_location ;;
@@ -213,21 +220,21 @@ view: purchase_orders {
 ########################################################################################################
 
   dimension: sku {
-    label:       "SKU"
+    label: "SKU"
     description: "The identified of a product"
     type: string
     sql: ${TABLE}.sku ;;
   }
 
   dimension: name {
-    label:       "Product Name"
+    label: "Product Name"
     description: "The name of a product"
     type: string
     sql: ${TABLE}.name ;;
   }
 
   dimension: edi {
-    label:       "EDI"
+    label: "EDI"
     description: "Unique ID for SKUs to be ordered from supplier"
     type: string
     sql: ${TABLE}.edi ;;
@@ -240,7 +247,7 @@ view: purchase_orders {
 
 
   dimension: handling_units_count {
-    label:       "Quantity Handling Unit"
+    label: "Quantity Handling Unit"
     description: "The amount of ordered handling units"
     group_label: " >> Line Item Data"
     type: number
@@ -251,7 +258,7 @@ view: purchase_orders {
 
   dimension: total_quantity {
     alias: [selling_unit_quantity]
-    label:       "Quantity Selling Unit"
+    label: "Quantity Selling Unit"
     description: "The amount of ordered items"
     group_label: " >> Line Item Data"
     type: number
@@ -286,7 +293,7 @@ view: purchase_orders {
   }
 
   dimension: order_id {
-    label:       "Order ID"
+    label: "Order ID"
     description: "Order ID for orders placed by Flink to it's suppliers"
     group_label: " >> IDs "
     type: string
@@ -294,7 +301,7 @@ view: purchase_orders {
   }
 
   dimension: order_number {
-    label:       "Order Number"
+    label: "Order Number"
     description: "Order Number for orders placed by Flink to it's suppliers"
     group_label: " >> IDs "
     type: number
@@ -302,7 +309,7 @@ view: purchase_orders {
   }
 
   dimension: flink_buyer_id {
-    label:       "Buyer ID"
+    label: "Buyer ID"
     description: "Buyer ID of the purchase order"
     group_label: " >> IDs "
     type: string
@@ -324,7 +331,7 @@ view: purchase_orders {
 
   measure: sum_selling_unit_quantity {
 
-    label:       "# Selling Units (PO)"
+    label: "# Selling Units (PO)"
     description: "The amount of ordered items"
     type: sum
     sql: ${total_quantity} ;;
@@ -333,7 +340,7 @@ view: purchase_orders {
 
   measure: sum_handling_unit_quantity {
 
-    label:       "# Handling Units (PO)"
+    label: "# Handling Units (PO)"
     description: "The amount of ordered handling units"
     type: sum
     sql: ${handling_units_count} ;;
@@ -343,7 +350,7 @@ view: purchase_orders {
 
   measure: cnt_of_orders {
 
-    label:       "# Orders"
+    label: "# Orders"
     description: "The amount of delivered orders"
     #group_label: " >> Line Item Data"
 
@@ -355,7 +362,7 @@ view: purchase_orders {
 
   measure: cnt_of_skus_per_order {
 
-    label:       "# SKUs per orders"
+    label: "# SKUs per orders"
     description: "The amount of skus per orders"
     #group_label: " >> Line Item Data"
 
@@ -379,7 +386,7 @@ view: purchase_orders {
 
 
   measure: pct_order_inbounded {
-    label:       "% Fill Rate (PO > Inventory)"
+    label: "% Fill Rate (PO > Inventory)"
     description: "How many of the ordered items have been inbounded in the hubs on the promised delivery date of the order"
     type: number
     sql: safe_divide(${inventory_changes_daily.sum_inbound_inventory}, ${sum_selling_unit_quantity}) ;;
@@ -395,7 +402,7 @@ view: purchase_orders {
   }
 
   measure: sum_purchase_price {
-    label:       "€ Selling Units (Buying Price)"
+    label: "€ Selling Units (Buying Price)"
     description: "This measure multiplies the supplier price of an item with the number
                   of selling units we ordered and thus provides the cumulative value of the replenished items."
 

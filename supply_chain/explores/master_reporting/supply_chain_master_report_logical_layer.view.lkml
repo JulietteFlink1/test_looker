@@ -175,11 +175,25 @@ view: +supply_chain_master_report {
     value_format_name: percent_1
   }
 
+
 ## DESADVs <> Inbounds
+
+# This calculation is needed in order to get the total quantities inbounded with DESADVs assigned.
+# This is because we don't have DESADVs for every Supplier, that's why we need to exclude those inbounds from Suppliers without DESADVs.
+
+  measure: sum_units_inbounded_for_desadv_fill_rate_calculation{
+    type: sum
+    sql: ${number_of_items_inbounded} ;;
+    label: "# Units Inbounded (with DESADVs)"
+    group_label: "Inventory Metrics"
+    description: "Total number of items inbounded during the inbounding process with DESADVs assigned."
+    value_format_name: decimal_1
+    filters: [is_dispatch_notifications_assigned_for_inbound_calculation: "yes"]
+  }
 
   measure: pct_fill_rate_desadvs_inbounds{
     type: number
-    sql: safe_divide(${sum_units_inbounded}, ${sum_selling_units_delivered}) ;;
+    sql: safe_divide(${sum_units_inbounded_for_desadv_fill_rate_calculation}, ${sum_selling_units_delivered}) ;;
     label: "% Fill Rate (DESADVs<>Inbounds)"
     group_label: "Inventory Metrics"
     description: "The percentage of selling units on a dispatch notification that were actually inbounded"
@@ -422,6 +436,24 @@ view: +supply_chain_master_report {
     value_format_name: percent_0
   }
 
+  measure: sum_of_items_inbounded_limited__desadv {
+    type: sum
+    sql: ${items_inbounded_limited__desadv} ;;
+    label: "# Inbounded Items lim. (DESADVs <> Inbounds)"
+    group_label: "DESADV >> Inbound | In Full"
+    description: "Sum of fullfilled quantities limited (DESADV > Inbound)"
+    value_format_name: decimal_0
+  }
+
+  measure: share_of_items_inbounded_limited__desadv_with_sum_of_items__desadv {
+    label: "% In Full relaxed lim. (DESADV > Inbound)"
+    description: "Relative amount of fullfilled quantities (DESADV > Inbound) compared to overall DESADV quantities - limited."
+    group_label: "DESADV >> Inbound | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_inbounded_limited__desadv}, ${sum_of_items__desadv}) ;;
+    value_format_name: percent_0
+  }
+
 # In Quality
 
 
@@ -561,6 +593,25 @@ view: +supply_chain_master_report {
     value_format_name: decimal_0
   }
 
+  measure: share_of_items_inbounded_limited__po_with_sum_of_items__po {
+    label: "% In Full relaxed lim. (PO > Inbound)"
+    description: "Relative amount of fullfilled quantities (PO > Inbound) compared to overall ordered quantities limited"
+    group_label: "PO >> Inbound | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_inbounded_limited__po} , ${sum_of_items__po});;
+    value_format_name: percent_0
+  }
+
+  measure: sum_of_items_inbounded_limited__po {
+    type: sum
+    sql: ${items_inbounded_limited__po} ;;
+    label: "# Inbounded Items lim (PO <> Inbounds)"
+    group_label: "PO >> Inbound | In Full"
+    description: "Sum of fullfilled quantities limited (PO > Inbound)"
+    value_format_name: decimal_0
+  }
+
+
 ## In Quality
 
   measure:  share_of_items_inbounded_in_quality__po_with_sum_of_items_inbounded__po {
@@ -677,6 +728,24 @@ view: +supply_chain_master_report {
     label: "# Filled Quantities (PO > DESADV)"
     group_label: "PO >> DESADV | In Full"
     description: "Sum of fullfilled quantities (PO > DESADV)"
+    value_format_name: decimal_0
+  }
+
+  measure: share_of_items_ordered_desadv_with_po_limited__po_desadv_with_sum_of_items__po {
+    label: "% In Full relaxed lim (PO > DESADV)"
+    description: "Relative amount of fullfilled quantities (PO > DESADV) compared to overall ordered quantities limited"
+    group_label: "PO >> DESADV | In Full"
+    type: number
+    sql: safe_divide(${sum_of_items_ordered_desadv_with_po_limited__po_desadv}, ${sum_of_items__po}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_of_items_ordered_desadv_with_po_limited__po_desadv {
+    type: sum
+    sql: ${items_ordered_desadv_with_po_limited__po_desadv} ;;
+    label: "# Filled Quantities lim. (PO > DESADV)"
+    group_label: "PO >> DESADV | In Full"
+    description: "Sum of fullfilled quantities limited (PO > DESADV)"
     value_format_name: decimal_0
   }
 

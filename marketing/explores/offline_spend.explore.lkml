@@ -13,4 +13,20 @@ explore: offline_marketing_spend {
     user_attribute: country_iso
   }
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#  - - - - - - - - - -    FILTER & SETTINGS
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  always_filter: {
+    filters: [
+      offline_marketing_spend.week_week: "last 4 weeks",
+      offline_marketing_spend.date_granularity: "Week",
+      offline_marketing_spend.country_iso: "",
+      offline_marketing_spend.channel: "",
+      offline_marketing_spend.network: ""
+
+    ]
+  }
+
 }

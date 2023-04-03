@@ -5,17 +5,26 @@
 #explore: sdt_inventory_valuation {hidden:yes}
 
 view: sdt_inventory_valuation {
-  required_access_grants: [can_view_buying_information]
   # Or, you could make this view a derived table, like this:
   derived_table: {
     sql:
 
 with
+vars as (
+    select
+        --date('2023-01-01') as start_date,
+        {% date_start select_timeframe %} as start_date,
+        --date('2023-01-31') as end_date
+
+        -- needed, as the range-filter say "before date" but the date_end field is the actually entered date
+        date_sub({% date_end select_timeframe %}, interval 1 day)   as end_date
+),
+
+
+
 base_data as (
     select
-        inv.report_date,
-        first_value(inv.report_date) over w   as start_date,
-        last_value(inv.report_date)  over w   as end_date,
+        inv.report_date                       as report_date,
         inv.country_iso                       as country_iso,
         inv.hub_code                          as hub_code,
         inv.sku                               as sku,
@@ -28,34 +37,31 @@ base_data as (
         inv.number_of_total_correction        as number_of_total_correction,
         inv.number_of_total_outbound          as number_of_total_outbound,
         inv.number_of_unspecified             as number_of_unspecified,
+        inv.number_of_total_inbound
+        + inv.number_of_total_correction
+        + inv.number_of_total_outbound
+        + inv.number_of_unspecified           as number_of_change_reasons,
         coalesce(
             price.amt_buying_price_weighted_rolling_average_net_eur,
+            price.amt_buying_price_net_eur,
             -- currently only gross - aligning with Brandon if we should add net prices
             -- to curated.product_prices
-            price.avg_amt_selling_price_gross_eur
-        )                                     as amt_buying_price_weighted_rolling_average_net_eur,
-        first_value(inv.quantity_from) over w as start_stock_level,
-        first_value(
-            coalesce(
-                price.amt_buying_price_weighted_rolling_average_net_eur,
-                price.avg_amt_selling_price_gross_eur
-            )
-        ) over w                              as amt_start_stock_level_buying_price_weighted_rolling_average_net_eur,
-        last_value(inv.quantity_to)    over w as end_stock_level,
-        last_value(
-            coalesce(
-                price.amt_buying_price_weighted_rolling_average_net_eur,
-                price.avg_amt_selling_price_gross_eur
-            )
-        )    over w                           as amt_end_stock_level_buying_price_weighted_rolling_average_net_eur
+            safe_divide(prod.amt_product_price_gross,coalesce(1+ prod.tax_rate, 1))
+        )                                     as amt_buying_price_weighted_rolling_average_net_eur
 
     from flink-data-prod.reporting.inventory_daily
     as inv
 
-    left join flink-data-prod.reporting.product_prices_daily
+    left join flink-data-prod.curated.products
+    as prod
+    on
+        prod.sku = inv.sku and
+        prod.country_iso = inv.country_iso
+
+    left join flink-data-prod.curated.erp_buying_prices
     as price
     on
-        price.reporting_date = inv.report_date and
+        price.ingestion_date = inv.report_date and
         price.hub_code       = inv.hub_code    and
         price.sku            = inv.sku
 
@@ -67,83 +73,170 @@ base_data as (
         erp_data.sku         = inv.sku
     where
         true
-        and {% condition select_timeframe %} inv.report_date {% endcondition %}
-        and {% condition select_timeframe %} price.reporting_date {% endcondition %}
-        and {% condition select_timeframe %} erp_data.report_date {% endcondition %}
-         --and inv.report_date between '2022-11-01' and '2022-11-05'
-         --and price.reporting_date between '2022-11-01' and '2022-11-05'
-         --and erp_data.report_date between '2022-11-01' and '2022-11-05'
+        and inv.report_date between (select start_date from vars) and (select end_date from vars)
 
         -- filter hub_code
-        and {% condition select_hub %} price.hub_code {% endcondition %}
         and {% condition select_hub %} inv.hub_code {% endcondition %}
-        and {% condition select_hub %} erp_data.hub_code {% endcondition %}
 
         -- filter sku
-        and {% condition select_sku %} price.sku {% endcondition %}
         and {% condition select_sku %} inv.sku {% endcondition %}
-        and {% condition select_sku %} erp_data.sku {% endcondition %}
-
-    window w as (
-        partition by
-            inv.hub_code,
-            inv.sku
-        order by
-            inv.report_date
-        rows between
-            unbounded preceding and
-            unbounded following
-        )
 ),
+
+base_data_with_prices as (
+    select
+        *,
+        quantity_from * amt_buying_price_weighted_rolling_average_net_eur               as amt_quantity_from,
+        quantity_to * amt_buying_price_weighted_rolling_average_net_eur                 as amt_quantity_to,
+        quantity_change * amt_buying_price_weighted_rolling_average_net_eur             as amt_quantity_change,
+        number_of_total_inbound * amt_buying_price_weighted_rolling_average_net_eur     as amt_number_of_total_inbound,
+        number_of_total_correction * amt_buying_price_weighted_rolling_average_net_eur  as amt_number_of_total_correction,
+        number_of_total_outbound * amt_buying_price_weighted_rolling_average_net_eur    as amt_number_of_total_outbound,
+        number_of_unspecified * amt_buying_price_weighted_rolling_average_net_eur       as amt_number_of_unspecified,
+        number_of_change_reasons * amt_buying_price_weighted_rolling_average_net_eur    as amt_number_of_change_reasons
+
+    from base_data
+),
+
+start_data as (
+
+    select
+
+        country_iso,
+        hub_code,
+        sku,
+        report_date             as start_date,
+        cast(null as date)      as end_date,
+        string_agg(distinct supplier_id, ', ' order by supplier_id)     as supplier_id,
+        string_agg(distinct supplier_name, ', ' order by supplier_name) as supplier_name,
+        sum(quantity_from)      as start_stock_level,
+        sum(amt_quantity_from)  as amt_start_stock_level,
+        sum(0)                  as end_stock_level,
+        sum(0)                  as amt_end_stock_level,
+        sum(0)                  as number_of_quantity_change,
+        sum(0)                  as number_of_change_reasons,
+        sum(0)                  as number_of_number_of_total_inbound,
+        sum(0)                  as number_of_number_of_total_correction,
+        sum(0)                  as number_of_number_of_total_outbound,
+        sum(0)                  as number_of_number_of_unspecified,
+        sum(0)                  as amt_number_of_quantity_change,
+        sum(0)                  as amt_number_of_change_reasons,
+        sum(0)                  as amt_number_of_number_of_total_inbound,
+        sum(0)                  as amt_number_of_number_of_total_correction,
+        sum(0)                  as amt_number_of_number_of_total_outbound,
+        sum(0)                  as amt_number_of_number_of_unspecified
+
+    from base_data_with_prices
+
+    where report_date = (select start_date from vars)
+
+    group by 1,2,3,4,5
+),
+
+end_data as (
+
+    select
+
+        country_iso,
+        hub_code,
+        sku,
+        cast(null as date)      as start_date,
+        report_date             as end_date,
+        string_agg(distinct supplier_id, ', ' order by supplier_id)     as supplier_id,
+        string_agg(distinct supplier_name, ', ' order by supplier_name) as supplier_name,
+        sum(0)                  as start_stock_level,
+        sum(0)                  as amt_start_stock_level,
+        sum(quantity_to)        as end_stock_level,
+        sum(amt_quantity_to)    as amt_end_stock_level,
+        sum(0)                  as number_of_quantity_change,
+        sum(0)                  as number_of_change_reasons,
+        sum(0)                  as number_of_number_of_total_inbound,
+        sum(0)                  as number_of_number_of_total_correction,
+        sum(0)                  as number_of_number_of_total_outbound,
+        sum(0)                  as number_of_number_of_unspecified,
+        sum(0)                  as amt_number_of_quantity_change,
+        sum(0)                  as amt_number_of_change_reasons,
+        sum(0)                  as amt_number_of_number_of_total_inbound,
+        sum(0)                  as amt_number_of_number_of_total_correction,
+        sum(0)                  as amt_number_of_number_of_total_outbound,
+        sum(0)                  as amt_number_of_number_of_unspecified
+
+    from base_data_with_prices
+
+    where report_date = (select end_date from vars)
+
+    group by 1,2,3,4,5
+),
+
+changes_data as (
+
+    select
+
+        country_iso,
+        hub_code,
+        sku,
+        cast(null as date)                  as start_date,
+        cast(null as date)                  as end_date,
+        string_agg(distinct supplier_id, ', ' order by supplier_id)     as supplier_id,
+        string_agg(distinct supplier_name, ', ' order by supplier_name) as supplier_name,
+        sum(0)                              as start_stock_level,
+        sum(0)                              as amt_start_stock_level,
+        sum(0)                              as end_stock_level,
+        sum(0)                              as amt_end_stock_level,
+        sum(quantity_change)                as number_of_quantity_change,
+        sum(number_of_change_reasons)       as number_of_change_reasons,
+        sum(number_of_total_inbound)        as number_of_number_of_total_inbound,
+        sum(number_of_total_correction)     as number_of_number_of_total_correction,
+        sum(number_of_total_outbound)       as number_of_number_of_total_outbound,
+        sum(number_of_unspecified)          as number_of_number_of_unspecified,
+        sum(amt_quantity_change)            as amt_number_of_quantity_change,
+        sum(amt_number_of_change_reasons)   as amt_number_of_change_reasons,
+        sum(amt_number_of_total_inbound)    as amt_number_of_number_of_total_inbound,
+        sum(amt_number_of_total_correction) as amt_number_of_number_of_total_correction,
+        sum(amt_number_of_total_outbound)   as amt_number_of_number_of_total_outbound,
+        sum(amt_number_of_unspecified)      as amt_number_of_number_of_unspecified,
+
+    from base_data_with_prices
+
+    group by 1,2,3,4,5
+),
+
 aggregated_data as (
+
     select
         country_iso,
         hub_code,
         sku,
-        supplier_id,
-        supplier_name,
-        avg(start_stock_level) as start_stock_level,
-        avg(start_stock_level
-            * amt_start_stock_level_buying_price_weighted_rolling_average_net_eur) as amt_start_stock_level,
-        avg(end_stock_level) as end_stock_level,
-        avg(end_stock_level
-            * amt_end_stock_level_buying_price_weighted_rolling_average_net_eur)   as amt_end_stock_level,
-        min(start_date)as start_date,
-        max(end_date) as end_date,
-        # quantities
-        sum(quantity_change)            as number_of_quantity_change,
-        sum(number_of_total_inbound)
-        + sum(number_of_total_correction)
-        + sum(number_of_total_outbound)
-        + sum(number_of_unspecified)    as number_of_change_reasons,
-        sum(number_of_total_inbound)    as number_of_number_of_total_inbound,
-        sum(number_of_total_correction) as number_of_number_of_total_correction,
-        sum(number_of_total_outbound)   as number_of_number_of_total_outbound,
-        sum(number_of_unspecified)      as number_of_number_of_unspecified,
-        # monetary values
-        sum(quantity_change
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_quantity_change,
-        sum(number_of_total_inbound
-            * amt_buying_price_weighted_rolling_average_net_eur)
-        + sum(number_of_total_correction
-            * amt_buying_price_weighted_rolling_average_net_eur)
-        + sum(number_of_total_outbound
-            * amt_buying_price_weighted_rolling_average_net_eur)
-        + sum(number_of_unspecified
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_change_reasons,
-        sum(number_of_total_inbound
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_number_of_total_inbound,
-        sum(number_of_total_correction
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_number_of_total_correction,
-        sum(number_of_total_outbound
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_number_of_total_outbound,
-        sum(number_of_unspecified
-            * amt_buying_price_weighted_rolling_average_net_eur)    as amt_number_of_number_of_unspecified
+        string_agg(distinct supplier_id, ', ' order by supplier_id)     as supplier_id,
+        string_agg(distinct supplier_name, ', ' order by supplier_name) as supplier_name,
+        min(start_date)                                 as start_date,
+        max(end_date)                                   as end_date,
+        sum(coalesce(start_stock_level, 0))                          as start_stock_level,
+        sum(coalesce(amt_start_stock_level, 0))                      as amt_start_stock_level,
+        sum(coalesce(end_stock_level, 0))                            as end_stock_level,
+        sum(coalesce(amt_end_stock_level, 0))                        as amt_end_stock_level,
+        sum(coalesce(number_of_quantity_change, 0))                  as number_of_quantity_change,
+        sum(coalesce(number_of_change_reasons, 0))                   as number_of_change_reasons,
+        sum(coalesce(number_of_number_of_total_inbound, 0))          as number_of_number_of_total_inbound,
+        sum(coalesce(number_of_number_of_total_correction, 0))       as number_of_number_of_total_correction,
+        sum(coalesce(number_of_number_of_total_outbound, 0))         as number_of_number_of_total_outbound,
+        sum(coalesce(number_of_number_of_unspecified, 0))            as number_of_number_of_unspecified,
+        sum(coalesce(amt_number_of_quantity_change, 0))              as amt_number_of_quantity_change,
+        sum(coalesce(amt_number_of_change_reasons, 0))               as amt_number_of_change_reasons,
+        sum(coalesce(amt_number_of_number_of_total_inbound, 0))      as amt_number_of_number_of_total_inbound,
+        sum(coalesce(amt_number_of_number_of_total_correction, 0))   as amt_number_of_number_of_total_correction,
+        sum(coalesce(amt_number_of_number_of_total_outbound, 0))     as amt_number_of_number_of_total_outbound,
+        sum(coalesce(amt_number_of_number_of_unspecified, 0))        as amt_number_of_number_of_unspecified,
 
-    from base_data
+    from(
 
-    group by
-      1,2,3,4,5
+    (select * from start_data)
+    union all
+    (select * from end_data)
+    union all
+    (select * from changes_data))
+
+    group by 1,2,3
+
 )
 select * from aggregated_data
 
@@ -205,8 +298,17 @@ select * from aggregated_data
   }
 
   dimension: is_change_reason_explain_change_quantity {
+    label: "Is Change Quantity explained by Change Reasons"
     type: yesno
+    group_label: "Debugging"
     sql: ${number_of_change_reasons} = ${number_of_quantity_change} ;;
+  }
+
+  dimension: is_filter_too_high_stock_level {
+    label: "Filter Too High Stock (< 999)"
+    description: "This filter is intended to filter unnaturall high stock levels in hubs (e,g, 999.999 Ukraine Donations in de_ber_alex)"
+    type: yesno
+    sql: not (coalesce(${start_stock_level},0) > 999 or coalesce(${end_stock_level}, 0) > 999) ;;
   }
 
 
@@ -216,9 +318,10 @@ select * from aggregated_data
   dimension: check_diff {
     # this field is used to investigate not matching differences in the stock-changelogs
     type: string
+    group_label: "Debugging"
     sql: concat("select * from `flink-data-prod`.curated.inventory_changes where {% condition select_timeframe %} date(inventory_change_timestamp) {% endcondition %} and hub_code = '"
       , ${hub_code}, "'", " and sku = '", ${sku}, "' order by inventory_change_timestamp");;
-    hidden: yes
+    hidden: no
   }
 
   dimension: start_stock_level {
@@ -233,6 +336,7 @@ select * from aggregated_data
   dimension: number_of_quantity_change {
     type: number
     hidden: yes
+    sql: ${end_stock_level} - ${start_stock_level} ;;
   }
   dimension: number_of_change_reasons {
     type: number
@@ -255,34 +359,43 @@ select * from aggregated_data
     hidden: yes
   }
   dimension: amt_start_stock_level {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_end_stock_level {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_quantity_change {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
+    sql: ${amt_end_stock_level} - ${amt_start_stock_level} ;;
   }
   dimension: amt_number_of_change_reasons {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_inbound {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_correction {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_outbound {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_unspecified {
+    required_access_grants: [can_view_buying_information]
     type: number
     hidden: yes
   }
@@ -372,9 +485,10 @@ select * from aggregated_data
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  #  - - - - - - - - - -    Measures - Quantities
+  #  - - - - - - - - - -    Measures - Monetary
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   measure: sum_of_amt_start_stock_level {
+    required_access_grants: [can_view_buying_information]
     label: "€ Stock Level (Start)"
     description: "The total monetary value of the stock level at the start of the selected timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -384,6 +498,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_end_stock_level {
+    required_access_grants: [can_view_buying_information]
     label: "€ Stock Level (End)"
     description: "The total monetary value of the stock level at the start of the selected timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -393,6 +508,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_quantity_change {
+    required_access_grants: [can_view_buying_information]
     label: "€ Quantity Change"
     description: "The monetary value of all inventory movements defined by the different between quantity before and quantity after the change (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -402,6 +518,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_change_reasons {
+    required_access_grants: [can_view_buying_information]
     label: "€ Total Change Reasons"
     description: "The monetary value of all inventory movements defined by the sum of all change reason types (inbounds, outbounds, corrections and unspecific)   (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -411,6 +528,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_correction {
+    required_access_grants: [can_view_buying_information]
     label: "€ Corrected Items"
     description: "The monetary value of all inventory corrections in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -420,6 +538,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_inbound {
+    required_access_grants: [can_view_buying_information]
     label: "€ Inbounded Items"
     description: "The monetary value of all inventory inbounds in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -429,6 +548,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_outbound {
+    required_access_grants: [can_view_buying_information]
     label: "€ Outbounded Items"
     description: "The monetary value of all inventory outbounds (sales and too-good-to-go) in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -438,12 +558,21 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_unspecified {
+    required_access_grants: [can_view_buying_information]
     label: "€ Items With Unspecified Inventory Movements"
     description: "The monetary value of all unspecified inventory in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
     type: sum
     sql: ${amt_number_of_number_of_unspecified} ;;
     value_format_name: eur
+  }
+
+  measure: amt_difference_quantity_change_vs_change_reasons {
+    label: "€ Difference (Change Quantity vs. Change Reasons)"
+    type: number
+    group_label: "Debugging"
+    sql: ${sum_of_amt_number_of_quantity_change} - ${sum_of_amt_number_of_change_reasons} ;;
+    value_format_name: eur_0
   }
 
 }
