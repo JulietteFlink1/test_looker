@@ -165,6 +165,16 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.pct_quantity_sold ;;
   }
 
+  dimension: is_kvi {
+
+    label: "Is KVI"
+    description: "True if an SKU is considered a key value item."
+    group_label: "Flink"
+
+    type: yesno
+    sql: ${TABLE}.is_kvi ;;
+  }
+
 
 # ===========  Albert Heijn  ================================================================
 
@@ -1350,7 +1360,7 @@ view: flink_to_competitors_prices {
   measure: average_low_price_delta_with_competitor{
 
     label: "Average Flink Low Price Tier Delta with Competitor (Dynamic)"
-    description: "Average of all Flink low tier product price deltas between with the competitor."
+    description: "Average of all Flink low tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
     type: average
@@ -1407,7 +1417,7 @@ view: flink_to_competitors_prices {
   measure: average_mid_price_delta_with_competitor{
 
     label: "Average Flink Mid Price Tier Delta with Competitor (Dynamic)"
-    description: "Average of all Flink mid tier product price deltas between with the competitor."
+    description: "Average of all Flink mid tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
     type: average
@@ -1464,7 +1474,7 @@ view: flink_to_competitors_prices {
   measure: average_high_price_delta_with_competitor{
 
     label: "Average Flink High Price Tier Delta with Competitor (Dynamic)"
-    description: "Average of all Flink high tier product price deltas between with the competitor."
+    description: "Average of all Flink high tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
     type: average
@@ -1521,7 +1531,7 @@ view: flink_to_competitors_prices {
   measure: average_highest_price_delta_with_competitor{
 
     label: "Average Flink Highest Price Tier Delta with Competitor (Dynamic)"
-    description: "Average of all Flink highest tier product price deltas between with the competitor."
+    description: "Average of all Flink highest tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
     type: average
@@ -1572,6 +1582,123 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_highest_price_delta_with_rewe_max}
+    {% endif %};;
+  }
+
+  measure: average_total_price_delta_with_competitor{
+
+    label: "Average Total Flink Price Tier Delta with Competitor (Dynamic)"
+    description: "Average of all Flink's price tier's product price deltas with the competitor."
+    group_label: "Dynamic Measures"
+
+    type: average
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_ah_min}
+        +${pct_mid_price_delta_with_ah_min}
+        +${pct_high_price_delta_with_ah_min}
+        +${pct_highest_price_delta_with_ah_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_ah_avg}
+        +${pct_mid_price_delta_with_ah_avg}
+        +${pct_high_price_delta_with_ah_avg}
+        +${pct_highest_price_delta_with_ah_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_ah_max}
+        +${pct_mid_price_delta_with_ah_max}
+        +${pct_high_price_delta_with_ah_max}
+        +${pct_highest_price_delta_with_ah_max}
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_carrefour_city_min}
+        +${pct_mid_price_delta_with_carrefour_city_min}
+        +${pct_high_price_delta_with_carrefour_city_min}
+        +${pct_highest_price_delta_with_carrefour_city_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_carrefour_city_avg}
+        +${pct_mid_price_delta_with_carrefour_city_avg}
+        +${pct_high_price_delta_with_carrefour_city_avg}
+        +${pct_highest_price_delta_with_carrefour_city_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_carrefour_city_max}
+        +${pct_mid_price_delta_with_carrefour_city_max}
+        +${pct_high_price_delta_with_carrefour_city_max}
+        +${pct_highest_price_delta_with_carrefour_city_max}
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_getir_min}
+        +${pct_mid_price_delta_with_getir_min}
+        +${pct_high_price_delta_with_getir_min}
+        +${pct_highest_price_delta_with_getir_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_getir_avg}
+        +${pct_mid_price_delta_with_getir_avg}
+        +${pct_high_price_delta_with_getir_avg}
+        +${pct_highest_price_delta_with_getir_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_getir_max}
+        +${pct_mid_price_delta_with_getir_max}
+        +${pct_high_price_delta_with_getir_max}
+        +${pct_highest_price_delta_with_getir_max}
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_gorillas_min}
+        +${pct_mid_price_delta_with_gorillas_min}
+        +${pct_high_price_delta_with_gorillas_min}
+        +${pct_highest_price_delta_with_gorillas_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_gorillas_avg}
+        +${pct_mid_price_delta_with_gorillas_avg}
+        +${pct_high_price_delta_with_gorillas_avg}
+        +${pct_highest_price_delta_with_gorillas_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_gorillas_max}
+        +${pct_mid_price_delta_with_gorillas_max}
+        +${pct_high_price_delta_with_gorillas_max}
+        +${pct_highest_price_delta_with_gorillas_max}
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_rewe_min}
+        +${pct_mid_price_delta_with_rewe_min}
+        +${pct_high_price_delta_with_rewe_min}
+        +${pct_highest_price_delta_with_rewe_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_rewe_avg}
+        +${pct_mid_price_delta_with_rewe_avg}
+        +${pct_high_price_delta_with_rewe_avg}
+        +${pct_highest_price_delta_with_rewe_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_rewe_max}
+        +${pct_mid_price_delta_with_rewe_max}
+        +${pct_high_price_delta_with_rewe_max}
+        +${pct_highest_price_delta_with_rewe_max}
+        ) / 4
     {% endif %};;
   }
 
