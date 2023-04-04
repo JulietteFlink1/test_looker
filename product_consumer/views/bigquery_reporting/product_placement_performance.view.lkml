@@ -86,6 +86,16 @@ view: product_placement_performance {
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
   }
+
+  dimension: original_product_price {
+    group_label: "Product Dimensions"
+    label: "Original Product Price"
+    description: "Price of the product before the discount was applied"
+    type: number
+    value_format_name: decimal_2
+    sql: ${TABLE}.original_price ;;
+  }
+
   dimension: swimlane_name {
     group_label: "Product Dimensions"
     label: "Swimlane Name"
@@ -138,6 +148,14 @@ view: product_placement_performance {
     description: "Boolean whether a product was Out-of-Stock on an impression (when users saw the product)"
     type: yesno
     sql: ${TABLE}.is_product_out_of_stock ;;
+  }
+
+  dimension: is_product_discounted {
+    group_label: "Product Dimensions"
+    label: "Is Product OoS"
+    description: "Boolean whether a product had a SKU level discount (i.e. strike through pricing)"
+    type: yesno
+    sql: ${TABLE}.is_discount_applied ;;
   }
 
   # ======= Dates / Timestamps =======
