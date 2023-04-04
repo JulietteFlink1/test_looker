@@ -143,6 +143,16 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.number_of_unique_skus_by_country ;;
   }
 
+  dimension: quantity_sold {
+
+    label: "Number of Quantity Sold - Last 30 days"
+    description: "The product's sum of the quantity sold."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.quantity_sold ;;
+  }
+
   dimension: share_of_product_revenue {
 
     label: "% Share of Product Revenue"
@@ -269,6 +279,138 @@ view: flink_to_competitors_prices {
 
     type: yesno
     sql: ${TABLE}.is_ah_prices_converted ;;
+  }
+
+  dimension: low_price_delta_with_ah_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - AH Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_ah_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_ah_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - AH Avg"
+    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_ah_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_ah_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - AH Max"
+    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_ah_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_ah_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - AH Min"
+    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_ah_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_ah_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - AH Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_ah_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_ah_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - AH Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_ah_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_ah_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - AH Min"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_ah_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_ah_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - AH Avg"
+    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_ah_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_ah_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - AH Max"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_ah_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_ah_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - AH Min"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_ah_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_ah_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - AH Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_ah_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_ah_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - AH Max"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Albert Heijn"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_ah_max_by_quantity_sold ;;
   }
 
   dimension: pct_low_price_delta_with_ah_min {
@@ -499,6 +641,138 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_carrefour_city_prices_converted ;;
   }
 
+  dimension: low_price_delta_with_carrefour_city_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - CRF City Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_carrefour_city_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_carrefour_city_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - CRF City Avg"
+    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_carrefour_city_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_carrefour_city_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - CRF City Max"
+    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_carrefour_city_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_carrefour_city_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - CRF City Min"
+    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_carrefour_city_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_carrefour_city_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - CRF City Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_carrefour_city_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_carrefour_city_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - CRF City Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_carrefour_city_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_carrefour_city_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - CRF City Min"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_carrefour_city_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_carrefour_city_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - CRF City Avg"
+    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_carrefour_city_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_carrefour_city_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - CRF City Max"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_carrefour_city_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_carrefour_city_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - CRF City Min"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_carrefour_city_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_carrefour_city_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - CRF City Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_carrefour_city_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_carrefour_city_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - CRF City Max"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Carrefour City"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_carrefour_city_max_by_quantity_sold ;;
+  }
+
   dimension: pct_low_price_delta_with_carrefour_city_min {
 
     label: "% Low Tier Price Delta - Carrefour CityMin"
@@ -725,6 +999,138 @@ view: flink_to_competitors_prices {
 
     type: yesno
     sql: ${TABLE}.is_getir_prices_converted ;;
+  }
+
+  dimension: low_price_delta_with_getir_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Getir Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_getir_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_getir_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Getir Avg"
+    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_getir_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_getir_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Getir Max"
+    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_getir_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_getir_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Getir Min"
+    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_getir_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_getir_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Getir Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_getir_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_getir_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Getir Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_getir_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_getir_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Getir Min"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_getir_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_getir_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Getir Avg"
+    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_getir_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_getir_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Getir Max"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_getir_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_getir_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Getir Min"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_getir_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_getir_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Getir Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_getir_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_getir_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Getir Max"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Getir"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_getir_max_by_quantity_sold ;;
   }
 
   dimension: pct_low_price_delta_with_getir_min {
@@ -955,6 +1361,138 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_gorillas_prices_converted ;;
   }
 
+  dimension: low_price_delta_with_gorillas_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Gorillas Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_gorillas_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_gorillas_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Gorillas Avg"
+    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_gorillas_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_gorillas_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Gorillas Max"
+    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_gorillas_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_gorillas_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Gorillas Min"
+    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_gorillas_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_gorillas_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Gorillas Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_gorillas_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_gorillas_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Gorillas Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_gorillas_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_gorillas_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Gorillas Min"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_gorillas_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_gorillas_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Gorillas Avg"
+    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_gorillas_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_gorillas_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Gorillas Max"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_gorillas_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_gorillas_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Gorillas Min"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_gorillas_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_gorillas_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Gorillas Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_gorillas_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_gorillas_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Gorillas Max"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Gorillas"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_gorillas_max_by_quantity_sold ;;
+  }
+
   dimension: pct_low_price_delta_with_gorillas_min {
 
     label: "% Low Tier Price Delta - Gorillas Min"
@@ -1183,6 +1721,138 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.is_rewe_prices_converted ;;
   }
 
+  dimension: low_price_delta_with_rewe_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Rewe Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_rewe_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_rewe_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Rewe Avg"
+    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_rewe_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_rewe_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Rewe Max"
+    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_rewe_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_rewe_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Rewe Min"
+    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_rewe_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_rewe_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Rewe Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_rewe_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_rewe_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Rewe Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_rewe_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_rewe_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Rewe Min"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_rewe_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_rewe_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Rewe Avg"
+    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_rewe_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_rewe_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Rewe Max"
+    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_rewe_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_rewe_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Rewe Min"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_rewe_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_rewe_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Rewe Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_rewe_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_rewe_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Rewe Max"
+    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    group_label: "Rewe"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_rewe_max_by_quantity_sold ;;
+  }
+
   dimension: pct_low_price_delta_with_rewe_min {
 
     label: "% Low Tier Price Delta - Rewe Min"
@@ -1359,7 +2029,7 @@ view: flink_to_competitors_prices {
 
   measure: average_low_price_delta_with_competitor{
 
-    label: "Average Flink Low Price Tier Delta with Competitor (Dynamic)"
+    label: "Average Low Price Tier Delta with Competitor (Dynamic)"
     description: "Average of all Flink low tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
@@ -1416,7 +2086,7 @@ view: flink_to_competitors_prices {
 
   measure: average_mid_price_delta_with_competitor{
 
-    label: "Average Flink Mid Price Tier Delta with Competitor (Dynamic)"
+    label: "Average Mid Price Tier Delta with Competitor (Dynamic)"
     description: "Average of all Flink mid tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
@@ -1473,7 +2143,7 @@ view: flink_to_competitors_prices {
 
   measure: average_high_price_delta_with_competitor{
 
-    label: "Average Flink High Price Tier Delta with Competitor (Dynamic)"
+    label: "Average High Price Tier Delta with Competitor (Dynamic)"
     description: "Average of all Flink high tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
@@ -1530,7 +2200,7 @@ view: flink_to_competitors_prices {
 
   measure: average_highest_price_delta_with_competitor{
 
-    label: "Average Flink Highest Price Tier Delta with Competitor (Dynamic)"
+    label: "Average Highest Price Tier Delta with Competitor (Dynamic)"
     description: "Average of all Flink highest tier product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
@@ -1587,7 +2257,7 @@ view: flink_to_competitors_prices {
 
   measure: average_total_price_delta_with_competitor{
 
-    label: "Average Total Flink Price Tier Delta with Competitor (Dynamic)"
+    label: "Average Total Price Tier Delta with Competitor (Dynamic)"
     description: "Average of all Flink's price tier's product price deltas with the competitor."
     group_label: "Dynamic Measures"
 
@@ -1698,6 +2368,351 @@ view: flink_to_competitors_prices {
         +${pct_mid_price_delta_with_rewe_max}
         +${pct_high_price_delta_with_rewe_max}
         +${pct_highest_price_delta_with_rewe_max}
+        ) / 4
+    {% endif %};;
+  }
+
+  measure: low_price_delta_with_competitor_weighted_by_quantity_sold{
+
+    label: "Weighted Low Price Tier Delta with Competitor (Dynamic)"
+    description: "Flink's Low Price Tier Delta with Competitor Weighted by Quantity Sold"
+    group_label: "Dynamic Measures"
+
+    type: number
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+    {% endif %};;
+  }
+
+  measure: mid_price_delta_with_competitor_weighted_by_quantity_sold{
+
+    label: "Weighted Mid Price Tier Delta with Competitor (Dynamic)"
+    description: "Flink's Mid Price Tier Delta with Competitor Weighted by Quantity Sold"
+    group_label: "Dynamic Measures"
+
+    type: number
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+    {% endif %};;
+  }
+
+  measure: high_price_delta_with_competitor_weighted_by_quantity_sold{
+
+    label: "Weighted High Price Tier Delta with Competitor (Dynamic)"
+    description: "Flink's High Price Tier Delta with Competitor Weighted by Quantity Sold"
+    group_label: "Dynamic Measures"
+
+    type: number
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+    {% endif %};;
+  }
+
+  measure: highest_price_delta_with_competitor_weighted_by_quantity_sold{
+
+    label: "Weighted Highest Price Tier Delta with Competitor (Dynamic)"
+    description: "Flink's Highest Price Tier Delta with Competitor Weighted by Quantity Sold"
+    group_label: "Dynamic Measures"
+
+    type: number
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+    {% endif %};;
+  }
+
+  measure: average_price_delta_with_competitor_weighted_by_quantity_sold{
+
+    label: "Weighted Total Price Tier Delta with Competitor (Dynamic)"
+    description: "Flink's Average Price Delta with Competitor Weighted by Quantity Sold."
+    group_label: "Dynamic Measures"
+
+    type: number
+    value_format: "0.0%"
+    sql:
+    {% if competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'ah'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'carrefour_city'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'getir'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'gorillas'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'rewe'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
         ) / 4
     {% endif %};;
   }
