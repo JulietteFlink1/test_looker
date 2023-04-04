@@ -16,9 +16,10 @@ explore: key_value_items {
   join: key_value_items {
     sql_on: ${key_value_items.sku}           = ${orderline.product_sku} and
             ${key_value_items.country_iso}   = ${orderline.country_iso} and
-            ${key_value_items.kvi_date}      <> "2022-05-10" ;;
+            extract(month from ${key_value_items.kvi_date}) = extract(month from current_date())
+            ;;
     type: left_outer
-    relationship: many_to_many #changed from one_to_many
+    relationship: many_to_one
   }
 
   join: products_hub_assignment {
@@ -37,6 +38,6 @@ explore: key_value_items {
       ${orders_cl.shipping_method_id} = ${shipping_methods_ct.shipping_method_id} and
       ${orders_cl.country_iso} = ${shipping_methods_ct.country_iso} ;;
     type: left_outer
-    relationship: many_to_many
+    relationship: many_to_one
   }
 }
