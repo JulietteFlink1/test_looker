@@ -152,7 +152,7 @@ view: product_placement_performance {
 
   dimension: is_product_discounted {
     group_label: "Product Dimensions"
-    label: "Is Product OoS"
+    label: "Is Product Discounted"
     description: "Boolean whether a product had a SKU level discount (i.e. strike through pricing)"
     type: yesno
     sql: ${TABLE}.is_discount_applied ;;
