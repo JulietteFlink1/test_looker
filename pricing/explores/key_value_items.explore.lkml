@@ -19,7 +19,7 @@ explore: key_value_items {
             extract(month from ${key_value_items.kvi_date}) = extract(month from current_date())
             ;;
     type: left_outer
-    relationship: many_to_many
+    relationship: many_to_one
   }
 
   join: products_hub_assignment {
@@ -38,6 +38,6 @@ explore: key_value_items {
       ${orders_cl.shipping_method_id} = ${shipping_methods_ct.shipping_method_id} and
       ${orders_cl.country_iso} = ${shipping_methods_ct.country_iso} ;;
     type: left_outer
-    relationship: many_to_many
+    relationship: many_to_one
   }
 }
