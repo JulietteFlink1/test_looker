@@ -1,5 +1,5 @@
 view: customer_cohorts_base {
-  sql_table_name: `flink-data-dev.dbt_jdavies_reporting.customer_cohorts_base`
+  sql_table_name: `flink-data-prod.reporting.customer_cohorts_base`
     ;;
 
 
