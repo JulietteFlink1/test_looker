@@ -161,7 +161,7 @@ view: flink_to_competitors_prices {
 
     type: number
     value_format: "0.0%"
-    sql: ${TABLE}.pct_price_gross_sold ;;
+    sql: ${TABLE}.share_of_product_revenue ;;
   }
 
   dimension: share_of_product_quantity_sold {
@@ -172,7 +172,7 @@ view: flink_to_competitors_prices {
 
     type: number
     value_format: "0.0%"
-    sql: ${TABLE}.pct_quantity_sold ;;
+    sql: ${TABLE}.share_of_product_quantity_sold ;;
   }
 
   dimension: is_kvi {
@@ -1985,7 +1985,9 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.pct_highest_price_delta_with_rewe_max ;;
   }
 
-# ================ Measures ====================
+# ================ Measures ========================================================================================================
+
+# ================ Dynamic Measure Settings ========================================================================================
 
   parameter: competitor_price_value {
     type: unquoted
@@ -2026,6 +2028,8 @@ view: flink_to_competitors_prices {
       value: "rewe"
     }
   }
+
+  # ================ Dynamic Measures ===============================================================================================
 
   measure: average_low_price_delta_with_competitor{
 
@@ -2375,7 +2379,7 @@ view: flink_to_competitors_prices {
   measure: low_price_delta_with_competitor_weighted_by_quantity_sold{
 
     label: "Weighted Low Price Tier Delta with Competitor (Dynamic)"
-    description: "Flink's Low Price Tier Delta with Competitor Weighted by Quantity Sold"
+    description: "Flink's Low Price Tier Delta with Competitor Weighted by Quantity Sold."
     group_label: "Dynamic Measures"
 
     type: number
@@ -2432,7 +2436,7 @@ view: flink_to_competitors_prices {
   measure: mid_price_delta_with_competitor_weighted_by_quantity_sold{
 
     label: "Weighted Mid Price Tier Delta with Competitor (Dynamic)"
-    description: "Flink's Mid Price Tier Delta with Competitor Weighted by Quantity Sold"
+    description: "Flink's Mid Price Tier Delta with Competitor Weighted by Quantity Sold."
     group_label: "Dynamic Measures"
 
     type: number
@@ -2489,7 +2493,7 @@ view: flink_to_competitors_prices {
   measure: high_price_delta_with_competitor_weighted_by_quantity_sold{
 
     label: "Weighted High Price Tier Delta with Competitor (Dynamic)"
-    description: "Flink's High Price Tier Delta with Competitor Weighted by Quantity Sold"
+    description: "Flink's High Price Tier Delta with Competitor Weighted by Quantity Sold."
     group_label: "Dynamic Measures"
 
     type: number
@@ -2546,7 +2550,7 @@ view: flink_to_competitors_prices {
   measure: highest_price_delta_with_competitor_weighted_by_quantity_sold{
 
     label: "Weighted Highest Price Tier Delta with Competitor (Dynamic)"
-    description: "Flink's Highest Price Tier Delta with Competitor Weighted by Quantity Sold"
+    description: "Flink's Highest Price Tier Delta with Competitor Weighted by Quantity Sold."
     group_label: "Dynamic Measures"
 
     type: number
