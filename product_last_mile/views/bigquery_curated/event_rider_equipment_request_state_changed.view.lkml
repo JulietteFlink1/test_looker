@@ -146,21 +146,21 @@ view: event_rider_equipment_request_state_changed {
   measure: events {
     group_label: "Measures"
     label: "# Distinct Events"
-    description: "Number of events triggerd by dispatching service"
+    description: "Number of distinct events triggerd by rider equipment service"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
   }
-  measure: orders {
+  measure: riders {
     group_label: "Measures"
     label: "# Distinct Riders"
-    description: "Number of riders"
+    description: "Number of distinct riders"
     type: count_distinct
     sql: ${TABLE}.rider_id ;;
   }
   measure: total_number_requested_events {
     group_label: "Measures"
     label: "# Requested Events"
-    description: "Total number of equipment requested events"
+    description: "Total number of equipment requested events. Equipment is requested by the rider once they are eligble."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "requested"]
@@ -168,7 +168,7 @@ view: event_rider_equipment_request_state_changed {
   measure: total_number_delivered_events {
     group_label: "Measures"
     label: "# Delivered Events"
-    description: "Total number of equipment delivered events"
+    description: "Total number of equipment delivered events. Equipment is considered delivered when the bundle arrived at the hub."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "delivered"]
@@ -176,7 +176,7 @@ view: event_rider_equipment_request_state_changed {
   measure: total_number_claimed_events {
     group_label: "Measures"
     label: "# Claimed Events"
-    description: "Total number of equipment claimed events"
+    description: "Total number of equipment claimed events. Equipment is considered claimed once the rider claimed the bundle."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "claimed"]
@@ -184,7 +184,7 @@ view: event_rider_equipment_request_state_changed {
   measure: total_number_rejected_events {
     group_label: "Measures"
     label: "# Rejected Events"
-    description: "Total number of equipment rejected events"
+    description: "Total number of equipment rejected events. Equipment can be rejected due to being damaged or delivered in the wrong size."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "rejected"]
@@ -192,7 +192,7 @@ view: event_rider_equipment_request_state_changed {
   measure: total_number_confirmed_events {
     group_label: "Measures"
     label: "# Confirmed Events"
-    description: "Total number of equipment confirmed events"
+    description: "Total number of equipment confirmed events. After rider claimed the bundle, HM marks this bundle as confirmed."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "confirmed"]
@@ -200,7 +200,7 @@ view: event_rider_equipment_request_state_changed {
   measure: total_number_unclaimed_events {
     group_label: "Measures"
     label: "# Unclaimed Events"
-    description: "Total number of equipment unclaimed events"
+    description: "Total number of equipment unclaimed events. Bundle arrived at hub but hasn't been claimed by the rider."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "unclaimed"]

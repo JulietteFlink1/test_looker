@@ -114,6 +114,18 @@ view: customer_cohorts_base {
     sql: ${TABLE}.first_order_hub_code ;;
   }
 
+  dimension: first_turf_name {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_turf_name ;;
+  }
+
+  dimension: first_platform {
+    group_label: "* User Dimensions *"
+    type: string
+    sql: ${TABLE}.first_platform ;;
+  }
+
   dimension: is_discount_acquisition {
     group_label: "* User Dimensions *"
     type: yesno

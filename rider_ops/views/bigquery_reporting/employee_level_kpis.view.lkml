@@ -497,6 +497,32 @@ view: employee_level_kpis {
     style: interval
   }
 
+  dimension: number_of_overtime_minutes {
+    type: number
+    label: "# Overpunched Hours"
+    sql: ${TABLE}.number_of_overtime_minutes;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_unjustified_start_early_minutes {
+    type: number
+    label: "# Unjustified Early Overpunched Minutes"
+    # To show null values as null, we need to sum in sql
+    sql: ${TABLE}.number_of_unjustified_start_early_minutes;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_unjustified_end_late_minutes {
+    type: number
+    label: "# Unjustified Late Overpunched Minutes"
+    # To show null values as null, we need to sum in sql
+    sql: ${TABLE}.number_of_unjustified_end_late_minutes;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
 
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1370,7 +1396,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Overpunched Hours"
-    sql: ${TABLE}.number_of_overtime_minutes/60;;
+    sql: ${number_of_overtime_minutes}/60;;
     description: "When # Worked Hours > # Assigned Hours then # Worked Hours - # Assigned Hours"
     value_format_name: decimal_1
   }
@@ -1379,7 +1405,8 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Unjustified Early Overpunched Hours"
-    sql: ${TABLE}.number_of_unjustified_start_early_minutes/60;;
+    # To show null values as null, we need to sum in sql
+    sql: ${number_of_unjustified_start_early_minutes}/60;;
     description: "Number of hours when a rider punched in earlier than planned shift start time even if the rider has worked.
       In these cases, hub manager should adjust shift start time in Quinyx.
       Calculated as a difference between planned shift start timestamp and first punch in timestamp.
@@ -1391,7 +1418,8 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# Unjustified Late Overpunched Hours"
-    sql: ${TABLE}.number_of_unjustified_end_late_minutes/60;;
+    # To show null values as null, we need to sum in sql
+    sql: ${number_of_unjustified_end_late_minutes}/60;;
     description: "Number of hours when a rider punched out later than planned shift end time.
       This late punch-out is unjustified as rider was idle.
       Calculated as a difference between last rider arrived at hub timestamp and punch out timestamp.
@@ -1412,7 +1440,12 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: number
     label: "# Justified Overpunched Hours"
-    sql: ${number_of_overpunched_hours} - ${number_of_unjustified_overpunched_hours};;
+    sql:
+      case
+        when sum(${number_of_unjustified_end_late_minutes}) is null and sum(${number_of_unjustified_start_early_minutes}) is null
+          then null
+        else ${number_of_overpunched_hours} - ${number_of_unjustified_overpunched_hours}
+      end;;
     description: "Difference between # Overpunched Hours and # Unjustified Overpunched Hours"
     value_format_name: decimal_1
   }
