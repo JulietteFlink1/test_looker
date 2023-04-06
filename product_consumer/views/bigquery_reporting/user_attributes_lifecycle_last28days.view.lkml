@@ -312,7 +312,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day, novel over last 28 days"
+    label: "# Novel ATC"
     description: "How many unique product SKUs were ATC on the previous day that were not ATC from any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -339,7 +339,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_cart_reco_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day Cart Reco, novel over last 28 days"
+    label: "# Novel ATC from Cart Reco"
     description: "How many unique product SKUs were ATC from recommendation on cart page on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -366,7 +366,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_search_reco_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day Search Reco, novel over last 28 days"
+    label: "# Novel ATC from Search Reco"
     description: "How many unique product SKUs were ATC from recommendation on search page on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -393,7 +393,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_pdp_reco_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day PDP Reco, novel over last 28 days"
+    label: "# Novel ATC from PDP Reco"
     description: "How many unique product SKUs were ATC from recommendation on PDP on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -420,7 +420,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_home_lastbought_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day Home Lastbought, novel over last 28 days"
+    label: "# Novel ATC from Home Lastbought"
     description: "How many unique product SKUs were ATC from lastbought on home on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -447,7 +447,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_lastboughtdetail_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day Lastbought Detail, novel over last 28 days"
+    label: "# Novel ATC from Lastbought Detail"
     description: "How many unique product SKUs were ATC from lastbought detail page on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -474,7 +474,7 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: number_of_unique_product_skus_atc_last1day_any_reco_over28days {
     group_label: "* Unique Item ATC *"
-    label: "# Unique SKU ATC Last 1 Day Any Reco, novel over last 28 days"
+    label: "# Novel ATC from Any Reco"
     description: "How many unique product SKUs were ATC from any recommendation lane on the previous day that were not ATC from anywhere else any other day in the last 28 days?"
     type: number
     value_format_name: decimal_2
@@ -1061,56 +1061,56 @@ view: user_attributes_lifecycle_last28days {
     filters: [number_of_orders: ">0"]
   }
 
-  measure: cnt_customers_with_atc_last1day {
+  measure: cnt_customers_atc_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_cart_reco_last1day {
+  measure: cnt_customers_atc_from_cart_reco_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_cart_reco_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_search_reco_last1day {
+  measure: cnt_customers_atc_from_search_reco_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_search_reco_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_pdp_reco_last1day {
+  measure: cnt_customers_atc_from_pdp_reco_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_pdp_reco_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_home_lastbought_last1day {
+  measure: cnt_customers_atc_from_home_lastbought_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_home_lastbought_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_lastboughtdetail_last1day {
+  measure: cnt_customers_atc_from_lastboughtdetail_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_lastboughtdetail_last1day: "yes"]
   }
 
-  measure: cnt_customers_with_atc_from_any_lastbought_last1day {
+  measure: cnt_customers_atc_from_any_lastbought_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
     filters: [has_atc_any_lastbought_last1day: "yes", ]
   }
 
-  measure: cnt_customers_with_atc_from_any_reco_last1day {
+  measure: cnt_customers_atc_from_any_reco_last1day {
     group_label: "Customer Counts"
     type: count_distinct
     sql: ${customer_uuid} ;;
@@ -1140,7 +1140,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC last 1 day"
+    label: "AVG # Unique SKUs ATC Last 1 Day"
     description: "How many unique SKUs were ATC on average in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1149,7 +1149,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC"
     description: "How many unique SKUs were ATC on average in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1158,7 +1158,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_cart_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from cart reco"
+    label: "AVG # Unique SKUs ATC Cart Reco"
     description: "How many unique SKUs were ATC on average from recommendation on cart in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1167,7 +1167,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_cart_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from cart reco last 1 day"
+    label: "AVG # Unique SKUs ATC Cart Reco Last 1 Day"
     description: "How many unique SKUs were ATC on average from recommendation on cart in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1176,7 +1176,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_cart_reco_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from cart reco last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC Cart Reco"
     description: "How many unique SKUs were ATC on average from recommendation on cart in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1185,7 +1185,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_search_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from search reco"
+    label: "AVG # Unique SKUs ATC Search Reco"
     description: "How many unique SKUs were ATC on average from recommendation on search in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1194,7 +1194,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_search_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from search reco last 1 day"
+    label: "AVG # Unique SKUs ATC Search Reco Last 1 Day"
     description: "How many unique SKUs were ATC on average from recommendation on search in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1203,7 +1203,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_search_reco_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from search reco last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC Search Reco"
     description: "How many unique SKUs were ATC on average from recommendation on search in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1212,7 +1212,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_pdp_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from pdp reco"
+    label: "AVG # Unique SKUs ATC PDP Reco"
     description: "How many unique SKUs were ATC on average from recommendation on PDP in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1221,7 +1221,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_pdp_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from pdp reco last 1 day"
+    label: "AVG # Unique SKUs ATC PDP Reco Last 1 Day"
     description: "How many unique SKUs were ATC on average from recommendation on pdp in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1230,7 +1230,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_pdp_reco_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from pdp reco last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC PDP Reco"
     description: "How many unique SKUs were ATC on average from recommendation on pdp in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1239,7 +1239,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_home_lastbought {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from home last-bought"
+    label: "AVG # Unique SKUs ATC Home Lastbought"
     description: "How many unique SKUs were ATC on average from lastbought on home page in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1248,7 +1248,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_home_lastbought {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from home lastbought last 1 day"
+    label: "AVG # Unique SKUs ATC Home Lastbought Last 1 Day"
     description: "How many unique SKUs were ATC on average from lastbought on home in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1257,7 +1257,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_home_lastbought_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from lastbought on home last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC Home Lastbought"
     description: "How many unique SKUs were ATC on average from lastbought on home in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1266,7 +1266,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_lastboughtdetail {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from lastbought detail"
+    label: "AVG # Unique SKUs ATC Lastbought Detail"
     description: "How many unique SKUs were ATC on average from lastbought detail page in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1275,7 +1275,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_lastboughtdetail {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from lastbought detail last 1 day"
+    label: "AVG # Unique SKUs ATC Lastbought Detail Last 1 Day"
     description: "How many unique SKUs were ATC on average from lastbought detail page in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1284,7 +1284,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_lastboughtdetail_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from lastbought details page last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC Lastbought Detail"
     description: "How many unique SKUs were ATC on average from lastbought details page in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
@@ -1293,7 +1293,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_any_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from any reco"
+    label: "AVG # Unique SKUs ATC Any Reco"
     description: "How many unique SKUs were ATC on average from any recommendation lane in the last 28 days?"
     type: average
     value_format_name: decimal_2
@@ -1302,7 +1302,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_any_reco {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from any reco last 1 day"
+    label: "AVG # Unique SKUs ATC Any Reco Last 1 Day"
     description: "How many unique SKUs were ATC on average from any recommendation lane in the last 1 day?"
     type: average
     value_format_name: decimal_2
@@ -1311,7 +1311,7 @@ view: user_attributes_lifecycle_last28days {
 
   measure: avg_unique_product_skus_atc_last1day_any_reco_over28days {
     group_label: "* # Unique SKUs ATC *"
-    label: "AVG # Unique SKUs ATC from any reco last 1 day not in other last 28 days"
+    label: "AVG # Novel SKUs ATC Any Reco"
     description: "How many unique SKUs were ATC on average from any recommendation lane in the last 1 day, which were not ATC any other day in the last 28 days? (novel items)"
     type: average
     value_format_name: decimal_2
