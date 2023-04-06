@@ -153,6 +153,46 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.quantity_sold ;;
   }
 
+  dimension: low_quantity_sold {
+
+    label: "Number of Quantity Sold in Low Hub Price Tiers - Last 30 days"
+    description: "The product's sum of the quantity sold in low hub price tiers in the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.low_quantity_sold ;;
+  }
+
+  dimension: mid_quantity_sold {
+
+    label: "Number of Quantity Sold in Mid Hub Price Tiers - Last 30 days"
+    description: "The product's sum of the quantity sold in mid hub price tiers in the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.mid_quantity_sold ;;
+  }
+
+  dimension: high_quantity_sold {
+
+    label: "Number of Quantity Sold in High Hub Price Tiers - Last 30 days"
+    description: "The product's sum of the quantity sold in high hub price tiers in the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.high_quantity_sold ;;
+  }
+
+  dimension: highest_quantity_sold {
+
+    label: "Number of Quantity Sold in Highest Hub Price Tiers - Last 30 days"
+    description: "The product's sum of the quantity sold in highest hub price tiers in the last 30 days."
+    group_label: "Flink"
+
+    type: number
+    sql: ${TABLE}.highest_quantity_sold ;;
+  }
+
   dimension: share_of_product_revenue {
 
     label: "% Share of Product Revenue"
@@ -2387,49 +2427,49 @@ view: flink_to_competitors_prices {
     sql:
     {% if competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${low_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% endif %};;
   }
 
@@ -2444,49 +2484,49 @@ view: flink_to_competitors_prices {
     sql:
     {% if competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${mid_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% endif %};;
   }
 
@@ -2501,49 +2541,49 @@ view: flink_to_competitors_prices {
     sql:
     {% if competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${high_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% endif %};;
   }
 
@@ -2558,49 +2598,49 @@ view: flink_to_competitors_prices {
     sql:
     {% if competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'min' %}
-        sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'avg' %}
-        sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${highest_quantity_sold})
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
-        sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold})
+        sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% endif %};;
   }
 
@@ -2615,108 +2655,108 @@ view: flink_to_competitors_prices {
     sql:
     {% if competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'min' %}
-        ((sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_ah_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_ah_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_min_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'avg' %}
-        ((sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_ah_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_ah_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'ah'
        and competitor_price_value._parameter_value == 'max' %}
-        ((sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_ah_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_ah_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_ah_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_ah_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'min' %}
-        ((sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_min_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'avg' %}
-        ((sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'carrefour_city'
        and competitor_price_value._parameter_value == 'max' %}
-        ((sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_carrefour_city_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'min' %}
-        ((sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_getir_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_getir_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_min_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'avg' %}
-        ((sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_getir_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_getir_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'getir'
        and competitor_price_value._parameter_value == 'max' %}
-        ((sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_getir_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_getir_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_getir_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_getir_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'min' %}
-        ((sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_gorillas_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_min_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'avg' %}
-        ((sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'gorillas'
        and competitor_price_value._parameter_value == 'max' %}
-        ((sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_gorillas_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_gorillas_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_gorillas_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_gorillas_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'min' %}
-        ((sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_rewe_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_min_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'avg' %}
-        ((sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_rewe_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
-        ((sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
-        +(sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${quantity_sold}))
+        ((sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% endif %};;
   }
