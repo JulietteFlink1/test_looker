@@ -1,3 +1,12 @@
+# Owner: Product Analytics
+
+# Main Stakeholder:
+# - Consumer Product
+
+# Questions that can be answered
+# - How many traces were completed?
+# - How long did it take to load cart or to load checkout on median, 25th percentile, etc.?
+
 view: event_load_trace_completed {
   sql_table_name: `flink-data-prod.curated.event_load_trace_completed`
     ;;

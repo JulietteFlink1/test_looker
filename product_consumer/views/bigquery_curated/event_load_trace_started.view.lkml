@@ -1,3 +1,11 @@
+# Owner: Product Analytics
+
+# Main Stakeholder:
+# - Consumer Product
+
+# Questions that can be answered
+# - How many traces were started?
+
 view: event_load_trace_started {
   sql_table_name: `flink-data-prod.curated.event_load_trace_started`
     ;;
