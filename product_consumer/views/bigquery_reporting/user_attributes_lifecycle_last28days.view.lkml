@@ -269,21 +269,21 @@ view: user_attributes_lifecycle_last28days {
 
   dimension: has_atc_lastboughtdetail_last1day {
     group_label: "* User Attributes *"
-    description: "Did the user ATC from Home Last-Bought in the last day?"
+    description: "Did the user ATC from Last Bought Screen in the last day?"
     type: yesno
     sql: ${number_of_unique_product_skus_atc_last1day_lastboughtdetail} > 0 ;;
   }
 
   dimension: has_atc_any_lastbought_last1day {
     group_label: "* User Attributes *"
-    description: "Did the user ATC from Last-Bought on Home or LB details in the last day?"
+    description: "Did the user ATC from Last Bought on Home or Last Bought Screen in the last day?"
     type: yesno
     sql: ${number_of_unique_product_skus_atc_last1day_lastboughtdetail} > 0 or ${number_of_unique_product_skus_atc_last1day_home_lastbought} > 0;;
   }
 
   dimension: has_atc_any_reco_last1day {
     group_label: "* User Attributes *"
-    description: "Did the user ATC from Home Last-Bought in the last day?"
+    description: "Did the user ATC from any recommendation lane in the last day?"
     type: yesno
     sql: ${number_of_unique_product_skus_atc_last1day_any_reco} > 0 ;;
   }
@@ -1222,7 +1222,7 @@ view: user_attributes_lifecycle_last28days {
   measure: avg_unique_product_skus_atc_last1day_pdp_reco {
     group_label: "* # Unique SKUs ATC *"
     label: "AVG # Unique SKUs ATC PDP Reco Last 1 Day"
-    description: "How many unique SKUs were ATC on average from recommendation on pdp in the last 1 day?"
+    description: "How many unique SKUs were ATC on average from recommendation on PDP in the last 1 day?"
     type: average
     value_format_name: decimal_2
     sql: ${number_of_unique_product_skus_atc_last1day_pdp_reco};;
