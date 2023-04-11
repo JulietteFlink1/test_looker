@@ -181,6 +181,7 @@ view: search_keywords {
     type: yesno
     sql: ${TABLE}.is_added_to_cart_after_search ;;
   }
+
   dimension: is_pdp_after_search {
     group_label: "Search Dimensions"
     label: "Is PDP after Search"
@@ -188,6 +189,47 @@ view: search_keywords {
     type: yesno
     sql: ${TABLE}.is_pdp_after_search ;;
   }
+
+  dimension: product_position_from_search_clickthrough {
+    group_label: "Search Dimensions"
+    label: "Product Rank At Clickthrough"
+    description: "At which rank in the list a product was displayed when it was clicked on (ATC or PDP)"
+    type: number
+    sql: ${TABLE}.product_position_from_search_clickthrough ;;
+  }
+
+  dimension: number_of_atc_after_search {
+    group_label: "Search Dimensions"
+    label: "# ATC After Search"
+    description: "How many ATC followed the single search query (not unique SKUs)"
+    type: number
+    sql: ${TABLE}.number_of_atc_after_search ;;
+  }
+
+  dimension: number_of_pdp_after_search {
+    group_label: "Search Dimensions"
+    label: "# PDP After Search"
+    description: "How many product details viewed followed the single search query (not unique SKUs)"
+    type: number
+    sql: ${TABLE}.number_of_pdp_after_search ;;
+  }
+
+  dimension: number_of_distinct_atc_after_search {
+    group_label: "Search Dimensions"
+    label: "# Unique ATC After Search"
+    description: "How many unique ATC followed the single search query (unique SKUs)"
+    type: number
+    sql: ${TABLE}.number_of_distinct_atc_after_search ;;
+  }
+
+  dimension: number_of_distinct_pdp_after_search {
+    group_label: "Search Dimensions"
+    label: "# Unique PDP After Search"
+    description: "How many unique product details viewed followed the single search query (unique SKUs)"
+    type: number
+    sql: ${TABLE}.number_of_distinct_pdp_after_search ;;
+  }
+
 
   # ======= Dates / Timestamps =======
 
@@ -273,19 +315,19 @@ view: search_keywords {
     hidden: no
     sql: ${event_uuid} ;;
   }
-  measure: number_of_add_to_cart_after_search {
+  measure: number_of_searches_with_atc {
     group_label: "Search Measures"
-    label: "# Add-to-Cart after Search"
+    label: "# Searches with ATC"
     description: "Total number of Add-to-Cart events after Search was executed"
     type: count_distinct
     hidden: no
     sql: ${event_uuid} ;;
     filters: [is_added_to_cart_after_search: "yes"]
   }
-  measure: number_of_pdp_after_search {
+  measure: number_of_searches_with_pdp {
     group_label: "Search Measures"
-    label: "# PDP after Search"
-    description: "Total number of PDP events after Search was executed"
+    label: "# Searches with PDP"
+    description: "Total number of executed searches that resulted in at least one PDP"
     type: count_distinct
     hidden: no
     sql: ${event_uuid} ;;
@@ -342,6 +384,25 @@ view: search_keywords {
     sql: ${dim_number_of_unavailable_results} ;;
   }
 
+  measure: avg_rank_at_click {
+    group_label: "Product Search Measures"
+    label: "AVG Product Rank At Click"
+    type: average
+    description: "Average rank of the first product in the result list when it was clicked on (one search may result in more than one click. In this case the smallest rank is used for the average)"
+    value_format_name: decimal_2
+    sql: ${product_position_from_search_clickthrough} ;;
+  }
+
+  measure: median_rank_at_click {
+    group_label: "Product Search Measures"
+    label: "Median Product Rank At Click"
+    type: median
+    description: "Median rank of the first product in the result list when it was clicked on (one search may result in more than one click. In this case the smallest rank is used for the average)"
+    value_format_name: decimal_2
+    sql: ${product_position_from_search_clickthrough} ;;
+  }
+
+
   #### Rates ####
 
   measure: ctr {
@@ -350,7 +411,7 @@ view: search_keywords {
     type: number
     description: "# searches with either PDP or Add-to-Cart / # total searches"
     value_format_name: percent_2
-    sql: (${number_of_pdp_after_search} + ${number_of_add_to_cart_after_search}) / nullif(${number_of_all_searches},0);;
+    sql: (${number_of_searches_with_pdp} + ${number_of_searches_with_atc}) / nullif(${number_of_all_searches},0);;
   }
   measure: add_to_cart_rate {
     group_label: "Rates (%)"
@@ -358,7 +419,7 @@ view: search_keywords {
     type: number
     description: "# searches with Add-to-Cart / # total searches"
     value_format_name: percent_2
-    sql: ${number_of_add_to_cart_after_search} / nullif(${number_of_all_searches},0);;
+    sql: ${number_of_searches_with_atc} / nullif(${number_of_all_searches},0);;
   }
   measure: zero_results_rate {
     group_label: "Rates (%)"
