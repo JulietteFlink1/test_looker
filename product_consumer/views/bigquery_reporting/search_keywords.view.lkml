@@ -393,6 +393,16 @@ view: search_keywords {
     sql: ${product_position_from_search_clickthrough} ;;
   }
 
+  measure: median_rank_at_click {
+    group_label: "Product Search Measures"
+    label: "Median Product Rank At Click"
+    type: median
+    description: "Median rank of the first product in the result list when it was clicked on (one search may result in more than one click. In this case the smallest rank is used for the average)"
+    value_format_name: decimal_2
+    sql: ${product_position_from_search_clickthrough} ;;
+  }
+
+
   #### Rates ####
 
   measure: ctr {
