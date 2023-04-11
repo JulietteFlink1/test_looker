@@ -324,7 +324,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_ah_min_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - AH Min"
-    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -335,7 +335,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_ah_avg_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - AH Avg"
-    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -346,7 +346,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_ah_max_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - AH Max"
-    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -357,7 +357,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_ah_min_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - AH Min"
-    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -368,7 +368,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_ah_avg_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - AH Avg"
-    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -379,7 +379,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_ah_max_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - AH Max"
-    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -390,7 +390,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_ah_min_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - AH Min"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -401,7 +401,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_ah_avg_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - AH Avg"
-    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -412,7 +412,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_ah_max_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - AH Max"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -423,7 +423,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_ah_min_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - AH Min"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -434,7 +434,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_ah_avg_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - AH Avg"
-    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -445,7 +445,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_ah_max_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - AH Max"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Albert Heijn"
 
     type: number
@@ -455,7 +455,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_low_price_delta_with_ah_min {
 
-    label: "% Low Tier Price Delta - Ah Min"
+    label: "% Low Tier Price Delta - AH Min"
     description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
     group_label:  "Albert Heijn"
 
@@ -466,7 +466,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_low_price_delta_with_ah_avg {
 
-    label: "% Low Tier Price Delta - Ah Avg"
+    label: "% Low Tier Price Delta - AH Avg"
     description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
     group_label:  "Albert Heijn"
 
@@ -477,7 +477,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_low_price_delta_with_ah_max {
 
-    label: "% Low Tier Price Delta - Ah Max"
+    label: "% Low Tier Price Delta - AH Max"
     description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
     group_label:  "Albert Heijn"
 
@@ -488,7 +488,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_mid_price_delta_with_ah_min {
 
-    label: "% Mid Tier Price Delta - Ah Min"
+    label: "% Mid Tier Price Delta - AH Min"
     description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
     group_label:  "Albert Heijn"
 
@@ -499,7 +499,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_mid_price_delta_with_ah_avg {
 
-    label: "% Mid Tier Price Delta - Ah Avg"
+    label: "% Mid Tier Price Delta - AH Avg"
     description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
     group_label:  "Albert Heijn"
 
@@ -510,7 +510,7 @@ view: flink_to_competitors_prices {
 
   dimension: pct_mid_price_delta_with_ah_max {
 
-    label: "% Mid Tier Price Delta - Ah Max"
+    label: "% Mid Tier Price Delta - AH Max"
     description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
     group_label:  "Albert Heijn"
 
@@ -631,7 +631,7 @@ view: flink_to_competitors_prices {
   dimension: min_carrefour_city_price {
 
     label: "Lowest Price - CRF City"
-    description: "Competitor's lowest available price of the product before discount (including VAT)."
+    description: "Competitor's lowest available price of the product after discount (including VAT)."
     group_label: "Carrefour City"
 
     type: number
@@ -642,7 +642,7 @@ view: flink_to_competitors_prices {
   dimension: avg_carrefour_city_price {
 
     label: "Average Price - CRF City"
-    description: "Competitor's average price of the product before discount (including VAT)."
+    description: "Competitor's average price of the product after discount (including VAT)."
     group_label: "Carrefour City"
 
     type: number
@@ -653,7 +653,7 @@ view: flink_to_competitors_prices {
   dimension: max_carrefour_city_price {
 
     label: "Highest Price - CRF City"
-    description: "Competitor's highest available price of the product before discount (including VAT)."
+    description: "Competitor's highest available price of the product after discount (including VAT)."
     group_label: "Carrefour City"
 
     type: number
@@ -684,7 +684,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_carrefour_city_min_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - CRF City Min"
-    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -695,7 +695,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_carrefour_city_avg_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - CRF City Avg"
-    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -706,7 +706,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_carrefour_city_max_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - CRF City Max"
-    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -717,7 +717,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_carrefour_city_min_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - CRF City Min"
-    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -728,7 +728,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_carrefour_city_avg_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - CRF City Avg"
-    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -739,7 +739,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_carrefour_city_max_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - CRF City Max"
-    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -750,7 +750,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_carrefour_city_min_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - CRF City Min"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -761,7 +761,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_carrefour_city_avg_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - CRF City Avg"
-    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -772,7 +772,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_carrefour_city_max_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - CRF City Max"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -783,7 +783,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_carrefour_city_min_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - CRF City Min"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -794,7 +794,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_carrefour_city_avg_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - CRF City Avg"
-    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -805,7 +805,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_carrefour_city_max_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - CRF City Max"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's highest product price by weighted quantity sold."
     group_label: "Carrefour City"
 
     type: number
@@ -1044,7 +1044,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_getir_min_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Getir Min"
-    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1055,7 +1055,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_getir_avg_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Getir Avg"
-    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1066,7 +1066,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_getir_max_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Getir Max"
-    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1077,7 +1077,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_getir_min_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Getir Min"
-    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1088,7 +1088,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_getir_avg_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Getir Avg"
-    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1099,7 +1099,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_getir_max_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Getir Max"
-    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1110,7 +1110,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_getir_min_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Getir Min"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1121,7 +1121,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_getir_avg_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Getir Avg"
-    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1132,7 +1132,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_getir_max_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Getir Max"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1143,7 +1143,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_getir_min_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Getir Min"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1154,7 +1154,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_getir_avg_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Getir Avg"
-    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1165,7 +1165,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_getir_max_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Getir Max"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Getir"
 
     type: number
@@ -1404,7 +1404,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_gorillas_min_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Gorillas Min"
-    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1415,7 +1415,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_gorillas_avg_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Gorillas Avg"
-    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1426,7 +1426,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_gorillas_max_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Gorillas Max"
-    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1437,7 +1437,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_gorillas_min_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Gorillas Min"
-    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1448,7 +1448,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_gorillas_avg_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Gorillas Avg"
-    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1459,7 +1459,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_gorillas_max_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Gorillas Max"
-    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1470,7 +1470,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_gorillas_min_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Gorillas Min"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1481,7 +1481,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_gorillas_avg_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Gorillas Avg"
-    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's average product price by weighted quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1492,7 +1492,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_gorillas_max_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Gorillas Max"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1503,7 +1503,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_gorillas_min_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Gorillas Min"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1514,7 +1514,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_gorillas_avg_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Gorillas Avg"
-    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1525,7 +1525,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_gorillas_max_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Gorillas Max"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Gorillas"
 
     type: number
@@ -1711,7 +1711,7 @@ view: flink_to_competitors_prices {
   dimension: min_rewe_price {
 
     label: "Lowest Price - Rewe"
-    description: "Competitor's lowest available price of the product before discount (including VAT)."
+    description: "Competitor's lowest available price of the product after discount (including VAT)."
     group_label: "Rewe"
 
     type: number
@@ -1722,7 +1722,7 @@ view: flink_to_competitors_prices {
   dimension: avg_rewe_price {
 
     label: "Average Price - Rewe"
-    description: "Competitor's average price of the product before discount (including VAT)."
+    description: "Competitor's average price of the product after discount (including VAT)."
     group_label: "Rewe"
 
     type: number
@@ -1733,7 +1733,7 @@ view: flink_to_competitors_prices {
   dimension: max_rewe_price {
 
     label: "Highest Price - Rewe"
-    description: "Competitor's highest available price of the product before discount (including VAT)."
+    description: "Competitor's highest available price of the product after discount (including VAT)."
     group_label: "Rewe"
 
     type: number
@@ -1764,7 +1764,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_rewe_min_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Rewe Min"
-    description: "Flink's low price tier delta with the competitor's lowest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1775,7 +1775,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_rewe_avg_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Rewe Avg"
-    description: "Flink's low price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1786,7 +1786,7 @@ view: flink_to_competitors_prices {
   dimension: low_price_delta_with_rewe_max_by_quantity_sold {
 
     label: "Low Tier Price Delta by Quantity Sold - Rewe Max"
-    description: "Flink's low price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1797,7 +1797,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_rewe_min_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Rewe Min"
-    description: "Flink's mid price tier delta with the competitor's midest product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1808,7 +1808,7 @@ view: flink_to_competitors_prices {
   dimension: mid_price_delta_with_rewe_avg_by_quantity_sold {
 
     label: "Mid Tier Price Delta by Quantity Sold - Rewe Avg"
-    description: "Flink's mid price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1830,7 +1830,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_rewe_min_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Rewe Min"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1841,7 +1841,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_rewe_avg_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Rewe Avg"
-    description: "Flink's high price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1852,7 +1852,7 @@ view: flink_to_competitors_prices {
   dimension: high_price_delta_with_rewe_max_by_quantity_sold {
 
     label: "High Tier Price Delta by Quantity Sold - Rewe Max"
-    description: "Flink's high price tier delta with the competitor's highest product price by quantity sold."
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1863,7 +1863,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_rewe_min_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Rewe Min"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1874,7 +1874,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_rewe_avg_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Rewe Avg"
-    description: "Flink's highest price tier delta with the competitor's average product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
@@ -1885,7 +1885,7 @@ view: flink_to_competitors_prices {
   dimension: highest_price_delta_with_rewe_max_by_quantity_sold {
 
     label: "Highest Tier Price Delta by Quantity Sold - Rewe Max"
-    description: "Flink's highest price tier delta with the competitor's highestest product price by quantity sold."
+    description: "Flink's highest price tier delta with the competitor's highest product price weighted by quantity sold."
     group_label: "Rewe"
 
     type: number
