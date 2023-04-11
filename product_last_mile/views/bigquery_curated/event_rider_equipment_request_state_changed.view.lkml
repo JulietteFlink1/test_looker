@@ -165,6 +165,14 @@ view: event_rider_equipment_request_state_changed {
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "requested"]
   }
+  measure: total_number_returned_events {
+    group_label: "Measures"
+    label: "# Returned Events"
+    description: "Total number of equipment returned events. Equipment is returned by the rider once they leave Flink"
+    type: count_distinct
+    sql: ${TABLE}.event_uuid ;;
+    filters: [rider_equipment_state: "returned"]
+  }
   measure: total_number_delivered_events {
     group_label: "Measures"
     label: "# Delivered Events"
