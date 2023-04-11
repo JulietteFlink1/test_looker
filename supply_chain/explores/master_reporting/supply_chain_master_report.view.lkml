@@ -447,7 +447,7 @@ set: drill_fields_set {
 
   dimension: sku_assigned_hub_layout {
     label: "Hub Layout (assigned SKU)"
-    description: "The hub layout in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a 1.0 SKU can be sold in both 1.0 and 2.0 hubs.)"
+    description: "The hub layout in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a 1.0 SKU can be sold in both 1.0 and 2.0 hubs)"
     group_label: "Puzzle Pieces"
     type: string
     sql: ${TABLE}.sku_assigned_hub_layout ;;
