@@ -200,7 +200,7 @@ view: event_load_trace_completed {
   measure: load_duration_ms_25th {
     type: percentile
     description: "25th Percentile Load Duration (Milliseconds)"
-    percentile: 75
+    percentile: 25
     sql: ${load_duration} ;;
     value_format_name: decimal_0
   }
@@ -239,14 +239,14 @@ view: event_load_trace_completed {
 
   measure: load_duration_ms_min {
     type: min
-    description: "MInimum Load Duration (Milliseconds)"
+    description: "Minimum Load Duration (Milliseconds)"
     sql: ${load_duration} ;;
     value_format_name: decimal_0
   }
 
   measure: load_duration_ms_max {
     type: max
-    description: "MInimum Load Duration (Milliseconds)"
+    description: "Maximum Load Duration (Milliseconds)"
     sql: ${load_duration} ;;
     value_format_name: decimal_0
   }
