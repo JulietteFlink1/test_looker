@@ -1350,9 +1350,19 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: number
     label: "% Lateness (> 5 min)"
-    description: "% of Lateness shift (> 5 minutes late punch-in) e.g. e.g. a 4 hours shift is scheduled to start at 8 am but an employee punches in at 9:00 will results in 25% late (1 hour late / 4 hours shift duration )"
+    description: "% of Lateness shift (> 5 minutes late punch-in) e.g. a 4 hours shift is scheduled to start at 8 am but an employee punches in at 9:00 will results in 25% late (1 hour late / 4 hours shift duration )"
     sql: sum(case when ${TABLE}.number_of_start_late_minutes > 5
               then ${TABLE}.number_of_start_late_minutes end)/nullif(sum(${TABLE}.number_of_planned_minutes),0)  ;;
+    value_format_name: percent_1
+  }
+
+  measure: pct_latess_over_15_minutes{
+    group_label: "> Shift Related"
+    type: number
+    label: "% Lateness (> 15 min)"
+    description: "% of Lateness shift (> 15 minutes late punch-in) e.g. a 4 hours shift is scheduled to start at 8 am but an employee punches in at 9:00 will results in 25% late (1 hour late / 4 hours shift duration )"
+    sql: sum(case when ${TABLE}.number_of_start_late_minutes > 15
+      then ${TABLE}.number_of_start_late_minutes end)/nullif(sum(${TABLE}.number_of_planned_minutes),0)  ;;
     value_format_name: percent_1
   }
 
