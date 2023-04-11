@@ -357,6 +357,15 @@ view: shyftplan_riders_pickers_hours_clean {
     group_label: "Working Hours"
   }
 
+  measure: pct_ops_associate_hours_external_one_time {
+    label: "% Ops Associate External One-time Hours"
+    type: number
+    description: "Include Inventory Associate, Picker, Ops Associate and  Rider Captain shift hours"
+    sql: ${ops_associate_hours_external_one_time}/${ops_associate_hours};;
+    value_format_name: percent_1
+    group_label: "Working Hours"
+  }
+
   measure: pct_rider_hours_external_partnership {
     label: "% Rider External Partnership Hours"
     type: number
@@ -387,6 +396,15 @@ view: shyftplan_riders_pickers_hours_clean {
     type: sum
     sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
     filters: [position_name: "picker"]
+    value_format_name: decimal_1
+    group_label: "Working Hours"
+  }
+
+  measure: ops_associate_hours_external_one_time {
+    label: "Sum of Ops Associate One-time Hours"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_external_one_time/60;;
+    filters: [position_name: "ops_associate"]
     value_format_name: decimal_1
     group_label: "Working Hours"
   }

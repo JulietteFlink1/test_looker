@@ -5,14 +5,16 @@ view: key_value_items {
 dimension: kvi_date {
   type: date
   datatype: date
-  sql: ${TABLE}.partition_date ;;
+  sql: case when concat(extract(year from partition_date)||extract(month from partition_date)) =
+                 concat(extract(year from current_date())||extract(month from current_date()))
+  then ${TABLE}.partition_date else null end;;
 }
 
 
 
   dimension: country_iso {
     type: string
-    sql: ${TABLE}.country_iso ;;
+    sql: select ${TABLE}.country_iso;;
   }
 
 
@@ -43,12 +45,5 @@ dimension: kvi_date {
     sql: ${TABLE}.is_kvi ;;
     label: "Is KVI"
   }
-
-
- # dimension: kvi {
- #   type: string
- #   sql: case when (${sku} is not null) then "KVI" else "Not KVI" end ;;
- # }
-
 
   }
