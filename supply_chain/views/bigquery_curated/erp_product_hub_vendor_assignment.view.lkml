@@ -310,7 +310,7 @@ view: erp_product_hub_vendor_assignment {
   # - - - - - - - - - - - - - START: Pricing Data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: currency {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Curreny"
     description: "The currency of the buying price in lexbizz"
@@ -324,7 +324,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension: is_promotional {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Is Price Promotional"
     description: "Boolean indicating, if the buying price in lexbizz is part of a promotion"
@@ -338,7 +338,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension_group: valid_from {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Price Valid From"
     description: "The start date, from which the buying price in lexbizz is valid"
@@ -357,7 +357,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension_group: valid_to {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Price Valid To"
     description: "The end date, to which the buying price in lexbizz is valid"
@@ -377,7 +377,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension: price_per_unit {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Buying Price per Unit"
     description: "The buying price per unit"
@@ -394,7 +394,7 @@ view: erp_product_hub_vendor_assignment {
   dimension: vendor_price {
     # dimension name as in erp_buying_prices.view in order to not break existing dashboards
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Buying Price per Unit"
     description: "The buying price per unit"
@@ -411,7 +411,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension: price_unit {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Buying Price Unit"
     description: "The unit, for which the Buying Price is valid "
@@ -426,7 +426,7 @@ view: erp_product_hub_vendor_assignment {
 
   dimension: unit_of_measure {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "Unit of Measure"
     description: "Identifier to filter for very important SKUs that should never be out of stock (NOOS) according to Lexbizz"
@@ -441,7 +441,7 @@ view: erp_product_hub_vendor_assignment {
 
   measure: avg_vendor_price {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     label:       "AVG Buying Price"
     description: "The average buying price"
@@ -553,20 +553,6 @@ view: erp_product_hub_vendor_assignment {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -37,6 +37,7 @@ persist_with: flink_daily_datagroup
 
 
 # START ------------------------ access_grant rules ----------------------------
+
 access_grant: can_view_customer_data {
   user_attribute: access_customer_data
   allowed_values: [ "Yes" ]
@@ -46,6 +47,37 @@ access_grant: can_view_buying_information {
   user_attribute: access_buying_information
   allowed_values: [ "Yes" ]
 }
+
+access_grant: can_access_pii {
+  user_attribute: access_pii
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pii_customers {
+  user_attribute: access_pii_customers
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pii_hq_employees {
+  user_attribute: access_pii_hq_employees
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pii_hub_employees {
+  user_attribute: access_pii_hub_employees
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pricing {
+  user_attribute: access_pricing
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pricing_margins {
+  user_attribute: access_pricing_margins
+  allowed_values: [ "Yes" ]
+}
+
 # END ------------------------ access_grant rules ----------------------------
 
 

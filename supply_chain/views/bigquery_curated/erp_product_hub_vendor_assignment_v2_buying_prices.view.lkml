@@ -15,7 +15,7 @@ view: +erp_product_hub_vendor_assignment {
     ]
   }
 
-
+  required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
   dimension: net_income {
 
@@ -25,7 +25,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: number
     sql:  ${order_lineitems.unit_price_gross_amount} / nullif((1 + ${order_lineitems.tax_rate}) ,0);;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
 
@@ -40,7 +39,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: number
     sql: ${net_income} - ${vendor_price} ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
 
@@ -55,7 +53,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: number
     sql: ${margin_absolute} / nullif(${net_income},0) ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: percent_1
 
@@ -70,7 +67,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: average
     sql: ${vendor_price} ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: decimal_4
 
@@ -85,7 +81,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: sum
     sql: (${order_lineitems.quantity} * ${net_income}) ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
@@ -101,7 +96,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: sum
     sql: (${order_lineitems.quantity} * ${vendor_price}) ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
@@ -119,7 +113,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: sum
     sql: (${order_lineitems.quantity} * ${margin_absolute}) ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
     sql_distinct_key: concat(${table_uuid}, ${order_lineitems.order_lineitem_uuid}) ;;
@@ -135,7 +128,6 @@ view: +erp_product_hub_vendor_assignment {
 
     type: number
     sql: ${sum_total_margin_abs} / nullif( ${sum_total_net_income} ,0);;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: percent_1
 

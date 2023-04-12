@@ -139,7 +139,7 @@ explore: order_orderline_cl_retail_customized {
         {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
     ;;
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

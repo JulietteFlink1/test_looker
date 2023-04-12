@@ -1,6 +1,6 @@
 view: sales_weighted_avg_buying_prices {
 
-  required_access_grants: [can_view_buying_information]
+  required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
   derived_table: {
     explore_source: order_lineitems_margins {

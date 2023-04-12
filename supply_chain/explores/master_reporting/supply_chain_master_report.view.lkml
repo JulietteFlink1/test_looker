@@ -543,7 +543,7 @@ set: drill_fields_set {
     hidden: yes
     label: "GMV Buying Price Net"
     group_label: "Monetary Metrics"
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
   }
 
   dimension: amt_waste_selling_price_gross {
@@ -560,7 +560,7 @@ set: drill_fields_set {
     hidden: yes
     label: "€ Outbound (Waste) Net - (Buying Price)"
     group_label: "Monetary Metrics"
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
   }
 
   dimension: avg_amt_buying_price_net {
@@ -568,7 +568,7 @@ set: drill_fields_set {
     sql: ${TABLE}.avg_amt_buying_price_net ;;
     label: "Buying Price Net"
     group_label: "Price Dimensions"
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
   }
 
   dimension: avg_amt_selling_price_gross {

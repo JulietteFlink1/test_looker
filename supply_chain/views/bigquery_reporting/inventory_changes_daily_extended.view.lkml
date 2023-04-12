@@ -4,7 +4,7 @@ view: inventory_changes_daily_extended {
 
   extends: [inventory_changes_daily]
 
-
+  required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Dimensions - HIDDEN
@@ -18,7 +18,6 @@ view: inventory_changes_daily_extended {
 
     type: number
     sql:  ${quantity_change} * ${product_prices_daily.buying_price};;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
 
@@ -32,7 +31,6 @@ view: inventory_changes_daily_extended {
 
     type: number
     sql:  ${quantity_change} * ${product_prices_daily.buying_price} * ( 1 + ${products.tax_rate}) ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
 
@@ -46,7 +44,6 @@ view: inventory_changes_daily_extended {
 
     type: number
     sql:  ${quantity_change} * ${product_prices_daily.avg_amt_product_price_gross};;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
 
@@ -67,7 +64,6 @@ view: inventory_changes_daily_extended {
 
     type: sum
     sql:  ${in_and_outbounded_items_by_buying_prices_net} ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
   }
@@ -81,7 +77,6 @@ view: inventory_changes_daily_extended {
 
     type: sum
     sql:  ${in_and_outbounded_items_by_buying_prices_gross} ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
   }
@@ -93,7 +88,6 @@ view: inventory_changes_daily_extended {
 
     type: sum
     sql:  ${in_and_outbounded_items_by_product_price_gross} ;;
-    required_access_grants: [can_view_buying_information]
 
     value_format_name: eur
   }
@@ -106,7 +100,6 @@ view: inventory_changes_daily_extended {
 
     type: sum
     sql: abs(${amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur});;
-    required_access_grants: [can_view_buying_information]
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }
@@ -121,7 +114,6 @@ view: inventory_changes_daily_extended {
 
     type: sum
     sql: abs(${amt_quantity_change_valuated_on_buying_price_weighted_rolling_average_net_eur}) * ( 1 + ${products.tax_rate});;
-    required_access_grants: [can_view_buying_information]
     filters: [is_outbound_waste: "Yes"]
     value_format_name: eur
   }

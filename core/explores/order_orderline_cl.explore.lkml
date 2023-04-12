@@ -206,7 +206,7 @@ explore: order_orderline_cl {
   join: erp_buying_prices {
     # hiding this table in favor of the monetary cost values directly in orderline.view
     view_label: ""
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     type: left_outer
     # n orders have the same price
@@ -222,7 +222,7 @@ explore: order_orderline_cl {
 
   join: sales_weighted_avg_buying_prices {
     view_label: ""
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     type: left_outer
     relationship:many_to_one
@@ -236,7 +236,7 @@ explore: order_orderline_cl {
   }
 
   join: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing, can_access_pricing_margins]
 
     view_label: "Orders"
 

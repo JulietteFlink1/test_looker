@@ -200,9 +200,9 @@ view: psp_transactions {
 
   dimension: user_name {
     group_label: "> Transaction Properties"
-    required_access_grants: [can_view_customer_data]
     type: string
     sql: ${TABLE}.user_name ;;
+    required_access_grants: [can_access_pii, can_access_pii_customers]
   }
 
   dimension: is_duplicated_psp_reference {
@@ -339,10 +339,10 @@ view: psp_transactions {
 
   dimension: shopper_name {
     group_label: "> Received Payments"
-    required_access_grants: [can_view_customer_data]
     type: string
     description: "Name of the cardholder, as provided with the transaction, if available."
     sql: ${TABLE}.shopper_name ;;
+    required_access_grants: [can_access_pii, can_access_pii_customers]
   }
 
 #### Referral List dimensions

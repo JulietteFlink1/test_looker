@@ -1,7 +1,5 @@
 view: customers_metrics {
 
-  required_access_grants: [can_view_customer_data]
-
   sql_table_name: `flink-data-prod.crm.crm_customer_feed`
     ;;
 
@@ -60,6 +58,7 @@ view: customers_metrics {
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
+    required_access_grants: [can_access_pii, can_access_pii_customers]
   }
 
   dimension: customer_id {
