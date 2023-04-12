@@ -22,6 +22,8 @@ include: "/**/daily_violations_aggregates.view.lkml"
 include: "/**/event_sponsored_product_impressions.view.lkml"
 include: "/**/event_payment_failed.view.lkml"
 include: "/**/event_order_tracking_viewed.view.lkml"
+include: "/**/event_load_trace_started.view.lkml"
+include: "/**/event_load_trace_completed.view.lkml"
 include: "/**/hubs_ct.view.lkml"
 
 explore: daily_events {
@@ -37,7 +39,9 @@ explore: daily_events {
     # received_at is due cost reduction given a table is partitioned by this dimensions
     # event_date filter will fitler for the desired time frame when events triggered
 
-  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %};;
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${event_date} {% endcondition %}
+  and ${event_date}<= CURRENT_DATE();;
+  # add current_date() requirement to avoid showing future dates
 
   access_filter: {
     field: daily_events.country_iso
@@ -150,6 +154,45 @@ explore: daily_events {
             event_checkout_viewed.delivery_pdt]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_load_trace_started {
+    view_label: "Event: Load Tracing Started"
+    fields: [event_load_trace_started.action_id,
+      event_load_trace_started.trace_name,
+      event_load_trace_completed.start_timestamp_time]
+    sql_on: ${event_load_trace_started.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_started.event_timestamp_date} {% endcondition %};;
+    type: left_outer
+    relationship: one_to_one
+  }
+
+  join: event_load_trace_completed {
+    view_label: "Event: Load Tracing Completed"
+    fields: [event_load_trace_completed.load_duration,
+             event_load_trace_completed.load_duration_ms_min,
+             event_load_trace_completed.load_duration_ms_max,
+             event_load_trace_completed.load_duration_ms_5th,
+             event_load_trace_completed.load_duration_ms_25th,
+             event_load_trace_completed.load_duration_ms_50th,
+             event_load_trace_completed.load_duration_ms_75th,
+             event_load_trace_completed.load_duration_ms_90th,
+             event_load_trace_completed.load_duration_ms_95th,
+             event_load_trace_completed.trace_name,
+             event_load_trace_completed.action_id,
+             event_load_trace_completed.start_timestamp_time,
+             event_load_trace_completed.start_timestamp_date,
+             event_load_trace_completed.start_timestamp_week,
+             event_load_trace_completed.start_timestamp_month,
+             event_load_trace_completed.end_timestamp_time,
+             event_load_trace_completed.end_timestamp_date,
+             event_load_trace_completed.end_timestamp_week,
+             event_load_trace_completed.end_timestamp_month,
+            ]
+    sql_on: ${event_load_trace_completed.event_uuid} = ${daily_events.event_uuid}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_completed.event_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
