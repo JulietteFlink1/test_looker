@@ -153,7 +153,7 @@ view: employee_level_kpis {
     ]
     convert_tz: no
     datatype: date
-    description: "Based on fountain hiring funnel (the date when an applicant transits to creating accounts or approved stage)"
+    description: "Hire date based on BambooHR (old HR tool)"
     sql: ${TABLE}.hire_date ;;
   }
 
