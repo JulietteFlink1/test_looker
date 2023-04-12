@@ -546,7 +546,20 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_favourites_viewed ;;
   }
-
+  dimension: is_deals_tab_viewed {
+    group_label: "Flags | Event"
+    description: "Yes if user has viewed the deals tab"
+    label: "Is Deals Tab Viewed"
+    type: yesno
+    sql: ${TABLE}.is_deals_tab_viewed ;;
+  }
+  dimension: is_profile_viewed {
+    group_label: "Flags | Event"
+    description: "Yes if user has viewed profile"
+    label: "Is Profile Viewed"
+    type: yesno
+    sql: ${TABLE}.is_profile_viewed ;;
+  }
 
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
@@ -705,6 +718,16 @@ view: daily_user_aggregates {
     type: number
     hidden: yes
     sql: ${TABLE}.number_of_favourites_viewed ;;
+  }
+  dimension: dim_number_of_deals_tab_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_deals_tab_viewed ;;
+  }
+  dimension: dim_number_of_profile_viewed {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_profile_viewed ;;
   }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~      Measures     ~~~~~~~~~~~~~~~ #
@@ -1002,6 +1025,22 @@ view: daily_user_aggregates {
     type: sum
     hidden: no
     sql: ${dim_number_of_favourties_viewed} ;;
+  }
+  measure: number_of_deals_tab_viewed {
+    group_label: "Event Metrics"
+    label: "# Deals Tab Viewed"
+    description: "Number of times a user has viewed deals tab in a day"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_deals_tab_viewed} ;;
+  }
+  measure: number_of_profile_viewed {
+    group_label: "Event Metrics"
+    label: "# Profile Viewed"
+    description: "Number of times a user has viewed profile in a day"
+    type: sum
+    hidden: no
+    sql: ${dim_number_of_profile_viewed} ;;
   }
 
   # Basic counts
