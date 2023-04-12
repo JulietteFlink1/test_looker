@@ -178,7 +178,7 @@ view: inventory_changes_daily {
     label: "€ Inventory Quantity Change (Buying Price Net)"
     description: "Total quantity of inventory changes valuated on weighted buying prices net of the current stock."
     hidden: yes
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   dimension: amt_quantity_change_valuated_on_selling_price_average_gross_eur {

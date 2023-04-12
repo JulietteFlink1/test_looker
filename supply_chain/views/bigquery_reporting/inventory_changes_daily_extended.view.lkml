@@ -4,7 +4,7 @@ view: inventory_changes_daily_extended {
 
   extends: [inventory_changes_daily]
 
-  required_access_grants: [can_access_pricing, can_access_pricing_margins]
+  required_access_grants: [can_access_pricing_margins]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Dimensions - HIDDEN

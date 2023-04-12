@@ -713,7 +713,7 @@ view: advanced_supplier_matching {
     hidden: yes
     sql: ${TABLE}.avg_amt_buying_price_net ;;
 
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -901,7 +901,7 @@ view: advanced_supplier_matching {
 
     value_format_name: eur
 
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   measure: amt_total_quantity_ordered_net {
@@ -914,7 +914,7 @@ view: advanced_supplier_matching {
 
     value_format_name: eur
 
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
 
   }
 

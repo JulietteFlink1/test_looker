@@ -37,7 +37,7 @@ view: cc_contacts {
     type: string
     description: "Phone number of the user who created the contact"
     sql: ${TABLE}.user_phone_number ;;
-    required_access_grants: [can_access_pii, can_access_pii_customers]
+    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: user_email {
@@ -45,7 +45,7 @@ view: cc_contacts {
     type: string
     description: "Email of the user who created the contact"
     sql: ${TABLE}.user_email ;;
-    required_access_grants: [can_access_pii, can_access_pii_customers]
+    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: intercom_user_id {
@@ -60,7 +60,7 @@ view: cc_contacts {
     type: string
     description: "Name of the user who created the contact"
     sql: ${TABLE}.user_name ;;
-    required_access_grants: [can_access_pii, can_access_pii_customers]
+    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: cc_team {

@@ -15,7 +15,7 @@ view: +erp_product_hub_vendor_assignment {
     ]
   }
 
-  required_access_grants: [can_access_pricing, can_access_pricing_margins]
+  required_access_grants: [can_access_pricing_margins]
 
   dimension: net_income {
 

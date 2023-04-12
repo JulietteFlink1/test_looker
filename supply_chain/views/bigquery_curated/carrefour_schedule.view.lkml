@@ -369,7 +369,7 @@ view: carrefour_schedule {
 
   dimension: purchase_price {
 
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
 
     label: "Buying Price"
     description: "The buying price of a product we sell to the suppliers - this information is hub-specific."

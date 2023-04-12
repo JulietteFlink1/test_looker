@@ -2,7 +2,7 @@ view: lexbizz_buying_price {
   sql_table_name: `flink-data-prod.curated.lexbizz_buying_price`
     ;;
 
-  required_access_grants: [can_access_pricing, can_access_pricing_margins]
+  required_access_grants: [can_access_pricing_margins]
 
   dimension: country_iso {
     type: string

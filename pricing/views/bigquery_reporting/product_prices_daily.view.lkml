@@ -141,7 +141,7 @@ view: product_prices_daily {
     type: number
     sql: ${TABLE}.amt_buying_price_net_eur ;;
     hidden: yes
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   dimension: max_amt_discount_price {
@@ -195,7 +195,7 @@ view: product_prices_daily {
           end
             ;;
   hidden: yes
-  required_access_grants: [can_access_pricing, can_access_pricing_margins]
+  required_access_grants: [can_access_pricing_margins]
   }
 
 
@@ -361,7 +361,7 @@ view: product_prices_daily {
 
     label:       "AVG Buying Price"
     description: "The average buying price of a product, that Flink pays to its vendor"
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
 
     type: average
     sql: ${buying_price} ;;
@@ -372,7 +372,7 @@ view: product_prices_daily {
 
     label: "AVG Margin"
     description: "The average margin based off average buying and selling prices for each product"
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
 
     type: average
     sql: ${avg_amt_margin} ;;

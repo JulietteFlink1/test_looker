@@ -4,7 +4,7 @@ view: erp_buying_prices {
 
   sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
 
-  required_access_grants: [can_access_pricing, can_access_pricing_margins]
+  required_access_grants: [can_access_pricing_margins]
 
   view_label: "* ERP Supplier Prices *"
 
@@ -180,14 +180,14 @@ view: erp_buying_prices {
   }
 
   dimension: amt_buying_price_net_eur {
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     sql: ${TABLE}.amt_buying_price_net_eur;;
     hidden: yes
   }
 
   dimension: amt_weighted_average_cost_net_eur {
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
     label: "Weighted Average Cost (WAC) (Net)."
     description: "Buying price, that can be used for product sales. It resembles the weighted buying price of the current stock. This is done (in Oracle) to ensure that we value the inventory at any given day with the average value of our current stock (and not with the most recent buying price to place a supplier order). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     group_label: "> Monetary Metrics (P&L)"

@@ -1,7 +1,7 @@
 view: customer_address {
   view_label: "⚠️ Confidential: Customer Address ⚠️"
   sql_table_name: `flink-data-prod.curated.customer_address`;;
-  required_access_grants: [can_access_pii, can_access_pii_customers]
+  required_access_grants: [can_access_pii_customers]
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~

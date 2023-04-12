@@ -406,7 +406,7 @@ view: purchase_orders {
     description: "This measure multiplies the supplier price of an item with the number
                   of selling units we ordered and thus provides the cumulative value of the replenished items."
 
-    required_access_grants: [can_access_pricing, can_access_pricing_margins]
+    required_access_grants: [can_access_pricing_margins]
 
     type: sum
     sql: coalesce((${total_quantity} * ${erp_buying_prices.vendor_price}),0) ;;

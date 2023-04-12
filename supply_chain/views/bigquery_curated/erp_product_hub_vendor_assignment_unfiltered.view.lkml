@@ -670,7 +670,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
 
   dimension: unit_cost {
     # ------ ATTENTION: this is a protected field: buying price --
-    required_access_grants: [can_access_pricing, can_access_pricing_margins] #-------
+    required_access_grants: [can_access_pricing_margins] #-------
     # ------------------------------------------------------------
     label: "Unit Cost"
     description: "The buying price of a product we buy from the suppliers - this information is hub-specific."
