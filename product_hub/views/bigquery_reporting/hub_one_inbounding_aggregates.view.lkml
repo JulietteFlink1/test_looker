@@ -12,6 +12,33 @@ view: hub_one_inbounding_aggregates {
   # ~~~~~~~~~~~~~~~     Sets          ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  set: to_include_product {
+    fields: [
+      sum_time_inbounding_hours,
+      sum_time_inbounding_minutes,
+      avg_time_inbounding_minutes,
+      sum_time_dropping_products_hours,
+      sum_time_dropping_products_minutes,
+      avg_time_dropping_products_minutes,
+      sum_time_populating_list_hours,
+      sum_time_populating_list_minutes,
+      avg_time_populating_list_minutes
+    ]
+  }
+
+  set: to_include_vendor_performance {
+    fields: [
+      quinyx_badge_number,
+      event_date,
+      event_week,
+      sum_time_inbounding_hours,
+      sum_time_inbounding_minutes,
+      number_of_products_dropped,
+      number_of_products_inbounded_per_minute,
+      number_of_products_inbounded_per_hour
+    ]
+
+  }
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Parameters     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -183,7 +210,7 @@ view: hub_one_inbounding_aggregates {
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # =========  Number of products   =========
+  # =========  Number of dropping_lists   =========
 
   measure: number_of_distinct_dropping_lists {
     group_label: "Total Metrics"
@@ -349,5 +376,29 @@ view: hub_one_inbounding_aggregates {
     description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
     value_format: "0.00"
     sql: ${TABLE}.time_inbounding_minutes ;;
+  }
+
+  # =========  Productivity   =========
+
+  measure: number_of_products_inbounded_per_minute {
+    label: "# Products Inbounded per Minute"
+    group_label: "Productivity"
+    description: "Number of products inbounded per minute."
+    type: number
+
+    sql: safe_divide(${number_of_products_dropped}, ${sum_time_inbounding_minutes})  ;;
+
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_products_inbounded_per_hour {
+    label: "# Products Inbounded per Hour"
+    group_label: "Productivity"
+    description: "Number of products inbounded per hour."
+    type: number
+
+    sql: safe_divide(${number_of_products_dropped}, ${sum_time_inbounding_hours})  ;;
+
+    value_format_name: decimal_2
   }
 }

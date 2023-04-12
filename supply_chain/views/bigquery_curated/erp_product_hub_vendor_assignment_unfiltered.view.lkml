@@ -78,6 +78,22 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     sql: ${TABLE}.item_location_introduction_date ;;
   }
 
+  dimension_group: item_location_termination {
+    type: time
+    datatype: date
+    label: "Item Location Termination"
+    description: "The date, when the item was deleted from a location according to our ERP system Oracle"
+    group_label: "Item-Location"
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.item_location_termination_date ;;
+  }
+
   dimension: source_method {
     label: "Source Method"
     description: "This value will be used to specify how the ad-hoc PO/TSF creation process should source the item/location request. If the value is Warehouse, the process will attempt to fill the request by creating a transfer from the warehouse mentioned in the source_wh field. If this warehouse doesn't have enough inventory to fill the request, a purchase order will be created for the item/location's primary supplier. For warehouses, it is used by Oracle Retail Allocation to determine the valid sources and destinations for warehouse to warehouse allocations."
@@ -107,6 +123,22 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     description: "The european article number (EAN) of a product"
     group_label: "Item"
     sql: ${TABLE}.ean ;;
+  }
+
+  dimension_group: item_introduction {
+    type: time
+    datatype: date
+    label: "Item Introduction"
+    description: "  The date, when a given product was listed initially"
+    group_label: "Item"
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.item_introduction_date ;;
   }
 
   dimension: ean_hu {
@@ -220,22 +252,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     description: "Temperature a product needs to have while being delivered and stored in order to be consumable"
     group_label: "Item"
     sql: ${TABLE}.item_temperature_zone ;;
-  }
-
-  dimension_group: item_location_termination {
-    type: time
-    datatype: date
-    label: "Item Location Termination"
-    description: "Date when a hub was launched."
-    group_label: "Item-Location"
-    timeframes: [
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.item_location_termination_date ;;
   }
 
   dimension: item_base_uom {
@@ -751,24 +767,6 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     group_label: "Item-Supplier"
     type: string
     sql: ${TABLE}.item_presentation_method ;;
-    hidden: no
-  }
-
-  dimension: min_order_quantity {
-    label: "Min Order Quantity"
-    description: "Minimun quantity of a product that needs to be ordered from a supplier"
-    group_label: "Item-Supplier"
-    type: number
-    sql: ${TABLE}.min_order_quantity ;;
-    hidden: no
-  }
-
-  dimension: max_order_quantity {
-    label: "Max Order Quantity"
-    description: "This field contains the maximum quantity that can be ordered at one time from the supplier for the item."
-    group_label: "Item-Supplier"
-    type: number
-    sql: ${TABLE}.max_order_quantity ;;
     hidden: no
   }
 

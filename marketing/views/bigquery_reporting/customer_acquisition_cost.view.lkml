@@ -84,6 +84,7 @@ view: customer_acquisition_cost {
   dimension: campaign_country {
     group_label: "* Campaign Dimensions *"
     label: "Campaign Country"
+    description: "Two letter abbreviation for country that the campaign where the campaign is run."
     type: string
     sql: ${TABLE}.campaign_country ;;
   }
@@ -91,6 +92,7 @@ view: customer_acquisition_cost {
   dimension: campaign_id {
     group_label: "* Campaign Dimensions *"
     label: "Campaign ID"
+    description: "ID associated with specific campaign, one more level of granularity from partner name."
     type: string
     sql: ${TABLE}.campaign_id ;;
     hidden: yes
@@ -99,6 +101,7 @@ view: customer_acquisition_cost {
   dimension: campaign_name {
     group_label: "* Campaign Dimensions *"
     label: "Campaign Name"
+    description: "Name associated with the campaign, one more level of granularity from partner name."
     type: string
     sql: ${TABLE}.campaign_name ;;
   }
@@ -106,6 +109,7 @@ view: customer_acquisition_cost {
   dimension: campaign_platform {
     group_label: "* Campaign Dimensions *"
     label: "Campaign Platform"
+    description: "Platform that the adverts are run on."
     type: string
     sql: ${TABLE}.campaign_platform ;;
   }
@@ -115,6 +119,7 @@ view: customer_acquisition_cost {
   dimension: partner_name {
     group_label: "* Campaign Dimensions *"
     label: "Channel Name"
+    description: "Name of the advertising partner."
     type: string
     sql: ${TABLE}.partner_name ;;
   }
@@ -122,6 +127,7 @@ view: customer_acquisition_cost {
   dimension: sem_campaign_type {
     group_label: "* Campaign Dimensions *"
     label: "SEM Campaign Type"
+    description: "Search engine marketing campaign type, null for non sem campaigns."
     type: string
     sql: ${TABLE}.sem_campaign_type ;;
   }
@@ -131,6 +137,7 @@ view: customer_acquisition_cost {
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
+    hidden:  yes
     type: unquoted
     allowed_value: { value: "Day" }
     allowed_value: { value: "Week" }
@@ -164,7 +171,7 @@ view: customer_acquisition_cost {
     group_label: "* Parameters *"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
-    hidden: no # yes
+    hidden: yes
     sql:
             {% if date_granularity._parameter_value == 'Day' %}
               "Day"

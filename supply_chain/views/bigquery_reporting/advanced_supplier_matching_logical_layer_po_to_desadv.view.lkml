@@ -575,7 +575,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> DESADV | Unplanned or Not Fulfilled"
 
     type: count_distinct
-    sql: ${purchase_order_order_lineitems} ;;
+    sql: ${desadv_order_lineitems} ;;
     filters: [is_unplanned_delivery: "yes"]
     value_format_name: decimal_0
   }
@@ -861,6 +861,102 @@ view: +advanced_supplier_matching {
     sql: (${total_quantity_desadv} - ${inbounded_quantity}) ;;
     filters: [is_desadv_inbounded_underdelivery: "yes"]
     value_format_name: decimal_1
+  }
+
+
+  # ----------------   OTIF    ----------------
+
+  measure: sum_desadv_otif_relaxed {
+    label: "# OTIF relaxed quantity (DESADV > Inbound)"
+    description: "Total amount of on time fulfilled quantities (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_desadv_row_exists: "yes",
+              is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otif_relaxed {
+    label: "% OTIF relaxed quantity (DESADV > Inbound)"
+    description: "Relative amount of on time fulfilled quantities (DESADV > Inbound) compared to overall DESADV quantities "
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${sum_desadv_otif_relaxed}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: sum_desadv_otif_relaxed_limited {
+    label: "# OTIF relaxed quantity lim. (DESADV > Inbound)"
+    description: "Total amount of on time fulfilled quantities (DESADV > Inbound), where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: sum
+    sql: if(
+              ${inbounded_quantity} > ${total_quantity_desadv}
+            , ${total_quantity_desadv}
+            , ${inbounded_quantity}
+            );;
+    filters: [is_desadv_row_exists: "yes",
+              is_matched_on_same_date: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otif_relaxed_limited {
+    label: "% OTIF relaxed quantity lim. (DESADV > Inbound)"
+    description: "Relative amount of on time fulfilled quantities (DESADV > Inbound) compared to overall DESADV quantities, where an overdelivered quantity is limited to the DESADV quantity"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${sum_desadv_otif_relaxed_limited}, ${sum_ordered_items_quantity_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+
+  measure: cnt_desadv_otif_strict {
+    label: "# OTIF strict (DESADV > Inbound)"
+    description: "Number of on time, in full DESADV lines (DESADV > Inbound)"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_matched_on_same_date: "yes",
+              is_desadv_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otif_strict {
+    label: "% OTIF strict (DESADV > Inbound)"
+    description: "Share of on time, in full DESADV lines (DESADV > Inbound) compared to all DESADV lines "
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_otif_strict}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_desadv_otif_strict_limited {
+    label: "# OTIF strict lim. (DESADV > Inbound)"
+    description: "Total of on time, in full DESADV lines (DESADV > Inbound), where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: count_distinct
+    sql: ${desadv_order_lineitems} ;;
+    filters: [is_matched_on_same_date: "yes",
+              is_desadv_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_desadv_otif_strict_limited {
+    label: "% OTIF strict lim. (DESADV > Inbound)"
+    description: "Share of on time, in full DESADV lines (DESADV > Inbound) compared to all DESADV lines, where an overdelivery counts as an in full delivery"
+    group_label: "DESADV >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${cnt_desadv_otif_strict_limited}, ${cnt_ordered_items_desadv}) ;;
+    value_format_name: percent_0
   }
 
 
@@ -1295,6 +1391,100 @@ view: +advanced_supplier_matching {
     sql: (${total_quantity_purchase_order} - ${inbounded_quantity}) ;;
     filters: [is_purchase_order_inbounded_underdelivery: "yes"]
     value_format_name: decimal_1
+  }
+
+  # ----------------   OTIF   ----------------
+
+  measure: sum_po_otif_relaxed {
+    label: "# OTIF relaxed quantity (PO > Inbound)"
+    description: "Total amount of on time fulfilled quantities (PO > Inbound)"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: sum
+    sql: ${inbounded_quantity} ;;
+    filters: [is_purchase_order_row_exists: "yes",
+              is_matched_purchase_order_specifc: "same_day"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_otif_relaxed {
+    label: "% OTIF relaxed quantity (PO > Inbound)"
+    description: "Relative amount of on time fulfilled quantities (PO > Inbound) compared to overall ordered quantities "
+    group_label: "PO >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${sum_po_otif_relaxed}, ${sum_ordered_items_quantity_po});;
+    value_format_name: percent_0
+  }
+
+  measure: sum_po_otif_relaxed_limited {
+    label: "# OTIF relaxed quantity lim. (PO > Inbound)"
+    description: "Total amount of on time fulfilled quantities (PO > Inbound), where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: sum
+    sql: if(
+              ${inbounded_quantity} > ${total_quantity_purchase_order}
+            , ${total_quantity_purchase_order}
+            , ${inbounded_quantity}
+            );;
+    filters: [is_purchase_order_row_exists: "yes",
+              is_matched_purchase_order_specifc: "same_day"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_otif_relaxed_limited {
+    label: "% OTIF relaxed quantity lim. (PO > Inbound)"
+    description: "Relative amount of on time fulfilled quantities (PO > Inbound) compared to overall ordered quantities, where an overdelivered quantity is limited to the PO quantity"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${sum_po_otif_relaxed_limited}, ${sum_ordered_items_quantity_po});;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_po_otif_strict {
+    label: "# OTIF strict (PO > Inbound)"
+    description: "Number of on time, in full order lines (PO > Inbound)"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems};;
+    filters: [is_matched_purchase_order_specifc: "same_day",
+              is_purchase_order_inbounded_in_full: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_otif_strict {
+    label: "% OTIF strict (PO > Inbound)"
+    description: "Share of on time, in full order lines (PO > Inbound) compared to all order lines "
+    group_label: "PO >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${cnt_po_otif_strict}, ${cnt_ordered_items_puchase_order}) ;;
+    value_format_name: percent_0
+  }
+
+  measure: cnt_po_otif_strict_limited {
+    label: "# OTIF strict lim. (PO > Inbound)"
+    description: "Number of on time, in full order lines (PO > Inbound), where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: count_distinct
+    sql: ${purchase_order_order_lineitems} ;;
+    filters: [is_matched_purchase_order_specifc: "same_day",
+              is_purchase_order_inbounded_in_full_limited: "yes"]
+    value_format_name: decimal_0
+  }
+
+  measure: pct_po_otifiq_strict_limited {
+    label: "% OTIF strict lim. (PO > Inbound)"
+    description: "Share of on time, in full order lines (PO > Inbound) compared to all order lines, where an overdelivery counts as an in full delivery"
+    group_label: "PO >> Inbound | OTIF"
+
+    type: number
+    sql: safe_divide(${cnt_po_otif_strict_limited}, ${cnt_ordered_items_puchase_order});;
+    value_format_name: percent_0
   }
 
 
