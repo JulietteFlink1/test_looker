@@ -16,6 +16,7 @@ view: cc_headcount_forecast_performance {
     type: time
     timeframes: [
       time,
+      hour_of_day,
       date,
       week,
       month,
