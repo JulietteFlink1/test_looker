@@ -23,11 +23,9 @@ explore: flink_to_competitors_prices {
   }
 
   join: published_and_assigned_products {
-
     from: published_and_assigned_products
-
     sql_on: ${flink_to_competitors_prices.flink_product_sku} = ${published_and_assigned_products.product_sku}
-           and ${flink_to_competitors_prices.country_iso} = ${published_and_assigned_products.country_iso} ;;
+        and ${flink_to_competitors_prices.country_iso} = ${published_and_assigned_products.country_iso} ;;
     type: left_outer
     relationship: one_to_one
   }
