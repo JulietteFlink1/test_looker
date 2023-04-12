@@ -575,7 +575,7 @@ view: +advanced_supplier_matching {
     group_label: "PO >> DESADV | Unplanned or Not Fulfilled"
 
     type: count_distinct
-    sql: ${purchase_order_order_lineitems} ;;
+    sql: ${desadv_order_lineitems} ;;
     filters: [is_unplanned_delivery: "yes"]
     value_format_name: decimal_0
   }
