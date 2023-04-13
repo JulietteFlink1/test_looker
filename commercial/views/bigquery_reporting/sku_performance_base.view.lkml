@@ -114,7 +114,7 @@ view: sku_performance_base {
   }
 
   dimension: buying_price {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     sql: ${TABLE}.buying_price ;;
     hidden: yes
@@ -358,7 +358,7 @@ view: sku_performance_base {
 
   dimension: total_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     type: number
     sql: ${TABLE}.total_margin ;;
@@ -367,7 +367,7 @@ view: sku_performance_base {
 
   dimension: pop_total_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     type: number
     sql: ${TABLE}.pop_total_margin ;;
