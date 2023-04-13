@@ -578,18 +578,18 @@ view: employee_level_kpis {
     hidden: yes
   }
 
-  dimension: amt_signon_bonus {
+  dimension: amt_signon_bonus_gross {
     type: number
-    label: "Sign On Bonus Amount"
-    sql: ${TABLE}.amt_signon_bonus ;;
+    label: "Gross Sign On Bonus Amount"
+    sql: ${TABLE}.amt_signon_bonus_gross ;;
     value_format_name: decimal_1
     hidden: yes
   }
 
-  dimension: amt_referral_bonus {
+  dimension: amt_referral_bonus_net {
     type: number
-    label: "Referral Bonus Amount"
-    sql: ${TABLE}.amt_referral_bonus ;;
+    label: "Net Referral Bonus Amount"
+    sql: ${TABLE}.amt_referral_bonus_net ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1746,7 +1746,7 @@ view: employee_level_kpis {
   measure: number_of_sick_hours_payroll {
     group_label: "> Payroll"
     type: sum
-    label: "# Sick Hours"
+    label: "# Paid Sick Hours"
     description: "Number of paid sick hours (excluding absences defined as no shows)."
     sql: ${number_of_sick_minutes_payroll}/60 ;;
     value_format_name: decimal_1
@@ -1755,7 +1755,7 @@ view: employee_level_kpis {
   measure: number_of_vacation_hours_payroll {
     group_label: "> Payroll"
     type: sum
-    label: "# Vacation Hours"
+    label: "# Paid Vacation Hours"
     description: "Number of paid vacation hours."
     sql: ${number_of_vacation_minutes_payroll}/60 ;;
     value_format_name: decimal_1
@@ -1764,8 +1764,8 @@ view: employee_level_kpis {
   measure: sum_of_public_holiday_hours {
     group_label: "> Payroll"
     type: sum
-    label: "# Public Holiday Hours"
-    description: "Number of public holiday hours during the shift period. Calculated as AVG Daily Contracted Hours * Public holiday days."
+    label: "# Paid Public Holiday Hours"
+    description: "Number of paid public holiday hours during the shift period. Calculated as AVG Daily Contracted Hours * Public holiday days."
     sql: ${number_of_public_holiday_hours} ;;
     value_format_name: decimal_1
   }
@@ -1796,22 +1796,22 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: sum_signon_bonus {
+  measure: sum_signon_bonus_gross {
     group_label: "> Payroll"
     type: sum
-    label: "SUM Sign On Bonus"
-    description: "Bonus amount paid to an employee during sign on."
-    sql: ${amt_signon_bonus} ;;
+    label: "SUM Gross Sign On Bonus"
+    description: "Gross bonus amount paid to an employee during sign on."
+    sql: ${amt_signon_bonus_gross} ;;
     value_format_name: decimal_1
     hidden: yes
   }
 
-  measure: sum_referral_bonus {
+  measure: sum_referral_bonus_net {
     group_label: "> Payroll"
     type: sum
-    label: "SUM Referral Bonus"
-    description: "Bonus amount paid to an employee that referred another employee."
-    sql: ${amt_referral_bonus} ;;
+    label: "SUM Net Referral Bonus"
+    description: "Net bonus amount paid to an employee that referred another employee."
+    sql: ${amt_referral_bonus_net} ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1833,8 +1833,8 @@ view: employee_level_kpis {
       number_of_vacation_minutes_payroll,
       number_of_vacation_hours_payroll,
       hourly_rate,
-      sum_signon_bonus,
-      sum_referral_bonus
+      sum_signon_bonus_gross,
+      sum_referral_bonus_net
     ]
   }
 
