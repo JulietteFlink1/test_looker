@@ -4,13 +4,11 @@ view: inventory_changes_daily_extended {
 
   extends: [inventory_changes_daily]
 
-  required_access_grants: [can_access_pricing_margins]
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Dimensions - HIDDEN
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   dimension: in_and_outbounded_items_by_buying_prices_net {
-
+    required_access_grants: [can_access_pricing_margins]
     alias: [in_and_outbounded_items_by_buying_prices]
 
     label: "€ Items Value (by Buying Price Net)"
@@ -25,7 +23,7 @@ view: inventory_changes_daily_extended {
   }
 
   dimension: in_and_outbounded_items_by_buying_prices_gross {
-
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Items Value (by Buying Price Gross)"
     description: "In-and-outbounded items value based on buying prices corresponding to the inventory change date and converted to a gross buying price."
 
@@ -38,7 +36,7 @@ view: inventory_changes_daily_extended {
   }
 
   dimension: in_and_outbounded_items_by_product_price_gross {
-
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Items Value (by Product Price Gross)"
     description: "In-and-outbounded items value based on average product prices (gross) corresponding to the inventory change date."
 
@@ -56,7 +54,7 @@ view: inventory_changes_daily_extended {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   measure: sum_in_and_outbounded_items_by_buying_prices_net {
-
+    required_access_grants: [can_access_pricing_margins]
     alias: [sum_in_and_outbounded_items_by_buying_prices]
 
     label:       "€ Item Value (Buying Price Net)"
@@ -69,7 +67,7 @@ view: inventory_changes_daily_extended {
   }
 
   measure: sum_in_and_outbounded_items_by_buying_prices_gross {
-
+    required_access_grants: [can_access_pricing_margins]
     alias: [sum_in_and_outbounded_items_by_buying_prices]
 
     label:       "€ Item Value (Buying Price Gross)"
@@ -82,7 +80,7 @@ view: inventory_changes_daily_extended {
   }
 
   measure: sum_in_and_outbounded_items_by_product_price_gross {
-
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Item Value (Selling Price)"
     description: "In-and-outbounded items value based on average product prices (gross) corresponding to the inventory change date."
 
@@ -93,7 +91,7 @@ view: inventory_changes_daily_extended {
   }
 
   measure: sum_outbound_waste_per_buying_price_net {
-
+    required_access_grants: [can_access_pricing_margins]
     label:       "€ Outbounded Items (Waste - per Buying Price Net)"
     description: "The quantity '# Outbound (Waste)' multiplied by the net buying price of the product"
     group_label: ">> Waste Metrics"
@@ -105,7 +103,7 @@ view: inventory_changes_daily_extended {
   }
 
   measure: sum_outbound_waste_per_buying_price_gross {
-
+    required_access_grants: [can_access_pricing_margins]
     ## IMPORTANT: for a few
 
     label:       "€ Outbounded Items (Waste - per Buying Price Gross)"
