@@ -8,7 +8,6 @@ include: "/**/*.dashboard.lookml"
 include: "/**/*.explore.lkml"
 
 
-
 week_start_day: monday
 case_sensitive: no
 
@@ -37,15 +36,27 @@ persist_with: flink_daily_datagroup
 
 
 # START ------------------------ access_grant rules ----------------------------
-access_grant: can_view_customer_data {
-  user_attribute: access_customer_data
+
+access_grant: can_access_pii_customers {
+  user_attribute: access_pii_customers
   allowed_values: [ "Yes" ]
 }
 
-access_grant: can_view_buying_information {
-  user_attribute: access_buying_information
+access_grant: can_access_pii_hq_employees {
+  user_attribute: access_pii_hq_employees
   allowed_values: [ "Yes" ]
 }
+
+access_grant: can_access_pii_hub_employees {
+  user_attribute: access_pii_hub_employees
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pricing_margins {
+  user_attribute: access_pricing_margins
+  allowed_values: [ "Yes" ]
+}
+
 # END ------------------------ access_grant rules ----------------------------
 
 

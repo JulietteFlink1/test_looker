@@ -242,7 +242,7 @@ view: +supply_chain_master_report {
     description: "Total amount outbounded as waste in euro (Buying Price valuation)
     calculated as 'total quantity waste' * 'buying price net'."
     value_format_name: eur
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   measure: avg_buying_price_net {
@@ -253,7 +253,7 @@ view: +supply_chain_master_report {
     description: "Average item buying price net,
     this price comes from Lexbizz and refers to our price towards the vendor - (confidential data)."
     value_format_name: eur
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
   }
 
   measure: avg_selling_price_gross {
