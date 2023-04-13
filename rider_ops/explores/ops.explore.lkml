@@ -16,6 +16,7 @@ include: "/**/hub_attributes.view"
 include: "/**/hub_turf_closures_30min.view"
 include: "/**/hub_turf_closures_daily.view"
 include: "/**/cr_dynamic_ops_metrics.view"
+include: "/**/hub_uph_30min.view"
 
 explore: ops {
   from: staffing
@@ -148,6 +149,14 @@ explore: ops {
     relationship: many_to_one
     fields: [hub_turf_closures_daily.closure_reason,
       hub_turf_closures_daily.turf_name]
+  }
+
+  join: hub_uph_30min {
+    view_label: "Hub UPH"
+    sql_on: ${hub_uph_30min.hub_code}=${ops.hub_code}
+    and ${hub_uph_30min.block_starts_at_minute30}=${time_grid.start_datetime_minute30};;
+    type: left_outer
+    relationship: one_to_many
   }
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

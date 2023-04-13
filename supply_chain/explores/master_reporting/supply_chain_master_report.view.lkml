@@ -405,8 +405,81 @@ set: drill_fields_set {
     drill_fields: [drill_fields_set*]
   }
 
+############################################################
+#######      Assortment Puzzles Dimensions       ###########
+############################################################
 
+  dimension: hub_layout {
+    label: "Hub Layout"
+    description: "The hub layout refers to the design of the hub, the number and order of shelves it contains, etc."
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.hub_layout ;;
+    hidden: no
+  }
 
+  dimension: hub_tier {
+    label: "Hub Tier"
+    description: "The hub tiers (1-4) refer to the amount of assortment diversity, that is related to a specific hub (whereby 4 refers to the broadest assortment and 1 to the smallest assortment)"
+    group_label: "Puzzle Pieces"
+    type: number
+    sql: ${TABLE}.hub_tier ;;
+    hidden: no
+  }
+
+  dimension: hub_size {
+    label: "Hub Size"
+    description: "The hub size (measured as S, M or L) refers to the physical size/space of a hub"
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.hub_size ;;
+    hidden: no
+  }
+
+  dimension: hub_puzzles_array {
+    label: "Puzzle Pieces (Hub)"
+    description: "The hub puzzle pieces refer to the specific sets of SKUs, it may be linked to (e.g. Standard, Premium or Discount SKUs)"
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.hub_puzzles_array ;;
+    hidden: no
+  }
+
+  dimension: sku_assigned_hub_layout {
+    label: "Hub Layout (assigned SKU)"
+    description: "The hub layout in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a 1.0 SKU can be sold in both 1.0 and 2.0 hubs)"
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.sku_assigned_hub_layout ;;
+    hidden: no
+  }
+
+  dimension: sku_assigned_tier {
+    label: "Hub Tier (assigned SKU)"
+    description: "The hub tier in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a tier 2 SKU can only be sold in hubs with hub tier of 2 or greater)"
+    group_label: "Puzzle Pieces"
+    type: number
+    sql: ${TABLE}.sku_assigned_tier ;;
+    hidden: no
+  }
+
+  dimension: sku_assigned_hub_size {
+    label: "Hub Size (assigned SKU)"
+    description: "The hub size in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a MEDIUM SKU can only be sold in hubs with hub size of either MEDIUM or LARGE)"
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.sku_assigned_hub_size ;;
+    hidden: no
+  }
+
+  dimension: sku_assigned_hub_puzzle {
+    label: "Puzzle Pieces (assigned SKU)"
+    description: "The puzzle piece in the context of SKUs refers to which hubs can potentially offer a SKU (whereby a PREMIUM SKU can only be sold in hubs with puzzle piece PREMIUM)"
+    group_label: "Puzzle Pieces"
+    type: string
+    sql: ${TABLE}.sku_assigned_hub_puzzle ;;
+    hidden: no
+  }
 
 ############################################################
 ###################### Numeric Dimension ###################
