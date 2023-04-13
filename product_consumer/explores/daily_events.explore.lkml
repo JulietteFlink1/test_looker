@@ -164,7 +164,8 @@ explore: daily_events {
       event_load_trace_started.trace_name,
       event_load_trace_completed.start_timestamp_time]
     sql_on: ${event_load_trace_started.event_uuid} = ${daily_events.event_uuid}
-      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_started.event_timestamp_date} {% endcondition %};;
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_started.event_timestamp_date} {% endcondition %}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_started.start_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
@@ -192,7 +193,8 @@ explore: daily_events {
              event_load_trace_completed.end_timestamp_month,
             ]
     sql_on: ${event_load_trace_completed.event_uuid} = ${daily_events.event_uuid}
-      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_completed.event_timestamp_date} {% endcondition %};;
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_completed.event_timestamp_date} {% endcondition %}
+      and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_completed.start_timestamp_date} {% endcondition %};;
     type: left_outer
     relationship: one_to_one
   }
