@@ -4,6 +4,7 @@
 # This view contains forecast data from multiple forecast tables on timeslot, hub, and job date level.
 
 view: forecasts {
+  # Where statement filters job_date to Monday
   sql_table_name: (select * from `flink-data-prod.curated.forecasts` where job_date = date_trunc(date(start_timestamp, 'Europe/Berlin'), week(monday)) - 7) ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
