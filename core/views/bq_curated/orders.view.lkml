@@ -1562,7 +1562,14 @@ view: orders {
     type: yesno
     sql: ${TABLE}.is_last_mile_order ;;
     description: "TRUE if the order is delivered by flink's riders.
-    Not click and collect order, not created through an external provider (e.g. uber-eats and wolt). Doordash orders are included as they are delivered by Flink's riders."
+    Not click and collect order, not delivered by an external provider (e.g. uber direct), not created through an external provider (e.g. uber-eats and wolt). Doordash orders are included as they are delivered by Flink's riders."
+  }
+
+  dimension: is_daas_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_daas_order ;;
+    description: "TRUE if the order is created on the Flink app but delivered by an external provider (e.g. Uber Direct)."
   }
 
   dimension: deposit {
@@ -2986,6 +2993,16 @@ view: orders {
     sql: ${order_uuid} ;;
     value_format: "0"
     filters: [is_external_order: "yes"]
+  }
+
+  measure: cnt_daas_orders {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# DaaS Orders"
+    description: "Count of Delivery as a Service orders (orders placed via Flink but delivered by an external provider (e.g. Uber Direct)"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    value_format: "0"
+    filters: [is_daas_order: "yes"]
   }
 
   measure: cnt_click_and_collect_orders {
