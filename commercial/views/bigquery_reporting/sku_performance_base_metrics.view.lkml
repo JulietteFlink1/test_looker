@@ -576,7 +576,7 @@ view: +sku_performance_base {
 
   measure: avg_buying_price {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     label:       "AVG Buying Price"
     description: "The average buying prive from ERP"
@@ -590,7 +590,7 @@ view: +sku_performance_base {
 
   measure: sum_total_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     label:       "€ Margin - Reporting Period"
     description: "The total absolute margin in € in the reporting period"
@@ -605,7 +605,7 @@ view: +sku_performance_base {
 
   measure: sum_pop_total_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     label:       "€ Margin - PoP Period"
     description: "The total absolute margin in € in the pop period"
@@ -620,7 +620,7 @@ view: +sku_performance_base {
 
   measure: sum_item_buying_price {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     type: sum
     sql: ${quantity_sold_corrected} * ${buying_price} ;;
@@ -630,7 +630,7 @@ view: +sku_performance_base {
 
   measure: pct_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     label:       "% Margin - Reporting Period"
     description: "The absolute margin of the reporting period compared to the selling price per unit"
@@ -645,7 +645,7 @@ view: +sku_performance_base {
 
   # measure: pct_pop_margin {
 
-  #   required_access_grants: [can_view_buying_information]
+  #   required_access_grants: [can_access_pricing_margins]
 
   #   label:       "% Margin - PoP Period"
   #   description: "The absolute margin of the pop period compared to the selling price per unit"
@@ -678,7 +678,7 @@ view: +sku_performance_base {
 
   measure: main_pct_margin {
 
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
 
     label:       "% Margin - Reporting Period"
     description: "The absolute margin of the reporting period compared to the selling price per unit"

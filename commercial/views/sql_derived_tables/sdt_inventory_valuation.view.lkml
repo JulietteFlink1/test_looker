@@ -359,43 +359,43 @@ select * from aggregated_data
     hidden: yes
   }
   dimension: amt_start_stock_level {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_end_stock_level {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_quantity_change {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
     sql: ${amt_end_stock_level} - ${amt_start_stock_level} ;;
   }
   dimension: amt_number_of_change_reasons {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_inbound {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_correction {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_total_outbound {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
   dimension: amt_number_of_number_of_unspecified {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     type: number
     hidden: yes
   }
@@ -488,7 +488,7 @@ select * from aggregated_data
   #  - - - - - - - - - -    Measures - Monetary
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   measure: sum_of_amt_start_stock_level {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Stock Level (Start)"
     description: "The total monetary value of the stock level at the start of the selected timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -498,7 +498,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_end_stock_level {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Stock Level (End)"
     description: "The total monetary value of the stock level at the start of the selected timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -508,7 +508,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_quantity_change {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Quantity Change"
     description: "The monetary value of all inventory movements defined by the different between quantity before and quantity after the change (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -518,7 +518,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_change_reasons {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Total Change Reasons"
     description: "The monetary value of all inventory movements defined by the sum of all change reason types (inbounds, outbounds, corrections and unspecific)   (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -528,7 +528,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_correction {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Corrected Items"
     description: "The monetary value of all inventory corrections in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -538,7 +538,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_inbound {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Inbounded Items"
     description: "The monetary value of all inventory inbounds in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -548,7 +548,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_total_outbound {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Outbounded Items"
     description: "The monetary value of all inventory outbounds (sales and too-good-to-go) in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"
@@ -558,7 +558,7 @@ select * from aggregated_data
   }
 
   measure: sum_of_amt_number_of_number_of_unspecified {
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     label: "€ Items With Unspecified Inventory Movements"
     description: "The monetary value of all unspecified inventory in the defined timeframe (valued by weighted average cost and substitute with the selling price, in case the cost does not exist)"
     group_label: "> Monetary Metrics"

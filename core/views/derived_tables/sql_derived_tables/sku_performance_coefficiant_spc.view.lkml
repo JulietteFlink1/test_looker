@@ -273,7 +273,7 @@ view: sku_performance_coefficiant_spc {
   dimension: buying_price {
     type: number
     sql: ${TABLE}.buying_price ;;
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     group_label: "> Payment Dimension"
     value_format_name: eur
   }
@@ -410,7 +410,7 @@ view: sku_performance_coefficiant_spc {
   dimension: gross_margin {
     type: number
     sql: ${TABLE}.gross_margin ;;
-    required_access_grants: [can_view_buying_information]
+    required_access_grants: [can_access_pricing_margins]
     group_label: "> Numeric Dimensions"
     value_format_name: eur
   }

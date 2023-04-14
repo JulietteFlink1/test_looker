@@ -3,7 +3,7 @@ include: "inbound_outbound_kpi_report.explore.lkml"
 view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
   # only users that have access to buying prices can see the content of this view
-  required_access_grants: [can_view_buying_information]
+  required_access_grants: [can_access_pricing_margins]
 
   derived_table: {
 
