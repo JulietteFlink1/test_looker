@@ -123,7 +123,6 @@ view: +orderline {
   }
 
   # measure: sum_total_margin_abs_after_product_discount_and_waste {
-    required_access_grants: [can_access_pricing_margins]
   #   required_access_grants: [can_access_pricing_margins]
   #   label: "Sum Gross Profit After Product Discount and Waste"
   #   description: "The sum of all Unit Margins defined as Net Unit Price after deduction of Product Discount minus Weighted Average Cost (WAC) and Waste (Net). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
@@ -143,7 +142,6 @@ view: +orderline {
   }
 
   # measure: pct_total_margin_relative_after_waste {
-      required_access_grants: [can_access_pricing_margins]
   #   required_access_grants: [can_access_pricing_margins]
   #   label: "% Blended Margin after Waste"
   #   description: "The sum of Gross Profit minus Waste (Net) divided by the sum of Item Prices Sold (Net)"
@@ -163,7 +161,6 @@ view: +orderline {
   }
 
   # measure: pct_total_margin_relative_after_product_discount_and_waste{
-      required_access_grants: [can_access_pricing_margins]
   #   required_access_grants: [can_access_pricing_margins]
   #   label: "% Blended Margin After Product Discount and Waste"
   #   description: "The sum of Gross Profit divided by the sum of Item Prices Sold after deduction of Product Discount (Net) and Waste (Net)"
