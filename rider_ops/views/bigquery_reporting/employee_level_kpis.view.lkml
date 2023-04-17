@@ -523,7 +523,86 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  ###### CPO Dimensions
 
+  dimension: number_of_sick_minutes_payroll {
+    type: number
+    label: "# Sick Minutes"
+    description: "Number of paid sick minutes. (excluding absences defined as no shows)"
+    sql: ${TABLE}.number_of_sick_minutes_payroll ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_vacation_minutes_payroll {
+    type: number
+    label: "# Vacation Minutes"
+    description: "Number of paid vacation minutes."
+    sql: ${TABLE}.number_of_vacation_minutes_payroll ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_public_holiday_hours {
+    type: number
+    label: "# Public Holiday Hours"
+    description: "Number of public holiday hours during the shift period. Calculated as AVG Daily Contracted Hours * Public holiday days."
+    sql: ${TABLE}.number_of_public_holiday_hours ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_paid_minutes {
+    type: number
+    label: "# Worked Minutes"
+    sql: ${TABLE}.number_of_worked_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_premium_worked_minutes {
+    type: number
+    label: "# Premium Worked Minutes (Weekend nigh shifts)"
+    description: "Number of punched hours during the weekends after 22:00."
+    sql: ${TABLE}.number_of_premium_worked_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_premium_worked_minutes_as_ops_associate_plus {
+    type: number
+    label: "# Premium Worked Minutes (Ops Associate +)"
+    description: "Number of punched minutes with 'ops associate +' or 'deputy shift lead' position. It happens when employees with different positions work as a shift lead."
+    sql: ${TABLE}.number_of_premium_worked_minutes_as_ops_associate_plus ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: amt_signon_bonus_gross {
+    type: number
+    label: "Gross Sign On Bonus Amount"
+    sql: ${TABLE}.amt_signon_bonus_gross ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: amt_referral_bonus_net {
+    type: number
+    label: "Net Referral Bonus Amount"
+    sql: ${TABLE}.amt_referral_bonus_net ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: hourly_rate {
+    group_label: "> Payroll"
+    type: number
+    label: "Hourly Rate"
+    description: "The amount of hourly wage based on SAP data."
+    sql: ${TABLE}.hourly_rate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1660,6 +1739,109 @@ view: employee_level_kpis {
     type: number
     label: "AVG Customer NPS"
     sql: ${sum_nps_score}/nullif(${cnt_responses},0) ;;
+  }
+
+  ##### Payroll measures
+
+  measure: number_of_sick_hours_payroll {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Paid Sick Hours"
+    description: "Number of paid sick hours (excluding absences defined as no shows)."
+    sql: ${number_of_sick_minutes_payroll}/60 ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_vacation_hours_payroll {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Paid Vacation Hours"
+    description: "Number of paid vacation hours."
+    sql: ${number_of_vacation_minutes_payroll}/60 ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_of_public_holiday_hours {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Paid Public Holiday Hours"
+    description: "Number of paid public holiday hours during the shift period. Calculated as AVG Daily Contracted Hours * Public holiday days."
+    sql: ${number_of_public_holiday_hours} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_paid_hours {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Worked Hours"
+    sql: ${number_of_paid_minutes}/60 ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_premium_worked_hours {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Premium Worked Hours (Weekend night shifts)"
+    description: "Number of punched hours during the weekends after 22:00."
+    sql: ${number_of_premium_worked_minutes}/60 ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: number_of_premium_worked_hours_as_ops_associate_plus {
+    group_label: "> Payroll"
+    type: sum
+    label: "# Premium Worked Hours (Ops Associate +)"
+    description: "Number of punched hours with 'ops associate +' or 'deputy shift lead' position. It happens when employees with different positions work as a shift lead."
+    sql: ${number_of_premium_worked_minutes_as_ops_associate_plus}/60 ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_signon_bonus_gross {
+    group_label: "> Payroll"
+    type: sum
+    label: "SUM Gross Sign On Bonus"
+    description: "Gross bonus amount paid to an employee during sign on."
+    sql: ${amt_signon_bonus_gross} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  measure: sum_referral_bonus_net {
+    group_label: "> Payroll"
+    type: sum
+    label: "SUM Net Referral Bonus"
+    description: "Net bonus amount paid to an employee that referred another employee."
+    sql: ${amt_referral_bonus_net} ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  set: payroll_fields {
+    fields: [
+      staff_number,
+      weekly_contracted_hours,
+      number_of_paid_minutes,
+      number_of_paid_hours,
+      number_of_sick_minutes_payroll,
+      number_of_sick_hours_payroll,
+      number_of_premium_worked_minutes,
+      number_of_premium_worked_hours,
+      number_of_premium_worked_minutes_as_ops_associate_plus,
+      number_of_premium_worked_hours_as_ops_associate_plus,
+      number_of_public_holiday_hours,
+      sum_of_public_holiday_hours,
+      number_of_vacation_minutes_payroll,
+      number_of_vacation_hours_payroll,
+      hourly_rate,
+      sum_signon_bonus_gross,
+      sum_referral_bonus_net
+    ]
   }
 
 }
