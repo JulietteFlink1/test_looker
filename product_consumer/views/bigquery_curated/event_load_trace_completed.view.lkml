@@ -183,6 +183,18 @@ view: event_load_trace_completed {
     sql: ${TABLE}.start_timestamp ;;
   }
 
+  parameter: load_duration_tier_size {
+    type: number
+    description: "Use filter to select the tier size for dynamic load duration tier dimension. E.g. if set to =100, then dynamic load duration tier will create 100ms-sized buckets."
+  }
+
+  dimension: dynamic_load_duration_tier {
+    type: number
+    description: "Load duration tiers. Use load duration tier size filter to select size of tier. E.g. if load duration tier size = 100, then this dimension will create 100ms-sized buckets."
+    sql: ROUND(${load_duration} / {% parameter load_duration_tier_size %}, 0)
+      * {% parameter load_duration_tier_size %} ;;
+  }
+
   dimension: load_duration {
     type: number
     label: "Load Duration (Milliseconds)"
