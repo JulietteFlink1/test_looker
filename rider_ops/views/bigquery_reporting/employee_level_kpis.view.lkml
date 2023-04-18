@@ -1750,6 +1750,7 @@ view: employee_level_kpis {
     description: "Number of paid sick hours (excluding absences defined as no shows)."
     sql: ${number_of_sick_minutes_payroll}/60 ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_vacation_hours_payroll {
@@ -1759,6 +1760,7 @@ view: employee_level_kpis {
     description: "Number of paid vacation hours."
     sql: ${number_of_vacation_minutes_payroll}/60 ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_of_public_holiday_hours {
@@ -1768,6 +1770,7 @@ view: employee_level_kpis {
     description: "Number of paid public holiday hours during the shift period. Calculated as AVG Daily Contracted Hours * Public holiday days."
     sql: ${number_of_public_holiday_hours} ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_paid_hours {
@@ -1776,6 +1779,7 @@ view: employee_level_kpis {
     label: "# Worked Hours"
     sql: ${number_of_paid_minutes}/60 ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_premium_worked_hours {
@@ -1785,6 +1789,7 @@ view: employee_level_kpis {
     description: "Number of punched hours during the weekends after 22:00."
     sql: ${number_of_premium_worked_minutes}/60 ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: number_of_premium_worked_hours_as_ops_associate_plus {
@@ -1794,6 +1799,7 @@ view: employee_level_kpis {
     description: "Number of punched hours with 'ops associate +' or 'deputy shift lead' position. It happens when employees with different positions work as a shift lead."
     sql: ${number_of_premium_worked_minutes_as_ops_associate_plus}/60 ;;
     value_format_name: decimal_1
+    hidden: yes
   }
 
   measure: sum_signon_bonus_gross {
