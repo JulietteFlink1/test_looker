@@ -30,13 +30,10 @@ explore: ops {
       ops.position_parameter: "Rider",
       hubs.country: "",
       hubs.hub_name: "",
-      time_grid.start_datetime_date: "yesterday",
-      forecasts.dow_parameter: "Tuesday"
+      time_grid.start_datetime_date: "yesterday"
     ]
   }
 
-  # This filter takes the latest chosen day of the week and maps it to the job date
-  sql_always_where: ${forecasts.job_date}=${forecasts.job_date_2} OR ${forecasts.job_date} is null ;;
 
   access_filter: {
     field: hubs.country_iso
@@ -154,7 +151,7 @@ explore: ops {
   join: hub_uph_30min {
     view_label: "Hub UPH"
     sql_on: ${hub_uph_30min.hub_code}=${ops.hub_code}
-    and ${hub_uph_30min.block_starts_at_minute30}=${time_grid.start_datetime_minute30};;
+      and ${hub_uph_30min.block_starts_at_minute30}=${time_grid.start_datetime_minute30};;
     type: left_outer
     relationship: one_to_many
   }
