@@ -2489,6 +2489,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_low_price_delta_with_rewe_max}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_monoprix_min}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_monoprix_avg}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_monoprix_max}
     {% endif %};;
   }
 
@@ -2546,6 +2555,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_mid_price_delta_with_rewe_max}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_monoprix_min}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_monoprix_avg}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_monoprix_max}
     {% endif %};;
   }
 
@@ -2603,6 +2621,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_high_price_delta_with_rewe_max}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_monoprix_min}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_monoprix_avg}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_monoprix_max}
     {% endif %};;
   }
 
@@ -2660,6 +2687,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_highest_price_delta_with_rewe_max}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_monoprix_min}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_monoprix_avg}
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_monoprix_max}
     {% endif %};;
   }
 
@@ -2777,6 +2813,27 @@ view: flink_to_competitors_prices {
         +${pct_high_price_delta_with_rewe_max}
         +${pct_highest_price_delta_with_rewe_max}
         ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_monoprix_min}
+        +${pct_mid_price_delta_with_monoprix_min}
+        +${pct_high_price_delta_with_monoprix_min}
+        +${pct_highest_price_delta_with_monoprix_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_monoprix_avg}
+        +${pct_mid_price_delta_with_monoprix_avg}
+        +${pct_high_price_delta_with_monoprix_avg}
+        +${pct_highest_price_delta_with_monoprix_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_monoprix_max}
+        +${pct_mid_price_delta_with_monoprix_max}
+        +${pct_high_price_delta_with_monoprix_max}
+        +${pct_highest_price_delta_with_monoprix_max}
+        ) / 4
     {% endif %};;
   }
 
@@ -2834,6 +2891,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${low_price_delta_with_rewe_max_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_monoprix_min_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_monoprix_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% endif %};;
   }
 
@@ -2891,6 +2957,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_monoprix_min_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_monoprix_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% endif %};;
   }
 
@@ -2948,6 +3023,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_monoprix_min_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_monoprix_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% endif %};;
   }
 
@@ -3005,6 +3089,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'rewe'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_monoprix_min_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_monoprix_max_by_quantity_sold})/sum(${highest_quantity_sold})
     {% endif %};;
   }
 
@@ -3121,6 +3214,27 @@ view: flink_to_competitors_prices {
         +(sum(${mid_price_delta_with_rewe_max_by_quantity_sold})/sum(${mid_quantity_sold}))
         +(sum(${high_price_delta_with_rewe_max_by_quantity_sold})/sum(${high_quantity_sold}))
         +(sum(${highest_price_delta_with_rewe_max_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_monoprix_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_monoprix_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_monoprix_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_monoprix_min_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_monoprix_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'monoprix'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_monoprix_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_monoprix_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_monoprix_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_monoprix_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% endif %};;
   }
