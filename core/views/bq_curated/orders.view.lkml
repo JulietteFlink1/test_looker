@@ -554,7 +554,7 @@ view: orders {
   dimension: rider_handling_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Rider Handling Time (min)"
-    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub"
+    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub. For DaaS orders it is the time from Rider on route to order delivered."
     type: number
     hidden: yes
     sql: ${TABLE}.rider_handling_time_minutes ;;
@@ -1912,7 +1912,7 @@ view: orders {
   measure: avg_fulfillment_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Fulfillment Time (decimal)"
-    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer). Outliers excluded (<3min or >210min)"
+    description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery (rider at customer, or order delivered for DaaS orders). Outliers excluded (<3min or >210min)"
     hidden:  no
     type: average
     sql: ${fulfillment_time};;
@@ -2144,7 +2144,7 @@ view: orders {
   measure: avg_riding_to_customer_time {
     group_label: "* Operations / Logistics *"
     label: "AVG Riding To Customer Time"
-    description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
+    description: "Average riding to customer time considering delivery start to arrival at customer (or order delivered for DaaS orders). Outliers excluded (<1min or >30min)"
     hidden:  no
     type: average
     sql: ${riding_to_customer_time_minutes};;
