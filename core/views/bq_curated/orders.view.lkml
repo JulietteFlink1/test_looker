@@ -554,7 +554,7 @@ view: orders {
   dimension: rider_handling_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Rider Handling Time (min)"
-    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub. For DaaS orders it is the time from Rider on route to order delivered."
+    description: "Total time needed for the rider to handle the order: Riding to customer + At customer + Riding to hub. For DaaS orders it is the time from rider on route to order delivered."
     type: number
     hidden: yes
     sql: ${TABLE}.rider_handling_time_minutes ;;
