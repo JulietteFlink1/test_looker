@@ -224,12 +224,25 @@ view: daily_events {
         time,
         date,
         week,
+        month,
         hour_of_day,
         quarter
       ]
       sql: ${TABLE}.event_timestamp ;;
       datatype: timestamp
     }
+
+  dimension: event_date_dynamic {
+    label: "Event Date (Dynamic)"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${event_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
+  }
 
  # ======= HIDDEN Dimension ======= #
 
