@@ -285,7 +285,7 @@ view: employee_level_kpis {
           when ${shift_date} > ${last_worked_date_dimension}
           then ${last_worked_date_dimension}
           else ${shift_date} end;;
-    sql_end: ${shift_date};;
+    sql_end: case when ${last_worked_date_dimension} is not null then ${shift_date} end;;
   }
 
   dimension_group: duration_between_last_shift_and_shift_date {
@@ -299,7 +299,7 @@ view: employee_level_kpis {
           then ${last_shift_worked_or_justified_shift_date}
           else ${shift_date} end
           ;;
-    sql_end:${shift_date};;
+    sql_end:case when ${last_worked_date_dimension} is not null then ${shift_date} end;;
   }
 
   dimension_group: duration_between_last_worked_shift_and_today {
