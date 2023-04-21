@@ -58,18 +58,6 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
-  dimension: amount_of_average_order_value_gross {
-    type: number
-    sql: ${TABLE}.average_order_value_gross ;;
-    hidden: yes
-  }
-
-  dimension: amount_of_control_average_order_value_gross {
-    type: number
-    sql: ${TABLE}.control_average_order_value_gross ;;
-    hidden: yes
-  }
-
   dimension: number_of_unique_customers_visited {
     type: number
     sql: ${TABLE}.number_of_unique_customers_visited ;;
@@ -608,7 +596,7 @@ view: braze_lifecycle_cohorts {
     value_format_name: decimal_0
   }
 
-  # =========  SUM of Discounts  =========
+  # =========  SUM of Discounts & SUM of Discounts per Order =========
 
       # Step 1: Create Overall Metric
     measure: sum_of_amount_of_cart_discount_gross {
@@ -641,49 +629,96 @@ view: braze_lifecycle_cohorts {
     }
 
     # Step 3: Create Variant/Control per User Metrics
-    measure: share_of_variant_amount_of_cart_discount {
+    measure: share_of_variant_amount_of_cart_discount_per_order {
       hidden: no
       type: number
-      sql: safe_divide(${sum_of_variant_amount_of_cart_discount_gross},${sum_of_number_of_unique_variant_users});;
+      sql: safe_divide(${sum_of_variant_amount_of_cart_discount_gross},${sum_of_number_of_unique_variant_orders});;
     }
 
-    measure: share_of_control_amount_of_cart_discount {
+    measure: share_of_control_amount_of_cart_discount_per_order {
       hidden: no
       type: number
-      sql: safe_divide(${sum_of_control_amount_of_cart_discount_gross},${sum_of_number_of_unique_control_users});;
+      sql: safe_divide(${sum_of_control_amount_of_cart_discount_gross},${sum_of_number_of_unique_control_orders});;
     }
 
     # Step 4: Overall incrementality: Difference between Variant per user and control per user
     measure: incrementality_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Absolute, pp) in Cart Discounts"
-      description: "Difference in Cart Discounts for variant group compared to Cart Discounts in control group"
+      label: "Incrementality (Absolute, pp) in Cart Discounts per Order"
+      description: "Difference in Cart Discounts per Order for variant group compared to Cart Discounts in control group"
       type: number
-      sql: (${share_of_variant_amount_of_cart_discount} - ${share_of_variant_amount_of_cart_discount}) * 100 ;;
+      sql: (${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}) * 100 ;;
       value_format_name: decimal_2
     }
 
     # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
     measure: incremental_lift_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Relative, %) in Cart Discounts"
-      description: "% increase in share of Cart Discounts in variant group compared to Cart Discounts in control group"
+      label: "Incrementality (Relative, %) in Cart Discounts per Order"
+      description: "% increase in share of Cart Discounts per Order in variant group compared to Cart Discounts in control group"
       type: number
-      sql: safe_divide((${share_of_variant_amount_of_cart_discount} - ${share_of_control_amount_of_cart_discount}),
-        ${share_of_control_amount_of_cart_discount}) ;;
+      sql: safe_divide((${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}),
+        ${share_of_control_amount_of_cart_discount_per_order}) ;;
       value_format_name: percent_2
     }
 
     # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
     measure: absolute_incrementality_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Absolute, #) in Cart Discounts"
-      description: "Absolute sum of Cart Discounts in variant group that were incrementally resulted by canvas efforts"
+      label: "Incrementality (Absolute, #) in Cart Discounts per Order"
+      description: "Absolute sum of Cart Discounts per Order in variant group that were incrementally resulted by canvas efforts"
       type: number
-      sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount}} - ${share_of_control_amount_of_cart_discount}),
-        ${share_of_control_amount_of_cart_discount}) ;;
+      sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}),
+        ${share_of_control_amount_of_cart_discount_per_order}) ;;
       value_format_name: decimal_0
     }
+
+  # =========  SUM of Discounts & SUM of Discounts per GMV =========
+
+  # Step 3: Create Variant/Control per User Metrics
+  measure: share_of_variant_amount_of_cart_discount_per_gmv {
+    hidden: no
+    type: number
+    sql: safe_divide(${sum_of_variant_amount_of_cart_discount_gross},${sum_of_variant_amount_of_gmv_gross});;
+  }
+
+  measure: share_of_control_amount_of_cart_discount_per_gmv {
+    hidden: no
+    type: number
+    sql: safe_divide(${sum_of_control_amount_of_cart_discount_gross},${sum_of_control_amount_of_gmv_gross});;
+  }
+
+  # Step 4: Overall incrementality: Difference between Variant per user and control per user
+  measure: incrementality_of_amount_of_cart_discount_per_gmv {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, pp) in Cart Discounts per GMV"
+    description: "Difference in Cart Discounts per GMV for variant group compared to Cart Discounts in control group"
+    type: number
+    sql: (${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}) * 100 ;;
+    value_format_name: decimal_2
+  }
+
+  # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
+  measure: incremental_lift_of_amount_of_cart_discount_per_gmv {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Relative, %) in Cart Discounts per GMV"
+    description: "% increase in share of Cart Discounts per GMV in variant group compared to Cart Discounts in control group"
+    type: number
+    sql: safe_divide((${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}),
+      ${share_of_control_amount_of_cart_discount_per_gmv}) ;;
+    value_format_name: percent_2
+  }
+
+  # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
+  measure: absolute_incrementality_of_amount_of_cart_discount_per_gmv {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, #) in Cart Discounts per GMV"
+    description: "Absolute sum of Cart Discounts per GMV in variant group that were incrementally resulted by canvas efforts"
+    type: number
+    sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}),
+      ${share_of_control_amount_of_cart_discount_per_gmv}) ;;
+    value_format_name: decimal_0
+  }
 
   # =========  AOV  =========
 
