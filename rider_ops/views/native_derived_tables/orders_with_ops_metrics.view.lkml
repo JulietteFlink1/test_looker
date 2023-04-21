@@ -1,3 +1,5 @@
+# This view is used in Ops Explore. It contains order KPIs aggregated on 30min granularity
+
 include: "/**/orders_cl.explore.lkml"
 include: "/**/global_filters_and_parameters.view.lkml"
 
@@ -46,6 +48,7 @@ view: orders_with_ops_metrics {
       column: cnt_orders_delayed_under_0_min_time_targeted {}
       column: cnt_ubereats_orders {}
       column: cnt_click_and_collect_orders {}
+      column: cnt_daas_orders {}
       column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_rider_handling_time_minutes {}
@@ -139,6 +142,15 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_0
     }
 
+  measure: cnt_daas_orders {
+    group_label: "> Basic Counts"
+    label: "# DaaS Orders"
+    description: "Count of Delivery as a Service Orders (e.g. Uber Direct)"
+    hidden:  yes
+    type: sum
+    value_format_name: decimal_0
+  }
+
   measure: cnt_internal_orders {
     group_label: "> Basic Counts"
     label: "# Internal Orders"
@@ -213,7 +225,7 @@ view: orders_with_ops_metrics {
     group_label: "> Stacked Orders"
     label: "% Stacked Orders"
     description: "The % of orders that were part of a stacked delivery. (Share of internal orders only)"
-    sql: ${cnt_stacked_orders} / NULLIF(${cnt_internal_orders}-${cnt_click_and_collect_orders}, 0) ;;
+    sql: ${cnt_stacked_orders} / NULLIF(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders}, 0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -222,7 +234,7 @@ view: orders_with_ops_metrics {
     label: "% Double-Stacked Orders"
     description: "The % of orders that were part of a 2-order stacked delivery. (Share of internal orders only)"
     group_label: "> Stacked Orders"
-    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
@@ -231,7 +243,7 @@ view: orders_with_ops_metrics {
     label: "% Triple-Stacked Orders"
     description: "The % of orders that were part of a 3-order stacked delivery. (Share of internal orders only)"
     group_label: "> Stacked Orders"
-    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
