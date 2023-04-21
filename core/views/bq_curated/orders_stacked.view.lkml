@@ -126,27 +126,27 @@ view: +orders {
 
   measure: pct_stacked_orders {
     label: "% Stacked Orders"
-    description: "The % of orders that were part of a stacked delivery. (Share of internal orders only)"
+    description: "The % of orders that were part of a stacked delivery. (Share of internal orders only. Excluding DaaS orders)"
     group_label: "* Stacked Orders *"
-    sql: ${cnt_stacked_orders} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    sql: ${cnt_stacked_orders} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
 
   measure: pct_double_stacked_orders {
     label: "% Double-Stacked Orders"
-    description: "The % of orders that were part of a 2-order stacked delivery. (Share of internal orders only)"
+    description: "The % of orders that were part of a 2-order stacked delivery. (Share of internal orders only. Excluding DaaS orders)"
     group_label: "* Stacked Orders *"
-    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    sql: ${cnt_stacked_orders_double_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
 
   measure: pct_triple_stacked_orders {
     label: "% Triple-Stacked Orders"
-    description: "The % of orders that were part of a 3-order stacked delivery. (Share of internal orders only)"
+    description: "The % of orders that were part of a 3-order stacked delivery. (Share of internal orders only. Excluding DaaS orders)"
     group_label: "* Stacked Orders *"
-    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders} ,0) ;;
+    sql: ${cnt_stacked_orders_triple_stack} / nullif(${cnt_internal_orders}-${cnt_click_and_collect_orders}-${cnt_daas_orders} ,0) ;;
     type: number
     value_format_name: percent_1
   }
