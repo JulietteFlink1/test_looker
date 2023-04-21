@@ -285,7 +285,9 @@ view: employee_level_kpis {
           when ${shift_date} > ${last_worked_date_dimension}
           then ${last_worked_date_dimension}
           else ${shift_date} end;;
-    sql_end: ${shift_date};;
+          # If an employee never had any worked shift this metric should retrun null.
+          # Therefore we need to need to default the value in sql_end to null to avoid return 0
+    sql_end: case when ${last_worked_date_dimension} is not null then ${shift_date} end;;
   }
 
   dimension_group: duration_between_last_shift_and_shift_date {
@@ -297,9 +299,10 @@ view: employee_level_kpis {
     sql_start:case
           when ${shift_date} > ${last_shift_worked_or_justified_shift_date}
           then ${last_shift_worked_or_justified_shift_date}
-          else ${shift_date} end
-          ;;
-    sql_end:${shift_date};;
+          else ${shift_date} end;;
+          # If an employee never had any worked or justified shift this metric should retrun null.
+          # Therefore we need to need to default the value in sql_end to null to avoid return 0
+    sql_end:case when ${last_worked_date_dimension} is not null then ${shift_date} end;;
   }
 
   dimension_group: duration_between_last_worked_shift_and_today {
