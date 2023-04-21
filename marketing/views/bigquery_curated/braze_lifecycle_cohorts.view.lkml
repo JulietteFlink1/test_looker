@@ -58,6 +58,18 @@ view: braze_lifecycle_cohorts {
     hidden: yes
   }
 
+  dimension: amount_of_total_price_gross {
+    type: number
+    sql: ${TABLE}.amount_of_total_price_gross ;;
+    hidden: yes
+  }
+
+  dimension: amount_of_control_total_price_gross {
+    type: number
+    sql: ${TABLE}.amount_of_control_total_price_gross ;;
+    hidden: yes
+  }
+
   dimension: number_of_unique_customers_visited {
     type: number
     sql: ${TABLE}.number_of_unique_customers_visited ;;
@@ -524,8 +536,8 @@ view: braze_lifecycle_cohorts {
   # Step 1: Create Overall Metric
   measure: sum_of_amount_of_gmv_gross {
     group_label: "* Cohort Performance *"
-    label: "SUM GMV"
-    description: ""
+    label: "SUM GMV (Gross)"
+    description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     type: sum
     sql: ${amount_of_gmv_gross} ;;
   }
@@ -567,8 +579,8 @@ view: braze_lifecycle_cohorts {
   # Step 4: Overall incrementality: Difference between Variant per user and control per user
   measure: incrementality_of_share_of_amount_of_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, pp) in GMV"
-    description: "Difference in GMV for variant group compared to GMV in control group"
+    label: "Incrementality (Absolute, pp) in GMV (Gross)"
+    description: "Difference in Gross GMV for variant group compared to Gross GMV in control group"
     type: number
     sql: (${share_of_variant_amount_of_gmv} - ${share_of_control_amount_of_gmv}) * 100 ;;
     value_format_name: decimal_2
@@ -577,8 +589,8 @@ view: braze_lifecycle_cohorts {
   # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
   measure: incremental_lift_of_share_of_amount_of_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Relative, %) in GMV"
-    description: "% increase in share of GMV in variant group compared to GMV in control group"
+    label: "Incrementality (Relative, %) in GMV (Gross)"
+    description: "% increase in share of Gross GMV in variant group compared to Gross GMV in control group"
     type: number
     sql: safe_divide((${share_of_variant_amount_of_gmv} - ${share_of_control_amount_of_gmv}),
       ${share_of_control_amount_of_gmv}) ;;
@@ -588,8 +600,8 @@ view: braze_lifecycle_cohorts {
   # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
   measure: absolute_incrementality_of_share_of_amount_of_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, #) in GMV"
-    description: "Absolute sum of GMV in variant group that were incrementally resulted by canvas efforts"
+    label: "Incrementality (Absolute, #) in GMV (Gross)"
+    description: "Absolute sum of Gross GMV in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_variant_amount_of_gmv_gross} * safe_divide((${share_of_variant_amount_of_gmv} - ${share_of_control_amount_of_gmv}),
       ${share_of_control_amount_of_gmv}) ;;
@@ -601,11 +613,19 @@ view: braze_lifecycle_cohorts {
       # Step 1: Create Overall Metric
     measure: sum_of_amount_of_cart_discount_gross {
       group_label: "* Cohort Performance *"
-      label: "SUM Cart Discounts"
-      description: ""
+      label: "SUM Cart Discounts (Gross)"
+      description: "Sum of Cart Discounts Gross (Discount Code applied at a checkout). Includes delivery discounts."
       type: sum
       sql: ${amount_of_cart_discount_gross} ;;
     }
+
+  measure: sum_of_amount_of_cart_discount_gross_per_order {
+    group_label: "* Cohort Performance *"
+    label: "SUM Cart Discounts (Gross) per Order"
+    description: "Sum of Cart Discounts Gross per Order"
+    type: number
+    sql: ${sum_of_amount_of_cart_discount_gross}/${sum_of_number_of_unique_orders} ;;
+  }
 
     # Step 2: Create Overall Variant/Control Metrics
     measure: sum_of_variant_amount_of_cart_discount_gross {
@@ -644,8 +664,8 @@ view: braze_lifecycle_cohorts {
     # Step 4: Overall incrementality: Difference between Variant per user and control per user
     measure: incrementality_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Absolute, pp) in Cart Discounts per Order"
-      description: "Difference in Cart Discounts per Order for variant group compared to Cart Discounts in control group"
+      label: "Incrementality (Absolute, pp) in Cart Discounts (Gross) per Order"
+      description: "Difference in Cart Discounts Gross per Order for variant group compared to Cart Discounts Gross in control group"
       type: number
       sql: (${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}) * 100 ;;
       value_format_name: decimal_2
@@ -654,8 +674,8 @@ view: braze_lifecycle_cohorts {
     # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
     measure: incremental_lift_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Relative, %) in Cart Discounts per Order"
-      description: "% increase in share of Cart Discounts per Order in variant group compared to Cart Discounts in control group"
+      label: "Incrementality (Relative, %) in Cart Discounts (Gross) per Order"
+      description: "% increase in share of Cart Discounts Gross per Order in variant group compared to Cart Discounts Gross in control group"
       type: number
       sql: safe_divide((${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}),
         ${share_of_control_amount_of_cart_discount_per_order}) ;;
@@ -665,8 +685,8 @@ view: braze_lifecycle_cohorts {
     # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
     measure: absolute_incrementality_of_share_of_amount_of_cart_discount {
       group_label: "* Cohort Performance *"
-      label: "Incrementality (Absolute, #) in Cart Discounts per Order"
-      description: "Absolute sum of Cart Discounts per Order in variant group that were incrementally resulted by canvas efforts"
+      label: "Incrementality (Absolute, #) in Cart Discounts (Gross) per Order"
+      description: "Absolute sum of Cart Discounts Gross per Order in variant group that were incrementally resulted by canvas efforts"
       type: number
       sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}),
         ${share_of_control_amount_of_cart_discount_per_order}) ;;
@@ -674,6 +694,15 @@ view: braze_lifecycle_cohorts {
     }
 
   # =========  SUM of Discounts & SUM of Discounts per GMV =========
+  # Step 1: Create Overall Metric
+
+  measure: sum_of_amount_of_cart_discount_gross_per_gmv {
+    group_label: "* Cohort Performance *"
+    label: "SUM Cart Discounts (Gross) per GMV"
+    description: "Sum of Cart Discounts Gross per GMV"
+    type: number
+    sql: ${sum_of_amount_of_cart_discount_gross}/${sum_of_amount_of_gmv_gross} ;;
+  }
 
   # Step 3: Create Variant/Control per User Metrics
   measure: share_of_variant_amount_of_cart_discount_per_gmv {
@@ -691,8 +720,8 @@ view: braze_lifecycle_cohorts {
   # Step 4: Overall incrementality: Difference between Variant per user and control per user
   measure: incrementality_of_amount_of_cart_discount_per_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, pp) in Cart Discounts per GMV"
-    description: "Difference in Cart Discounts per GMV for variant group compared to Cart Discounts in control group"
+    label: "Incrementality (Absolute, pp) in Cart Discounts (Gross) per GMV"
+    description: "Difference in Cart Discounts Gross per GMV for variant group compared to Cart Discounts Gross per GMV in control group"
     type: number
     sql: (${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}) * 100 ;;
     value_format_name: decimal_2
@@ -701,8 +730,8 @@ view: braze_lifecycle_cohorts {
   # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
   measure: incremental_lift_of_amount_of_cart_discount_per_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Relative, %) in Cart Discounts per GMV"
-    description: "% increase in share of Cart Discounts per GMV in variant group compared to Cart Discounts in control group"
+    label: "Incrementality (Relative, %) in Cart Discounts (Gross) per GMV"
+    description: "% increase in share of Cart Discounts Gross per GMV in variant group compared to Cart Discounts Gross per GMV in control group"
     type: number
     sql: safe_divide((${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}),
       ${share_of_control_amount_of_cart_discount_per_gmv}) ;;
@@ -712,8 +741,8 @@ view: braze_lifecycle_cohorts {
   # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
   measure: absolute_incrementality_of_amount_of_cart_discount_per_gmv {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, #) in Cart Discounts per GMV"
-    description: "Absolute sum of Cart Discounts per GMV in variant group that were incrementally resulted by canvas efforts"
+    label: "Incrementality (Absolute, #) in Cart Discounts (Gross) per GMV"
+    description: "Absolute sum of Cart Discounts Gross per GMV in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}),
       ${share_of_control_amount_of_cart_discount_per_gmv}) ;;
@@ -725,8 +754,8 @@ view: braze_lifecycle_cohorts {
   # Step 1: Create Overall Metric
   measure: avg_order_value {
     group_label: "* Cohort Performance *"
-    label: "AVG Order Value"
-    description: ""
+    label: "AVG Order Value (Gross)"
+    description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
     type: number
     sql: ${sum_of_amount_of_gmv_gross}/${sum_of_number_of_unique_orders} ;;
   }
@@ -745,23 +774,13 @@ view: braze_lifecycle_cohorts {
  }
 
   # Step 3: Create Variant/Control per User Metrics
-  measure: share_of_variant_avg_order_value {
-    hidden: no
-    type: number
-    sql: safe_divide(${variant_avg_order_value},${sum_of_number_of_unique_variant_users});;
-  }
-
-  measure: share_of_control_avg_order_value {
-    hidden: no
-    type: number
-    sql: safe_divide(${control_avg_order_value},${sum_of_number_of_unique_control_users});;
-  }
+   #Not needed in this case
 
   # Step 4: Overall incrementality: Difference between Variant per user and control per user
   measure: incrementality_of_share_of_amount_of_average_order_value {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, pp) in AOV"
-    description: "Difference in Average Order Value for variant group compared to Average Order Value in control group"
+    label: "Incrementality (Absolute, pp) in AOV (Gross)"
+    description: "Difference in Gross Average Order Value for variant group compared to Gross Average Order Value in control group"
     type: number
     sql: (${variant_avg_order_value} - ${control_avg_order_value}) * 100 ;;
     value_format_name: decimal_2
@@ -770,8 +789,8 @@ view: braze_lifecycle_cohorts {
   # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
   measure: incremental_lift_of_share_of_amount_of_average_order_value {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Relative, %) in AOV"
-    description: "% increase in share of Average Order Value in variant group compared to Average Order Value in control group"
+    label: "Incrementality (Relative, %) in AOV (Gross)"
+    description: "% increase in share of Gross Average Order Value in variant group compared to Gross Average Order Value in control group"
     type: number
     sql: safe_divide((${variant_avg_order_value} - ${control_avg_order_value}),
       ${control_avg_order_value}) ;;
@@ -781,11 +800,96 @@ view: braze_lifecycle_cohorts {
   # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
   measure: absolute_incrementality_of_share_of_amount_of_average_order_value {
     group_label: "* Cohort Performance *"
-    label: "Incrementality (Absolute, #) in AOV"
-    description: "Absolute sum of Average Order Value in variant group that were incrementally resulted by canvas efforts"
+    label: "Incrementality (Absolute, #) in AOV (Gross)"
+    description: "Absolute sum of Gross Average Order Value in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${variant_avg_order_value} * safe_divide((${variant_avg_order_value} - ${control_avg_order_value}),
       ${control_avg_order_value}) ;;
+    value_format_name: decimal_2
+  }
+
+  # =========  AIV (Average Item Value)  =========
+
+  # Step 1: Create Overall Metric
+  measure: sum_of_amount_of_total_price_gross {
+    hidden: no
+    type: sum
+    sql: ${amount_of_total_price_gross} ;;
+  }
+
+  measure: average_item_value {
+    group_label: "* Cohort Performance *"
+    label: "AVG Item Value (Gross)"
+    description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
+    type: number
+    sql: ${sum_of_amount_of_total_price_gross}/${sum_of_number_of_unique_orders} ;;
+  }
+
+  # Step 2: Create Overall Variant/Control Metrics
+  measure: sum_of_variant_amount_of_total_price_gross {
+    hidden: no
+    type: sum
+    sql: ${amount_of_total_price_gross};;
+    filters: {
+      field: is_control_group
+      value: "No"
+    }
+  }
+
+  measure: sum_of_control_amount_of_total_price_gross {
+    hidden: no
+    type: sum
+    sql: ${amount_of_control_total_price_gross};;
+    filters: {
+      field: is_control_group
+      value: "No"
+    }
+  }
+
+  measure: variant_avg_item_value {
+    hidden: no
+    type: number
+    sql: NULLIF(${sum_of_variant_amount_of_total_price_gross},0)/NULLIF(${sum_of_number_of_unique_variant_orders},0);;
+  }
+
+  measure: control_avg_item_value {
+    hidden: no
+    type: number
+    sql: NULLIF(${sum_of_control_amount_of_total_price_gross},0)/NULLIF(${sum_of_number_of_unique_control_orders},0);;
+  }
+
+  # Step 3: Create Variant/Control per User Metrics
+  #Not needed here as there are averages
+
+  # Step 4: Overall incrementality: Difference between Variant per user and control per user
+  measure: incrementality_of_share_of_amount_of_average_item_value {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, pp) in AIV (Gross)"
+    description: "Difference in Gross Average Item Value for variant group compared to Gross Average Item Value in control group"
+    type: number
+    sql: (${variant_avg_item_value} - ${control_avg_item_value}) * 100 ;;
+    value_format_name: decimal_2
+  }
+
+  # Step 5: Percentage Incrementality: Diff between Variant and control (per User) // Control per User
+  measure: incremental_lift_of_share_of_amount_of_average_item_value {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Relative, %) in AIV (Gross)"
+    description: "% increase in share of Gross Average Item Value in variant group compared to Gross Average Item Value in control group"
+    type: number
+    sql: safe_divide((${variant_avg_item_value} - ${control_avg_item_value}),
+      ${control_avg_item_value}) ;;
+    value_format_name: percent_2
+  }
+
+  # Step 6: Absolute Incrementality: % Uplift in Variant per User mutliplied by the raw variant amount.
+  measure: absolute_incrementality_of_share_of_amount_of_average_item_value {
+    group_label: "* Cohort Performance *"
+    label: "Incrementality (Absolute, #) in AIV (Gross)"
+    description: "Absolute sum of Gross Average Item Value in variant group that were incrementally resulted by canvas efforts"
+    type: number
+    sql: ${variant_avg_item_value} * safe_divide((${variant_avg_item_value} - ${control_avg_item_value}),
+      ${control_avg_item_value}) ;;
     value_format_name: decimal_2
   }
 
