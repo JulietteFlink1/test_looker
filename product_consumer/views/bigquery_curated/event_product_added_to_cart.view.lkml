@@ -257,18 +257,34 @@ view: event_product_added_to_cart {
 # ======= Dates / Timestamps =======
 
   dimension_group: event {
+    hidden: yes
     group_label: "Date / Timestamp"
-    label: "Event"
+    label: "Event Date"
     description: "Timestamp of when an event happened"
     type: time
     timeframes: [
       time,
       date,
       week,
+      month,
       quarter
     ]
     sql: ${TABLE}.event_timestamp ;;
     datatype: timestamp
+  }
+
+  dimension: event_date_dynamic {
+    label: "Event Date (Dynamic)"
+    group_label: "Date / Timestamp"
+    description: "Timestamp of when an event happened. Granularity (date, week, month) should be set using the Generic Date Granularity filter"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${event_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
   }
 
 # ======= HIDDEN Dimension ======= #
