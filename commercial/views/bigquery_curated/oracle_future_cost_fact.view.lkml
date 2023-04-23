@@ -3,7 +3,6 @@ explore: oracle_future_cost_fact {
   hidden: yes
 
   join: oracle_future_cost_fact__history {
-    view_label: "Oracle Future Cost Fact: History"
     sql: LEFT JOIN UNNEST(${oracle_future_cost_fact.history}) as oracle_future_cost_fact__history ;;
     relationship: one_to_many
   }
@@ -11,7 +10,9 @@ explore: oracle_future_cost_fact {
 
 view: oracle_future_cost_fact {
 
+  view_label: "Oracle Spot Cost"
   sql_table_name: `flink-data-prod.curated.oracle_future_cost_fact` ;;
+  required_access_grants: [can_access_pricing_margins]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Generic fields
@@ -49,6 +50,7 @@ view: oracle_future_cost_fact {
   dimension: number_of_historical_changes {
     type: number
     sql: ${TABLE}.number_of_historical_changes ;;
+    group_label: "Historical Data"
   }
 
   dimension: sku {
@@ -86,7 +88,7 @@ view: oracle_future_cost_fact {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -   Current Status
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  dimension_group: active_date {
+  dimension_group: active {
     label: "Active"
     type: time
     description: "Date that the item/supplier/country/location combinations costs becomes active."
@@ -98,7 +100,7 @@ view: oracle_future_cost_fact {
     group_label: "Current State"
   }
 
-  dimension_group: calculation_date {
+  dimension_group: calculation {
     label: "Calculation"
     type: time
     description: "Date when the cost was last calculated."
@@ -110,7 +112,7 @@ view: oracle_future_cost_fact {
     group_label: "Current State"
   }
 
-  dimension_group: valid_from_timestamp {
+  dimension_group: valid_from {
     label: "Valid From"
     type: time
     description: "This timestamp defines from which time the data of a given row is valid"
@@ -122,7 +124,7 @@ view: oracle_future_cost_fact {
     group_label: "Current State"
   }
 
-  dimension_group: valid_to_timestamp {
+  dimension_group: valid_to {
     label: "Valid To"
     type: time
     description: "This timestamp defines until which time the data of a given row is valid"
@@ -256,22 +258,16 @@ view: oracle_future_cost_fact {
 
 # The name of this view in Looker is "Oracle Future Cost Fact History"
 view: oracle_future_cost_fact__history {
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
 
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
+  view_label: "Oracle Spot Cost"
+  required_access_grants: [can_access_pricing_margins]
 
   dimension_group: active {
     type: time
     description: "Date that the item/supplier/country/location combinations costs becomes active."
+    group_label: "Historical Data"
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -283,59 +279,61 @@ view: oracle_future_cost_fact__history {
   # This dimension will be called "Amt Base Cost Net" in Explore.
 
   dimension: amt_base_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+
     type: number
+    label: "Base Cost (Net)"
     description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    group_label: "Historical Data"
     sql: amt_base_cost_net ;;
   }
 
-  # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
-  # measures for this dimension, but you can also add measures of many different aggregates.
-  # Click on the type parameter to see all the options in the Quick Help panel on the right.
-
-  measure: total_amt_base_cost_net {
-    type: sum
-    sql: ${amt_base_cost_net} ;;
-  }
-
-  measure: average_amt_base_cost_net {
-    type: average
-    sql: ${amt_base_cost_net} ;;
-  }
-
   dimension: amt_dead_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+
     type: number
+    label: "Dead Net Net Cost (Net)"
     description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    group_label: "Historical Data"
     sql: amt_dead_net_net_cost_net ;;
   }
 
   dimension: amt_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+
     type: number
+    label: "Net Cost (Net)"
     description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    group_label: "Historical Data"
     sql: amt_net_cost_net ;;
   }
 
   dimension: amt_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+
     type: number
+    label: "Net Net Cost (Net)"
     description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    group_label: "Historical Data"
     sql: amt_net_net_cost_net ;;
   }
 
   dimension: amt_pricing_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+
     type: number
+    label: "Pricing Cost (Net)"
     description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    group_label: "Historical Data"
     sql: amt_pricing_cost_net ;;
   }
 
   dimension_group: calculation {
     type: time
     description: "Date when the cost was last calculated."
+    group_label: "Historical Data"
     timeframes: [
-      raw,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     convert_tz: no
     datatype: date
@@ -344,37 +342,46 @@ view: oracle_future_cost_fact__history {
 
   dimension: cost_change_id {
     type: number
+    label: "Cost Change ID"
     description: "Identifies the cost change that affected the costs for the sku/supplier/country/location/active date combination."
+    group_label: "Historical Data"
     sql: cost_change_id ;;
   }
 
   dimension: csn_number {
     type: number
+    label: "CSN Number"
     description: "This is an Oracle standard field that refers to the commit number of an Oracle update or insert event. Every change to a table in Oracle is linked to a specific csn commit number"
+    group_label: "Historical Data"
     sql: csn_number ;;
+    hidden: yes
   }
 
   dimension: default_cost_type {
     type: string
     description: "Indicates the cost used to compute values in cost-related fields for this table. Valid values are, Base Cost (BC) and Negotiated Item Cost (NIC)."
+    group_label: "Historical Data"
     sql: default_cost_type ;;
   }
 
   dimension: default_cost_type_id {
     type: string
     description: "Indicates the cost used to compute values in cost-related fields for this table. Valid values are, Base Cost (BC) and Negotiated Item Cost (NIC)."
+    group_label: "Historical Data"
     sql: default_cost_type_id ;;
   }
 
   dimension: is_active_date_start_date {
     type: yesno
     description: "True, if this record in future_cost is the start date of a cost event or holds. False, if this record in future_cost is the reset date of a cost event."
+    group_label: "Historical Data"
     sql: is_active_date_start_date ;;
   }
 
   dimension: last_dml_type {
     type: string
     description: "This is an Oracle standard field that indicates the kind of update, that was performed to a table row (I=Insert, U=Update, D=Delete, NULL=initial data load)"
+    group_label: "Historical Data"
     sql: last_dml_type ;;
   }
 
@@ -384,6 +391,7 @@ view: oracle_future_cost_fact__history {
   dimension: oracle_future_cost_fact__history {
     type: string
     description: "A bigquery array of structs object, that provides an ordered list of all modifications of a given table in Oracle."
+    group_label: "Historical Data"
     hidden: yes
     sql: oracle_future_cost_fact__history ;;
   }
@@ -397,35 +405,28 @@ view: oracle_future_cost_fact__history {
   dimension: reclassification_number {
     type: number
     description: "Identifies the reclassification that affected the costs for the sku/supplier/country/location/active date combination."
+    group_label: "Historical Data"
     sql: reclassification_number ;;
   }
 
-  dimension_group: valid_from_timestamp {
+  dimension_group: valid_from {
     type: time
     description: "This timestamp defines from which time the data of a given row is valid"
+    group_label: "Historical Data"
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: valid_from_timestamp ;;
   }
 
-  dimension_group: valid_to_timestamp {
+  dimension_group: valid_to {
     type: time
     description: "This timestamp defines until which time the data of a given row is valid"
+    group_label: "Historical Data"
     timeframes: [
-      raw,
       time,
-      date,
-      week,
-      month,
-      quarter,
-      year
+      date
     ]
     sql: valid_to_timestamp ;;
   }
