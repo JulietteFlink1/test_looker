@@ -11,6 +11,7 @@
 include: "/**/user_attributes_jobs_to_be_done_last28days.view.lkml"
 include: "/**/user_attributes_lifecycle_last28days.view.lkml"
 include: "/**/user_attributes_lifecycle_first28days.view.lkml"
+include: "/**/global_filters_and_parameters.view.lkml"
 # include: "/**/customers_metrics.view.lkml"
 
 explore: consumer_user_attributes {
@@ -50,11 +51,14 @@ explore: consumer_user_attributes {
   join: user_attributes_jobs_to_be_done_last28days {
     view_label: "* Customers JTBD Last 28 Days *"
     sql_on: ${user_attributes_lifecycle_last28days.customer_uuid} = ${user_attributes_jobs_to_be_done_last28days.customer_uuid}
-            and {% condition user_attributes_jobs_to_be_done_last28days.execution_date %} user_attributes_jobs_to_be_done_last28days.execution_date {% endcondition %};;
+            and {% condition global_filters_and_parameters.datasource_filter %} user_attributes_jobs_to_be_done_last28days.execution_date {% endcondition %};;
 
     relationship: one_to_one
     type: left_outer
   }
+
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${user_attributes_jobs_to_be_done_last28days.execution_date} {% endcondition %}
+  and {% condition global_filters_and_parameters.datasource_filter %} ${user_attributes_lifecycle_last28days.execution_date} {% endcondition %};;
 
   access_filter: {
     field: user_attributes_lifecycle_last28days.first_country_iso
@@ -63,9 +67,13 @@ explore: consumer_user_attributes {
 
   always_filter: {
     filters: [
-      user_attributes_lifecycle_last28days.execution_date: "yesterday",
-      user_attributes_jobs_to_be_done_last28days.execution_date: "yesterday"
-
+      global_filters_and_parameters.datasource_filter: "yesterday",
+      global_filters_and_parameters.timeframe_picker: "Date"
     ]
   }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+  relationship: one_to_one
+}
 }

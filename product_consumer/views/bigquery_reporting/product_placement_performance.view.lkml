@@ -161,6 +161,7 @@ view: product_placement_performance {
   # ======= Dates / Timestamps =======
 
   dimension_group: event {
+    hidden: yes
     group_label: "Date Dimensions"
     label: "Event"
     description: "Timestamp of when an event happened"
@@ -173,6 +174,20 @@ view: product_placement_performance {
     ]
     sql: ${TABLE}.event_date ;;
     datatype: date
+  }
+
+  dimension: event_date_dynamic {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    description: "Timestamp of when an event happened"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${event_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
   }
 
     # ======= Event Flags ======= #
