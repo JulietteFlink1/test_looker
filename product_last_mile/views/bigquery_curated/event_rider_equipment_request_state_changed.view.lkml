@@ -173,18 +173,18 @@ view: event_rider_equipment_request_state_changed {
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "returned"]
   }
-  measure: total_number_delivered_events {
+  measure: total_number_assigned_events {
     group_label: "Measures"
-    label: "# Delivered Events"
-    description: "Total number of equipment delivered events. Equipment is considered delivered when the bundle arrived at the hub."
+    label: "# Assigned Events"
+    description: "Total number of equipment assigned & delivered (deprecated) events. Equipment is considered assigned the gear is handed over to the rider"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
-    filters: [rider_equipment_state: "delivered"]
+    filters: [rider_equipment_state: "delivered , assigned" ]
   }
   measure: total_number_claimed_events {
     group_label: "Measures"
     label: "# Claimed Events"
-    description: "Total number of equipment claimed events. Equipment is considered claimed once the rider claimed the bundle."
+    description: "Total number of equipment claimed events. Equipment is considered claimed once the rider claimed the bundle without damages and correct size."
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "claimed"]
@@ -229,12 +229,12 @@ view: event_rider_equipment_request_state_changed {
     sql:  ${total_number_rejected_events}/nullif(${total_number_requested_events},0) ;;
     value_format_name: percent_1
   }
-  measure: delivered_equipment_rate {
+  measure: assigned_equipment_rate {
     group_label: "% Rate Measures"
     label: "% Equipment Requests Delivered"
     description: "% of Equipment Requests Delivered"
     type: number
-    sql:  ${total_number_delivered_events}/nullif(${total_number_requested_events},0) ;;
+    sql:  ${total_number_assigned_events}/nullif(${total_number_requested_events},0) ;;
     value_format_name: percent_1
   }
 }
