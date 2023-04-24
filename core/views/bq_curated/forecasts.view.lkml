@@ -495,7 +495,7 @@ view: forecasts {
     description: "Missed orders divided by Flink Delivered orders, percentage."
     type: number
     sql: ${number_of_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
-    value_format_name: percent_1
+    value_format_name: percent_2
   }
 
   measure: pct_last_mile_missed_orders{
@@ -504,7 +504,7 @@ view: forecasts {
     description: "Last Mile Missed orders divided by Flink Delivered orders, percentage."
     type: number
     sql: ${sum_number_of_last_mile_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
-    value_format_name: percent_1
+    value_format_name: percent_2
   }
 
   measure: number_of_missed_orders_forced_closure {
@@ -540,7 +540,7 @@ view: forecasts {
     description: "Last Mile Missed orders (forced closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${sum_number_of_last_mile_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
-    value_format_name: percent_1
+    value_format_name: percent_2
   }
 
   measure: number_of_missed_orders_planned_closure {
