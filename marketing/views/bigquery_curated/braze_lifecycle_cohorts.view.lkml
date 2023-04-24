@@ -539,6 +539,7 @@ view: braze_lifecycle_cohorts {
     label: "SUM GMV (Gross)"
     description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
     type: sum
+    value_format_name: decimal_0
     sql: ${amount_of_gmv_gross} ;;
   }
 
@@ -624,7 +625,7 @@ view: braze_lifecycle_cohorts {
     label: "SUM Cart Discounts (Gross) per Order"
     description: "Sum of Cart Discounts Gross per Order"
     type: number
-    sql: ${sum_of_amount_of_cart_discount_gross}/${sum_of_number_of_unique_orders} ;;
+    sql: safe_divide(${sum_of_amount_of_cart_discount_gross},${sum_of_number_of_unique_orders}) ;;
   }
 
     # Step 2: Create Overall Variant/Control Metrics
@@ -701,7 +702,7 @@ view: braze_lifecycle_cohorts {
     label: "SUM Cart Discounts (Gross) per GMV"
     description: "Sum of Cart Discounts Gross per GMV"
     type: number
-    sql: ${sum_of_amount_of_cart_discount_gross}/${sum_of_amount_of_gmv_gross} ;;
+    sql: safe_divide(${sum_of_amount_of_cart_discount_gross},${sum_of_amount_of_gmv_gross}) ;;
   }
 
   # Step 3: Create Variant/Control per User Metrics
@@ -764,13 +765,13 @@ view: braze_lifecycle_cohorts {
   measure: variant_avg_order_value {
     hidden: no
     type: number
-    sql: NULLIF(${sum_of_variant_amount_of_gmv_gross},0)/NULLIF(${sum_of_number_of_unique_variant_orders},0);;
+    sql: safe_divide(${sum_of_variant_amount_of_gmv_gross},(${sum_of_number_of_unique_variant_orders});;
   }
 
   measure: control_avg_order_value {
     hidden: no
     type: number
-    sql: NULLIF(${sum_of_control_amount_of_gmv_gross},0)/NULLIF(${sum_of_number_of_unique_control_orders},0);;
+    sql: safe_divide(${sum_of_control_amount_of_gmv_gross},${sum_of_number_of_unique_control_orders});;
  }
 
   # Step 3: Create Variant/Control per User Metrics
