@@ -360,7 +360,7 @@ view: orderline {
 
   dimension: is_sampled_item {
     label: "Is Sampled Item"
-    description: "TRUE if the line-item of an order is a sponsored product. by the product manufacturer."
+    description: "TRUE if the line-item of an order is a sponsored product by the product manufacturer."
     group_label: "> Product Attributes"
     type: yesno
     sql: ${TABLE}.is_sampled_item ;;
