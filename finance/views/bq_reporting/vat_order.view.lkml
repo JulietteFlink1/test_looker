@@ -2213,6 +2213,36 @@ view: vat_order {
     sql: ${amt_vat_refund_items_total} ;;
   }
 
+#####################  Refunds  ##########################
+
+
+  measure: sum_refund_amount_total_sales_net {
+    group_label: "> Refunds Total Sales (excl. Tips and Deposit)"
+    description: "Sum of Items, Delivery Fees and Storage Fee refunds. excl. VAT"
+    label: "SUM Refunds Total Sales (Net)"
+    type: number
+    value_format: "#,##0.00€"
+    sql: ${sum_amt_refund_items_net} + ${sum_amt_refund_delivery_fee_net} + ${sum_amt_refund_storage_fee_net} ;;
+  }
+
+  measure: sum_refund_amount_total_sales_gross {
+    group_label: "> Refunds Total Sales (excl. Tips and Deposit)"
+    label: "SUM Refunds Total Sales (Gross)"
+    description: "Sum of Items, Delivery Fees and Storage Fee refunds. incl. VAT"
+    type: number
+    value_format: "#,##0.00€"
+    sql:${sum_amt_refund_items_gross} + ${sum_amt_refund_delivery_fee_gross} + ${sum_amt_refund_storage_fee_gross}  ;;
+  }
+
+  measure: sum_vat_refund_amount_total_sales {
+    group_label: "> Refunds Total Sales (excl. Tips and Deposit)"
+    label: "SUM VAT Refunds Total Sales"
+    description: "SUM Refunds Total Sales (Gross) - SUM Refunds Total Sales (Net)"
+    type: number
+    value_format: "#,##0.00€"
+    sql: ${sum_refund_amount_total_sales_gross}-${sum_refund_amount_total_sales_net} ;;
+  }
+
   ###### Deposit Refunds
 
   measure: sum_amt_refund_deposit_net {
@@ -2329,7 +2359,7 @@ view: vat_order {
     group_label: "> Total"
     type: sum
     label: "SUM Revenue (Gross) after Refunds & Discounts deduction"
-    description: "Items Gross + DF Gross - Discounts Gross - Refunds Gross"
+    description: "Items Gross + DF Gross + Storage Fees Gross - Discounts Gross - Refunds (excl. rider tip and deposit refunds after 2022-07) Gross."
     value_format: "#,##0.00€"
     sql: ${total_gross} ;;
   }
@@ -2338,7 +2368,7 @@ view: vat_order {
     group_label: "> Total"
     type: sum
     label: "SUM Revenue (Net) after Refunds & Discounts deduction"
-    description: "Items Net + DF Net - Discounts Net - Refunds Net"
+    description: "Items Net + DF Net + Storage Fees Net- Discounts Net - Refunds Net (excl. rider tip and deposit refunds after 2022-07)"
     value_format: "#,##0.00€"
     sql: ${total_net} ;;
   }
