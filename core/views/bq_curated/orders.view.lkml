@@ -3715,12 +3715,13 @@ view: orders {
     value_format: "0.0%"
   }
 
-  measure: share_of_daas_orders_over_all_orders {
+  measure: share_of_daas_orders_over_all_internal_orders {
+    alias: [share_of_daas_orders_over_all_orders]
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "% DaaS Orders"
-    description: "Share of DaaS orders over total number of orders"
+    description: "Share of DaaS orders over total number of internal orders"
     type: number
-    sql: ${cnt_daas_orders} / NULLIF(${cnt_orders}, 0);;
+    sql: ${cnt_daas_orders} / NULLIF(${cnt_internal_orders}, 0);;
     value_format: "0.0%"
   }
 
