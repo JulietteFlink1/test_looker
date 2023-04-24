@@ -81,7 +81,7 @@ view: product_placement_performance {
   dimension: product_price {
     group_label: "Product Dimensions"
     label: "Product Price"
-    description: "Price of the product"
+    description: "Price of the product, as captured by front-end tracking"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
@@ -294,8 +294,8 @@ view: product_placement_performance {
   measure: amt_total_price_net {
     hidden: no
     group_label: "Product Metrics"
-    label: "SUM Item Prices Sold (net)"
-    description: "Sum of all items sold, net value."
+    label: "SUM of Product Prices for items ordered"
+    description: "Sum of all product price, captured by the front-end tracking, for items sold. Assumes QTY is always 1, and will understate total revenue."
     type: sum
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
