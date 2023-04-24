@@ -1,16 +1,11 @@
-# Un-hide and use this explore, or copy the joins into another explore, to get all the fully nested relationships from this view
-explore: oracle_future_cost_fact {
-  hidden: yes
+# Owner: Andreas Stueber
+# Created: 2023.04.24
+# Purpose: Provide the Commercial team the cost-data (also for future dates) based on the oracle_future_cost_fact
 
-  join: oracle_future_cost_fact__history {
-    sql: LEFT JOIN UNNEST(${oracle_future_cost_fact.history}) as oracle_future_cost_fact__history ;;
-    relationship: one_to_many
-  }
-}
 
 view: oracle_future_cost_fact {
 
-  view_label: "Oracle Spot Cost"
+  view_label: "Spot Cost Data"
   sql_table_name: `flink-data-prod.curated.oracle_future_cost_fact` ;;
   required_access_grants: [can_access_pricing_margins]
 
@@ -144,6 +139,7 @@ view: oracle_future_cost_fact {
     description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
     sql: ${TABLE}.current_state.amt_base_cost_net ;;
     group_label: "Current State"
+    value_format_name: eur
   }
 
   dimension: amt_dead_net_net_cost_net {
@@ -154,6 +150,7 @@ view: oracle_future_cost_fact {
     description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
     sql: ${TABLE}.current_state.amt_dead_net_net_cost_net ;;
     group_label: "Current State"
+    value_format_name: eur
   }
 
   dimension: amt_net_cost_net {
@@ -164,6 +161,7 @@ view: oracle_future_cost_fact {
     description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
     sql: ${TABLE}.current_state.amt_net_cost_net ;;
     group_label: "Current State"
+    value_format_name: eur
   }
 
   dimension: amt_net_net_cost_net {
@@ -174,6 +172,7 @@ view: oracle_future_cost_fact {
     description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
     sql: ${TABLE}.current_state.amt_net_net_cost_net ;;
     group_label: "Current State"
+    value_format_name: eur
   }
 
   dimension: amt_pricing_cost_net {
@@ -184,6 +183,7 @@ view: oracle_future_cost_fact {
     description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
     sql: ${TABLE}.current_state.amt_pricing_cost_net ;;
     group_label: "Current State"
+    value_format_name: eur
   }
 
   dimension: cost_change_id {
@@ -259,8 +259,7 @@ view: oracle_future_cost_fact {
 # The name of this view in Looker is "Oracle Future Cost Fact History"
 view: oracle_future_cost_fact__history {
 
-  view_label: "Oracle Spot Cost"
-  required_access_grants: [can_access_pricing_margins]
+  view_label: "Spot Cost Data"
 
   dimension_group: active {
     type: time
@@ -286,6 +285,7 @@ view: oracle_future_cost_fact__history {
     description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
     group_label: "Historical Data"
     sql: amt_base_cost_net ;;
+    value_format_name: eur
   }
 
   dimension: amt_dead_net_net_cost_net {
@@ -296,6 +296,7 @@ view: oracle_future_cost_fact__history {
     description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
     group_label: "Historical Data"
     sql: amt_dead_net_net_cost_net ;;
+    value_format_name: eur
   }
 
   dimension: amt_net_cost_net {
@@ -316,6 +317,7 @@ view: oracle_future_cost_fact__history {
     description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
     group_label: "Historical Data"
     sql: amt_net_net_cost_net ;;
+    value_format_name: eur
   }
 
   dimension: amt_pricing_cost_net {
@@ -326,6 +328,7 @@ view: oracle_future_cost_fact__history {
     description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
     group_label: "Historical Data"
     sql: amt_pricing_cost_net ;;
+    value_format_name: eur
   }
 
   dimension_group: calculation {
