@@ -19,7 +19,7 @@ view: product_categories {
   dimension: category_description {
     label: "Description)"
     type: string
-    description: "Description of a Commerce Tools category"
+    description: "Description of a Commerce Tools product category"
     sql: ${TABLE}.category_description ;;
   }
 
@@ -59,7 +59,7 @@ view: product_categories {
   dimension: category_meta_description {
     label: "Meta Description"
     type: string
-    description: "Meta description of a Commerce Tools category"
+    description: "Meta description of a Commerce Tools product category"
     sql: ${TABLE}.category_meta_description ;;
   }
 
@@ -106,7 +106,7 @@ view: product_categories {
     label: "Description (Parent Category)"
     group_label: "Parent Category"
     type: string
-    description: "Description of a Commerce Tools category"
+    description: "Description of a Commerce Tools product category"
     sql: ${TABLE}.parent_category_description ;;
   }
 
@@ -138,7 +138,7 @@ view: product_categories {
     label: "Meta Description (Parent Category)"
     group_label: "Parent Category"
     type: string
-    description: "Meta description of a Commerce Tools category"
+    description: "Meta description of a Commerce Tools product category"
     sql: ${TABLE}.parent_category_meta_description ;;
   }
 
