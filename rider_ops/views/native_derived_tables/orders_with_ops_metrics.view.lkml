@@ -19,8 +19,12 @@ view: orders_with_ops_metrics {
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
       column: avg_waiting_for_picker_time {}
-      column: avg_waiting_for_rider_time {}
-      column: avg_withheld_from_rider_time_minutes {}
+      column: avg_waiting_for_rider_decision_time {}
+      column: avg_waiting_for_available_rider_time_minutes {}
+      column: avg_waiting_for_trip_readiness_time_minutes {}
+      column: avg_rider_preparing_for_trip_time_minutes {}
+      column: avg_number_of_offered_to_riders_events {}
+      column: avg_number_of_withheld_from_riders_events {}
       column: avg_withheld_from_picking_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
@@ -392,19 +396,52 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_waiting_for_rider_time {
-    alias: [avg_rider_queuing_time]
-    group_label: "> Operations / Logistics"
-    label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
-    value_format_name: decimal_1
+  measure: avg_waiting_for_rider_decision_time {
+    alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting for Rider Decision Time"
+    description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
+    value_format_name: decimal_1
   }
 
-  measure: avg_withheld_from_rider_time_minutes {
-    group_label: "> Operations / Logistics"
-    label: "AVG Withheld From Rider Time"
-    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+  measure: avg_waiting_for_available_rider_time_minutes {
+    alias: [avg_withheld_from_rider_time_minutes]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Available Rider Time"
+    description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_trip_readiness_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Available Rider Time"
+    description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_preparing_for_trip_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Preparing For Trip Time"
+    description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_offered_to_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Offered to Riders events orders had. Multiple events might mean offers were rejected by riders or expired."
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_withheld_from_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
     type: average
     value_format_name: decimal_1
   }
@@ -600,7 +637,7 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_1
     sql:
       case
-        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_time}
+        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_decision_time}
         when {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_waiting_for_picker_time}
         else null
       end ;;
@@ -640,7 +677,7 @@ view: orders_with_ops_metrics {
           when {% parameter kpi_1 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
           when {% parameter kpi_1 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
           when {% parameter kpi_1 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
-          when {% parameter kpi_1 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          when {% parameter kpi_1 %} = 'AVG Waiting for Rider Decision Time' then ${avg_waiting_for_rider_decision_time}
           else null
       end ;;
   }
@@ -660,7 +697,7 @@ view: orders_with_ops_metrics {
           when {% parameter kpi_2 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
           when {% parameter kpi_2 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
           when {% parameter kpi_2 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
-          when {% parameter kpi_2 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          when {% parameter kpi_2 %} = 'AVG Waiting for Rider Decision Time' then ${avg_waiting_for_rider_decision_time}
           else null
       end ;;
   }
@@ -678,7 +715,7 @@ view: orders_with_ops_metrics {
     allowed_value: { value: "AVG Delivery Distance" }
     allowed_value: { value: "AVG Riding to Customer Time" }
     allowed_value: { value: "AVG # Daily Orders" }
-    allowed_value: { value: "AVG Waiting for Rider Time" }
+    allowed_value: { value: "AVG Waiting for Rider Decision Time" }
   }
 
   parameter: kpi_2 {
@@ -690,7 +727,7 @@ view: orders_with_ops_metrics {
     allowed_value: { value: "AVG Delivery Distance" }
     allowed_value: { value: "AVG Riding to Customer Time" }
     allowed_value: { value: "AVG # Daily Orders" }
-    allowed_value: { value: "AVG Waiting for Rider Time" }
+    allowed_value: { value: "AVG Waiting for Rider Decision Time" }
   }
 
 }
