@@ -141,7 +141,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# Click & Collect Orders"
     description: "Count of Click & Collect Orders"
-    hidden:  yes
+    hidden:  no
     type: sum
     value_format_name: decimal_0
     }
@@ -150,7 +150,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# DaaS Orders"
     description: "Count of Delivery as a Service Orders (e.g. Uber Direct)"
-    hidden:  yes
+    hidden:  no
     type: sum
     value_format_name: decimal_0
   }
