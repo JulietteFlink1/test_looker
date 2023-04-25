@@ -591,7 +591,7 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-Related)"
-    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures)."
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures). Including DaaS orders."
     type: sum
     sql: ${TABLE}.number_of_actual_orders;;
     value_format_name: decimal_0
@@ -600,7 +600,7 @@ view: forecasts {
   measure: number_of_cancelled_orders {
     group_label: "> Order Measures"
     label: "# Cancelled Orders (Forecast-Related)"
-    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
+    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons. Including DaaS orders."
     type: sum
     sql: ${number_of_cancelled_orders_dimension} ;;
     value_format_name: decimal_0
@@ -609,7 +609,7 @@ view: forecasts {
   measure: number_of_cancelled_and_missed_orders {
     group_label: "> Order Measures"
     label: "# Cancelled and Last Mile Missed Orders (Forecast-Related)"
-    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures."
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures. Including DaaS orders."
     type: number
     sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
