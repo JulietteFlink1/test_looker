@@ -21,7 +21,8 @@ explore: user_attributes_lifecycle_last28days {
 
   always_filter: {
     filters: [
-      global_filters_and_parameters.datasource_filter: "last 7 days"
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.timeframe_picker: "Date"
     ]
   }
 

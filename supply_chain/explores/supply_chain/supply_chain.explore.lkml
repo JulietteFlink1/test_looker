@@ -384,8 +384,9 @@ explore: supply_chain {
 
     sql_on:
            ${key_value_items.sku} =  ${products_hub_assignment.sku}
-           -- get only the most recent KVIs (they are upadted every Monday)
-       and ${key_value_items.kvi_date} >= current_date() - 6
+       and ${key_value_items.country_iso} =  ${products_hub_assignment.country_iso}
+           -- get only the most recent KVIs (they are upadted every month)
+       and extract(year from ${key_value_items.kvi_date})||extract(month from ${key_value_items.kvi_date}) = extract(year from current_date())||extract(month from current_date())
     ;;
   }
 

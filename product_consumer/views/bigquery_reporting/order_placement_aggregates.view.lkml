@@ -11,6 +11,7 @@ view: order_placement_aggregates {
 # ======= Date Dimensions ======= #
 
   dimension_group: event {
+    hidden: yes
     group_label: "Date Dimensions"
     label: "Event"
     description: "Date when an event happened"
@@ -24,6 +25,22 @@ view: order_placement_aggregates {
     sql: ${TABLE}.event_date ;;
     datatype: date
   }
+
+  dimension: event_date_dynamic {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    description: "Date when an event happened"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${event_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
+  }
+
+
 
 # ======= Device Dimensions ======= #
 
