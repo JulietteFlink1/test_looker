@@ -19,12 +19,12 @@ view: orders {
     ]
   }
 
-  dimension: waiting_for_rider_time_minutes {
-    alias: [acceptance_time, rider_queuing_time]
+  dimension:  waiting_for_rider_decision_time_minutes {
+    alias: [acceptance_time, rider_queuing_time, waiting_for_rider_time_minutes]
     type: number
     group_label: "* Operations / Logistics *"
     hidden: no
-    sql: ${TABLE}.waiting_for_rider_time_minutes ;;
+    sql: ${TABLE}.waiting_for_rider_decision_time_minutes ;;
   }
 
   dimension: google_cycling_time_minutes {
@@ -682,7 +682,7 @@ view: orders {
     description: "Withheld From Picking + Waiting For Picker Time + Pick-Pack Handling Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
+    sql: ${waiting_for_picker_time} + ${waiting_for_rider_decision_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${waiting_for_available_rider_time_minutes},0) + coalesce(${waiting_for_trip_readiness_time_minutes},0);;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -744,14 +744,14 @@ view: orders {
     sql: ${fulfillment_time} ;;
   }
 
-  dimension: waiting_for_rider_time_tier{
-    alias: [acceptance_time_tier, rider_queuing_time_tier]
+  dimension: waiting_for_rider_decision_time_tier{
+    alias: [acceptance_time_tier, rider_queuing_time_tier, waiting_for_rider_time_tier]
     group_label: "* Operations / Logistics *"
     label: "Waiting for Rider Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${waiting_for_rider_time_minutes} ;;
+    sql: ${waiting_for_rider_decision_time_minutes} ;;
   }
 
   dimension: waiting_for_picker_time_tier {
@@ -850,7 +850,7 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${waiting_for_rider_time_minutes} < 0 ;;
+    sql: ${waiting_for_rider_decision_time_minutes} < 0 ;;
   }
 
   dimension: is_waiting_for_rider_time_more_than_30_minute {
@@ -858,7 +858,7 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${waiting_for_rider_time_minutes} > 30 ;;
+    sql: ${waiting_for_rider_decision_time_minutes} > 30 ;;
   }
 
   dimension: is_waiting_for_picker_time_less_than_0_minute {
@@ -1414,12 +1414,29 @@ view: orders {
     sql: ${TABLE}.withheld_from_picking_time_minutes ;;
   }
 
-  dimension: withheld_from_rider_time_minutes {
+  dimension: waiting_for_available_rider_time_minutes {
+    alias: [withheld_from_rider_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "Withheld From Rider Time Minutes"
-    description: "Time between picking completion and order offered to rider"
+    label: "Waiting For Available Rider Time Minutes"
+    description: "Number of minutes an order waited for an available rider in order to be offered."
     type: number
-    sql: ${TABLE}.withheld_from_rider_time_minutes ;;
+    sql: ${TABLE}.waiting_for_available_rider_time_minutes ;;
+  }
+
+  dimension: waiting_for_trip_readiness_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Waiting For Trip Readiness Time Minutes"
+    description: "Number of minutes an order waited for other orders in the stack to be ready."
+    type: number
+    sql: ${TABLE}.waiting_for_trip_readiness_time_minutes ;;
+  }
+
+  dimension: rider_preparing_for_trip_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Preparing For Trip Time Minutes"
+    description: "Total number minutes between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip."
+    type: number
+    sql: ${TABLE}.rider_preparing_for_trip_time_minutes ;;
   }
 
   dimension: at_customer_time_minutes {
@@ -1427,6 +1444,20 @@ view: orders {
     label: "At Customer Time Minutes"
     type: number
     sql: ${TABLE}.at_customer_time_minutes ;;
+  }
+
+  dimension: number_of_offered_to_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "Total number of Offered to Riders events an order had. Multiple events might mean offers were rejected by riders or expired."
+    type: number
+    sql: ${TABLE}.number_of_offered_to_riders_events ;;
+  }
+
+  dimension: number_of_withheld_from_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "Total number of Withheld From Riders events an order had. Multiple events might mean an order's trip changed several times."
+    type: number
+    sql: ${TABLE}.number_of_withheld_from_riders_events ;;
   }
 
   dimension: at_customer_time_minutes_tier_5 {
@@ -1938,12 +1969,49 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_withheld_from_rider_time_minutes {
+  measure: avg_number_of_offered_to_riders_events {
     group_label: "* Operations / Logistics *"
-    label: "AVG Withheld From Rider Time"
-    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Offered to Riders events orders had. Multiple events might mean offers were rejected by riders or expired."
     type: average
-    sql:${withheld_from_rider_time_minutes};;
+    sql: ${number_of_offered_to_riders_events};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_withheld_from_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
+    type: average
+    sql: ${number_of_withheld_from_riders_events};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_available_rider_time_minutes {
+    alias: [avg_withheld_from_rider_time_minutes]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Available Rider Time"
+    description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
+    type: average
+    sql:${waiting_for_available_rider_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_trip_readiness_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Available Rider Time"
+    description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
+    type: average
+    sql:${waiting_for_trip_readiness_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_preparing_for_trip_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Preparing For Trip Time"
+    description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
+    type: average
+    sql:${rider_preparing_for_trip_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2130,14 +2198,13 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_waiting_for_rider_time {
-    alias: [avg_acceptance_time, avg_rider_queuing_time]
+  measure: avg_waiting_for_rider_decision_time {
+    alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
-    hidden:  no
+    label: "AVG Waiting for Rider Decision Time"
+    description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
-    sql:${waiting_for_rider_time_minutes};;
+    sql:${waiting_for_rider_decision_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2547,7 +2614,7 @@ view: orders {
     description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
     hidden:  no
     type: average
-    sql: abs(${waiting_for_rider_time_minutes}+coalesce(${withheld_from_rider_time_minutes}, 0) - ${estimated_queuing_time_for_rider_minutes});;
+    sql: abs(${waiting_for_rider_decision_time_minutes}+coalesce(${waiting_for_available_rider_time_minutes}, 0)+coalesce(${waiting_for_trip_readiness_time_minutes},0) - ${estimated_queuing_time_for_rider_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2848,11 +2915,11 @@ view: orders {
   measure: sum_avg_waiting_time {
     alias: [sum_avg_acceptance_reaction_time, sum_avg_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Picker Time + Waiting for Rider Time"
-    description: "Sum of the average of rider queuing time and the average of waiting for picker time"
+    label: "AVG Waiting For Picker Time + Waiting for Rider Decision Time"
+    description: "Sum of the average of waiting for rider decision and the average of waiting for picker time"
     hidden:  no
     type: number
-    sql:${avg_waiting_for_rider_time} + ${avg_waiting_for_picker_time};;
+    sql:${avg_waiting_for_rider_decision_time} + ${avg_waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
