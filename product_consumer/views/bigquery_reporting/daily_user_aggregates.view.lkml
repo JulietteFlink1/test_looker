@@ -85,12 +85,14 @@ view: daily_user_aggregates {
     type: string # cannot have this as a time type. See this discussion: https://community.looker.com/lookml-5/dynamic-time-granularity-opinions-16675
     hidden:  no
     sql:
-      {% if timeframe_picker._parameter_value == 'Day' %}
+      {% if timeframe_picker._parameter_value == 'Day' or timeframe_picker._parameter_value == 'Date' %}
         ${event_date_at_date}
       {% elsif timeframe_picker._parameter_value == 'Week' %}
         ${event_date_at_week}
       {% elsif timeframe_picker._parameter_value == 'Month' %}
         ${event_date_at_month}
+      {% else %}
+        ${event_date_at_date}
       {% endif %};;
   }
 
@@ -102,6 +104,7 @@ view: daily_user_aggregates {
     label: "Event Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
+    allowed_value: { value: "Date" }
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     default_value: "Day"
