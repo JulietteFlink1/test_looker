@@ -1990,7 +1990,7 @@ view: orders {
   measure: avg_waiting_for_available_rider_time_minutes {
     alias: [avg_withheld_from_rider_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Available Rider Time"
+    label: "AVG Waiting For Available Rider Time (Minutes)"
     description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
     type: average
     sql:${waiting_for_available_rider_time_minutes};;
@@ -1999,7 +1999,7 @@ view: orders {
 
   measure: avg_waiting_for_trip_readiness_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Available Rider Time"
+    label: "AVG Waiting For Trip Readiness Time (Minutes)"
     description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
     type: average
     sql:${waiting_for_trip_readiness_time_minutes};;
@@ -2008,7 +2008,7 @@ view: orders {
 
   measure: avg_rider_preparing_for_trip_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Rider Preparing For Trip Time"
+    label: "AVG Rider Preparing For Trip Time (Minutes)"
     description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
     type: average
     sql:${rider_preparing_for_trip_time_minutes};;
@@ -2018,7 +2018,7 @@ view: orders {
   measure: avg_waiting_for_picker_time {
     alias: [avg_reaction_time, avg_picker_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Picker Time"
+    label: "AVG Waiting For Picker Time (Minutes)"
     description:
       "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
       Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"

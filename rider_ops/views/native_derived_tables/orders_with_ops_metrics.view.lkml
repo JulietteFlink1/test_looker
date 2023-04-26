@@ -389,7 +389,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_waiting_for_picker_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Waiting For Picker Time"
+    label: "AVG Waiting For Picker Time (Minutes)"
     description: "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
     Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     value_format_name: decimal_1
@@ -399,7 +399,7 @@ view: orders_with_ops_metrics {
   measure: avg_waiting_for_rider_decision_time {
     alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting for Rider Decision Time"
+    label: "AVG Waiting for Rider Decision Time (Minutes)"
     description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
     value_format_name: decimal_1
@@ -408,7 +408,7 @@ view: orders_with_ops_metrics {
   measure: avg_waiting_for_available_rider_time_minutes {
     alias: [avg_withheld_from_rider_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Available Rider Time"
+    label: "AVG Waiting For Available Rider Time (Minutes)"
     description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
     type: average
     value_format_name: decimal_1
@@ -416,7 +416,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_waiting_for_trip_readiness_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Available Rider Time"
+    label: "AVG Waiting For Trip Readiness Time (Minutes)"
     description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
     type: average
     value_format_name: decimal_1
@@ -424,7 +424,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_rider_preparing_for_trip_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "AVG Rider Preparing For Trip Time"
+    label: "AVG Rider Preparing For Trip Time (Minutes)"
     description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
     type: average
     value_format_name: decimal_1
@@ -440,7 +440,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_number_of_withheld_from_riders_events {
     group_label: "* Operations / Logistics *"
-    label: "AVG Offered To Riders Events"
+    label: "AVG Withheld From Riders Events"
     description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
     type: average
     value_format_name: decimal_1
@@ -448,7 +448,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_withheld_from_picking_time_minutes {
     group_label: "> Operations / Logistics"
-    label: "AVG Withheld From Picking Time"
+    label: "AVG Withheld From Picking Time (Minutes)"
     description: "Average dispatch-related (withheld) queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
     value_format_name: decimal_1
     type: average
@@ -530,7 +530,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_targeted_delivery_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Targeted Fulfillment Time (min)"
+    label: "AVG Targeted Fulfillment Time (Minutes)"
     description: "Average internal targeted delivery time for hub ops."
     value_format_name: decimal_1
     type: average
@@ -538,7 +538,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_riding_to_hub_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Riding to Hub time"
+    label: "AVG Riding to Hub time (Minutes)"
     description: "Average riding time from customer location back to the hub (<1min or >30min)."
     value_format_name: decimal_1
     type: average
@@ -546,7 +546,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_riding_to_customer_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Riding To Customer Time"
+    label: "AVG Riding To Customer Time (Minutes)"
     description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     value_format_name: decimal_1
     type: average
