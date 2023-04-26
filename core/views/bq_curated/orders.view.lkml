@@ -2002,7 +2002,7 @@ view: orders {
     label: "AVG Waiting For Trip Readiness Time (Minutes)"
     description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
     type: average
-    sql:${waiting_for_trip_readiness_time_minutes};;
+    sql: ${waiting_for_trip_readiness_time_minutes};;
     value_format_name: decimal_1
   }
 
