@@ -78,6 +78,20 @@ view: forecasts {
     sql: ${TABLE}.number_of_last_mile_missed_orders_forced_closure ;;
   }
 
+  dimension: number_of_last_mile_missed_orders_pdt_forced_closure {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_pdt_forced_closure ;;
+  }
+
+  dimension: number_of_last_mile_missed_orders_pdt {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_pdt ;;
+  }
+
+
+
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
@@ -525,6 +539,24 @@ view: forecasts {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_last_mile_missed_orders_pdt_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - PDT or Forced Closure"
+    description: "# Last Mile Missed orders due to high PDT and Forced closure. High PDT are PDT>30min and in the 20% highest values for the day. Doesn't necessarily mean that the hub was closed."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_last_mile_missed_orders_pdt {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - PDT"
+    description: "# Last Mile Missed orders during periods of high PDT. High PDT are PDT>30min and in the 20% highest values for the day. Doesn't necessarily mean that the hub was closed.  Include all missed orders during periods when PDT was high, therefore can also include forced closures missed orders."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
   measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
@@ -540,6 +572,24 @@ view: forecasts {
     description: "Last Mile Missed orders (forced closure) divided by Flink Delivered orders, percentage."
     type: number
     sql: ${sum_number_of_last_mile_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_pdt_forced_closure{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - PDT or Forced Closure"
+    description: "Last Mile Missed orders (due to high PDT or to forced closure) divided by Flink Delivered orders, percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_pdt_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_pdt{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - PDT"
+    description: "Last Mile Missed orders (due to high PDT) divided by Flink Delivered orders, percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_pdt}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -612,6 +662,24 @@ view: forecasts {
     description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures. Including DaaS orders."
     type: number
     sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_cancelled_and_missed_orders_pdt_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure"
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to high PDT or forced closures. Including DaaS orders."
+    type: number
+    sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_cancelled_and_missed_orders_pdt {
+    group_label: "> Order Measures"
+    label: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT"
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to high PDT. Including DaaS orders."
+    type: number
+    sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt} ;;
     value_format_name: decimal_0
   }
 
