@@ -259,15 +259,16 @@ view: hub_one_picking_aggregates {
   measure: total_number_of_items_picked {
     type: sum
     group_label: "Total Metrics"
-    description: "Sum of quantity picked (includes reported items)."
+    description: "Sum of quantity picked (includes reported items)  (legacy quantity picked)."
     sql: ${number_of_items_picked} ;;
   }
 
   measure: total_number_of_items_picked_refunded {
     type: sum
     group_label: "Total Metrics"
+    label: "Total Number of Items Picked + Refunded"
     description: "Sum of quantity picked + refunded."
-    sql: (${number_of_items_picked} + ${number_of_items_refunded}) ;;
+    sql: (coalesce(${number_of_items_picked},0) + coalesce(${number_of_items_refunded},0)) ;;
   }
 
   measure: total_number_of_items_picked_by_clicked {
@@ -280,7 +281,7 @@ view: hub_one_picking_aggregates {
   measure: total_number_of_items_picked_by_reported {
     type: sum
     group_label: "Total Metrics"
-    description: "Sum of quantity picked by reporting."
+    description: "Sum of quantity picked by reporting (legacy quantity reported)."
     sql: ${number_of_items_picked_by_reported} ;;
   }
 
@@ -308,21 +309,21 @@ view: hub_one_picking_aggregates {
   measure: total_number_of_items_refunded {
     type: sum
     group_label: "Total Metrics"
-    description: "Sum of quantity refunded."
+    description: "Sum of quantity refunded (legacy quantity refunded)."
     sql: ${number_of_items_refunded} ;;
   }
 
   measure: total_number_of_items_reset {
     type: sum
     group_label: "Total Metrics"
-    description: "Sum of quantity reset."
+    description: "Sum of quantity reset (legacy quantity reset)."
     sql: ${number_of_items_reset} ;;
   }
 
   measure: total_number_of_items_skipped {
     type: sum
     group_label: "Total Metrics"
-    description: "Sum of quantity skipped."
+    description: "Sum of quantity skipped (legacy quantity skipped)."
     sql: ${number_of_items_skipped} ;;
 }
 
@@ -332,6 +333,16 @@ view: hub_one_picking_aggregates {
     description: "Count of distinct order_id."
     sql: ${order_id} ;;
   }
+
+  measure: number_of_refunded_orders {
+    type: count_distinct
+    group_label: "Total Metrics"
+    description: "Count of distinct order_id with at least one refunded item."
+    filters: [number_of_items_refunded: ">0"]
+    sql: ${order_id} ;;
+  }
+
+
   # =========  Rate Metrics   =========
 
   measure: qty_refunded_per_total_qty {
@@ -368,6 +379,15 @@ view: hub_one_picking_aggregates {
     type: number
     value_format_name: percent_1
     sql: ${total_number_of_items_picked_by_scanned} / nullif(${total_number_of_items_picked_by_scanned}+${total_number_of_items_picked_by_clicked},0) ;;
+  }
+
+  measure: pct_of_refunded_orders {
+    type: number
+    group_label: "Rate Metrics"
+    label: "% Refunded Orders"
+    description: "number_of_refunded_orders/ number_of_orders."
+    value_format_name: percent_1
+    sql: ${number_of_refunded_orders}/nullif(${number_of_orders},0) ;;
   }
 
 }
