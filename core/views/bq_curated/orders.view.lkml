@@ -1434,7 +1434,7 @@ view: orders {
   dimension: rider_preparing_for_trip_time_minutes {
     group_label: "* Operations / Logistics *"
     label: "Rider Preparing For Trip Time Minutes"
-    description: "Total number minutes between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip."
+    description: "Total number of minutes between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip."
     type: number
     sql: ${TABLE}.rider_preparing_for_trip_time_minutes ;;
   }
