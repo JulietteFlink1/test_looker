@@ -2011,7 +2011,7 @@ view: orders {
     label: "AVG Rider Preparing For Trip Time (Minutes)"
     description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
     type: average
-    sql:${rider_preparing_for_trip_time_minutes};;
+    sql: ${rider_preparing_for_trip_time_minutes};;
     value_format_name: decimal_1
   }
 
