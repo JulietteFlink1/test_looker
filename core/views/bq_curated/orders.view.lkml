@@ -2919,7 +2919,7 @@ view: orders {
     description: "Sum of the average of waiting for rider decision and the average of waiting for picker time"
     hidden:  no
     type: number
-    sql:${avg_waiting_for_rider_decision_time} + ${avg_waiting_for_picker_time};;
+    sql: ${avg_waiting_for_rider_decision_time} + ${avg_waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
