@@ -1,5 +1,5 @@
 view: discounts {
-  sql_table_name: `flink-data-dev.dbt_jdavies_curated.discounts`;;
+  sql_table_name: `flink-data-prod.curated.discounts`;;
 
   dimension: discount_id {
     hidden: yes
@@ -61,7 +61,7 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.created_at ;;
+    sql: ${TABLE}.created_at_timestamp ;;
   }
 
   dimension: discount_code {
@@ -112,7 +112,7 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.last_modified_at ;;
+    sql: ${TABLE}.last_modified_timestamp ;;
   }
 
   dimension: max_applications {
@@ -138,7 +138,7 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.valid_from ;;
+    sql: ${TABLE}.valid_from_timestamp ;;
   }
 
   dimension_group: valid_until {
@@ -152,10 +152,11 @@ view: discounts {
       quarter,
       year
     ]
-    sql: ${TABLE}.valid_until ;;
+    sql: ${TABLE}.valid_until_timestamp ;;
   }
 
   dimension: discount_value {
+    label: "Discount Amount"
     type: number
     sql: ${TABLE}.discount_value ;;
   }
