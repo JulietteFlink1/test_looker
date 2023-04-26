@@ -81,7 +81,7 @@ view: product_placement_performance {
   dimension: product_price {
     group_label: "Product Dimensions"
     label: "Product Price"
-    description: "Price of the product"
+    description: "Price of the product, as captured by front-end tracking"
     type: number
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;
@@ -161,6 +161,7 @@ view: product_placement_performance {
   # ======= Dates / Timestamps =======
 
   dimension_group: event {
+    hidden: yes
     group_label: "Date Dimensions"
     label: "Event"
     description: "Timestamp of when an event happened"
@@ -173,6 +174,20 @@ view: product_placement_performance {
     ]
     sql: ${TABLE}.event_date ;;
     datatype: date
+  }
+
+  dimension: event_date_dynamic {
+    group_label: "Date Dimensions"
+    label: "Event Date (Dynamic)"
+    description: "Timestamp of when an event happened"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${event_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${event_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${event_month}
+    {% endif %};;
   }
 
     # ======= Event Flags ======= #
@@ -294,8 +309,8 @@ view: product_placement_performance {
   measure: amt_total_price_net {
     hidden: no
     group_label: "Product Metrics"
-    label: "SUM Item Prices Sold (net)"
-    description: "Sum of all items sold, net value."
+    label: "SUM of Product Prices for items ordered"
+    description: "Sum of all product price, captured by the front-end tracking, for items sold. Assumes QTY is always 1, and will understate total revenue."
     type: sum
     value_format_name: decimal_2
     sql: ${TABLE}.product_price ;;

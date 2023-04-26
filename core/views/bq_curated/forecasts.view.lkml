@@ -4,7 +4,8 @@
 # This view contains forecast data from multiple forecast tables on timeslot, hub, and job date level.
 
 view: forecasts {
-  sql_table_name: `flink-data-prod.curated.forecasts`;;
+  # Where statement filters job_date to Monday
+  sql_table_name: (select * from `flink-data-prod.curated.forecasts` where job_date = date_trunc(date(start_timestamp, 'Europe/Berlin'), week(monday)) - 7) ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,6 +18,7 @@ view: forecasts {
     type: string
     sql: ${TABLE}.forecast_uuid ;;
     hidden: yes
+    primary_key: yes
   }
 
   dimension: hub_code {
@@ -46,12 +48,6 @@ view: forecasts {
     description: "Status of the Quinyx pipeline for picker headcount (whether it is sent or not to Quinyx)."
     type: string
     sql: coalesce(${TABLE}.quinyx_pipeline_status_picker, "n/a") ;;
-  }
-
-  dimension: forecast_horizon {
-    label: "Forecast Horizon (Days)"
-    type: number
-    sql: date_diff(${start_timestamp_date}, ${job_date}, day) ;;
   }
 
   dimension: is_forecast_hub {
@@ -116,35 +112,6 @@ view: forecasts {
     ]
     convert_tz: yes
     sql: ${TABLE}.start_timestamp ;;
-    hidden: yes
-  }
-
-  dimension: job_date {
-    label: "Job Date"
-    description: "Date when forecast ran"
-    convert_tz: no
-    datatype: date
-    type: date
-    sql: ${TABLE}.job_date ;;
-  }
-
-  dimension: job_date_2 {
-    label: "Job Date - Day of the week"
-    description: "Fetching respective weekdays based on timeslot date"
-    convert_tz: no
-    datatype: date
-    type:  date
-    sql:
-      case
-        when {% parameter forecasts.dow_parameter %} = 'Monday' then date_trunc(${start_timestamp_date}, week(monday)) - 7
-        when {% parameter forecasts.dow_parameter %} = 'Tuesday' then date_trunc(${start_timestamp_date}, week(monday)) - 6
-        when {% parameter forecasts.dow_parameter %} = 'Wednesday' then date_trunc(${start_timestamp_date}, week(monday)) - 5
-        when {% parameter forecasts.dow_parameter %} = 'Thursday' then date_trunc(${start_timestamp_date}, week(monday)) - 4
-        when {% parameter forecasts.dow_parameter %} = 'Friday' then date_trunc(${start_timestamp_date}, week(monday)) - 3
-        when {% parameter forecasts.dow_parameter %} = 'Saturday' then date_trunc(${start_timestamp_date}, week(monday)) - 2
-        when {% parameter forecasts.dow_parameter %} = 'Sunday' then date_trunc(${start_timestamp_date}, week(monday)) - 1
-        else null
-      end ;;
     hidden: yes
   }
 
@@ -285,8 +252,7 @@ view: forecasts {
   measure: stacking_effect_multiplier {
     group_label: "> Order Measures"
     label: "Stacking Effect Multiplier"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.stacking_effect_multiplier ;;
     hidden: yes
     value_format_name: decimal_1
@@ -295,9 +261,8 @@ view: forecasts {
   measure: number_of_forecasted_stacked_orders {
     group_label: "> Order Measures"
     label: "# Forecasted Stacked Orders"
-    type: sum_distinct
+    type: sum
     value_format_name: decimal_1
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
     sql: ${TABLE}.number_of_forecasted_stacked_orders ;;
   }
 
@@ -325,8 +290,7 @@ view: forecasts {
   measure: number_of_forecasted_no_show_minutes_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted No Show Minutes Rider"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider ;;
     hidden: yes
   }
@@ -334,8 +298,7 @@ view: forecasts {
   measure: number_of_forecasted_no_show_minutes_rider_adjusted {
     group_label: "> Rider Measures"
     label: "# Adjusted Forecasted No Show Minutes Rider"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_no_show_minutes_rider_adjusted ;;
     hidden: yes
   }
@@ -345,8 +308,7 @@ view: forecasts {
   measure: number_of_forecasted_idleness_minutes_picker {
     group_label: "> Picker Measures"
     label: "# Forecasted Idle Picker Minutes"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
     value_format_name: decimal_1
     hidden: yes
@@ -355,8 +317,7 @@ view: forecasts {
   measure: number_of_forecasted_idleness_minutes_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Idle Rider Minutes"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
@@ -365,8 +326,7 @@ view: forecasts {
   measure: number_of_forecasted_idleness_minutes_rider_adjusted {
     group_label: "> Rider Measures"
     label: "# Adjusted Forecasted Idle Rider Minutes"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_idleness_minutes_rider_adjusted ;;
     value_format_name: decimal_1
     hidden: yes
@@ -406,8 +366,7 @@ view: forecasts {
     label: "Base UTR Picker"
     description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_2
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.number_of_target_orders_per_picker ;;
     hidden: yes
   }
@@ -417,8 +376,7 @@ view: forecasts {
     label: "Base UTR Rider"
     description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_2
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.number_of_target_orders_per_rider ;;
     hidden: yes
   }
@@ -428,8 +386,7 @@ view: forecasts {
     label: "Adjusted Base UTR Rider"
     description: "Adjusted calculated UTR based on formula (Incl. Airtable Adjustments) - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
     value_format_name: decimal_2
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.number_of_target_orders_per_rider_adjusted ;;
     hidden: yes
   }
@@ -472,8 +429,7 @@ view: forecasts {
     group_label: "> Picker Measures"
     label: "# Forecasted Pickers"
     description: "# Forecasted Pickers Needed"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_pickers ;;
     hidden: yes
   }
@@ -482,8 +438,7 @@ view: forecasts {
     group_label: "> Rider Measures"
     label: "# Forecasted Riders"
     description: "# Forecasted Riders Needed"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_riders ;;
     hidden: yes
   }
@@ -493,8 +448,7 @@ view: forecasts {
   measure: number_of_forecasted_orders {
     group_label: "> Order Measures"
     label: "# Forecasted Orders"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
   }
@@ -512,8 +466,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Missed Orders"
     description: "# Missed orders due to planned or forced closures."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_missed_orders ;;
     value_format_name: decimal_0
   }
@@ -522,8 +475,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders"
     description: "# Last Mile Missed orders due to planned or forced closures."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${number_of_last_mile_missed_orders};;
     value_format_name: decimal_0
   }
@@ -559,8 +511,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Missed Orders - Forced Closure"
     description: "# Missed orders due to forced closure."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_missed_orders_forced_closure ;;
     value_format_name: decimal_0
   }
@@ -569,8 +520,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders - Forced Closure"
     description: "# Last Mile Missed orders due to forced closure."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
   }
@@ -597,8 +547,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Missed Orders - Planned Closure"
     description: "# Missed orders due to planned closure."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_missed_orders_planned_closure ;;
     value_format_name: decimal_0
   }
@@ -607,8 +556,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders - Planned Closure"
     description: "# Last Mile Missed orders due to planned closure."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${number_of_last_mile_missed_orders_planned_closure} ;;
     value_format_name: decimal_0
   }
@@ -635,8 +583,7 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_orders]
     group_label: "> Order Measures"
     label: "# Adjusted Forecasted Orders"
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_orders_adjusted ;;
     value_format_name: decimal_0
   }
@@ -644,9 +591,8 @@ view: forecasts {
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-Related)"
-    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures)."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures). Including DaaS orders."
+    type: sum
     sql: ${TABLE}.number_of_actual_orders;;
     value_format_name: decimal_0
   }
@@ -654,9 +600,8 @@ view: forecasts {
   measure: number_of_cancelled_orders {
     group_label: "> Order Measures"
     label: "# Cancelled Orders (Forecast-Related)"
-    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons. Including DaaS orders."
+    type: sum
     sql: ${number_of_cancelled_orders_dimension} ;;
     value_format_name: decimal_0
   }
@@ -664,7 +609,7 @@ view: forecasts {
   measure: number_of_cancelled_and_missed_orders {
     group_label: "> Order Measures"
     label: "# Cancelled and Last Mile Missed Orders (Forecast-Related)"
-    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures."
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures. Including DaaS orders."
     type: number
     sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
@@ -879,8 +824,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "Forecasted AVG Rider Handling Time (Seconds)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.forecasted_avg_rider_handling_duration_seconds ;;
     value_format_name: decimal_1
     filters: [is_hub_open: "1"]
@@ -891,8 +835,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "Forecasted AVG Rider Handling Time (Minutes)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.forecasted_avg_rider_handling_duration_minutes ;;
     value_format_name: decimal_1
     filters: [is_hub_open: "1"]
@@ -903,8 +846,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "Adjusted Forecasted AVG Rider Handling Time (Seconds)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub (Incl. Airtable Adjustments)"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.forecasted_avg_rider_handling_duration_seconds_adjusted ;;
     value_format_name: decimal_1
     filters: [is_hub_open: "1"]
@@ -915,8 +857,7 @@ view: forecasts {
     group_label: "> Order Measures"
     label: "Adjusted Forecasted AVG Rider Handling Time (Minutes)"
     description: "Forecasted AVG Total Rider Handling Time: Riding to Customer + At customer + Riding to Hub (Incl. Airtable Adjustments)"
-    type: average_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: average
     sql: ${TABLE}.forecasted_avg_rider_handling_duration_minutes_adjusted ;;
     value_format_name: decimal_1
     filters: [is_hub_open: "1"]
@@ -928,8 +869,7 @@ view: forecasts {
 
   measure: number_of_forecasted_minutes_picker {
     label: "# Forecasted Picker Minutes"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_minutes_picker ;;
     hidden: yes
   }
@@ -937,16 +877,14 @@ view: forecasts {
   measure: number_of_forecasted_minutes_picker_adjusted {
     alias: [number_of_adjusted_forecasted_minutes_picker]
     label: "# Adjusted Forecasted Picker Minutes"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted ;;
     hidden: yes
   }
 
   measure: number_of_forecasted_minutes_rider {
     label: "# Forecasted Rider Minutes"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_minutes_rider ;;
     hidden: yes
   }
@@ -996,8 +934,7 @@ view: forecasts {
   measure: number_of_forecasted_minutes_rider_adjusted {
     alias: [number_of_adjusted_forecasted_minutes_rider]
     label: "# Adjusted Forecasted Rider Minutes"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     sql: ${TABLE}.number_of_forecasted_minutes_rider_adjusted ;;
     hidden: yes
   }
@@ -1121,15 +1058,13 @@ view: forecasts {
   }
 
   measure: summed_absolute_error {
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_forecasted_orders_dimension} - ${number_of_actual_orders_dimension});;
   }
 
   measure: summed_absolute_error_adjusted {
-    type: sum_distinct
-    sql_distinct_key: concat(${job_date},${start_timestamp_raw},${hub_code}) ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_forecasted_orders_adjusted_dimension} - ${number_of_actual_orders_dimension});;
   }
@@ -1153,15 +1088,13 @@ view: forecasts {
   }
 
   measure: summed_absolute_error_hours {
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_forecasted_hours_by_position_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
 
   measure: summed_absolute_error_hours_adjusted {
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_scheduled_hours_by_position_dimension});;
   }
@@ -1177,8 +1110,7 @@ view: forecasts {
   }
 
   measure: summed_absolute_error_worked_hours_adjusted {
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_forecasted_hours_by_position_adjusted_dimension} - ${ops.number_of_worked_hours_by_position_dimension});;
   }
@@ -1203,15 +1135,13 @@ view: forecasts {
   }
 
   measure: summed_absolute_error_no_show_hours {
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_no_show_hours_by_position_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
 
   measure: summed_absolute_error_no_show_hours_adjusted {
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: yes
     sql: ABS(${number_of_no_show_hours_by_position_adjusted_dimension} - ${ops.number_of_no_show_hours_by_position_dimension});;
   }
@@ -1232,8 +1162,7 @@ view: forecasts {
     group_label: "> Forecasting error"
     label: "Backlog Bias Numerator - Orders"
     description: "Order forecast bias indicator that takes into account the amount of under-forecasting that has accumulated since the beginning of the day."
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: no
     sql: ${backlog_bias_numerator};;
   }
@@ -1242,8 +1171,7 @@ view: forecasts {
     group_label: "> Forecasting error"
     label: "Backlog Bias Denominator - Orders"
     description: "Reflects the order forecast backlog bias multiplied by the actual number of orders."
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     hidden: no
     sql: ${backlog_bias_denominator};;
   }
@@ -1784,8 +1712,7 @@ view: forecasts {
   measure: summed_overstaffing_error {
     group_label: "> Dynamic Measures"
     label: "Summed Overstaffing Error"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     description: "How much overstaffed we are compared to what was forecasted in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
@@ -1800,8 +1727,7 @@ view: forecasts {
   measure: summed_overstaffing_error_adjusted {
     group_label: "> Dynamic Measures"
     label: "Adjusted Summed Overstaffing Error"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     description: "How much overstaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of overstaffing. when Forecasted Hours < Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
@@ -1836,8 +1762,7 @@ view: forecasts {
   measure: summed_understaffing_error {
     group_label: "> Dynamic Measures"
     label: "Summed Understaffing Error"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     description: "How much understaffed we are compared to what was forecasted in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
@@ -1852,8 +1777,7 @@ view: forecasts {
   measure: summed_understaffing_error_adjusted {
     group_label: "> Dynamic Measures"
     label: "Adjusted Summed Understaffing Error"
-    type: sum_distinct
-    sql_distinct_key: ${forecast_uuid} ;;
+    type: sum
     description: "How much understaffed we are compared to what was forecasted (Incl. Airtable Adjustments) in cases of understaffing. when Forecasted Hours > Scheduled Hours: (Forecasted Hours - Scheduled Hours) / Forecasted Hours"
     sql:
         case
@@ -1894,20 +1818,6 @@ view: forecasts {
     allowed_value: { value: "Rider" }
     allowed_value: { value: "Picker" }
     hidden: yes
-  }
-
-  parameter: dow_parameter {
-    label: "Job day of the week (Last week)"
-    description: "This filter could be used to see respective day of the last week as a job date for each order date"
-    type: string
-    allowed_value: { value: "Monday" }
-    allowed_value: { value: "Tuesday" }
-    allowed_value: { value: "Wednesday" }
-    allowed_value: { value: "Thursday" }
-    allowed_value: { value: "Friday" }
-    allowed_value: { value: "Saturday" }
-    allowed_value: { value: "Sunday" }
-    hidden: no
   }
 
   parameter: date_granularity {

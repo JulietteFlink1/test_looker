@@ -29,6 +29,7 @@ explore: order_placement_aggregates {
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.timeframe_picker: "Date",
       order_placement_aggregates.country_iso: "",
       order_placement_aggregates.platform: ""
     ]

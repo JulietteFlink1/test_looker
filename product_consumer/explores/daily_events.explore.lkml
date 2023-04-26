@@ -51,6 +51,7 @@ explore: daily_events {
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 7 days",
+      global_filters_and_parameters.timeframe_picker: "Date",
       daily_events.event_name: "",
       daily_events.country_iso: ""
       ]
@@ -191,6 +192,8 @@ explore: daily_events {
              event_load_trace_completed.end_timestamp_date,
              event_load_trace_completed.end_timestamp_week,
              event_load_trace_completed.end_timestamp_month,
+            event_load_trace_completed.load_duration_tier_size,
+            event_load_trace_completed.dynamic_load_duration_tier
             ]
     sql_on: ${event_load_trace_completed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_load_trace_completed.event_timestamp_date} {% endcondition %}

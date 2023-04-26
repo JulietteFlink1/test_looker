@@ -120,7 +120,7 @@ view: user_attributes_lifecycle_last28days {
   dimension_group: execution {
     label: "Reference"
     description: "Reference date from which last 28 days are considered. Default is to use yesterday as a reference, as this is the latest dataset available"
-    hidden: no
+    hidden: yes
     type: time
     timeframes: [
       raw,
@@ -135,6 +135,18 @@ view: user_attributes_lifecycle_last28days {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.execution_date ;;
+  }
+
+  dimension: execution_date_dynamic {
+    label: "Reference Date (Dynamic)"
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${execution_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${execution_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${execution_month}
+    {% endif %};;
   }
 
   #=========================================================================================#
