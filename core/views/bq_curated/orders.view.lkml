@@ -1993,7 +1993,7 @@ view: orders {
     label: "AVG Waiting For Available Rider Time (Minutes)"
     description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
     type: average
-    sql:${waiting_for_available_rider_time_minutes};;
+    sql: ${waiting_for_available_rider_time_minutes};;
     value_format_name: decimal_1
   }
 
