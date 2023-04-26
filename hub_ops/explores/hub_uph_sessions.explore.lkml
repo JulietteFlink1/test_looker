@@ -18,7 +18,7 @@ explore: hub_uph_sessions {
               global_filters_and_parameters.datasource_filter: "last 7 days",
               hub_uph_compliance.country_iso: "",
               hub_uph_compliance.hub_code: "",
-              hub_uph_sessions.position_name: "ops associate, picker",
+              hub_uph_compliance.position_name: "ops associate, picker",
               hub_uph_compliance.quinyx_badge_number: "",
               hub_uph_sessions.is_idle_session_more_than_2_hours: "no"
               ]
@@ -34,13 +34,6 @@ explore: hub_uph_sessions {
     relationship: one_to_one
   }
 
-  join: hubs_ct {
-    view_label: "Hubs"
-    sql_on: ${hubs_ct.hub_code} = ${hub_uph_sessions.hub_code};;
-    relationship: many_to_one
-    type: left_outer
-  }
-
   join: hub_uph_compliance {
     view_label: "Compliance"
     sql_on: ${hub_uph_compliance.hub_code} = ${hub_uph_sessions.hub_code}
@@ -49,6 +42,13 @@ explore: hub_uph_sessions {
     and ${hub_uph_compliance.shift_id} = ${hub_uph_sessions.shift_id};;
     relationship: many_to_one
     type: full_outer
+  }
+
+  join: hubs_ct {
+    view_label: "Hubs"
+    sql_on: ${hubs_ct.hub_code} = ${hub_uph_compliance.hub_code};;
+    relationship: many_to_one
+    type: left_outer
   }
 
   # join: hub_monthly_orders {
