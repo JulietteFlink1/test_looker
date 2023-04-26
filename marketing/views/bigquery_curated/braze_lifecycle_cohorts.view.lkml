@@ -944,7 +944,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute number of orders placed by variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_number_of_unique_variant_orders} * safe_divide((${avg_number_of_orders_per_variant_cohort_users} - ${avg_number_of_orders_per_control_cohort_users}),
-      ${avg_number_of_orders_per_variant_cohort_users}) ;;
+      ${avg_number_of_orders_per_control_cohort_users}) ;;
     value_format_name: decimal_0
   }
 
