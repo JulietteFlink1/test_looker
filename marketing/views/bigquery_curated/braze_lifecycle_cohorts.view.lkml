@@ -605,7 +605,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute sum of Gross GMV in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_variant_amount_of_gmv_gross} * safe_divide((${share_of_variant_amount_of_gmv} - ${share_of_control_amount_of_gmv}),
-      ${share_of_control_amount_of_gmv}) ;;
+      ${share_of_variant_amount_of_gmv}) ;;
     value_format_name: decimal_0
   }
 
@@ -690,7 +690,7 @@ view: braze_lifecycle_cohorts {
       description: "Absolute sum of Cart Discounts Gross per Order in variant group that were incrementally resulted by canvas efforts"
       type: number
       sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_order} - ${share_of_control_amount_of_cart_discount_per_order}),
-        ${share_of_control_amount_of_cart_discount_per_order}) ;;
+        ${share_of_variant_amount_of_cart_discount_per_order}) ;;
       value_format_name: decimal_0
     }
 
@@ -746,7 +746,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute sum of Cart Discounts Gross per GMV in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_variant_amount_of_cart_discount_gross} * safe_divide((${share_of_variant_amount_of_cart_discount_per_gmv} - ${share_of_control_amount_of_cart_discount_per_gmv}),
-      ${share_of_control_amount_of_cart_discount_per_gmv}) ;;
+      ${share_of_variant_amount_of_cart_discount_per_gmv}) ;;
     value_format_name: decimal_0
   }
 
@@ -805,7 +805,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute sum of Gross Average Order Value in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${variant_avg_order_value} * safe_divide((${variant_avg_order_value} - ${control_avg_order_value}),
-      ${control_avg_order_value}) ;;
+      ${variant_avg_order_value}) ;;
     value_format_name: decimal_2
   }
 
@@ -890,7 +890,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute sum of Gross Average Item Value in variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${variant_avg_item_value} * safe_divide((${variant_avg_item_value} - ${control_avg_item_value}),
-      ${control_avg_item_value}) ;;
+      ${variant_avg_item_value}) ;;
     value_format_name: decimal_2
   }
 
@@ -944,7 +944,7 @@ view: braze_lifecycle_cohorts {
     description: "Absolute number of orders placed by variant group that were incrementally resulted by canvas efforts"
     type: number
     sql: ${sum_of_number_of_unique_variant_orders} * safe_divide((${avg_number_of_orders_per_variant_cohort_users} - ${avg_number_of_orders_per_control_cohort_users}),
-      ${avg_number_of_orders_per_control_cohort_users}) ;;
+      ${avg_number_of_orders_per_variant_cohort_users}) ;;
     value_format_name: decimal_0
   }
 
