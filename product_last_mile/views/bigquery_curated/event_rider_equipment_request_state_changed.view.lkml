@@ -7,6 +7,10 @@ view: event_rider_equipment_request_state_changed {
   sql_table_name: `flink-data-prod.curated.event_rider_equipment_request_state_changed`;;
   view_label: "1 Rider Equipment Request State Changed"
 
+  set: rider_details {
+    fields: [rider_id, hub_code, country_iso]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -149,6 +153,7 @@ view: event_rider_equipment_request_state_changed {
     description: "Number of distinct events triggerd by rider equipment service"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+    drill_fields: [rider_details*]
   }
   measure: riders {
     group_label: "Measures"
@@ -164,6 +169,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "requested"]
+    drill_fields: [rider_details*]
   }
   measure: total_number_returned_events {
     group_label: "Measures"
@@ -172,6 +178,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "returned"]
+    drill_fields: [rider_details*]
   }
   measure: total_number_assigned_events {
     group_label: "Measures"
@@ -180,6 +187,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "delivered , assigned" ]
+    drill_fields: [rider_details*]
   }
   measure: total_number_claimed_events {
     group_label: "Measures"
@@ -188,6 +196,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "claimed"]
+    drill_fields: [rider_details*]
   }
   measure: total_number_rejected_events {
     group_label: "Measures"
@@ -196,6 +205,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "rejected"]
+    drill_fields: [rider_details*]
   }
   measure: total_number_confirmed_events {
     group_label: "Measures"
@@ -204,6 +214,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "confirmed"]
+    drill_fields: [rider_details*]
   }
   measure: total_number_unclaimed_events {
     group_label: "Measures"
@@ -212,6 +223,7 @@ view: event_rider_equipment_request_state_changed {
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
     filters: [rider_equipment_state: "unclaimed"]
+    drill_fields: [rider_details*]
   }
   measure: claimed_equipment_rate {
     group_label: "% Rate Measures"
@@ -220,6 +232,7 @@ view: event_rider_equipment_request_state_changed {
     type: number
     sql:  ${total_number_claimed_events}/nullif(${total_number_requested_events},0) ;;
     value_format_name: percent_1
+    drill_fields: [rider_details*]
   }
   measure: rejected_equipment_rate {
     group_label: "% Rate Measures"
@@ -228,6 +241,7 @@ view: event_rider_equipment_request_state_changed {
     type: number
     sql:  ${total_number_rejected_events}/nullif(${total_number_requested_events},0) ;;
     value_format_name: percent_1
+    drill_fields: [rider_details*]
   }
   measure: assigned_equipment_rate {
     group_label: "% Rate Measures"
@@ -236,5 +250,6 @@ view: event_rider_equipment_request_state_changed {
     type: number
     sql:  ${total_number_assigned_events}/nullif(${total_number_requested_events},0) ;;
     value_format_name: percent_1
+    drill_fields: [rider_details*]
   }
 }
