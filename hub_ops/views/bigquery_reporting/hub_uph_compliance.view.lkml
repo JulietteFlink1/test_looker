@@ -38,22 +38,10 @@ view: hub_uph_compliance {
     sql: ${TABLE}.shift_id ;;
   }
 
-  dimension: is_punched_shift {
-    type: yesno
-    description: "True if the shift has punch in/out events, false otherwise."
-    sql: ${TABLE}.is_punched_shift ;;
-  }
-
   dimension: position_name {
     description: "Position Assigned in Quinyx for the shift."
     type: string
     sql: ${TABLE}.position_name ;;
-  }
-
-  dimension: has_shift {
-    type: yesno
-    description: "True if there is a shift on that date for this employee, false otherwise."
-    sql: ${shift_id} is not null ;;
   }
 
   dimension_group: event {
@@ -214,7 +202,24 @@ view: hub_uph_compliance {
     sql: ${TABLE}.number_of_picked_orders_within_shift ;;
   }
 
+  ### Flag dimensions ###
+
+  dimension: has_shift {
+    group_label: "> Flags"
+    type: yesno
+    description: "True if there is a shift on that date for this employee, false otherwise."
+    sql: ${shift_id} is not null ;;
+  }
+
+  dimension: is_punched_shift {
+    group_label: "> Flags"
+    type: yesno
+    description: "True if the shift has punch in/out events, false otherwise."
+    sql: ${TABLE}.is_punched_shift ;;
+  }
+
   dimension: are_all_events_within_shift {
+    group_label: "> Flags"
     type: yesno
     label: "All Events Within Shift"
     description: "Yes if all events occurred within the shift, No otherwise or if no events were recorded."
@@ -224,6 +229,7 @@ view: hub_uph_compliance {
   }
 
   dimension: are_not_all_events_within_shift {
+    group_label: "> Flags"
     type: yesno
     label: "Not All Events Within Shift"
     description: "Yes if only some events occurred within the shift, No otherwise."
@@ -234,29 +240,31 @@ view: hub_uph_compliance {
   }
 
   dimension: hub_one_data_but_no_shift {
+    group_label: "> Flags"
     type: yesno
     label: "Hub One Data - No Shift"
     description: "Yes if Hub One events ocurred for the employee for that date and no shift was planned, No otherwise."
     sql: ${number_of_events_hub_one} > 0
-          and ${shift_id} is null
+          and not ${has_shift}
           ;;
   }
 
   dimension: shift_but_no_hub_one_data {
+    group_label: "> Flags"
     type: yesno
     label: "Shift - No Hub One Data"
     description: "Yes if there is a punched shift during which no Hub One events occurred, No otherwise."
     sql:${is_punched_shift}
-          and ${number_of_events_within_shift} = 0
-          ;;
+        and ${number_of_events_within_shift} = 0
+        ;;
   }
 
  ########## MEASURES ###########
 
-## We use sql_distinct_key to not count hub one events nultiple times in case of multiple shifts per day-employee
+## We use sql_distinct_key to not count hub one events multiple times in case of multiple shifts per day-employee
   measure: sum_number_of_events_hub_one {
     label: "# Events"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
     description: "Number of Hub One events. Lowest granularity available: Day - Quinyx Badge Number."
@@ -265,7 +273,7 @@ view: hub_uph_compliance {
 
   measure: avg_number_of_events_hub_one {
     label: "AVG # Events"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     type: average_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
     description: "Average number of Hub One events."
@@ -274,7 +282,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_events_within_shift {
     label: "# Events - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of Hub One events recorded during the shift."
     sql: ${number_of_events_within_shift} ;;
@@ -282,7 +290,7 @@ view: hub_uph_compliance {
 
   measure: avg_number_of_events_within_shift {
     label: "AVG # Events -  Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: average
     description: "Average number of Hub One events recorded during the shift."
     sql: ${number_of_events_within_shift} ;;
@@ -290,7 +298,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_or_dropped_or_counted_items_hub_one {
     label: "# Picked/Dropped/Counted Items"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of Picked/Dropped/Counted items. Based on Hub One app tracking data."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -299,7 +307,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_or_dropped_or_counted_items_within_shift {
     label: "# Picked/Dropped/Counted Items - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of Picked/Dropped/Counted items during the shift. Based on Hub One app tracking data."
     sql: ${number_of_picked_or_dropped_or_counted_items_within_shift} ;;
@@ -307,7 +315,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_checks_hub_one {
     label: "# Checks"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of checks. Based on Hub One app tracking data."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -316,7 +324,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_checks_within_shift {
     label: "# Checks - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of checks performed during the shift. Based on Hub One app tracking data."
     sql: ${number_of_checks_within_shift} ;;
@@ -324,7 +332,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_counted_items_hub_one {
     label: "# Counted Items"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of counted items. Based on Hub One app tracking data."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -333,7 +341,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_counted_items_within_shift {
     label: "# Counted Items - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of counted items during the shift. Based on Hub One app tracking data."
     sql: ${number_of_counted_items_within_shift} ;;
@@ -341,7 +349,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_dropped_items_hub_one {
     label: "# Dropped Items"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of items dropped during the inbounding process. Based on Hub One app tracking data."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -350,7 +358,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_dropped_items_within_shift {
     label: "# Dropped Items - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of items dropped during the inbounding process during the shift. Based on Hub One app tracking data."
     sql: ${number_of_dropped_items_within_shift} ;;
@@ -358,7 +366,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_items_hub_one {
     label: "# Picked Items"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of picked items. Based on Hub One app tracking app."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -367,7 +375,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_items_within_shift {
     label: "# Picked Items - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of picked items during the shift. Based on Hub One app tracking app."
     sql: ${number_of_picked_items_within_shift} ;;
@@ -375,7 +383,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_orders_hub_one {
     label: "# Picked Orders"
-    group_label: "Hub One"
+    group_label: "> Hub One"
     description: "Number of picked orders. Based on Hub One app tracking data."
     type: sum_distinct
     sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
@@ -384,7 +392,7 @@ view: hub_uph_compliance {
 
   measure: sum_number_of_picked_orders_within_shift {
     label: "# Picked Orders - Within Shift"
-    group_label: "Within Shift"
+    group_label: "> Within Shift"
     type: sum
     description: "Number of picked orders during the shift. Based on Hub One app tracking data."
     sql: ${number_of_picked_orders_within_shift} ;;
@@ -393,6 +401,7 @@ view: hub_uph_compliance {
   ### Process Compliance metrics - Counts
 
   measure: count_shift_all_events_within_shift {
+    group_label: "> Compliance"
     type: count
     label: "# Process Compliant Shifts"
     description: "Number of shifts where all events occured within the shift.
@@ -401,6 +410,7 @@ view: hub_uph_compliance {
   }
 
   measure: count_shifts_not_all_events_within_shift{
+    group_label: "> Compliance"
     type: count
     label: "# Shifts - Not All Events Wihtin Shift"
     description: "Number of shifts where not all events occured within the shift.
@@ -409,6 +419,7 @@ view: hub_uph_compliance {
   }
 
   measure: count_shifts_hub_one_data_but_no_shift{
+    group_label: "> Compliance"
     type: count
     label: "# Shifts - Hub One Events but no Shift"
     description: "Number of date-employee combination for which there are Hub One events, but no shift was planned."
@@ -416,6 +427,7 @@ view: hub_uph_compliance {
   }
 
   measure: count_shift_but_no_hub_one_data{
+    group_label: "> Compliance"
     type: count
     label: "# Shifts - No Hub One Events"
     description: "Number of punched shifts for which there are no Hub One events within it."
@@ -423,6 +435,7 @@ view: hub_uph_compliance {
   }
 
   measure: count_shifts {
+    group_label: "> Compliance"
     label: "# Shifts"
     description: "Number of shifts.
     In case there is a date-employee combination for which there are Hub One events while no shift was planned, we count it as a shift in this metric."
@@ -432,6 +445,7 @@ view: hub_uph_compliance {
     ### Process Compliance metrics - Shares
 
   measure: share_of_shifts_having_all_events_within_shift{
+    group_label: "> Compliance"
     label: "% Process Compliant Shifts"
     description: "Share of Shifts where all events occured within the shift. If the shift is not punched, we consider the planned start and end of the shift as boundaries."
     type: number
@@ -440,6 +454,7 @@ view: hub_uph_compliance {
   }
 
   measure: share_of_shifts_having_not_all_events_within_shift{
+    group_label: "> Compliance"
     label: "% Shifts - Not All Events Wihtin Shift"
     description: "Share of Shifts where not all events occured within the shift. If the shift is not punched, we consider the planned start and end of the shift as boundaries."
     type: number
@@ -448,6 +463,7 @@ view: hub_uph_compliance {
   }
 
   measure: share_of_shifts_hub_one_data_but_no_shift{
+    group_label: "> Compliance"
     label: "% Shifts - Hub One Data but no Shift"
     description: "Share of date-employee combinations for which there are Hub One events, but no shift was planned."
     type: number
@@ -456,6 +472,7 @@ view: hub_uph_compliance {
   }
 
   measure: share_of_shifts_no_hub_one_data{
+    group_label: "> Compliance"
     label: "% Shifts - No Hub One Events"
     description: "Share of punched shifts for which there are no Hub One events within it."
     type: number
