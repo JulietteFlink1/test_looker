@@ -200,7 +200,7 @@ set: drill_fields_set {
   }
 
   dimension: purchase_unit {
-    type: string
+    type: number
     sql: ${TABLE}.purchase_unit ;;
     label: "Purchase Units"
     group_label: "Product Data"
