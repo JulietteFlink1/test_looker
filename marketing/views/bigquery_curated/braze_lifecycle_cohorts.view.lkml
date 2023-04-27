@@ -4,7 +4,7 @@
 ### This view represents data for reporting on CRM canvas lifecycles efficiency.
 
 view: braze_lifecycle_cohorts {
-  sql_table_name: `flink-data-dev.dbt_jdavies_curated.braze_canvas_reporting`
+  sql_table_name: `flink-data-prod.curated.braze_canvas_reporting`
     ;;
   view_label: "* CRM Lifecycle Canvases *"
 
@@ -401,7 +401,7 @@ view: braze_lifecycle_cohorts {
   #
 
   measure: sum_of_number_of_unique_control_users {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${number_of_unique_control_users} ;;
     filters: {
@@ -411,7 +411,7 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: sum_of_number_of_unique_control_customers_ordered {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${number_of_unique_control_customers_ordered};;
     filters: {
@@ -421,13 +421,13 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: share_of_control_customers_ordered {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_number_of_unique_control_customers_ordered},${sum_of_number_of_unique_control_users});;
   }
 
   measure: sum_of_number_of_unique_variant_users {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${number_of_unique_users} ;;
     filters: {
@@ -436,7 +436,7 @@ view: braze_lifecycle_cohorts {
     }
   }
   measure: sum_of_number_of_unique_variant_customers_ordered {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${number_of_unique_customers_ordered};;
     filters: {
@@ -446,7 +446,7 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: share_of_variant_customers_ordered {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_number_of_unique_variant_customers_ordered},${sum_of_number_of_unique_variant_users});;
   }
@@ -545,7 +545,7 @@ view: braze_lifecycle_cohorts {
 
   # Step 2: Create Overall Variant/Control Metrics
   measure: sum_of_variant_amount_of_gmv_gross {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${amount_of_gmv_gross};;
     filters: {
@@ -555,7 +555,7 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: sum_of_control_amount_of_gmv_gross {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${amount_of_control_gmv_gross};;
     filters: {
@@ -566,13 +566,13 @@ view: braze_lifecycle_cohorts {
 
   # Step 3: Create Variant/Control per User Metrics
   measure: share_of_variant_amount_of_gmv {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_variant_amount_of_gmv_gross},${sum_of_number_of_unique_variant_users});;
   }
 
   measure: share_of_control_amount_of_gmv {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_control_amount_of_gmv_gross},${sum_of_number_of_unique_control_users});;
   }
@@ -630,7 +630,7 @@ view: braze_lifecycle_cohorts {
 
     # Step 2: Create Overall Variant/Control Metrics
     measure: sum_of_variant_amount_of_cart_discount_gross {
-      hidden: no
+      hidden: yes
       type: sum
       sql: ${amount_of_cart_discount_gross};;
       filters: {
@@ -640,7 +640,7 @@ view: braze_lifecycle_cohorts {
     }
 
     measure: sum_of_control_amount_of_cart_discount_gross {
-      hidden: no
+      hidden: yes
       type: sum
       sql: ${amount_of_control_cart_discount_gross};;
       filters: {
@@ -651,13 +651,13 @@ view: braze_lifecycle_cohorts {
 
     # Step 3: Create Variant/Control per User Metrics
     measure: share_of_variant_amount_of_cart_discount_per_order {
-      hidden: no
+      hidden: yes
       type: number
       sql: safe_divide(${sum_of_variant_amount_of_cart_discount_gross},${sum_of_number_of_unique_variant_orders});;
     }
 
     measure: share_of_control_amount_of_cart_discount_per_order {
-      hidden: no
+      hidden: yes
       type: number
       sql: safe_divide(${sum_of_control_amount_of_cart_discount_gross},${sum_of_number_of_unique_control_orders});;
     }
@@ -707,13 +707,13 @@ view: braze_lifecycle_cohorts {
 
   # Step 3: Create Variant/Control per User Metrics
   measure: share_of_variant_amount_of_cart_discount_per_gmv {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_variant_amount_of_cart_discount_gross},${sum_of_variant_amount_of_gmv_gross});;
   }
 
   measure: share_of_control_amount_of_cart_discount_per_gmv {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_control_amount_of_cart_discount_gross},${sum_of_control_amount_of_gmv_gross});;
   }
@@ -758,18 +758,18 @@ view: braze_lifecycle_cohorts {
     label: "AVG Order Value (Gross)"
     description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
     type: number
-    sql: ${sum_of_amount_of_gmv_gross}/${sum_of_number_of_unique_orders} ;;
+    sql: safe_divide(${sum_of_amount_of_gmv_gross},${sum_of_number_of_unique_orders}) ;;
   }
 
   # Step 2: Create Overall Variant/Control Metrics
   measure: variant_avg_order_value {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_variant_amount_of_gmv_gross},(${sum_of_number_of_unique_variant_orders});;
   }
 
   measure: control_avg_order_value {
-    hidden: no
+    hidden: yes
     type: number
     sql: safe_divide(${sum_of_control_amount_of_gmv_gross},${sum_of_number_of_unique_control_orders});;
  }
@@ -813,7 +813,7 @@ view: braze_lifecycle_cohorts {
 
   # Step 1: Create Overall Metric
   measure: sum_of_amount_of_total_price_gross {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${amount_of_total_price_gross} ;;
   }
@@ -823,12 +823,12 @@ view: braze_lifecycle_cohorts {
     label: "AVG Item Value (Gross)"
     description: "AIV represents the Average value of items (incl. VAT). Excludes fees (gross), before deducting discounts."
     type: number
-    sql: ${sum_of_amount_of_total_price_gross}/${sum_of_number_of_unique_orders} ;;
+    sql: safe_divide(${sum_of_amount_of_total_price_gross},${sum_of_number_of_unique_orders}) ;;
   }
 
   # Step 2: Create Overall Variant/Control Metrics
   measure: sum_of_variant_amount_of_total_price_gross {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${amount_of_total_price_gross};;
     filters: {
@@ -838,7 +838,7 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: sum_of_control_amount_of_total_price_gross {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${amount_of_control_total_price_gross};;
     filters: {
@@ -848,13 +848,13 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: variant_avg_item_value {
-    hidden: no
+    hidden: yes
     type: number
     sql: NULLIF(${sum_of_variant_amount_of_total_price_gross},0)/NULLIF(${sum_of_number_of_unique_variant_orders},0);;
   }
 
   measure: control_avg_item_value {
-    hidden: no
+    hidden: yes
     type: number
     sql: NULLIF(${sum_of_control_amount_of_total_price_gross},0)/NULLIF(${sum_of_number_of_unique_control_orders},0);;
   }
@@ -913,7 +913,7 @@ view: braze_lifecycle_cohorts {
   }
 
   measure: sum_of_number_of_unique_variant_orders {
-    hidden: no
+    hidden: yes
     type: sum
     sql: ${number_of_unique_orders};;
     filters: {
