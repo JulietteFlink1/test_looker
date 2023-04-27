@@ -1598,6 +1598,7 @@ view: orders {
 
   dimension: is_daas_order {
     group_label: "* Order Dimensions *"
+    label: "Is DaaS Order"
     type: yesno
     sql: ${TABLE}.is_daas_order ;;
     description: "TRUE if the order is created on the Flink app but delivered by an external provider (e.g. Uber Direct)."
