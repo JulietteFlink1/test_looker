@@ -20,7 +20,6 @@ view: hub_uph_compliance {
   }
 
   dimension: hub_code {
-    hidden: yes
     type: string
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
@@ -266,7 +265,7 @@ view: hub_uph_compliance {
     label: "# Events"
     group_label: "> Hub One"
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     description: "Number of Hub One events. Lowest granularity available: Day - Quinyx Badge Number."
     sql: ${number_of_events_hub_one} ;;
   }
@@ -275,7 +274,7 @@ view: hub_uph_compliance {
     label: "AVG # Events"
     group_label: "> Hub One"
     type: average_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     description: "Average number of Hub One events."
     sql: ${number_of_events_hub_one} ;;
   }
@@ -301,7 +300,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of Picked/Dropped/Counted items. Based on Hub One app tracking data."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_picked_or_dropped_or_counted_items_hub_one} ;;
   }
 
@@ -318,7 +317,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of checks. Based on Hub One app tracking data."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_checks_hub_one} ;;
   }
 
@@ -335,7 +334,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of counted items. Based on Hub One app tracking data."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_counted_items_hub_one} ;;
   }
 
@@ -352,7 +351,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of items dropped during the inbounding process. Based on Hub One app tracking data."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_dropped_items_hub_one} ;;
   }
 
@@ -369,7 +368,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of picked items. Based on Hub One app tracking app."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_picked_items_hub_one} ;;
   }
 
@@ -386,7 +385,7 @@ view: hub_uph_compliance {
     group_label: "> Hub One"
     description: "Number of picked orders. Based on Hub One app tracking data."
     type: sum_distinct
-    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number});;
+    sql_distinct_key: concat(${event_date}, ${quinyx_badge_number}, ${hub_code});;
     sql: ${number_of_picked_orders_hub_one} ;;
   }
 
