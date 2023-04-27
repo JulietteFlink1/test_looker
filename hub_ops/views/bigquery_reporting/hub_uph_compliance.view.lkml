@@ -2,7 +2,7 @@
 ## This model provides information on a day/employee level about the compliance -> it is
 ## used to compare the number of events that occured within and outside the shifts
 view: hub_uph_compliance {
-  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.hub_uph_compliance` ;;
+  sql_table_name: `flink-data-prod.reporting.hub_uph_compliance` ;;
 
   dimension: table_uuid {
     type: string
