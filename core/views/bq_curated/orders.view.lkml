@@ -1980,7 +1980,7 @@ view: orders {
 
   measure: avg_number_of_withheld_from_riders_events {
     group_label: "* Operations / Logistics *"
-    label: "AVG Offered To Riders Events"
+    label: "AVG Withheld From Riders Events"
     description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
     type: average
     sql: ${number_of_withheld_from_riders_events};;
