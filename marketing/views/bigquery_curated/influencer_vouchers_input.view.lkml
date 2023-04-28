@@ -40,6 +40,7 @@ view: influencer_vouchers_input {
 
   dimension: unique_check {
     group_label: "* Influencer Specific Dimensions *"
+    description: "Label for if an influencer voucher is unique "
     type: string
     sql: ${TABLE}.unique_check ;;
   }

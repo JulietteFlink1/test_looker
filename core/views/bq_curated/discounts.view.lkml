@@ -213,6 +213,7 @@ view: discounts {
 
   measure: count {
     group_label: "* Generic Measures *"
+    hidden: yes
     type: count
     drill_fields: [discount_id, discount_name]
   }
