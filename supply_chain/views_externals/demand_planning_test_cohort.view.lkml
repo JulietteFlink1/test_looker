@@ -18,7 +18,7 @@ view: demand_planning_test_cohort {
     type: string
     sql: ${TABLE}.cohort ;;
     label: "Cohort Code"
-    description: "Shows the code of the cohort attributed to the item locations for testing/benchmarking purposes"
+    description: "Shows the code of the cohort attributed to the item locations of testing/benchmarking purposes"
     hidden: no
   }
 
@@ -30,17 +30,39 @@ view: demand_planning_test_cohort {
     hidden: no
   }
 
+  dimension: hub_code {
+    type: string
+    sql: ${TABLE}.hub_code ;;
+    label: "Hub Code"
+    description: "Code of a hub identical to back-end source tables."
+    hidden: no
+  }
+
+  dimension: time_frame_type {
+    type: string
+    sql: coalesce(${TABLE}.time_frame_type,'outside_testing_timeframe') ;;
+    label: "Time Frame Type"
+    description: "Filter for showing either if item location is inside the time frame of the cohort test or not"
+    hidden: no
+  }
+
+  dimension: sku {
+    type: string
+    sql: ${TABLE}.sku ;;
+    label: "SKU"
+    description: "product number used for identification"
+    hidden: no
+  }
+
   # Dates and timestamps can be represented in Looker using a dimension group of type: time.
   # Looker converts dates and timestamps to the specified timeframes within the dimension group.
 
   dimension_group: end {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
       year
     ]
     convert_tz: no
@@ -51,22 +73,13 @@ view: demand_planning_test_cohort {
     hidden: no
   }
 
-  dimension: hub_code {
-    type: string
-    sql: ${TABLE}.hub_code ;;
-    label: "Hub Code"
-    hidden: no
-  }
-
   dimension_group: ingestion_timestamp {
     type: time
     timeframes: [
-      raw,
       time,
       date,
       week,
       month,
-      quarter,
       year
     ]
     sql: ${TABLE}.ingestion_timestamp ;;
@@ -78,11 +91,9 @@ view: demand_planning_test_cohort {
   dimension_group: report {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
       year
     ]
     convert_tz: no
@@ -90,13 +101,6 @@ view: demand_planning_test_cohort {
     sql: ${TABLE}.report_date ;;
     label: "Report Date"
     description: "Shows the report date for the cohort attributed to the item locations"
-    hidden: no
-  }
-
-  dimension: sku {
-    type: string
-    sql: ${TABLE}.sku ;;
-    label: "SKU"
     hidden: no
   }
 
@@ -115,14 +119,6 @@ view: demand_planning_test_cohort {
     sql: ${TABLE}.start_date ;;
     label: "Start Date"
     description: "Shows the Start date for the cohort attributed to the item locations"
-    hidden: no
-  }
-
-  dimension: time_frame_type {
-    type: string
-    sql: coalesce(${TABLE}.time_frame_type,'outside_testing_timeframe') ;;
-    label: "Time Frame Type"
-    description: "Filter for showing either if item location is inside the time frame of the cohort test or not"
     hidden: no
   }
 
