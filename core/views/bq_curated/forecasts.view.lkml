@@ -553,7 +553,7 @@ view: forecasts {
     label: "# Last Mile Missed Orders - PDT"
     description: "# Last Mile Missed orders during periods of high PDT. High PDT are PDT>30min and in the 20% highest values for the day. Doesn't necessarily mean that the hub was closed.  Include all missed orders during periods when PDT was high, therefore can also include forced closures missed orders."
     type: sum
-    sql: ${number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    sql: ${number_of_last_mile_missed_orders_pdt} ;;
     value_format_name: decimal_0
   }
 
