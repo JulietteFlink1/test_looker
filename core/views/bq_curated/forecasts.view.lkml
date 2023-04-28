@@ -91,7 +91,6 @@ view: forecasts {
   }
 
 
-
   # =========  Dates   =========
 
   dimension_group: end_timestamp {
