@@ -16,23 +16,31 @@ view: influencer_vouchers_input {
   }
 
   dimension: username {
+    group_label: "* Influencer Specific Dimensions *"
+    label: "Influencer Username"
+    description: "Username for the Influencer connected to the voucher"
     type: string
     sql: ${TABLE}.username ;;
   }
 
   dimension: voucher_code {
     label: "Discount Code"
+    hidden:  yes
     type: string
     sql: ${TABLE}.voucher_code ;;
   }
 
   dimension: voucher_type {
+    group_label: "* Influencer Specific Dimensions *"
     label: "Cart Discount Type"
+    description: "Type of Influencer Discount, can be either 'Community' or 'Promo' "
     type: string
     sql: ${TABLE}.voucher_type ;;
   }
 
   dimension: unique_check {
+    group_label: "* Influencer Specific Dimensions *"
+    description: "Label for if an influencer voucher is unique "
     type: string
     sql: ${TABLE}.unique_check ;;
   }
@@ -41,6 +49,7 @@ view: influencer_vouchers_input {
 #### MEASURES
 
   measure: cnt_influencer_community_voucher_redemptions {
+    group_label: "* Influencer Measures *"
     label: "# Influencer Community Discount Code Redemptions"
     description: "Count of Community Discount Code Redemptions"
     hidden:  no
@@ -52,6 +61,7 @@ view: influencer_vouchers_input {
   }
 
   measure: cnt_influencer_promo_voucher_redemptions {
+    group_label: "* Influencer Measures *"
     label: "# Influencer Promo Discount Code Redemptions"
     description: "Count of Promo Discount Code Redemptions"
     hidden:  no
@@ -63,6 +73,7 @@ view: influencer_vouchers_input {
   }
 
   measure: sum_influencer_community_voucher_costs {
+    group_label: "* Influencer Measures *"
     label: "SUM Influencer Community Cart Discount Costs"
     description: "Sum of Discount amount Influencer Promo Discount Code"
     type: sum
@@ -73,6 +84,7 @@ view: influencer_vouchers_input {
   }
 
   measure: sum_influencer_promo_voucher_costs {
+    group_label: "* Influencer Measures *"
     label: "SUM Influencer Promo Cart Discount Costs"
     description: "Sum of Discount amount Influencer Promo Discount Code"
     type: sum
