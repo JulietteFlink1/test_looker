@@ -3,7 +3,7 @@ include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view"
 include: "/**/hub_monthly_orders.view"
 include: "/**/shyftplan_riders_pickers_hours_clean.view"
-
+include: "/**/hub_uph_compliance.view"
 
 explore: hub_uph_sessions {
   view_name: hub_uph_sessions
@@ -25,13 +25,23 @@ explore: hub_uph_sessions {
   }
 
   access_filter: {
-    field: hub_uph_sessions.country_iso
+    field: hub_uph_compliance.country_iso
     user_attribute: country_iso
   }
 
   join: global_filters_and_parameters {
     sql: ;;
     relationship: one_to_one
+  }
+
+  join: hub_uph_compliance {
+    view_label: "Compliance"
+    sql_on: ${hub_uph_compliance.hub_code} = ${hub_uph_sessions.hub_code}
+    and ${hub_uph_compliance.event_date} = ${hub_uph_sessions.shift_date}
+    and ${hub_uph_compliance.quinyx_badge_number} = ${hub_uph_sessions.quinyx_badge_number}
+    and ${hub_uph_compliance.shift_id} = ${hub_uph_sessions.shift_id};;
+    relationship: many_to_one
+    type: full_outer
   }
 
   join: hubs_ct {

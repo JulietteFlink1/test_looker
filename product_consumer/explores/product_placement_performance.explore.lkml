@@ -47,6 +47,7 @@ explore: product_placement_performance {
   always_filter: {
     filters: [
       global_filters_and_parameters.datasource_filter: "last 1 days",
+      global_filters_and_parameters.timeframe_picker: "Date",
       affected_by_impression_users.is_exposed_to_impressions: "Yes",
       product_placement_performance.product_placement: "category, search, last_bought, swimlane, collection",
       product_placement_performance.country_iso: "",

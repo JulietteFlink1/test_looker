@@ -11,6 +11,8 @@ include: "/**/shipping_methods_ct.view"
 include: "/**/hub_attributes.view"
 include: "/**/cr_dynamic_orders_cl_metrics.view"
 include: "/product_consumer/views/bigquery_curated/user_attributes_order_classification.view"
+include: "/**/discounts.view"
+include: "/*/**/vat_order.view.lkml"
 
 explore: orders_cl {
   from: orders_using_hubs
@@ -144,6 +146,34 @@ explore: orders_cl {
     type: left_outer
     fields: [order_classification.order_classification]
   }
+
+  join: discounts {
+    sql_on:
+        -- For T1 the discount id is null and we join only on the discount code.
+        ${orders_cl.discount_code} = ${discounts.discount_code}
+        and coalesce(${orders_cl.voucher_id},'') = coalesce(${discounts.discount_id},'')
+    ;;
+    type: left_outer
+    relationship: many_to_one
+  }
+
+  join: influencer_vouchers_input {
+    view_label: "Influencers"
+    sql_on: ${orders_cl.country_iso} = ${influencer_vouchers_input.country_iso} AND
+      ${orders_cl.discount_code} = ${influencer_vouchers_input.voucher_code} ;;
+    relationship: many_to_one
+    type: left_outer
+  }
+
+  join: vat_order {
+    view_label: "VAT Measures"
+    sql_on: ${orders_cl.order_uuid} = ${vat_order.order_uuid} ;;
+    relationship: one_to_one
+    type: left_outer
+    fields: [vat_order.sum_vat_discount_amount_total,vat_order.sum_discount_amount_net]
+  }
+
+
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #  - - - - - - - - - -    Cross-Referenced Metrics
