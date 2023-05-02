@@ -176,7 +176,7 @@ explore: daily_hub_staff_events {
 
   join: event_bbd_date_correction_started {
     view_label: "6 BBD Date Correction Started/ Finished"
-    #fields: [to_include_set*]
+    fields: [to_include_set*]
     sql_on: ${event_bbd_date_correction_started.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_bbd_date_correction_started.event_timestamp_date} {% endcondition %};;
@@ -186,7 +186,7 @@ explore: daily_hub_staff_events {
 
   join: event_bbd_date_correction_finished {
     view_label: "6 BBD Date Correction Started/ Finished"
-    #fields: [to_include_set*]
+    fields: [to_include_set*]
     sql_on: ${event_bbd_date_correction_finished.event_uuid} = ${daily_hub_staff_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %}
         ${event_bbd_date_correction_finished.event_timestamp_date} {% endcondition %};;
