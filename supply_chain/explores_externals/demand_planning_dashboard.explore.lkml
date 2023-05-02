@@ -128,9 +128,7 @@ join: availability_waterfall {
   type: left_outer
 }
 
-##############################################################################################################################################################################################
 # Join demand_planning_test_cohort in order to get the cohort test field which is used for supply chain stakeholders to observe item-locations which have been subjected to test initiatives #
-##############################################################################################################################################################################################
 
   join: demand_planning_test_cohort {
     view_label: "Cohort Testing"
