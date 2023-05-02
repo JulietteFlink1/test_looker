@@ -73,7 +73,7 @@ view: offline_customer_acquisition_cost {
   parameter: date_granularity {
     group_label: "* Dates and Timestamps *"
     label: "Date Granularity"
-    hidden:  yes
+    hidden: no
     type: unquoted
     allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
