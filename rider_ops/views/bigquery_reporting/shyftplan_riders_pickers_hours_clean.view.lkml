@@ -735,7 +735,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub Staff (Ops Associate, Ops Associate + and Shift Lead) Hours. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours."
+    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub Staff (Ops Associate, Ops Associate + and Shift Lead) Hours. Planned hours are used for Shift Leads since they don't punch. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours."
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
