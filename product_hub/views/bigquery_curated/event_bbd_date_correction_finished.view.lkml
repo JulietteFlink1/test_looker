@@ -155,25 +155,27 @@ view: event_bbd_date_correction_finished {
 
   dimension: origin {
     type: string
-    group_label: "BBD Date Correction Started Dimensions"
+    group_label: "BBD Date Correction Finished Dimensions"
     label: "Screen Name"
     description: "From where the srock_check has been started. Possible values are inventory/check-list and activities."
     sql: ${TABLE}.origin ;;
   }
   dimension: product_sku {
     type: string
-    group_label: "BBD Date Correction Started Dimensions"
+    group_label: "BBD Date Correction Finished Dimensions"
     label: "Product SKU"
     description: "SKU of the product, as available in the backend."
     sql: ${TABLE}.product_sku ;;
   }
   dimension: next_expiration_date_after {
+    group_label: "BBD Date Correction Finished Dimensions"
     type: string
     description: "Describes the new value for the next_expiration_date."
     sql: ${TABLE}.next_expiration_date_after ;;
   }
 
   dimension: next_expiration_date_before {
+    group_label: "BBD Date Correction Finished Dimensions"
     type: string
     description: "Describes the previous value for the next_expiration_date."
     sql: ${TABLE}.next_expiration_date_before ;;
@@ -213,8 +215,8 @@ view: event_bbd_date_correction_finished {
   # =========  Total Metrics   =========
 
   measure: number_of_events {
-    group_label: "BBD Date Check Started Measures"
-    label: "# BBD Date Correction Started"
+    group_label: "BBD Date Check Finished Measures"
+    label: "# BBD Date Correction Finished"
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
