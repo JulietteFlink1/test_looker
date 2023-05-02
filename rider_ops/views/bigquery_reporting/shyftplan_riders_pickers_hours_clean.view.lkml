@@ -362,7 +362,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_ops_associate_hours_external_one_time {
     label: "% Ops Associate External One-time Hours"
     type: number
-    description: "Share of Ops Associate external one time divided by ops associate hours."
+    description: "Share of Ops Associate external one time hours divided by ops associate hours."
     sql: ${ops_associate_hours_external_one_time}/${ops_associate_hours};;
     value_format_name: percent_1
     group_label: "Working Hours"
