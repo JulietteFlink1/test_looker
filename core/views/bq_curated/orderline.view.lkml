@@ -358,6 +358,24 @@ view: orderline {
 
   }
 
+  dimension: is_sampled_item {
+    label: "Is Sampled Item"
+    description: "TRUE if the line-item of an order is a sponsored product by the product manufacturer."
+    group_label: "> Product Attributes"
+    type: yesno
+    sql: ${TABLE}.is_sampled_item ;;
+  }
+
+  dimension: product_sample_type {
+    label: "Product Sample Type"
+    description: "This field defines the type of a sampled product and can have the values {commercial_sample, marketing_sample}. commercial_samples are fully funded by the producer, whereas marketing_samples are covered by both, Flink and the producer as part of a deal."
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_sample_type ;;
+  }
+
+
+
   dimension: translated_product_name {
     type: string
     sql: null ;;
