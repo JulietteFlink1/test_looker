@@ -298,7 +298,7 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: hub_staff_hours {
     label: "Sum of Hub Staff Hours"
-    description: "Include all Hub Staff punched hours (Ops Associate, Shift Lead and Ops Associate +). Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours. "
+    description: "Include all Hub Staff hours (Ops Associate, Shift Lead and Ops Associate +). Punched hours are used for OA and OA+. Planned hours are used for Shift Leads. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours. "
     type: number
     sql: ${ops_associate_hours}+${shift_lead_hours}+${ops_associate_plus_hours};;
     value_format_name: decimal_1
