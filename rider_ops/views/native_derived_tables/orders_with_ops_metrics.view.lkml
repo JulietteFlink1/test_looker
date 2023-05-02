@@ -156,7 +156,7 @@ view: orders_with_ops_metrics {
   }
 
   measure: share_of_daas_orders_over_all_internal_orders {
-    group_label:  "> Basic Counts"
+    group_label:  "> Operations / Logistics"
     label: "% DaaS Orders"
     description: "Share of DaaS orders over total number of internal orders"
     type: number
