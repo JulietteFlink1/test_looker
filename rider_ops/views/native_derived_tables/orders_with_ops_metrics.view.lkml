@@ -185,7 +185,7 @@ view: orders_with_ops_metrics {
     alias: [cnt_rider_orders]
     group_label: "> Basic Counts"
     label: "# Flink Delivered Orders"
-    description: "Count of Successful Orders (excl. Cancelled, Click & Collect, DaaS and External Orders) that require riders"
+    description: "Count of Successful Orders (excl. Cancelled, Click & Collect and External Orders) that require riders"
     hidden:  no
     value_format_name: decimal_0
     type: sum
