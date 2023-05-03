@@ -620,7 +620,7 @@ view: forecasts {
   measure: pct_missed_orders_planned_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
-    description: "Missed orders (planned closure) divided by the sum of Missed Orders and Last Mile orders (including DaaS and Flink delivered orders), percentage."
+    description: "Missed orders (planned closure) divided by the sum of Missed Orders and non-external successful orders (including DaaS, Flink delivered and Click&Collect orders), percentage."
     type: number
     sql: ${number_of_missed_orders_planned_closure}/
     nullif(${orders_with_ops_metrics.cnt_internal_orders} + ${number_of_missed_orders_planned_closure},0) ;;
@@ -687,7 +687,7 @@ view: forecasts {
     label: "% Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure"
     description: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Last Mile orders and Last Mile Missed orders."
     type: number
-    sql: safe_divide(${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt},
+    sql: safe_divide(${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt_forced_closure},
      ${orders_with_ops_metrics.number_of_rider_required_orders} +  ${sum_number_of_last_mile_missed_orders});;
     value_format_name: percent_2
   }
