@@ -18,6 +18,7 @@ include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_wast
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_handling_unit_rotation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
 include: "/**/hubs_ct.view"
+include: "/**/sku_promotions_valid_dates_definition.view"
 
 
 
@@ -74,4 +75,30 @@ explore: supply_chain_master {
     type: left_outer
 
   }
+
+  join: sku_promotions_valid_dates_definition {
+    view_label: "Supply Chain Master"
+    sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_valid_dates_definition.hub_code} and
+            ${supply_chain_master.parent_sku}   = ${sku_promotions_valid_dates_definition.parent_sku} and
+            ${supply_chain_master.report_date} between ${sku_promotions_valid_dates_definition.valid_from_date} and ${sku_promotions_valid_dates_definition.valid_to_date};;
+    relationship: many_to_one
+    type: left_outer
+
+    fields: [sku_promotions_valid_dates_definition.is_promotional_sku]
+
+  }
+
+  join: sku_promotions_valid_dates_definition_ranges {
+    from: sku_promotions_valid_dates_definition
+    view_label: "Supply Chain Master"
+    sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_valid_dates_definition_ranges.hub_code} and
+            ${supply_chain_master.parent_sku}   = ${sku_promotions_valid_dates_definition_ranges.parent_sku} and
+            ${sku_promotions_valid_dates_definition_ranges.valid_to_date} >= ${supply_chain_master.report_date};;
+    relationship: many_to_one
+    type: left_outer
+
+    fields: [sku_promotions_valid_dates_definition_ranges.valid_from_date, sku_promotions_valid_dates_definition_ranges.valid_to_date]
+
+  }
+
 }
