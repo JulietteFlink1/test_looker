@@ -23,6 +23,14 @@ view: waste_waterfall {
     hidden: no
   }
 
+  dimension: parent_bucket {
+    type: string
+    sql: ${TABLE}.parent_bucket ;;
+    label: "Parent Bucket"
+    description: "Bucket allocated to product-location for waste topics on a parent level"
+    hidden: no
+  }
+
   dimension: delisted_flag {
     type: number
     sql: ${TABLE}.flag_delisted ;;

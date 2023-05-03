@@ -36,37 +36,37 @@ view: braze_lifecycle_cohorts {
 
   dimension: amount_of_gmv_gross {
     type: number
-    sql: ${TABLE}.amount_of_gmv_gross ;;
+    sql: ${TABLE}.amt_of_gmv_gross ;;
     hidden: yes
   }
 
   dimension: amount_of_control_gmv_gross {
     type: number
-    sql: ${TABLE}.amount_of_control_gmv_gross ;;
+    sql: ${TABLE}.amt_of_control_gmv_gross ;;
     hidden: yes
   }
 
   dimension: amount_of_cart_discount_gross {
     type: number
-    sql: ${TABLE}.amount_of_cart_discount_gross ;;
+    sql: ${TABLE}.amt_of_cart_discount_gross ;;
     hidden: yes
   }
 
   dimension: amount_of_control_cart_discount_gross {
     type: number
-    sql: ${TABLE}.amount_of_control_cart_discount_gross ;;
+    sql: ${TABLE}.amt_of_control_cart_discount_gross ;;
     hidden: yes
   }
 
   dimension: amount_of_total_price_gross {
     type: number
-    sql: ${TABLE}.amount_of_total_price_gross ;;
+    sql: ${TABLE}.amt_of_total_price_gross ;;
     hidden: yes
   }
 
   dimension: amount_of_control_total_price_gross {
     type: number
-    sql: ${TABLE}.amount_of_control_total_price_gross ;;
+    sql: ${TABLE}.amt_of_control_total_price_gross ;;
     hidden: yes
   }
 

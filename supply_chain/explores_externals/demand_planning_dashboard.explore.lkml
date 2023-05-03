@@ -18,6 +18,8 @@ include: "/supply_chain/supply_chain_config.view.lkml"
 include: "/core/views/bq_curated/hubs_ct.view.lkml"
 include: "/pricing/views/bigquery_reporting/key_value_items.view.lkml"
 include: "/core/views/bq_curated/products.view.lkml"
+include: "/supply_chain/views_externals/demand_planning_test_cohort.view.lkml"
+
 
 explore: demand_planning_dashboard_explore {
 
@@ -125,5 +127,18 @@ join: availability_waterfall {
   relationship: one_to_one
   type: left_outer
 }
+
+# Join demand_planning_test_cohort in order to get the cohort test field which is used for supply chain stakeholders to observe item-locations which have been subjected to test initiatives #
+
+  join: demand_planning_test_cohort {
+    view_label: "Cohort Testing"
+    sql_on:
+     ${demand_planning_dashboard_explore.parent_sku} = ${demand_planning_test_cohort.sku} and
+     ${demand_planning_dashboard_explore.hub_code} = ${demand_planning_test_cohort.hub_code} and
+     ${demand_planning_dashboard_explore.report_date} = ${demand_planning_test_cohort.report_date}
+    ;;
+    relationship: many_to_one
+    type: left_outer
+  }
 
 }
