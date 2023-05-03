@@ -685,10 +685,10 @@ view: forecasts {
   measure: share_of_cancelled_and_missed_orders_pdt_forced_closure {
     group_label: "> Order Measures"
     label: "% Cancelled and RR Missed Orders (Forecast-Related) - PDT or Forced Closure"
-    description: "# Cancelled and RR Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Cancelled orders, Rider Required orders and Rider Required Missed orders."
+    description: "# Cancelled and RR Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Rider Required orders and Rider Required Missed orders."
     type: number
     sql: safe_divide(${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt},
-    ${number_of_cancelled_orders} + ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} +  ${sum_number_of_last_mile_missed_orders}) ;;
+    ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} +  ${sum_number_of_last_mile_missed_orders}) ;;
     value_format_name: decimal_0
   }
 
