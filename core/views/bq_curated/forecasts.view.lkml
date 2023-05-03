@@ -496,10 +496,10 @@ view: forecasts {
   measure: pct_cancelled_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
-    description: "Cancelled orders (cancelled due to operational reasons only) divided by the sum of Cancelled Orders and of Rider Required orders (including DaaS and Flink delivered orders), percentage."
+    description: "Cancelled orders (cancelled due to operational reasons only) divided by Rider Required orders (including DaaS and Flink delivered orders), percentage."
     type: number
     sql: ${number_of_cancelled_orders}/
-    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${number_of_cancelled_orders},0) ;;
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders},0) ;;
     value_format_name: percent_2
   }
 
