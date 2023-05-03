@@ -496,10 +496,10 @@ view: forecasts {
   measure: pct_cancelled_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
-    description: "Cancelled orders (cancelled due to operational reasons only) divided by the sum of Cancelled Orders and of Last Mile orders (including DaaS and Flink delivered orders), percentage."
+    description: "Cancelled orders (cancelled due to operational reasons only) divided by Last Mile orders (including DaaS and Flink delivered orders), percentage."
     type: number
     sql: ${number_of_cancelled_orders}/
-    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${number_of_cancelled_orders},0) ;;
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders},0) ;;
     value_format_name: percent_2
   }
 
@@ -685,10 +685,10 @@ view: forecasts {
   measure: share_of_cancelled_and_missed_orders_pdt_forced_closure {
     group_label: "> Order Measures"
     label: "% Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure"
-    description: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Cancelled orders, Last Mile orders and Last Mile Missed orders."
+    description: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Last Mile orders and Last Mile Missed orders."
     type: number
     sql: safe_divide(${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt},
-    ${number_of_cancelled_orders} + ${orders_with_ops_metrics.number_of_unique_flink_delivered_orders} +  ${sum_number_of_last_mile_missed_orders}) ;;
+     ${orders_with_ops_metrics.number_of_rider_required_orders} +  ${sum_number_of_last_mile_missed_orders});;
     value_format_name: percent_2
   }
 
