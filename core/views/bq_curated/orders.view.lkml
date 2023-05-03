@@ -371,7 +371,9 @@ view: orders {
       week_of_year,
       week,
       month,
+      month_num,
       quarter,
+      quarter_of_year,
       year
     ]
     sql: ${TABLE}.order_timestamp ;;
@@ -1598,6 +1600,7 @@ view: orders {
 
   dimension: is_daas_order {
     group_label: "* Order Dimensions *"
+    label: "Is DaaS Order"
     type: yesno
     sql: ${TABLE}.is_daas_order ;;
     description: "TRUE if the order is created on the Flink app but delivered by an external provider (e.g. Uber Direct)."
@@ -2518,7 +2521,7 @@ view: orders {
 
   measure: avg_number_items {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG # items"
+    label: "AVG # Items"
     description: "Average number of items per order"
     hidden:  no
     type: number
@@ -2528,7 +2531,7 @@ view: orders {
 
   measure: avg_number_sku {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG # SKUs"
+    label: "AVG # Distinct SKUs"
     description: "Average number of SKUs per order"
     hidden:  no
     type: number
@@ -2866,7 +2869,7 @@ view: orders {
   }
 
   measure: sum_quantity_fulfilled {
-    label: "Item Quantity Fulfilled"
+    label: "Quantity Sold"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Fulfilled Quantity"
     type: sum
@@ -2874,7 +2877,7 @@ view: orders {
   }
 
   measure: sum_distinct_skus {
-    label: "SKU Quantity"
+    label: "# Distinct SKUs Sold"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Number of distinct SKUs"
     type: sum

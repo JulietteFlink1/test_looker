@@ -297,7 +297,8 @@ view: shyftplan_riders_pickers_hours_clean {
   }
 
   measure: hub_staff_hours {
-    label: "Sum of Hub Staff Hours (Inventory Associate, Picker, Rider Captains, Ops Associate, Shift Lead and Ops Associate +)"
+    label: "Sum of Hub Staff Hours"
+    description: "Include all Hub Staff hours (Ops Associate, Shift Lead and Ops Associate +). Punched hours are used for OA and OA+. Planned hours are used for Shift Leads. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours. "
     type: number
     sql: ${ops_associate_hours}+${shift_lead_hours}+${ops_associate_plus_hours};;
     value_format_name: decimal_1
@@ -306,7 +307,8 @@ view: shyftplan_riders_pickers_hours_clean {
 
   measure: ops_associate_hours {
     alias: [ops_staff_hours]
-    label: "Sum of Ops Associate Hours (Inventory Associate, Picker, Ops Associate and  Rider Captain)"
+    label: "Sum of Ops Associate Hours"
+    description: "Sum of Ops Associate punched hours. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours."
     type: sum
     sql:${number_of_worked_minutes}/60;;
     filters: [position_name: "ops associate"]
@@ -360,7 +362,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_ops_associate_hours_external_one_time {
     label: "% Ops Associate External One-time Hours"
     type: number
-    description: "Include Inventory Associate, Picker, Ops Associate and  Rider Captain shift hours"
+    description: "Share of Ops Associate external one time hours divided by ops associate hours."
     sql: ${ops_associate_hours_external_one_time}/${ops_associate_hours};;
     value_format_name: percent_1
     group_label: "Working Hours"
@@ -733,7 +735,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: hub_staff_utr {
     label: "AVG Hub Staff UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub (Inventory Associate, Picker, Rider Captains and shift Lead) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders)/ # Worked Hub Staff (Ops Associate, Ops Associate + and Shift Lead) Hours. Planned hours are used for Shift Leads since they don't punch. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours."
     sql: ${adjusted_orders_pickers} / NULLIF(${hub_staff_hours}, 0);;
     value_format_name: decimal_2
     group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
@@ -743,7 +745,7 @@ view: shyftplan_riders_pickers_hours_clean {
     alias: [ops_staff_utr]
     label: "AVG Ops Associate UTR"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Worked Ops Staff (Inventory Associate, Picker, Ops Associate and Rider Captains) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Worked Ops Associate Hours. Note that Picker, Rider Captains, WH hours are mapped to Ops Associate hours."
     sql: ${adjusted_orders_pickers} / NULLIF(${ops_associate_hours}, 0);;
     value_format_name: decimal_2
     group_label: "{% if _explore._name == 'hub_uph_sessions' %}> Productivity Metrics{% else %}UTR{% endif %}"
