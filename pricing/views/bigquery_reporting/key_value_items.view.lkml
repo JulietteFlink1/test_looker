@@ -5,7 +5,7 @@ view: key_value_items {
 dimension: kvi_date {
   type: date
   datatype: date
-  sql: case when concat(extract(year from partition_date)||extract(month from partition_date)) =
+  sql: case when concat(extract(year from ${TABLE}.partition_date)||extract(month from ${TABLE}.partition_date)) =
                  concat(extract(year from current_date())||extract(month from current_date()))
   then ${TABLE}.partition_date else null end;;
 }
