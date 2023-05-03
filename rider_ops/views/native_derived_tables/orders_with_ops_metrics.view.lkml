@@ -185,11 +185,20 @@ view: orders_with_ops_metrics {
     alias: [cnt_rider_orders]
     group_label: "> Basic Counts"
     label: "# Flink Delivered Orders"
-    description: "Count of Successful Orders (excl. Cancelled, Click & Collect and External Orders) that require riders"
+    description: "Count of Successful Orders (excl. Cancelled, Click & Collect, DaaS and External Orders) that require riders"
     hidden:  no
     value_format_name: decimal_0
     type: sum
     }
+
+  measure: number_of_rider_required_orders {
+    group_label: "> Basic Counts"
+    label: "# RR Orders"
+    description: "Count of Successful Rider Required Order Orders (excl. Cancelled, Click & Collect and External Orders) that require riders. Include Flink delivered orders and DaaS orders."
+    value_format_name: decimal_0
+    type: number
+    sql: ${cnt_daas_orders}+${number_of_unique_flink_delivered_orders}  ;;
+  }
 
   measure: avg_number_items {
     group_label: "> Basic Counts"
