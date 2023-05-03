@@ -22,9 +22,18 @@ view: orderline {
 
   dimension: quantity {
     label: "Quantity Sold"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
     alias: [quantity_fulfilled]
     type: number
     sql: ${TABLE}.quantity ;;
+    group_label: "> Monetary Dimensions"
+  }
+
+  dimension: quantity_sampled {
+    label: "Quantity Sampled"
+    description: "The quantity of 'sampled' products - promotional products that were partially or completely sponsored by the producer."
+    type: number
+    sql: ${TABLE}.quantity_sampled ;;
     group_label: "> Monetary Dimensions"
   }
 
@@ -617,9 +626,9 @@ view: orderline {
   ##########
 
   measure: sum_item_quantity {
-    label: "SUM Item Quantity sold"
+    label: "SUM Item Quantity Sold"
     alias: [sum_item_quantity_fulfilled]
-    description: "Quantity of Order Line Items sold"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
     hidden:  no
     type: sum
     sql: ${quantity};;
@@ -627,8 +636,17 @@ view: orderline {
     group_label: "> Absolute Metrics"
   }
 
+  measure: sum_item_quantity_sampled {
+    label: "SUM Item Quantity Sampled"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
+    type: sum
+    sql: ${quantity_sampled};;
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
   measure: sum_item_quantity_returned {
-    label: "SUM Item Quantity returned"
+    label: "SUM Item Quantity Returned"
     description: "Quantity of Order Line Items returned"
     hidden:  no
     type: sum
@@ -638,7 +656,7 @@ view: orderline {
   }
 
   measure: sum_item_price_gross {
-    label: "SUM Item Prices sold (gross)"
+    label: "SUM Item Prices Sold (gross)"
     alias: [sum_item_price_fulfilled_gross]
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
@@ -649,7 +667,7 @@ view: orderline {
   }
 
   measure: sum_item_price_net {
-    label: "SUM Item Prices sold (net)"
+    label: "SUM Item Prices Sold (net)"
     alias: [sum_item_price_fulfilled_net]
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no
@@ -671,7 +689,7 @@ view: orderline {
   }
 
   measure: sum_item_price_after_product_discount_net {
-    label: "SUM Item Prices sold After Product Discount (net)"
+    label: "SUM Item Prices Sold After Product Discount (net)"
     alias: [sum_item_price_fulfilled_after_product_discount_net]
     description: "Total Price of sold Items after Deduction of Product Discounts. excl. VAT"
     hidden:  no
