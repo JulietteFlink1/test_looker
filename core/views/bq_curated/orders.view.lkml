@@ -371,7 +371,9 @@ view: orders {
       week_of_year,
       week,
       month,
+      month_num,
       quarter,
+      quarter_of_year,
       year
     ]
     sql: ${TABLE}.order_timestamp ;;
