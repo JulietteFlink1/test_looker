@@ -2,9 +2,9 @@ include: "/commercial/views/bigquery_curated/product_categories.view.lkml"
 
 explore:  product_categories{
 
-  label: "Product Categories (CommererceTools)"
+  label: "Product Categories (commercetools)"
   group_label: "Commercial"
-  description: "This Explore exposes category information from CommerceTools"
+  description: "This Explore exposes category information from commercetools"
   from: product_categories
 
   access_filter: {
