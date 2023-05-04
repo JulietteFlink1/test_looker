@@ -415,12 +415,6 @@ view: order_cohorts_base {
     sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
   }
 
-  dimension: is_internal_order {
-    group_label: "* Order Dimensions *"
-    type: yesno
-    sql: ${TABLE}.is_internal_order ;;
-  }
-
   dimension: is_order_delay_above_10min {
     group_label: "* Operations / Logistics *"
     type: yesno
