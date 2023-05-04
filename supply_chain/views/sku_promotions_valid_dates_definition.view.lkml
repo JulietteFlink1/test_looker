@@ -6,7 +6,7 @@
 view: sku_promotions_valid_dates_definition {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-dev.dbt_lruiz_curated.sku_promotions_valid_dates_new_definition`
+  sql_table_name: `flink-data-prod.curated.sku_promotions_valid_dates_new_definition`
     ;;
 
 ####################################################
