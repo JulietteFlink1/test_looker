@@ -6,7 +6,6 @@ view: employee_level_kpis {
   sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
     ;;
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -417,9 +416,20 @@ view: employee_level_kpis {
     type: duration
     intervals: [day, week, year]
     label: "Duration between hire date and today"
-    sql_start: timestamp(${TABLE}.hire_date) ;;
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and today (if hire date is not existing then consdier Employment Start Date instead)"
+  }
+
+  dimension_group: time_between_hire_date_and_shift_date {
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between hire date and shift date"
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
+    sql_end: timestamp(${shift_date}) ;;
+    group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and shift date (if hire date is not existing then consdier Employment Start Date instead)"
   }
 
   dimension: number_of_planned_minutes_availability_based {
