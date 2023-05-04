@@ -200,6 +200,16 @@ view: orders_with_ops_metrics {
     type: sum
     }
 
+  measure: number_of_rider_required_orders {
+    group_label: "> Basic Counts"
+    label: "# RR Orders"
+    hidden: yes
+    description: "Count of Successful Rider Required Orders (excl. Cancelled, Click & Collect and External Orders) that require riders. Include Flink delivered orders and DaaS orders."
+    value_format_name: decimal_0
+    type: number
+    sql: ${cnt_daas_orders}+${number_of_unique_flink_delivered_orders}  ;;
+  }
+
   measure: avg_number_items {
     group_label: "> Basic Counts"
     label: "AVG # Items"
