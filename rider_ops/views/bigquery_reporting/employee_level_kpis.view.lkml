@@ -621,7 +621,8 @@ view: employee_level_kpis {
     group_label: "> Payroll"
     type: number
     label: "% Fringe"
-    description: "% Fringe"
+    description: " The estimated rate of employer-related social contributions that are mandatory contributions
+      for employers. Employers are required to pay it as a percentage of their their employees' gross salaries to various social security programs"
     sql: ${TABLE}.pct_fringe ;;
     value_format_name: decimal_1
     hidden: yes
