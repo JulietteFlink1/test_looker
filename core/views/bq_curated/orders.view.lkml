@@ -3028,7 +3028,7 @@ view: orders {
   measure: cnt_internal_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Internal Orders"
-    description: "Count of Internal Orders"
+    description: "Count of Internal Orders. All orders placed via Flink App."
     hidden:  no
     type: count_distinct
     sql: ${order_uuid} ;;
