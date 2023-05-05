@@ -3,10 +3,10 @@
 # Team: Supply Chain and Commercial
 
 # The name of this view in Looker is "SKU Promotions Valid Dates Definition"
-view: sku_promotions_valid_dates_definition {
+view: sku_promotions_date_ranges_definition {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-prod.curated.sku_promotions_valid_dates_new_definition`
+  sql_table_name: `flink-data-dev.dbt_lruiz_prep.sku_promotions_date_ranges_definition`
     ;;
 
 ####################################################
