@@ -252,18 +252,8 @@ view: hub_uph_compliance {
     group_label: "> Flags"
     type: yesno
     label: "Shift - No Hub One Data"
-    description: "Yes if there is a punched shift during which no Hub One events occurred, No otherwise."
-    sql:${is_punched_shift}
-        and ${number_of_events_within_shift} = 0
-        ;;
-  }
-
-  dimension: not_punched_shift_and_no_hub_one_data {
-    group_label: "> Flags"
-    type: yesno
-    label: "No Punched Shift - No Hub One Data"
-    description: "Yes if the shift is not punched and there are no Hub One events within it, No otherwise."
-    sql:not ${is_punched_shift}
+    description: "Yes if there is a planned shift during which no Hub One events occurred, No otherwise."
+    sql:${has_shift}
         and ${number_of_events_within_shift} = 0
         ;;
   }
@@ -443,14 +433,6 @@ view: hub_uph_compliance {
     filters: [shift_but_no_hub_one_data: "yes"]
   }
 
-  measure: count_not_punched_shift_and_no_hub_one_data {
-    group_label: "> Compliance"
-    type: count
-    label: "# Shifts - No Punch & No Hub One Events"
-    description: "Number of non punched shifts for which there are no Hub One events within it."
-    filters: [not_punched_shift_and_no_hub_one_data: "yes"]
-  }
-
   measure: count_shifts {
     group_label: "> Compliance"
     label: "# Shifts"
@@ -496,16 +478,5 @@ view: hub_uph_compliance {
     sql: safe_divide(${count_shift_but_no_hub_one_data},${count_shifts}) ;;
     value_format_name: percent_1
   }
-
-  measure: share_of_not_punched_shift_and_no_hub_one_data{
-    group_label: "> Compliance"
-    label: "% Shifts - No Punch & No Hub One Events"
-    description: "Share of non punched shifts for which there are no Hub One events within it."
-    type: number
-    sql: safe_divide(${count_not_punched_shift_and_no_hub_one_data},${count_shifts}) ;;
-    value_format_name: percent_1
-  }
-
-
 
 }

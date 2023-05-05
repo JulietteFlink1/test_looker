@@ -105,7 +105,7 @@ explore: current_inventory {
       ;;
     relationship: many_to_one
     type: left_outer
-    fields: [orders.is_internal_order, orders.is_successful_order, created_date]
+    fields: [orders.is_successful_order, created_date]
   }
 
   join: product_prices_daily {
