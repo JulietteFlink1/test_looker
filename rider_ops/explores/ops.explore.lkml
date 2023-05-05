@@ -133,7 +133,10 @@ explore: ops {
       hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure,
       hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders,
       hub_turf_closures_30min.sum_number_of_last_mile_missed_orders_forced_closure,
-      hub_turf_closures_30min.share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders]
+      hub_turf_closures_30min.sum_number_of_last_mile_missed_orders_forced_closure_understaffing_auto_closure,
+      hub_turf_closures_30min.share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders,
+      hub_turf_closures_30min.share_of_last_mile_missed_orders_understaffing_auto_closure_per_number_of_successful_non_external_orders,
+      hub_turf_closures_30min.closure_reason]
   }
 
   join: hub_turf_closures_daily {

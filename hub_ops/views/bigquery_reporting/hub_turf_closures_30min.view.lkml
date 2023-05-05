@@ -152,6 +152,15 @@ view: hub_turf_closures_30min {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_last_mile_missed_orders_forced_closure_understaffing_auto_closure {
+    label: "# Estimated Last Mile Missed Orders - Understaffing & Auto-Closure (30min)"
+    description: "Estimated number of last mile missed orders due to understaffing or auto-closure."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_forced_closure} ;;
+    filters: [closure_reason: "understaffing, auto_closure"]
+    value_format_name: decimal_0
+  }
+
   measure: sum_amt_estimated_last_mile_lost_gmv_eur {
     label: "€ Estimated Last Mile Lost GMV (30min)"
     description: "Estimated lost GMV due to last mile missed orders. Computed as number of last mile missed orders due to emergency closure multiplied by average order value."
@@ -200,6 +209,15 @@ view: hub_turf_closures_30min {
     description: "# Last Mile Missed Orders / (# Last Mile Missed Orders + # Succesful Non External Orders per hub)"
     type: number
     sql: safe_divide(${sum_number_of_last_mile_missed_orders_forced_closure},
+      (${sum_number_of_successful_non_external_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure}));;
+    value_format_name: percent_1
+  }
+
+  measure: share_of_last_mile_missed_orders_understaffing_auto_closure_per_number_of_successful_non_external_orders {
+    label: "% Last Mile Missed orders - Understaffing & Auto-Closure (30min)"
+    description: "# Last Mile Missed Orders Understaffing & Auto-Closure / (# Last Mile Missed Orders + # Succesful Non External Orders per hub)"
+    type: number
+    sql: safe_divide(${sum_number_of_last_mile_missed_orders_forced_closure_understaffing_auto_closure},
       (${sum_number_of_successful_non_external_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure}));;
     value_format_name: percent_1
   }
