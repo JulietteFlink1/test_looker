@@ -607,6 +607,16 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  dimension: pct_fringe {
+    group_label: "> Payroll"
+    type: number
+    label: "% Fringe"
+    description: "% Fringe"
+    sql: ${TABLE}.pct_fringe ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1843,7 +1853,8 @@ view: employee_level_kpis {
       number_of_vacation_hours_payroll,
       hourly_rate,
       sum_signon_bonus_gross,
-      sum_referral_bonus_net
+      sum_referral_bonus_net,
+      pct_fringe
     ]
   }
 
