@@ -167,7 +167,7 @@ view: orders_with_ops_metrics {
   measure: cnt_internal_orders {
     group_label: "> Basic Counts"
     label: "# Internal Orders"
-    description: "Count of Internal Orders"
+    description: "Count of Internal Orders. All orders placed via Flink App."
     hidden:  no
     type: sum
     value_format_name: decimal_0

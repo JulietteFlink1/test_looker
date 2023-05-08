@@ -19,10 +19,6 @@ view: monthly_cohorts {
         value: ""
       }
       filters: {
-        field: orders_cl.is_internal_order
-        value: "no"
-      }
-      filters: {
         field: orders_cl.is_successful_order
         value: "yes"
       }
