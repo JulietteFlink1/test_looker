@@ -1,3 +1,5 @@
+# Created by Jelle van der Grijn for the Commercial team
+
 include: "/**/order_orderline_cl.explore.lkml"
 
 view: dynamic_pop_comparison {
