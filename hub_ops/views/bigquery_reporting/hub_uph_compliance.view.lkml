@@ -429,7 +429,7 @@ view: hub_uph_compliance {
     group_label: "> Compliance"
     type: count
     label: "# Shifts - No Hub One Events"
-    description: "Number of punched shifts for which there are no Hub One events within it."
+    description: "Number of planned shifts for which there are no Hub One events within it."
     filters: [shift_but_no_hub_one_data: "yes"]
   }
 
@@ -473,7 +473,7 @@ view: hub_uph_compliance {
   measure: share_of_shifts_no_hub_one_data{
     group_label: "> Compliance"
     label: "% Shifts - No Hub One Events"
-    description: "Share of punched shifts for which there are no Hub One events within it."
+    description: "Share of planned shifts for which there are no Hub One events within it."
     type: number
     sql: safe_divide(${count_shift_but_no_hub_one_data},${count_shifts}) ;;
     value_format_name: percent_1
