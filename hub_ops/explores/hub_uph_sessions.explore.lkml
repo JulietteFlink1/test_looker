@@ -40,7 +40,7 @@ explore: hub_uph_sessions {
 
   join: hubs_ct {
     view_label: "Hubs"
-    sql_on: ${hubs_ct.hub_code} = ${hub_uph_sessions.hub_code};;
+    sql_on: ${hubs_ct.hub_code} = ${hub_uph_compliance.hub_code};;
     relationship: many_to_one
     type: left_outer
   }
