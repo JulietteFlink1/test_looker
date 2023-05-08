@@ -245,163 +245,6 @@ view: staffing {
 
   }
 
-  ##### CC
-  dimension: number_of_excused_no_show_minutes_external_cc_agent {
-    label: "# Excused No Show External CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_minutes_cc_agent {
-    label: "# Excused No Show CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_excused_no_show_minutes_internal_cc_agent {
-    label: "# Excused No Show Internal CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_minutes_cc_agent {
-    label: "# No Show CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_no_show_minutes_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_minutes_external_cc_agent {
-    label: "# No Show External CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_no_show_minutes_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_no_show_minutes_internal_cc_agent {
-    label: "# No Show Internal CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_no_show_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_employees_cc_agent {
-    label: "# Planned CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_planned_employees_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_employees_external_cc_agent {
-    label: "# Planned External CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_planned_employees_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_employees_internal_cc_agent {
-    label: "# Planned Internal CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_planned_employees_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_minutes_cc_agent {
-    label: "# Planned CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_planned_minutes_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_minutes_external_cc_agent {
-    label: "# Planned External CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_planned_minutes_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_planned_minutes_internal_cc_agent {
-    label: "# Planned Internal CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_planned_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_unassigned_employees_external_cc_agent {
-    label: "# Unassigned External CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_unassigned_employees_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_unassigned_employees_internal_cc_agent {
-    label: "# Unassigned Internal CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_unassigned_employees_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_unassigned_minutes_external_cc_agent {
-    label: "# Unassigned External CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_unassigned_minutes_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_unassigned_minutes_internal_cc_agent {
-    label: "# Unassigned Internal CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_unassigned_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_worked_employees_cc_agent {
-    label: "# Worked CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_worked_employees_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_worked_employees_external_cc_agent {
-    label: "# Worked External CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_worked_employees_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_worked_employees_internal_cc_agent {
-    label: "# Worked Internal CC Agents"
-    type: number
-    sql: ${TABLE}.number_of_worked_employees_internal_cc_agent ;;
-    hidden: yes
-
-  }
-
-  dimension: number_of_worked_minutes_external_cc_agent {
-    label: "# Worked External CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_worked_minutes_external_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_worked_minutes_internal_cc_agent {
-    label: "# Worked Internal CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_worked_minutes_internal_cc_agent ;;
-    hidden: yes
-
-  }
-  dimension: number_of_worked_minutes_cc_agent {
-    label: "# Worked CC Agent Minutes"
-    type: number
-    sql: ${TABLE}.number_of_worked_minutes_cc_agent ;;
-    hidden: yes
-
-  }
-
   ##### Shift Lead
 
   dimension: number_of_unexcused_no_show_minutes_shift_lead {
@@ -1439,14 +1282,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_worked_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Punched CC Agent Hours"
-    type: sum
-    sql: ${number_of_worked_minutes_cc_agent}/60;;
-    value_format_name: decimal_1
-  }
-
 # since shift lead do not consistently punch in/out then we need to consider worked hours = planned hours
   measure: number_of_worked_hours_hub_staff {
     group_label: "> Hub Staff Measures"
@@ -1471,14 +1306,6 @@ view: staffing {
     label: "# External Punched Shift Lead Hours"
     type: sum
     sql: ${number_of_worked_minutes_external_shift_lead}/60;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_worked_hours_external_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# External Punched CC Agent Hours"
-    type: sum
-    sql: ${number_of_worked_minutes_external_cc_agent}/60;;
     value_format_name: decimal_1
   }
 
@@ -1521,15 +1348,6 @@ view: staffing {
     hidden: yes
   }
 
-  measure: sum_of_worked_employees_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Punched CC Agents"
-    type: sum
-    sql: ${number_of_worked_employees_cc_agent};;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
   measure: sum_of_worked_employees_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Punched Ops Associates"
@@ -1568,15 +1386,6 @@ view: staffing {
     hidden: yes
   }
 
-  measure: sum_of_worked_employees_external_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Punched External CC Agents"
-    type: sum
-    sql: ${number_of_worked_employees_external_cc_agent};;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
   #### Internal
 
   measure: sum_of_worked_employees_internal_ops_associate {
@@ -1602,15 +1411,6 @@ view: staffing {
     label: "# Punched Internal Shift Leads"
     type: sum
     sql: ${number_of_worked_employees_internal_shift_lead};;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
-  measure: sum_of_worked_employees_internal_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Punched Internal CC Agents"
-    type: sum
-    sql: ${number_of_worked_employees_internal_cc_agent};;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1659,15 +1459,6 @@ view: staffing {
     label: "# Unassigned Shift Leads"
     type: sum
     sql: ${number_of_unassigned_employees_external_shift_lead}+${number_of_unassigned_employees_internal_shift_lead};;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
-  measure: sum_of_unassigned_employees_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Unassigned CC Agents"
-    type: sum
-    sql: ${number_of_unassigned_employees_external_cc_agent}+${number_of_unassigned_employees_internal_cc_agent};;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1798,13 +1589,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_unassigned_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Open CC Agent Hours"
-    type: sum
-    sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_unassigned_minutes_internal_cc_agent})/60;;
-    value_format_name: decimal_1
-  }
   measure: number_of_unassigned_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Open Hub Staff Hours"
@@ -2083,13 +1867,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_planned_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Filled (Assigned) CC Agent Hours"
-    type: sum
-    sql: ${number_of_planned_minutes_cc_agent}/60;;
-    value_format_name: decimal_1
-  }
   measure: number_of_planned_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Filled (Assigned) Hub Staff Hours"
@@ -2234,14 +2011,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_scheduled_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# Scheduled CC Agent Hours"
-    type: number
-    sql: ${number_of_unassigned_hours_cc_agent}+${number_of_planned_hours_cc_agent};;
-    value_format_name: decimal_1
-  }
-
   measure: number_of_scheduled_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# Scheduled Hub Staff Hours"
@@ -2346,14 +2115,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_scheduled_hours_external_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# External Scheduled CC Agent Hours"
-    description: "# External Scheduled CC Agent Hours  (Assigned + Unassigned)"
-    type: sum
-    sql: (${number_of_unassigned_minutes_external_cc_agent}+${number_of_planned_minutes_external_cc_agent})/60;;
-    value_format_name: decimal_1
-  }
   measure: number_of_scheduled_hours_external_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# External Scheduled Hub Staff Hours"
@@ -2502,14 +2263,6 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_no_show_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "# No Show CC Agent Hours"
-    type: sum
-    sql: ${number_of_no_show_minutes_cc_agent}/60;;
-    value_format_name: decimal_1
-  }
-
   measure: number_of_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "# No Show Hub Staff Hours"
@@ -2571,14 +2324,6 @@ view: staffing {
     label: "# Excused No Show Shift Lead Hours"
     type: sum
     sql: ${number_of_excused_no_show_minutes_shift_lead}/60;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_excused_no_show_hours_cc {
-    group_label: "> CC Agent Measures"
-    label: "# Excused No Show CC Agent Hours"
-    type: sum
-    sql: ${number_of_excused_no_show_minutes_cc_agent}/60;;
     value_format_name: decimal_1
   }
 
@@ -2759,15 +2504,6 @@ view: staffing {
     value_format_name: percent_1
   }
 
-  measure: pct_no_show_hours_cc_agent {
-    group_label: "> CC Agent Measures"
-    label: "% No Show CC Agent Hours"
-    description: "# No Show Hours / (# Planned Hours - # Planned EC Hours)"
-    type: number
-    sql:(${number_of_no_show_hours_cc_agent})/nullif(${number_of_planned_hours_cc_agent},0) ;;
-    value_format_name: percent_1
-    hidden: yes
-  }
   measure: pct_no_show_hours_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "% No Show Hub Staff Hours"
