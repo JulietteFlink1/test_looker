@@ -94,6 +94,12 @@ view: order_backlog {
     sql: ${TABLE}.number_of_created_successful_orders_last_mile ;;
   }
 
+  dimension: number_of_offered_for_picking_orders {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.number_of_offered_for_picking_orders ;;
+  }
+
   dimension: number_of_orders_not_picked {
     type: number
     hidden: yes
@@ -171,6 +177,13 @@ view: order_backlog {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~      Measures      ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  measure: sum_of_offered_for_picking_orders {
+    label: "# Orders Offered for Picking"
+    description: "Number of orders offered for picking (offered to hub with Pick Now action)."
+    type: sum
+    sql: ${number_of_offered_for_picking_orders} ;;
+  }
 
   measure: backlog_orders_created_not_offered_for_picking {
     label: "# Backlog Orders Created Not Offered for Picking (Not Dispatched)"

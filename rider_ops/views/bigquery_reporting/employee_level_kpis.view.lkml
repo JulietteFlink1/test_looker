@@ -5,7 +5,6 @@
 view: employee_level_kpis {
   sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
     ;;
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,9 +416,20 @@ view: employee_level_kpis {
     type: duration
     intervals: [day, week, year]
     label: "Duration between hire date and today"
-    sql_start: timestamp(${TABLE}.hire_date) ;;
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and today (if hire date is not existing then consider Employment Start Date instead)"
+  }
+
+  dimension_group: time_between_hire_date_and_shift_date {
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between hire date and shift date"
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
+    sql_end: timestamp(${shift_date}) ;;
+    group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and shift date (if hire date is not existing then consider Employment Start Date instead)"
   }
 
   dimension: number_of_planned_minutes_availability_based {
@@ -603,6 +613,17 @@ view: employee_level_kpis {
     label: "Hourly Rate"
     description: "The amount of hourly wage based on SAP data."
     sql: ${TABLE}.hourly_rate ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: pct_fringe {
+    group_label: "> Payroll"
+    type: number
+    label: "% Fringe"
+    description: " The estimated rate of employer-related social contributions that are mandatory contributions
+      for employers. Employers are required to pay it as a percentage of their their employees' gross salaries to various social security programs"
+    sql: ${TABLE}.pct_fringe ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1843,7 +1864,8 @@ view: employee_level_kpis {
       number_of_vacation_hours_payroll,
       hourly_rate,
       sum_signon_bonus_gross,
-      sum_referral_bonus_net
+      sum_referral_bonus_net,
+      pct_fringe
     ]
   }
 
