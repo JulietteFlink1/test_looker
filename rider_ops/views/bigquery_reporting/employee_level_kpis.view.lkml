@@ -617,6 +617,17 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  dimension: pct_fringe {
+    group_label: "> Payroll"
+    type: number
+    label: "% Fringe"
+    description: " The estimated rate of employer-related social contributions that are mandatory contributions
+      for employers. Employers are required to pay it as a percentage of their their employees' gross salaries to various social security programs"
+    sql: ${TABLE}.pct_fringe ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1853,7 +1864,8 @@ view: employee_level_kpis {
       number_of_vacation_hours_payroll,
       hourly_rate,
       sum_signon_bonus_gross,
-      sum_referral_bonus_net
+      sum_referral_bonus_net,
+      pct_fringe
     ]
   }
 
