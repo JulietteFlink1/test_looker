@@ -465,11 +465,29 @@ view: psp_transactions {
     filters: [record_type: "Settled"]
   }
 
+  measure: sum_captured_pc_settled {
+    group_label: "> Amounts Captured"
+    type: sum
+    description: "Sum Captured PC for Settled Record Type. Amount (in Payment Currency) debited or credited on the Captured accounting register."
+    sql: ${captured_pc} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "Settled"]
+  }
+
   measure: sum_main_amount_sent_for_settle {
     group_label: "> Amounts Captured"
     type: sum
-    description: "Sum Main Amount for Sent for Settle Record Type"
+    description: "Sum Main Amount for Sent for Settle Record Type. The main amount of a Settled transaction is the amount after deducting payment processing fees."
     sql: ${main_amount} ;;
+    value_format_name: euro_accounting_2_precision
+    filters: [record_type: "SentForSettle"]
+  }
+
+  measure: sum_captured_pc_sent_for_settle {
+    group_label: "> Amounts Captured"
+    type: sum
+    description: "Sum Captured PC for Sent for Settle Record Type"
+    sql: ${captured_pc} ;;
     value_format_name: euro_accounting_2_precision
     filters: [record_type: "SentForSettle"]
   }
