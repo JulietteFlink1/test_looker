@@ -262,4 +262,24 @@ explore: order_orderline_cl {
     ;;
   }
 
+  join: dynamic_pop_comparison {
+    view_label: "Period over Period (PoP) Comparison"
+    sql_on: ${dynamic_pop_comparison.country_iso} = ${orderline.country_iso}
+      and ${dynamic_pop_comparison.created_raw} = ${orderline.created_raw}
+      and ${dynamic_pop_comparison.sku} = ${orderline.product_sku}
+      and ${dynamic_pop_comparison.hub_code} = ${orderline.hub_code};;
+    relationship: many_to_one
+  }
+
+  join: geographic_pricing_hub_cluster {
+    view_label: "Geographic Pricing"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${geographic_pricing_hub_cluster.hub_code} =  ${orders_cl.hub_code}
+        {% condition global_filters_and_parameters.datasource_filter %} ${erp_buying_prices.report_date} {% endcondition %}
+    ;;
+  }
+
+
 }
