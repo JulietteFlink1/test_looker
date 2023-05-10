@@ -39,7 +39,7 @@ explore: orders_cl {
     field: orders_cl.country_iso
     user_attribute: country_iso
 
-  }
+}
 
   join: global_filters_and_parameters {
     sql: ;;
@@ -173,6 +173,7 @@ explore: orders_cl {
     type: left_outer
     fields: [vat_order.sum_vat_discount_amount_total,vat_order.sum_discount_amount_net]
   }
+
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
