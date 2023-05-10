@@ -39,7 +39,7 @@ explore: orders_cl {
     field: orders_cl.country_iso
     user_attribute: country_iso
 
-}
+    }
 
   join: global_filters_and_parameters {
     sql: ;;
