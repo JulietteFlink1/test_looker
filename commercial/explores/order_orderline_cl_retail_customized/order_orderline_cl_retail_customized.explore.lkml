@@ -6,7 +6,7 @@ explore: order_orderline_cl_retail_customized {
   extends: [order_orderline_cl]
   group_label: "Commercial"
   label: "Orders & Items (Commercial Dept. Version)"
-  hidden: yes
+  hidden: no
 
 
 
@@ -147,7 +147,7 @@ explore: order_orderline_cl_retail_customized {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   join: cr__order_orderline_cl_retail_customized_cross_metrics {
     view_label: "Orders"
-    relationship: one_to_one
+    relationship: one_to_one  
     type: left_outer
     sql:  ;;
   }
