@@ -1206,7 +1206,7 @@ view: staffing {
     label: "# Idle Rider Hours"
     description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes. Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
     type: number
-    sql: ${number_of_worked_hours_rider}-${orders_with_ops_metrics.sum_rider_handling_time_hours};;
+    sql: ${number_of_worked_hours_rider}-${orders_with_ops_metrics.sum_rider_handling_time_hours_last_mile};;
     value_format_name: decimal_1
   }
 

@@ -56,6 +56,7 @@ view: orders_with_ops_metrics {
       column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_rider_handling_time_minutes {}
+      column: sum_rider_handling_time_minutes_last_mile {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
       column: cnt_internal_orders {}
@@ -595,6 +596,14 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_1
   }
 
+  measure: sum_rider_handling_time_minutes_last_mile {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Minutes) - Last Mile"
+    hidden:  no
+    type: sum
+    value_format_name: decimal_1
+  }
+
   measure: sum_rider_handling_time_hours {
     group_label: "> Operations / Logistics"
     label: "SUM Rider Handling Times (Hours)"
@@ -602,6 +611,15 @@ view: orders_with_ops_metrics {
     type: number
     value_format_name: decimal_1
     sql: ${sum_rider_handling_time_minutes}/60 ;;
+  }
+
+  measure: sum_rider_handling_time_hours_last_mile {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Hours) - Last Mile"
+    hidden:  no
+    type: number
+    value_format_name: decimal_1
+    sql: ${sum_rider_handling_time_minutes_last_mile}/60 ;;
   }
 
 

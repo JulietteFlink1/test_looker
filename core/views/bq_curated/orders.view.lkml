@@ -2952,11 +2952,21 @@ view: orders {
 
   measure: sum_rider_handling_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "SUM Rider Handling Ttimes"
+    label: "SUM Rider Handling Times"
     hidden:  no
     type: sum
     sql: ${rider_handling_time_minutes};;
     value_format_name: decimal_1
+  }
+
+  measure: sum_rider_handling_time_minutes_last_mile {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Rider Handling Times (Last Mile)"
+    hidden:  yes
+    type: sum
+    sql: ${rider_handling_time_minutes};;
+    value_format_name: decimal_1
+    filters: [is_last_mile_order: "yes"]
   }
 
   measure: sum_potential_rider_handling_time_without_stacking_minutes {
