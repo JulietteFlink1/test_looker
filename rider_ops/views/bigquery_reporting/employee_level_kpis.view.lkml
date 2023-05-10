@@ -628,6 +628,16 @@ view: employee_level_kpis {
     hidden: yes
   }
 
+  dimension: amt_byod_bonus_net {
+    group_label: "> Payroll"
+    type: number
+    label: "AMT BYOD Bonus"
+    description: "Net bonus amount paid to riders for bringing and using their own devices."
+    sql: ${TABLE}.amt_byod_bonus_net ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1865,7 +1875,8 @@ view: employee_level_kpis {
       hourly_rate,
       sum_signon_bonus_gross,
       sum_referral_bonus_net,
-      pct_fringe
+      pct_fringe,
+      amt_byod_bonus_net
     ]
   }
 
