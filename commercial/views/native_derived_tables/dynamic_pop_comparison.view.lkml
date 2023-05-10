@@ -88,17 +88,6 @@ view: dynamic_pop_comparison {
     type: string
   }
 
-
-    
-        
-          
-    
-
-        
-        Expand All
-    
-    @@ -94,35 +56,6 @@ view: dynamic_pop_comparison {
-  
   dimension: hub_code {
     hidden: yes
     label: "Hub Code"
@@ -137,17 +126,6 @@ view: dynamic_pop_comparison {
   dimension: sum_item_quantity {
     hidden: yes
     label: "SUM Item Quantity Sold"
-
-    
-        
-          
-    
-
-        
-        Expand All
-    
-    @@ -131,198 +64,135 @@ view: dynamic_pop_comparison {
-  
     description: "Sum of Item Quantity Sold"
     value_format: "0"
     type: number
