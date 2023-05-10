@@ -18,5 +18,4 @@ explore: retail_current_inventory {
     view_label: "* Top 100 Products by GMV  *"
   }
 
-
 }
