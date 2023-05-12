@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders`
+  sql_table_name: `flink-data-dev.dbt_jdavies_curated.orders`
     ;;
 
   view_label: "* Orders *"
@@ -823,6 +823,18 @@ view: orders {
     group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_first_order ;;
+  }
+
+  dimension: is_order_within_30_days_after_customers_first_order {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_order_within_30_days_after_customers_first_order ;;
+  }
+
+  dimension: is_customers_first_order_month {
+    group_label: "* Order Dimensions *"
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_month ;;
   }
 
   dimension: is_rider_tip {
