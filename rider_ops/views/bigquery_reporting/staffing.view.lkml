@@ -6,7 +6,7 @@
 # on a hub + 30-min slot level
 
 view: staffing {
-  sql_table_name: `flink-data-prod.reporting.staffing`
+  sql_table_name: `flink-data-dev.dbt_nazring_reporting.staffing`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1296,7 +1296,7 @@ view: staffing {
     type: number
     label: "% Rider Worked Time Spent Idle (Quinyx Based)"
     description: "% of worked time (hours) not spent handling an order - compares the difference between worked time (hours) and rider handling time (hours) with total worked time (hours). Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
-    sql: ${number_of_idle_hours_rider} / nullif(${number_of_worked_hours_rider},0) ;;
+    sql: ${number_of_idle_hours_rider_quinyx} / nullif(${number_of_worked_hours_rider},0) ;;
     value_format_name: percent_2
   }
 
@@ -1305,7 +1305,7 @@ view: staffing {
     type: number
     label: "% Rider Worked Time Spent Idle (Online Hours Based)"
     description: "% of online time (hours) not spent handling an order - compares the difference between online time (hours) and rider handling time (hours) with total online time (hours). Rider handling time outliers (suspicious timestamps) could be excluded if there is no viable geofencing data."
-    sql: ${number_of_idle_hours_rider} / nullif(${number_of_worked_hours_rider},0) ;;
+    sql: ${number_of_idle_hours_rider} / nullif(${number_of_online_hours_rider},0) ;;
     value_format_name: percent_2
   }
 
