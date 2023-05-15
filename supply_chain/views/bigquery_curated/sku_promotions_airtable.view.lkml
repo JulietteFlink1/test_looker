@@ -6,7 +6,7 @@
 view: sku_promotions_airtable {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.sku_promotions_airtable`
+  sql_table_name: `flink-data-prod.reporting.sku_promotions_airtable`
     ;;
 
 set: all_dim {
