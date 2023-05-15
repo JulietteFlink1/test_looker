@@ -18,7 +18,7 @@ include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_wast
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_handling_unit_rotation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
 include: "/**/hubs_ct.view"
-include: "/supply_chain/views/bigquery_curated/sku_promotions_airtable_date_ranges.view.lkml"
+include: "/supply_chain/views/bigquery_curated/sku_promotions_airtable.view.lkml"
 
 
 
@@ -36,6 +36,17 @@ explore: supply_chain_master {
   sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${supply_chain_master.report_date} {% endcondition %} ;;
 
   always_filter: {filters: [global_filters_and_parameters.datasource_filter: "8 days ago for 7 days"]}
+
+  fields: [
+    supply_chain_master*,
+    global_filters_and_parameters*,
+    hubs*,
+    ndt_waste_risk_index_calculation*,
+    ndt_handling_unit_rotation*,
+    sku_promotions_airtable.is_promotional_sku,
+    sku_promotions_valid_dates_definition_ranges*,
+    -sku_promotions_valid_dates_definition_ranges.is_promotional_sku
+  ]
 
   access_filter: {
     field: country_iso
@@ -76,28 +87,25 @@ explore: supply_chain_master {
 
   }
 
-  join: sku_promotions_airtable_date_ranges {
+  join: sku_promotions_airtable {
     view_label: "Supply Chain Master"
-    sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_airtable_date_ranges.hub_code} and
-            ${supply_chain_master.parent_sku}   = ${sku_promotions_airtable_date_ranges.parent_sku} and
-            ${supply_chain_master.report_date} between ${sku_promotions_airtable_date_ranges.valid_from_date} and ${sku_promotions_airtable_date_ranges.valid_to_date};;
+    sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_airtable.hub_code} and
+            ${supply_chain_master.parent_sku}   = ${sku_promotions_airtable.parent_sku} and
+            ${supply_chain_master.report_date} between ${sku_promotions_airtable.promotion_start_date} and ${sku_promotions_airtable.promotion_end_date};;
     relationship: one_to_one
     type: left_outer
-
-    fields: [sku_promotions_airtable_date_ranges.is_promotional_sku]
 
   }
 
   join: sku_promotions_valid_dates_definition_ranges {
-    from: sku_promotions_airtable_date_ranges
+    from: sku_promotions_airtable
     view_label: "Supply Chain Master"
     sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_valid_dates_definition_ranges.hub_code} and
             ${supply_chain_master.parent_sku}   = ${sku_promotions_valid_dates_definition_ranges.parent_sku} and
-            ${sku_promotions_valid_dates_definition_ranges.valid_to_date} >= ${supply_chain_master.report_date};;
+            ${sku_promotions_valid_dates_definition_ranges.promotion_end_date} >= ${supply_chain_master.report_date};;
     relationship: many_to_one
     type: left_outer
 
-    fields: [sku_promotions_valid_dates_definition_ranges.valid_from_date, sku_promotions_valid_dates_definition_ranges.valid_to_date]
 
   }
 
