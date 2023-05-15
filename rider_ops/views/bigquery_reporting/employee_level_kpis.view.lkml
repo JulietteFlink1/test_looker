@@ -705,7 +705,7 @@ view: employee_level_kpis {
   dimension: number_of_idle_minutes {
     type: number
     label: "# Idle Minutes"
-    sql: ${TABLE}.number_of_idle_minutes ;;
+    sql: ${TABLE}.number_of_rider_idle_minutes ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1072,16 +1072,6 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: sum_rider_idle_time_minutes {
-    group_label: "> Performance"
-    type: sum
-    label: "# Rider Idle Time (min)"
-    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
-    sql: ${TABLE}.number_of_idle_minutes ;;
-    filters: [position_name: "rider"]
-    value_format_name: decimal_1
-  }
-
   measure: sum_picking_time_minutes {
     group_label: "> Logistics"
     type: sum
@@ -1309,10 +1299,39 @@ view: employee_level_kpis {
 
   measure: number_of_idle_time_hours {
     group_label: "> Performance"
-    type: sum
-    label: "# Rider Idle Time (Hour)"
+    type: number
+    label: "# Rider Idle Time (Hour) (Online hours based)"
     description: "Number of hours rider spent idle. Calculated as: (# Online Minutes - # Rider Handling Time)/60."
-    sql: ${number_of_idle_minutes}/60 ;;
+    sql: ${sum_rider_idle_time_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_rider_idle_time_minutes {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Idle Time (min) (Online hours based)"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
+    sql: ${number_of_idle_minutes} ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+  }
+
+  measure: sum_idle_time_minutes_quinyx {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Idle Time (min) (Quinyx based)"
+    description: "Number of hours rider spent idle. Calculated as: # Worked Minutes - # Rider Handling Time."
+    sql: ${number_of_idle_minutes_quinyx} ;;
+    value_format_name: decimal_1
+    hidden: no
+  }
+
+  measure: number_of_idle_time_hours_quinyx {
+    group_label: "> Performance"
+    type: number
+    label: "# Rider Idle Time (Hour) (Quinyx based)"
+    description: "Number of hours rider spent idle. Calculated as: (# Worked Minutes - # Rider Handling Time)/60."
+    sql: ${sum_idle_time_minutes_quinyx}/60 ;;
     value_format_name: decimal_2
   }
 
@@ -1330,18 +1349,8 @@ view: employee_level_kpis {
     type: number
     label: "% Worked Time Spent Idle (Quinyx Based)"
     description: "% of punched hours not spent handling an order - compares the difference between worked time and rider handling time with total worked time."
-    sql: ${number_of_idle_time_hours} / nullif(${number_of_online_hours},0) ;;
+    sql: ${number_of_idle_time_hours_quinyx} / nullif(${number_of_worked_hours},0) ;;
     value_format_name: percent_2
-  }
-
-  measure: sum_idle_time_minutes_quinyx {
-    group_label: "> Performance"
-    type: sum
-    label: "# Idle Minutes - Quinyx"
-    description: "Number of hours rider spent idle. Calculated as: # Worked Minutes - # Rider Handling Time."
-    sql: ${number_of_idle_minutes_quinyx} ;;
-    value_format_name: decimal_1
-    hidden: no
   }
 
   measure: sum_waiting_for_rider_decision_time_minutes {
