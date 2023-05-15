@@ -162,6 +162,22 @@ view: hub_uph_sessions {
     sql: ${TABLE}.flow ;;
   }
 
+  dimension: prev_flow {
+    hidden: yes
+    description: "Flow of the previous session (partitioned by shift_id, quinyx_badge_number, hub_code, ordered by session start timestamp).
+    Possible values: inbounding, order_preparation, inventory_check for direct session. Hub for idle sessions."
+    type: string
+    sql: ${TABLE}.prev_flow ;;
+  }
+
+  dimension: next_flow {
+    hidden: yes
+    description: "Flow of the following session (partitioned by shift_id, quinyx_badge_number, hub_code, ordered by session start timestamp).
+    Possible values: inbounding, order_preparation, inventory_check for direct session. Hub for idle sessions."
+    type: string
+    sql: ${TABLE}.next_flow ;;
+  }
+
   dimension: session_type {
     description: "Type of the session. Sessions can be of type direct (group of events happening one after the other below a certain threshold). Or idle (internal, transition or limit idle). Current threshold: 120seconds for all flows."
     type: string
@@ -202,6 +218,109 @@ view: hub_uph_sessions {
     description: "Yes if the session type is idle (transition, limit or internal) and the session duration is > 2 hours."
     sql: case when ${session_type} like '%idle%' and  ${session_duration_hours}>2 then true else false end  ;;
   }
+
+  ### These dimensions flag in which of the UPHs flow calculations the limit idle sessions that should be included
+
+  dimension: is_limit_idle_inbounding {
+    hidden: yes
+    type: yesno
+    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inbounding')
+      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inbounding')
+      or (${sub_flow} = 'break_idle' and ${next_flow} = 'inbounding')
+      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'inbounding');;
+  }
+
+  dimension: is_limit_idle_inventory_check {
+    hidden: yes
+    type: yesno
+    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inventory_check')
+      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inventory_check')
+      or (${sub_flow} = 'break_idle' and ${next_flow} = 'inventory_check')
+      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'inventory_check');;
+  }
+
+  dimension: is_limit_idle_order_preparation {
+    hidden: yes
+    type: yesno
+    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'order_preparation')
+      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'order_preparation')
+      or (${sub_flow} = 'break_idle' and ${next_flow} = 'order_preparation')
+      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'order_preparation');;
+  }
+
+  ####### Measures used to include transition + limit idle into UPHs calculations ########
+
+  measure: sum_of_transition_idle_session_duration_hours_leaving_inbounding {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Transition Idle Hours - Inbounding"
+    description: "Number of hours spent on transition idle after inbounding."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [session_type: "transition_idle",
+      sub_flow: "transition_inbounding_order_preparation, transition_inbounding_inventory_check"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_transition_idle_session_duration_hours_leaving_inventory_check {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Transition Idle Hours - Inventory Checks"
+    description: "Number of hours spent on transition idle after inventory checks."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [session_type: "transition_idle",
+      sub_flow: "transition_inventory_check_inbounding, transition_inventory_check_order_preparation"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_transition_idle_session_duration_hours_leaving_order_preparation {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Transition Idle Hours - Order Preparation"
+    description: "Number of hours spent on transition idle after order preparation."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [session_type: "transition_idle",
+      sub_flow: "transition_order_preparation_inbounding, transition_order_preparation_inventory_check"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_limit_idle_session_duration_hours_inbounding {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Limit Idle Hours - Inbounding"
+    description: "Number of hours spent on limit idle before/after inbounding."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [is_limit_idle_inbounding: "yes"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_limit_idle_session_duration_hours_inventory_check {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Limit Idle Hours - Inventory Check"
+    description: "Number of hours spent on limit idle before/after inventory check."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [is_limit_idle_inventory_check: "yes"]
+    value_format_name: decimal_2
+  }
+
+  measure: sum_of_limit_idle_session_duration_hours_order_preparation {
+    # hidden: yes
+    group_label: "> Durations"
+    label: "SUM Limit Idle Hours - Order Preparation"
+    description: "Number of hours spent on limit idle before/after order preparation."
+    type: sum
+    sql: ${session_duration_hours} ;;
+    filters: [is_limit_idle_order_preparation: "yes"]
+    value_format_name: decimal_2
+  }
+
+  ####### End ########
+
 
   measure: number_of_unique_sessions {
     group_label: "> Quantities"
@@ -519,36 +638,68 @@ view: hub_uph_sessions {
     group_label: "> Productivity Metrics"
     type: number
     label: "UPH Order Preparation"
-    description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
+    description: "Units picked per Hour. Formula: # Picked Items /
+    ( # Direct Order Preparation Hours
+    + # Internal Order Preparation Hours
+    + # Transition Idle Order Preparation Hours
+    + # Limit Idle Order Preparation Hours)"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_of_number_of_picked_items},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_picked_items},
+      (${sum_of_direct_session_order_preparation_duration_hours}
+      +${sum_of_internal_idle_session_order_preparation_duration_hours}
+      + ${sum_of_transition_idle_session_duration_hours_leaving_order_preparation}
+      + ${sum_of_limit_idle_session_duration_hours_order_preparation})) ;;
   }
 
   measure: oph_picking {
     group_label: "> Productivity Metrics"
     type: number
-    description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
+    description: "Orders picked per Hour. Formula: # Picked Orders /
+    ( # Direct Order Preparation Hours
+    + # Internal Order Preparation Hours
+    + # Transition Idle Order Preparation Hours
+    + # Limit Idle Order Preparation Hours)"
     label: "OPH"
     value_format_name: decimal_1
-    sql: safe_divide(${sum_of_number_of_picked_orders},(${sum_of_direct_session_order_preparation_duration_hours}+${sum_of_internal_idle_session_order_preparation_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_picked_orders},
+      (${sum_of_direct_session_order_preparation_duration_hours}
+      +${sum_of_internal_idle_session_order_preparation_duration_hours}
+      + ${sum_of_transition_idle_session_duration_hours_leaving_order_preparation}
+      + ${sum_of_limit_idle_session_duration_hours_order_preparation})) ;;
   }
 
   measure: uph_inbounding {
     group_label: "> Productivity Metrics"
     type: number
     label: "UPH Inbounding"
-    description: "Units dropped per Hour. Formula:  # Dropped Items / ( # Direct Inbounding Hours + # Internal Inbounding Hours )"
+    description: "Units dropped per Hour. Formula:  # Dropped Items /
+    ( # Direct Inbounding Hours
+    + # Internal Inbounding Hours
+    + # Transition Idle Inbounding Hours
+    + # Limit Idle Inbounding Hours)"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_of_number_of_dropped_items},(${sum_of_direct_session_inbounding_duration_hours}+${sum_of_internal_idle_session_inbounding_duration_hours})) ;;
+    sql: safe_divide(${sum_of_number_of_dropped_items},
+      (${sum_of_direct_session_inbounding_duration_hours}
+      +${sum_of_internal_idle_session_inbounding_duration_hours}
+      + ${sum_of_transition_idle_session_duration_hours_leaving_inbounding}
+      + ${sum_of_limit_idle_session_duration_hours_inbounding})) ;;
   }
 
   measure: uph_inventory_check {
     group_label: "> Productivity Metrics"
     type: number
-    description: "Checks per Hour. Formula: # Checks / ( # Direct Inventory Hours + # Internal Inventory Hours )"
+    description: "Checks per Hour. Formula: # Checks /
+    ( # Direct Inventory Hours
+    + # Internal Inventory Hours
+    + # Transition Idle Inventory Hours
+    + # Limit Idle Inventory Hours )"
     label: "UPH Inventory Check"
     value_format_name: decimal_0
-    sql: safe_divide(${sum_of_number_of_checks},(${sum_of_direct_session_inventory_check_duration_hours} +${sum_of_internal_idle_session_inventory_check_duration_hours}));;
+    sql: safe_divide(${sum_of_number_of_checks},
+      (${sum_of_direct_session_inventory_check_duration_hours}
+      +${sum_of_internal_idle_session_inventory_check_duration_hours}
+      + ${sum_of_transition_idle_session_duration_hours_leaving_inventory_check}
+      + ${sum_of_limit_idle_session_duration_hours_inventory_check}));;
   }
 
   measure: number_of_unique_activity_switch {
