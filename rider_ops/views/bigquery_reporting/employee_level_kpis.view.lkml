@@ -1322,6 +1322,7 @@ view: employee_level_kpis {
     label: "# Rider Idle Time (min) (Quinyx based)"
     description: "Number of hours rider spent idle. Calculated as: # Worked Minutes - # Rider Handling Time."
     sql: ${number_of_idle_minutes_quinyx} ;;
+    filters: [position_name: "rider"]
     value_format_name: decimal_1
     hidden: no
   }
