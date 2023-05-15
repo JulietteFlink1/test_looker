@@ -4,7 +4,7 @@
 
 
 view: hub_uph_sessions {
-  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.hub_uph_sessions`
+  sql_table_name: `flink-data-prod.reporting.hub_uph_sessions`
     ;;
 
   dimension: country_iso {
@@ -222,6 +222,7 @@ view: hub_uph_sessions {
   ### These dimensions flag in which of the UPHs flow calculations the limit idle sessions that should be included
 
   dimension: is_limit_idle_inbounding {
+    hidden: yes
     type: yesno
     sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inbounding')
       or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inbounding')
@@ -230,6 +231,7 @@ view: hub_uph_sessions {
   }
 
   dimension: is_limit_idle_inventory_check {
+    hidden: yes
     type: yesno
     sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inventory_check')
       or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inventory_check')
@@ -238,6 +240,7 @@ view: hub_uph_sessions {
   }
 
   dimension: is_limit_idle_order_preparation {
+    hidden: yes
     type: yesno
     sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'order_preparation')
       or (${sub_flow} = 'break_idle' and ${prev_flow} = 'order_preparation')
