@@ -87,6 +87,7 @@ explore: supply_chain_master {
 
   }
 
+# This join is being made on a SKU-HUB and date combination, meaning that we could only have one record per Day.
   join: sku_promotions_airtable {
     view_label: "Supply Chain Master"
     sql_on: ${supply_chain_master.hub_code}     = ${sku_promotions_airtable.hub_code} and
@@ -97,6 +98,7 @@ explore: supply_chain_master {
 
   }
 
+# This one is needed to display future promotions, that's why the join is only on SKU-HUB combination regardless the date.
   join: sku_promotions_valid_dates_definition_ranges {
     from: sku_promotions_airtable
     view_label: "Supply Chain Master"

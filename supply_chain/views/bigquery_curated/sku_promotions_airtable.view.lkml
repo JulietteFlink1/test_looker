@@ -9,10 +9,6 @@ view: sku_promotions_airtable {
   sql_table_name: `flink-data-prod.reporting.sku_promotions_airtable`
     ;;
 
-set: all_dim {
-  fields: [all_dim*]
-}
-
   dimension: table_uuid {
     label: "Table UUID"
     group_label: "Promotions Data"
@@ -118,7 +114,7 @@ set: all_dim {
     label: "Is Promotion nationally applied"
     group_label: "Promotions Data"
     type: yesno
-    description: "True if the promotions is applied national wide."
+    description: "True if the promotions is applied nationwide."
     sql: ${TABLE}.is_promotion_nationally_applied ;;
   }
 
