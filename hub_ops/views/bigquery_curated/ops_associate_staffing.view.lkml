@@ -1,5 +1,5 @@
 # Author: Justine Grammatikas
-# Created on: 2023--5-16
+# Created on: 2023-05-16
 # This view contains Ops associate staffing data based on the model owned by Ops team.
 
 view: ops_associate_staffing {
