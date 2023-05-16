@@ -354,7 +354,15 @@ view: hub_one_inbounding_aggregates {
     group_label: "Total Times"
     description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_minutes ;;
+    sql: ${TABLE}.time_list_verification_minutes ;;
+  }
+
+  measure: sum_time_list_verification_hours {
+    type: sum
+    group_label: "Total Times"
+    description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_hours ;;
   }
 
   # =========  Average Times   =========
@@ -411,7 +419,7 @@ view: hub_one_inbounding_aggregates {
     group_label: "Avg Times"
     description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_minutes ;;
+    sql: ${TABLE}.time_list_verification_minutes ;;
   }
 
   measure: avg_time_list_verification_hours {
@@ -419,7 +427,7 @@ view: hub_one_inbounding_aggregates {
     group_label: "Avg Times"
     description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_hours ;;
+    sql: ${TABLE}.time_list_verification_hours ;;
   }
 
   # =========  Productivity   =========
