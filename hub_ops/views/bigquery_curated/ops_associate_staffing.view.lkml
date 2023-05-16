@@ -3,8 +3,6 @@
 # This view contains Ops associate staffing data based on the model owned by Ops team.
 
 view: ops_associate_staffing {
-  # The sql_table_name parameter indicates the underlying database table
-  # to be used for all fields in this view.
   sql_table_name: `flink-data-prod.curated.ops_associate_staffing`
     ;;
 
