@@ -243,13 +243,18 @@ explore: daily_events {
 
   join: event_sponsored_product_impressions {
     view_label: "Event: Sponsored Product Impressions"
-    fields: [event_sponsored_product_impressions.category_name, event_sponsored_product_impressions.category_id,
+    fields: [event_sponsored_product_impressions.category_name,
+      event_sponsored_product_impressions.category_id,
       event_sponsored_product_impressions.sub_category_name,
       event_sponsored_product_impressions.screen_name,
       event_sponsored_product_impressions.product_sku,
-      event_sponsored_product_impressions.product_placement, event_sponsored_product_impressions.product_position,
-      event_sponsored_product_impressions.ad_decision_id,event_sponsored_product_impressions.event_timestamp_date,
-      event_sponsored_product_impressions.number_of_ad_decisions_ids,event_sponsored_product_impressions.events,
+      event_sponsored_product_impressions.product_placement,
+      event_sponsored_product_impressions.product_position,
+      event_sponsored_product_impressions.ad_decision_id,
+      event_sponsored_product_impressions.event_timestamp_date,
+      event_sponsored_product_impressions.is_sponsored_product,
+      event_sponsored_product_impressions.number_of_ad_decisions_ids,
+      event_sponsored_product_impressions.events,
       event_sponsored_product_impressions.all_users,
       ]
     sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}
