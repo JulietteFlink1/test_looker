@@ -1,4 +1,7 @@
-# The name of this view in Looker is "Ops Associate Staffing"
+# Author: Justine Grammatikas
+# Created on: 2023--5-16
+# This view contains Ops associate staffing data based on the model owned by Ops team.
+
 view: ops_associate_staffing {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
