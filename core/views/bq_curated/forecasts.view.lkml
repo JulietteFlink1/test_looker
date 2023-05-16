@@ -180,6 +180,13 @@ view: forecasts {
     hidden: yes
   }
 
+  dimension: number_of_forecasted_last_mile_orders_adjusted {
+    label: "# Forecasted Last Mile Orders - Adjusted"
+    type: number
+    sql: ${TABLE}.number_of_forecasted_last_mile_orders_adjusted;;
+    hidden: yes
+  }
+
   # =========  Forecasted Hours   =========
 
   dimension: number_of_forecasted_hours_rider_adjusted_dimension {
@@ -261,15 +268,6 @@ view: forecasts {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   # =========  Stacking   =========
-
-  measure: stacking_effect_multiplier {
-    group_label: "> Order Measures"
-    label: "Stacking Effect Multiplier"
-    type: average
-    sql: ${TABLE}.stacking_effect_multiplier ;;
-    hidden: yes
-    value_format_name: decimal_1
-  }
 
   measure: number_of_forecasted_stacked_orders {
     group_label: "> Order Measures"
@@ -461,6 +459,7 @@ view: forecasts {
   measure: number_of_forecasted_orders {
     group_label: "> Order Measures"
     label: "# Forecasted Orders"
+    description: "A total number of orders forecasted for internal Flink riders."
     type: sum
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
@@ -641,10 +640,21 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_orders]
     group_label: "> Order Measures"
     label: "# Adjusted Forecasted Orders"
+    description: "A total number of orders forecasted for internal Flink riders including adjustments made by the Rider Ops team using Airtable."
     type: sum
     sql: ${TABLE}.number_of_forecasted_orders_adjusted ;;
     value_format_name: decimal_0
   }
+
+  measure: sum_forecasted_last_mile_orders_adjusted {
+    group_label: "> Order Measures"
+    label: "# Adjusted Forecasted Last Mile Orders"
+    description: "A total number of orders forecasted for internal Flink riders and DAAS riders including adjustments made by the Rider Ops team using Airtable."
+    type: sum
+    sql: ${number_of_forecasted_last_mile_orders_adjusted} ;;
+    value_format_name: decimal_0
+  }
+
 
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
