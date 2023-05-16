@@ -1,6 +1,6 @@
 # Author: Justine Grammatikas
 # Created on: 2023-05-16
-# This view contains Ops associate staffing data based on the model owned by Ops team.
+# This view contains Ops associate staffing data based on the model owned by the Ops team.
 
 view: ops_associate_staffing {
   sql_table_name: `flink-data-prod.curated.ops_associate_staffing`
