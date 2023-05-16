@@ -143,13 +143,11 @@ view: hub_one_inbounding_aggregates {
     sql: if(${distinct_products_dropped}=1,true, false) ;;
   }
 
-
-
   dimension: is_quantity_modified {
     type: yesno
     label: "Is Quantity Modifed"
     group_label: "Dropping List Attributes"
-    description: "True when the quanitity was modified via verification process"
+    description: "True when at least one item was modified via verification process"
     sql: if(${TABLE}.is_quantity_modified > 0, true, false) ;;
   }
 
@@ -199,7 +197,6 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.dropping_list_started_at ;;
   }
 
-
   dimension_group: dropping_list_finished {
     type: time
     description: "Timestamp when the user finishes dropping the products on the shelfs (state = dropping_list_finished)."
@@ -213,8 +210,6 @@ view: hub_one_inbounding_aggregates {
     convert_tz: no
     sql: ${TABLE}.dropping_list_finished_at ;;
   }
-
-
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
