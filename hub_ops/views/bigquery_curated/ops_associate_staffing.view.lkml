@@ -8,9 +8,6 @@ view: ops_associate_staffing {
   sql_table_name: `flink-data-prod.curated.ops_associate_staffing`
     ;;
 
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
-
   dimension_group: block_starts {
     hidden: yes
     type: time
