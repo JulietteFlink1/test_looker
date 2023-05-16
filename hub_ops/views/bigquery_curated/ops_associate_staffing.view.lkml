@@ -24,8 +24,6 @@ view: ops_associate_staffing {
     sql: ${TABLE}.block_starts_timestamp ;;
   }
 
-  # Here's what a typical dimension looks like in LookML.
-  # A dimension is a groupable field that can be used to filter query results.
   # This dimension will be called "Country Iso" in Explore.
 
   dimension: country_iso {
