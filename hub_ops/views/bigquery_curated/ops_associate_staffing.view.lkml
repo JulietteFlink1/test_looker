@@ -24,7 +24,7 @@ view: ops_associate_staffing {
     sql: ${TABLE}.block_starts_timestamp ;;
   }
 
-  # This dimension will be called "Country Iso" in Explore.
+  ### Dimensions
 
   dimension: country_iso {
     hidden: yes
