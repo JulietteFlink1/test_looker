@@ -55,7 +55,7 @@ view: noos_list {
   }
 
   dimension: is_noos {
-    type: number
+    type: string
     sql: ${TABLE}.is_noos ;;
     label: "Is Never Out Of Stock (NOOS)"
     description: "Shows if the item-location is marked as an item that should never be out of stock"

@@ -155,7 +155,7 @@ join: availability_waterfall {
      ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall_actions.hub_code} and
      ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall_actions.reporting_week_week}
     ;;
-    relationship: one_to_one
+    relationship: many_to_one
     type: left_outer
   }
 

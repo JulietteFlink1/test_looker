@@ -17,8 +17,8 @@ view: availability_waterfall_actions {
   dimension: decision {
     type: string
     sql: ${TABLE}.decision ;;
-    label: "Decision"
-    description: "Shows the action taken for the appointed optimization process of the item-location "
+    label: "Action Taken"
+    description: "Shows the action taken in response to the issue of the out of stock of the item-location "
     hidden: no
   }
 
@@ -33,16 +33,16 @@ view: availability_waterfall_actions {
   dimension: impacted_bucket {
     type: string
     sql: ${TABLE}.impacted_bucket ;;
-    label: "Impacted Bucket"
-    description: "Shows the availability bucket that is impacted by the process"
+    label: "Out of Stock Reasont"
+    description: "This column represents the impacted bucket for an out of stock issue within the availability waterfall."
     hidden: no
   }
 
   dimension: process {
     type: string
     sql: ${TABLE}.process ;;
-    label: "Process"
-    description: "Shows the process name taken for the optimization action of the item-location"
+    label: "Action Process "
+    description: "This column represents the process responsible for the action being taken for the optimization of the item-location."
     hidden: no
   }
 
@@ -74,8 +74,8 @@ view: availability_waterfall_actions {
   dimension: team {
     type: string
     sql: ${TABLE}.team ;;
-    label: "Team"
-    description: "Shows the team impacted by the appointed action of item-location"
+    label: "Responsible Team"
+    description: "This column represents the team that is responsible for the appointed action of item-location"
     hidden: no
   }
 
