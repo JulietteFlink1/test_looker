@@ -293,9 +293,9 @@ view: hub_one_inbounding_aggregates {
 
   measure: number_of_products_quantity_modified {
     type: sum
-    label: "Sum Quantity Modifed"
+    label: "Number of Distinct Products Updated"
     group_label: "Total Metrics"
-    description: "Sum of quantity of products modified"
+    description: "Sum of distinct number of products modified"
     sql: ${TABLE}.is_quantity_modified  ;;
   }
 
@@ -454,7 +454,7 @@ view: hub_one_inbounding_aggregates {
     description: "Share of products that went through list verification process"
     type: number
 
-    sql: safe_divide(${number_of_distinct_products_verified}, ${number_of_products_dropped})  ;;
+    sql: safe_divide(${number_of_distinct_products_verified}, ${number_of_distinct_products_dropped})  ;;
 
     value_format_name: percent_2
   }
