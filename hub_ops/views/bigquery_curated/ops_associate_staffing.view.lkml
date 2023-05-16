@@ -11,6 +11,7 @@ view: ops_associate_staffing {
   # Looker converts dates and timestamps to the specified timeframes within the dimension group.
 
   dimension_group: block_starts {
+    hidden: yes
     type: time
     description: "Timestamp at which the 30min block starts."
     timeframes: [
