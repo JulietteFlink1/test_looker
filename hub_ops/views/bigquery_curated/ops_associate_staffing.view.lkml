@@ -7,8 +7,6 @@ view: ops_associate_staffing {
   # to be used for all fields in this view.
   sql_table_name: `flink-data-prod.curated.ops_associate_staffing`
     ;;
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
 
   # Dates and timestamps can be represented in Looker using a dimension group of type: time.
   # Looker converts dates and timestamps to the specified timeframes within the dimension group.
