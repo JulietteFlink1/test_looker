@@ -146,6 +146,70 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${TABLE}.hub_code ;;
   }
 
+  dimension: number_of_rider_hub_one_tasks_minutes {
+    type: number
+    label: "# Hub One Tasks Minutes"
+    sql: ${TABLE}.number_of_rider_hub_one_tasks_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_equipment_issue_minutes {
+    type: number
+    label: "# Equipment Issue Minutes"
+    sql: ${TABLE}.number_of_rider_equipment_issue_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_large_order_support_minutes {
+    type: number
+    label: "# Large Order Support Minutes"
+    sql: ${TABLE}.number_of_rider_large_order_support_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_accident_minutes {
+    type: number
+    label: "# Accident Minutes"
+    sql: ${TABLE}.number_of_rider_accident_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_temporary_offline_break_minutes {
+    type: number
+    label: "# Temporary Offline Break Minutes"
+    sql: ${TABLE}.number_of_rider_temporary_offline_break_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_total_temporary_offline_minutes {
+    type: number
+    label: "# Total Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_total_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_unresponsive_minutes {
+    type: number
+    label: "# Unresponsive Minutes"
+    sql: ${TABLE}.number_of_rider_unresponsive_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_other_temporary_offline_minutes {
+    type: number
+    label: "# Other Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_other_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   #dimension: rider_hours {
   #  type: number
   #  sql: ${TABLE}.rider_hours ;;
@@ -1010,6 +1074,86 @@ view: shyftplan_riders_pickers_hours_clean {
     sql: ${employee_level_kpis.number_of_delivered_orders_by_riders}/nullif(${rider_hours},0) ;;
     value_format_name: decimal_2
     group_label: "UTR"
+  }
+
+  measure: number_of_rider_hub_one_tasks_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Hub One Tasks Hours"
+    description: "Number of hours rider spent temporary offline due to doing hub one tasks or shelf restocking.
+    It is calculated based on rider state change reason in Workforce app."
+    sql: ${number_of_rider_hub_one_tasks_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_equipment_issue_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Equipment Issue Hours"
+    description: "Number of hours rider spent temporary offline due to equipment issues.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_large_order_support_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Large Order Support Hours"
+    description: "Number of hours rider spent temporary offline due to supporting large orders.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_large_order_support_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_accident_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Accident Hours"
+    description: "Number of hours rider spent temporary offline due to an accident.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_temporary_offline_break_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Temporary Offline Break Hours"
+    description: "Number of hours rider spent temporary offline due to taking break.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_temporary_offline_break_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_total_temporary_offline_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_total_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_other_temporary_offline_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Rider Other Temporary Offline Break Hours"
+    description: "Number of hours rider spent temporary offline due to doing other tasks than hub one tasks, shelf restocking, equipment issues, supporting large orders, accident and breaks.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_other_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_unresponsive_hours {
+    group_label: "Rider Performance"
+    type: sum
+    label: "# Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline due to: doing hub one tasks, equipment issues, supporting large orders, accidend and breaks.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_unresponsive_minutes}/60 ;;
+    value_format_name: decimal_2
   }
 
 }
