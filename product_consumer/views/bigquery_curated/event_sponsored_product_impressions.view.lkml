@@ -231,6 +231,15 @@ view: event_sponsored_product_impressions {
     sql: ${TABLE}.sub_category_name ;;
   }
 
+  dimension: is_sponsored_product {
+    group_label: "Event Dimensions"
+    label: "Is Sponsored Product"
+    description: "Whether or not the product shown was a sponsored product"
+    type: yesno
+    sql: ${TABLE}.is_sponsored_product ;;
+
+  }
+
   # ======= Hidden Dimension ======= #
 
 
