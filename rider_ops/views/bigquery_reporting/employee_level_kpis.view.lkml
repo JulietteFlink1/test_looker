@@ -1253,7 +1253,7 @@ view: employee_level_kpis {
     label: "# Rider Accident Hours"
     description: "Number of hours rider spent temporary offline due to an accident.
     It is calculated based on rider state change reason."
-    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    sql: ${number_of_rider_accident_minutes}/60 ;;
     value_format_name: decimal_2
   }
 
@@ -1280,7 +1280,7 @@ view: employee_level_kpis {
   measure: number_of_rider_other_temporary_offline_hours {
     group_label: "> Performance"
     type: sum
-    label: "# Rider Other Temporary Offline Break Hours"
+    label: "# Rider Other Temporary Offline Hours"
     description: "Number of hours rider spent temporary offline due to doing other tasks than hub one tasks, shelf restocking, equipment issues, supporting large orders, accident and breaks.
     It is calculated based on rider state change reason."
     sql: ${number_of_rider_other_temporary_offline_minutes}/60 ;;
@@ -1290,9 +1290,8 @@ view: employee_level_kpis {
   measure: number_of_rider_unresponsive_hours {
     group_label: "> Performance"
     type: sum
-    label: "# Temporary Offline Hours"
-    description: "Number of hours rider spent temporary offline due to: doing hub one tasks, equipment issues, supporting large orders, accidend and breaks.
-    It is calculated based on rider state change reason."
+    label: "# Rider Unresponsive Hours"
+    description: "Number of hours rider spent temporary offline due to order rejection or expiration."
     sql: ${number_of_rider_unresponsive_minutes}/60 ;;
     value_format_name: decimal_2
   }

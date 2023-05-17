@@ -2679,7 +2679,7 @@ view: staffing {
     label: "# Rider Accident Hours"
     description: "Number of hours rider spent temporary offline due to an accident.
     It is calculated based on rider state change reason."
-    sql: ${number_of_equipment_issue_minutes_rider}/60 ;;
+    sql: ${number_of_accident_minutes_rider}/60 ;;
     value_format_name: decimal_2
   }
 
