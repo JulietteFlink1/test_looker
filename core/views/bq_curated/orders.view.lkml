@@ -1687,6 +1687,7 @@ view: orders {
 
   dimension: daas_cancellation_source {
     group_label: "* Cancelled Orders *"
+    label: "DaaS Cancellation Source"
     description: "Source for the cancellation of the order coming from the DaaS provider. (e.g. Flink, External Rider, Provider)"
     type: string
     sql: ${TABLE}.daas_cancellation_source;;
