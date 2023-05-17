@@ -1195,7 +1195,7 @@ view: orders {
 
   dimension: amt_daas_cpo_gross_eur {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "* Monetary Values *"
     label: "DaaS CPO (Gross)"
     description: "DaaS Cost Per Order (CPO) is the gross fee charged by the provider for the trip. In euros."
     type: number
@@ -1213,8 +1213,8 @@ view: orders {
 
   dimension: daas_provider_drop_off_eta_timestamp {
     group_label: "* Operations / Logistics *"
-    label: "DaaS Drop Off ETA Timestamp"
-    description: "Provider drop off eta is the estimated time of arrival of the external rider at the customer's address."
+    label: "DaaS Drop-Off ETA Timestamp"
+    description: "Provider drop-off eta is the estimated time of arrival of the external rider at the customer's address."
     type: date_time
     sql: ${TABLE}.daas_provider_drop_off_eta_timestamp ;;
   }
@@ -1230,8 +1230,8 @@ view: orders {
   dimension: daas_delta_drop_off_completed_delivery_minutes {
     hidden: yes
     group_label: "* Operations / Logistics *"
-    label: "DaaS Drop Off ETA Delta"
-    description: "Difference in minutes between the DaaS Drop Off ETA timestamp and the Rider Completed Delivery timestamp."
+    label: "DaaS Drop-Off ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Completed Delivery timestamp."
     type: number
     sql: timestamp_diff(
           timestamp(${daas_provider_drop_off_eta_timestamp}),
@@ -1243,8 +1243,8 @@ view: orders {
   dimension: daas_delta_pick_up_claimed_minutes {
     hidden: yes
     group_label: "* Operations / Logistics *"
-    label: "DaaS Pick Up ETA Delta"
-    description: "Difference in minutes between the DaaS Drop Off ETA timestamp and the Rider Claimed timestamp."
+    label: "DaaS Pick-Up ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Claimed timestamp."
     type: number
     sql: timestamp_diff(
           timestamp(${daas_provider_pick_up_eta_timestamp}),
@@ -4341,7 +4341,8 @@ view: orders {
 
   measure: avg_delta_daas_pick_up_claimed {
     group_label: "* Operations / Logistics *"
-    label: "AVG DaaS Delta between Pick-Up ETA and Order Claimed. Note that Rider arrived at the hub is not available for DaaS orders."
+    label: "AVG DaaS Delta between Pick-Up ETA and Order Claimed"
+    description: "Formula: Pick-Up ETA timestamp - Order Claimed timestamp (in minutes). Note that Rider arrived at the hub is not available for DaaS orders."
     type: average
     value_format_name: decimal_1
     sql: ${daas_delta_pick_up_claimed_minutes} ;;
@@ -4350,7 +4351,8 @@ view: orders {
 
   measure: avg_delta_daas_drop_off_delivered {
     group_label: "* Operations / Logistics *"
-    label: "AVG DaaS Delta between Drop-Off ETA and Rider Completed Delivery. Note that Rider arrived at Customer is not available for DaaS orders."
+    label: "AVG DaaS Delta between Drop-Off ETA and Rider Completed Delivery"
+    description: " Formula: Drop-Off ETA timestamp - Rider Completed Delivery timestamp (in minutes). Note that Rider arrived at Customer is not available for DaaS orders."
     type: average
     value_format_name: decimal_1
     sql: ${daas_delta_drop_off_completed_delivery_minutes} ;;
