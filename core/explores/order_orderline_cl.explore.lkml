@@ -262,4 +262,21 @@ explore: order_orderline_cl {
     ;;
   }
 
+  join: geographic_pricing_hub_cluster {
+    view_label: "Geographic Pricing"
+    type: left_outer
+    relationship: many_to_one
+    sql_on:
+        ${geographic_pricing_hub_cluster.hub_code} =  ${orderline.hub_code}
+    ;;
+  }
+
+  join: geographic_pricing_sku_cluster {
+    view_label: "Geographic Pricing"
+    sql_on:
+        ${geographic_pricing_sku_cluster.sku}         = ${orderline.product_sku}
+    and ${geographic_pricing_sku_cluster.country_iso} = ${orderline.country_iso};;
+    relationship: many_to_one
+  }
+
 }
