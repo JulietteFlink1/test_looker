@@ -36,13 +36,6 @@ view: forecasts {
     hidden: no
   }
 
-  dimension: quinyx_pipeline_status_rider {
-    label: "Quinyx Pipeline Status - Rider"
-    description: "Status of the Quinyx pipeline for rider headcount (whether it is sent or not to Quinyx)."
-    type: string
-    sql: coalesce(${TABLE}.quinyx_pipeline_status_rider, "n/a") ;;
-  }
-
   dimension: is_forecast_hub {
     label: "Is forecast hub?"
     description: "Yes, if the hub has forecast for the given job date"
