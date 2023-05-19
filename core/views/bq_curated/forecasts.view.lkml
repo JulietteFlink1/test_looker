@@ -43,13 +43,6 @@ view: forecasts {
     sql: coalesce(${TABLE}.quinyx_pipeline_status_rider, "n/a") ;;
   }
 
-  dimension: quinyx_pipeline_status_picker {
-    label: "Quinyx Pipeline Status - Picker"
-    description: "Status of the Quinyx pipeline for picker headcount (whether it is sent or not to Quinyx)."
-    type: string
-    sql: coalesce(${TABLE}.quinyx_pipeline_status_picker, "n/a") ;;
-  }
-
   dimension: is_forecast_hub {
     label: "Is forecast hub?"
     description: "Yes, if the hub has forecast for the given job date"
@@ -202,19 +195,6 @@ view: forecasts {
     hidden: yes
   }
 
-  dimension: number_of_forecasted_hours_picker_adjusted_dimension {
-    alias: [number_of_adjusted_forecasted_hours_picker_dimension]
-    label: "# Adjusted Forecasted Picker Hours - Dimension"
-    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted/60 ;;
-    hidden: yes
-  }
-
-  dimension: number_of_forecasted_hours_picker_dimension {
-    label: "# Forecasted Picker Hours - Dimension"
-    sql: ${TABLE}.number_of_forecasted_minutes_picker/60 ;;
-    hidden: yes
-  }
-
   # =========  Forecasted No Show Hours   =========
 
 
@@ -316,15 +296,6 @@ view: forecasts {
 
   # =========  Idleness minutes   =========
 
-  measure: number_of_forecasted_idleness_minutes_picker {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Idle Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
   measure: number_of_forecasted_idleness_minutes_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Idle Rider Minutes"
@@ -361,26 +332,7 @@ view: forecasts {
     sql: ${number_of_forecasted_idleness_minutes_rider_adjusted}/nullif(${number_of_forecasted_minutes_rider_adjusted},0) ;;
   }
 
-  measure: pct_idleness_target_picker {
-    group_label: "> Picker Measures"
-    label: "% Idleness Assumption Picker"
-    description: "% Time Picker is Idle"
-    type: number
-    value_format_name: percent_1
-    sql: ${number_of_forecasted_idleness_minutes_picker}/nullif(${number_of_forecasted_minutes_picker},0) ;;
-  }
-
   # =========  UTR   =========
-
-  measure: number_of_target_orders_per_picker {
-    group_label: "> Picker Measures"
-    label: "Base UTR Picker"
-    description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_2
-    type: average
-    sql: ${TABLE}.number_of_target_orders_per_picker ;;
-    hidden: yes
-  }
 
   measure: number_of_target_orders_per_rider {
     group_label: "> Rider Measures"
@@ -402,22 +354,6 @@ view: forecasts {
     hidden: yes
   }
 
-  measure: final_utr_picker {
-    group_label: "> Picker Measures"
-    label: "Forecasted UTR Picker (Incl. No Show)"
-    description: "Forecasted Orders / Forecasted Picker Hours (Incl. No Show)"
-    value_format_name: decimal_2
-    sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_picker},0) ;;
-  }
-
-  measure: final_utr_picker_adjusted {
-    group_label: "> Picker Measures"
-    label: "Adjusted Forecasted UTR Picker (Incl. No Show)"
-    description: "Adjusted Forecasted Orders / Adjusted Forecasted Picker Hours (Incl. No Show)"
-    value_format_name: decimal_2
-    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_picker_adjusted},0) ;;
-  }
-
   measure: final_utr_rider {
     group_label: "> Rider Measures"
     label: "Forecasted UTR Rider (Incl. No Show)"
@@ -435,15 +371,6 @@ view: forecasts {
   }
 
   # =========  Forecasted Employees   =========
-
-  measure: number_of_forecasted_pickers {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Pickers"
-    description: "# Forecasted Pickers Needed"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_pickers ;;
-    hidden: yes
-  }
 
   measure: number_of_forecasted_riders {
     group_label: "> Rider Measures"
@@ -954,21 +881,6 @@ view: forecasts {
 
   # =========  Forecasted minutes   =========
 
-  measure: number_of_forecasted_minutes_picker {
-    label: "# Forecasted Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_minutes_picker ;;
-    hidden: yes
-  }
-
-  measure: number_of_forecasted_minutes_picker_adjusted {
-    alias: [number_of_adjusted_forecasted_minutes_picker]
-    label: "# Adjusted Forecasted Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted ;;
-    hidden: yes
-  }
-
   measure: number_of_forecasted_minutes_rider {
     label: "# Forecasted Rider Minutes"
     type: sum
@@ -1116,23 +1028,6 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
-  measure: number_of_forecasted_hours_picker {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Picker Hours"
-    description: "# Forecasted Hours Needed for Pickers"
-    type: number
-    sql: ${number_of_forecasted_minutes_picker}/60;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_forecasted_hours_picker_adjusted {
-    alias: [number_of_forecasted_adjusted_hours_picker]
-    group_label: "> Picker Measures"
-    label: "# Adjusted Forecasted Picker Hours"
-    type: number
-    sql: ${number_of_forecasted_minutes_picker_adjusted}/60;;
-    value_format_name: decimal_1
-  }
   ##### Forecast errors
 
   measure: wmape_orders {
@@ -1328,8 +1223,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_riders}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_pickers}
           else null
         end ;;
     hidden: yes
@@ -1345,8 +1238,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker}
           else null
         end ;;
   }
@@ -1362,8 +1253,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_adjusted}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_adjusted}
           else null
         end ;;
   }
@@ -1378,8 +1267,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_dimension}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_dimension}
           else null
         end ;;
     hidden: yes
@@ -1397,8 +1284,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_adjusted_dimension}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_adjusted_dimension}
           else null
         end ;;
     hidden: yes
@@ -1601,8 +1486,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_target_orders_per_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_target_orders_per_picker}
           else null
         end ;;
     hidden: yes
@@ -1633,8 +1516,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${pct_idleness_target_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${pct_idleness_target_picker}
           else null
         end ;;
   }
@@ -1711,14 +1592,12 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Target UTR (Excl. No Show)."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
           else null
         end ;;
   }
@@ -1727,14 +1606,12 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Adjusted Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Target UTR (Excl. No Show)."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
           else null
         end ;;
   }
@@ -1903,7 +1780,6 @@ view: forecasts {
   parameter: position_parameter {
     type: string
     allowed_value: { value: "Rider" }
-    allowed_value: { value: "Picker" }
     hidden: yes
   }
 
