@@ -286,6 +286,15 @@ view: waste_waterfall {
     hidden: no
   }
 
+  dimension: flag_missing_outbound {
+    type: number
+    sql: ${TABLE}.flag_missing_outbound ;;
+    label: "Missing Outbound flag"
+    group_label: "Markers"
+    description: "verifying if there is a missing outbound for product-location"
+    hidden: no
+  }
+
   dimension: flag_frozen {
     type: number
     sql: ${TABLE}.flag_frozen ;;
