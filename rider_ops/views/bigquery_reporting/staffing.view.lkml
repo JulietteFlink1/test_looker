@@ -2679,7 +2679,7 @@ view: staffing {
     label: "# Rider Accident Hours"
     description: "Number of hours rider spent temporary offline due to an accident.
     It is calculated based on rider state change reason."
-    sql: ${number_of_equipment_issue_minutes_rider}/60 ;;
+    sql: ${number_of_accident_minutes_rider}/60 ;;
     value_format_name: decimal_2
   }
 
@@ -2697,8 +2697,7 @@ view: staffing {
     group_label: "> Rider Measures"
     type: sum
     label: "# Rider Temporary Offline Hours"
-    description: "Number of hours rider spent temporary offline.
-    It is calculated based on rider state change reason."
+    description: "Number of hours rider spent temporary offline."
     sql: ${number_of_total_temporary_offline_minutes_rider}/60 ;;
     value_format_name: decimal_2
   }
@@ -2706,7 +2705,7 @@ view: staffing {
   measure: number_of_other_temporary_offline_hours_rider {
     group_label: "> Rider Measures"
     type: sum
-    label: "# Rider Other Temporary Offline Break Hours"
+    label: "# Rider Other Temporary Offline Hours"
     description: "Number of hours rider spent temporary offline due to doing other tasks than hub one tasks, shelf restocking, equipment issues, supporting large orders, accident and breaks.
     It is calculated based on rider state change reason."
     sql: ${number_of_other_temporary_offline_minutes_rider}/60 ;;
@@ -2716,9 +2715,8 @@ view: staffing {
   measure: number_of_unresponsive_hours_rider {
     group_label: "> Rider Measures"
     type: sum
-    label: "# Temporary Offline Hours"
-    description: "Number of hours rider spent temporary offline due to: doing hub one tasks, equipment issues, supporting large orders, accidend and breaks.
-    It is calculated based on rider state change reason."
+    label: "# Rider Unresponsive Hours"
+    description: "Number of minutes rider spent temporary offline due to order rejection or expiration. It is calculated based on rider state change reason."
     sql: ${number_of_unresponsive_minutes_rider}/60 ;;
     value_format_name: decimal_2
   }
