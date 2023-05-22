@@ -5,7 +5,7 @@
 view: advanced_supplier_matching_wims_definition {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-dev.dbt_lruiz_reporting.advanced_supplier_matching_wims_definition`
+  sql_table_name: `flink-data-prod.reporting.advanced_supplier_matching_wims_definition`
     ;;
 
 ###############################################################
@@ -58,20 +58,19 @@ view: advanced_supplier_matching_wims_definition {
     hidden: yes
   }
 
-  dimension: wims_buckets {
+  dimension: wims_buckets_clasification {
     label: "WIMS Buckets Clasification"
-    group_label: "WIMS Buckets"
     type: string
     description: "This field classifies data points into distinct buckets based on various conditions and its prioritization."
-    sql: ${TABLE}.wims_buckets ;;
+    sql: ${TABLE}.wims_buckets_clasification ;;
   }
 
-  dimension: wims_buckets_quantities {
+  dimension: total_quantity_in_wims_buckets {
     label: "WIMS Buckets Quantity"
     group_label: "WIMS Buckets"
     type: number
     description: "This field shows the total quantities that fall into the different buckets."
-    sql: ${TABLE}.wims_buckets_quantities ;;
+    sql: ${TABLE}.total_quantity_in_wims_buckets ;;
     hidden: yes
   }
 
@@ -105,102 +104,102 @@ view: advanced_supplier_matching_wims_definition {
 ##################### Buckets Dimensions ######################
 ###############################################################
 
-  dimension: md_hub_status {
+  dimension: quantities_in_hub_status_issue_bucket {
     label: "MD - Hub Status"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to Hub status issues (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_hub_status ;;
+    description: "Bucket that shows possible over/under deliveries due to hub status issues (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_hub_status_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_incorrect_ean_hei_wrong_scanning {
+  dimension: quantities_in_incorrect_ean_hei_wrong_scanning_issue_bucket {
     label: "MD/HE - Incorrect EAN/Wrong Scanning"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to either wrong EANs codes or wrong scanning at the hub (Master Data / Human error issue) - In Selling Units."
-    sql: ${TABLE}.md_incorrect_ean_hei_wrong_scanning ;;
+    description: "Bucket that shows possible over/under deliveries due to either wrong EANs codes or wrong scanning at the hub (Master Data / Human Error Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_incorrect_ean_hei_wrong_scanning_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_incorrect_pack_factor {
+  dimension: quantities_in_incorrect_pack_factor_issue_bucket {
     label: "MD - Incorrect Pack Factor"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to wrong quantity per handling units issue(Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_incorrect_pack_factor ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong quantity per handling units issue(Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_incorrect_pack_factor_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_introduction_date_issue {
+  dimension: quantities_in_introduction_date_issue_bucket {
     label: "MD - Incorrect Introduction Date"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to wrong ERP item-location introduction date (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_introduction_date_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong ERP item-location introduction date (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_introduction_date_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_lead_time_issue {
+  dimension: quantities_in_lead_time_issue_bucket {
     label: "MD - Incorrect Lead Time"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to wrong lead times definition between PO and Inbounds (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_lead_time_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong lead times definition between purchase orders and inbounds (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_lead_time_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_missing_ean_hu {
+  dimension: quantities_in_missing_ean_hu_issue_bucket {
     label: "MD - Missing EAN HU"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to missing EAN Handling Unit (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_missing_ean_hu ;;
+    description: "Bucket that shows possible over/under deliveries due to missing EAN handling unit (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_missing_ean_hu_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_purchase_order_issue {
+  dimension: quantities_in_purchase_order_issue_bucket {
     label: "MD/SI - Purchase Order"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to wrong purchase order attributes that causes mismatches issues (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_purchase_order_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong purchase order attributes that causes mismatches issues (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_purchase_order_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: md_similar_ean_and_ean_hu {
+  dimension: quantities_in_similar_ean_and_ean_hu_issue_bucket {
     label: "MD - Similar EAN & EAN HU"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to similar EAN and EAN handling unit issue (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_similar_ean_and_ean_hu ;;
+    description: "Bucket that shows possible over/under deliveries due to similar EAN and EAN handling unit issue (Master Data Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_similar_ean_and_ean_hu_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: hei_inbound {
+  dimension: quantities_in_inbounding_issue_bucket {
     label: "HE - Incorrect Inbound"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to wrong inbounds caused by Ops associates at the hub (Human Error Issue) - In Selling Units."
-    sql: ${TABLE}.hei_inbound ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong inbounds caused by ops associates at the hub (Human Error Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_inbounding_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: si_overdeliveries {
+  dimension: quantities_in_overdeliveries_issue_bucket {
     label: "SI - Overdeliveries"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to suppliers delivering more than ordered/expected (Supplier Issue) - In Selling Units."
-    sql: ${TABLE}.si_overdeliveries ;;
+    description: "Bucket that shows possible over/under deliveries due to suppliers delivering more than ordered/expected (Supplier Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_overdeliveries_issue_bucket ;;
     hidden: yes
   }
 
-  dimension: si_underdeliveries {
+  dimension: quantities_in_underdeliveries_issue_bucket {
     label: "SI - Underdeliveries"
     group_label: "WIMS Buckets"
     type: number
-    description: "Bucket that shows possible over/under deliveries due to suppliers delivering less than ordered/expected (Supplier Issue) - In Selling Units."
-    sql: ${TABLE}.si_underdeliveries ;;
+    description: "Bucket that shows possible over/under deliveries due to suppliers delivering less than ordered/expected (Supplier Issue) - in selling units."
+    sql: ${TABLE}.quantities_in_underdeliveries_issue_bucket ;;
     hidden: yes
   }
 
@@ -212,100 +211,99 @@ view: advanced_supplier_matching_wims_definition {
   # measures for this dimension, but you can also add measures of many different aggregates.
   # Click on the type parameter to see all the options in the Quick Help panel on the right.
 
-  measure: sum_of_md_hub_status_quantities {
-    label: "# Units in MD - Hub Status Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_hub_status_issue_bucket {
+    label: "# Units in Hub Status Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to Hub status issues (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_hub_status ;;
+    description: "Bucket that shows possible over/under deliveries due to hub status issues (Master Data Issue) - in selling units."
+    sql: ${quantities_in_hub_status_issue_bucket} ;;
   }
 
-  measure: sum_of_md_incorrect_ean_hei_wrong_scanning {
-    label: "# Units in MD/HE - Incorrect EAN/Wrong Scanning Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_incorrect_ean_hei_wrong_scanning_issue_bucket {
+    label: "# Units in Incorrect EAN/Wrong Scanning Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to either wrong EANs codes or wrong scanning at the hub (Master Data / Human error issue) - In Selling Units."
-    sql: ${TABLE}.md_incorrect_ean_hei_wrong_scanning ;;
+    description: "Bucket that shows possible over/under deliveries due to either wrong EANs codes or wrong scanning at the hub (Master Data / Human Error Issue) - in selling units."
+    sql: ${quantities_in_incorrect_ean_hei_wrong_scanning_issue_bucket} ;;
   }
 
-  measure: sum_of_md_incorrect_pack_factor {
-    label: "# Units in MD - Incorrect Pack Factor Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_incorrect_pack_factor_issue_bucket {
+    label: "# Units in Incorrect Pack Factor Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to wrong quantity per handling units issue(Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_incorrect_pack_factor ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong quantity per handling units issue(Master Data Issue) - in selling units."
+    sql: ${quantities_in_incorrect_pack_factor_issue_bucket} ;;
   }
 
-  measure: sum_of_md_introduction_date_issue {
-    label: "# Units in MD - Incorrect Introduction Date Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_introduction_date_issue_bucket {
+    label: "# Units in Incorrect Introduction Date Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to wrong ERP item-location introduction date (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_introduction_date_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong ERP item-location introduction date (Master Data Issue) - in selling units."
+    sql: ${quantities_in_introduction_date_issue_bucket} ;;
   }
 
-  measure: sum_of_md_lead_time_issue {
-    label: "# Units in MD - Incorrect Lead Time Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_lead_time_issue_bucket {
+    label: "# Units in Incorrect Lead Time Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to wrong lead times definition between PO and Inbounds (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_lead_time_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong lead times definition between purchase orders and inbounds (Master Data Issue) - in selling units."
+    sql: ${quantities_in_lead_time_issue_bucket} ;;
   }
 
-  measure: sum_of_md_missing_ean_hu {
-    label: "# Units in MD - Missing EAN HU Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_missing_ean_hu_issue_bucket {
+    label: "# Units in Missing EAN HU Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to missing EAN Handling Unit (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_missing_ean_hu ;;
+    description: "Bucket that shows possible over/under deliveries due to missing EAN handling unit (Master Data Issue) - in selling units."
+    sql: ${quantities_in_missing_ean_hu_issue_bucket} ;;
   }
 
-  measure: sum_of_md_purchase_order_issue {
-    label: "# Units in MD/SI - Purchase Order Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_purchase_order_issue_bucket {
+    label: "# Units in Purchase Order Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to wrong purchase order attributes that causes mismatches issues (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_purchase_order_issue ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong purchase order attributes that causes mismatches issues (Master Data Issue) - in selling units."
+    sql: ${quantities_in_purchase_order_issue_bucket} ;;
   }
 
-  measure: sum_of_md_similar_ean_and_ean_hu {
-    label: "# Units in MD - Similar EAN & EAN HU Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_similar_ean_and_ean_hu_issue_bucket {
+    label: "# Units in Similar EAN & EAN HU Bucket"
+    group_label: "Master Data Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to similar EAN and EAN handling unit issue (Master Data Issue) - In Selling Units."
-    sql: ${TABLE}.md_similar_ean_and_ean_hu ;;
+    description: "Bucket that shows possible over/under deliveries due to similar EAN and EAN handling unit issue (Master Data Issue) - in selling units."
+    sql: ${quantities_in_similar_ean_and_ean_hu_issue_bucket} ;;
   }
 
-  measure: sum_of_hei_inbound {
-    label: "# Units in HE - Incorrect Inbound Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_inbounding_issue_bucket {
+    label: "# Units in Incorrect Inbound Bucket"
+    group_label: "Human Error Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to wrong inbounds caused by Ops associates at the hub (Human Error Issue) - In Selling Units."
-    sql: ${TABLE}.hei_inbound ;;
+    description: "Bucket that shows possible over/under deliveries due to wrong inbounds caused by ops associates at the hub (Human Error Issue) - in selling units."
+    sql: ${quantities_in_inbounding_issue_bucket} ;;
   }
 
-  measure: sum_of_si_overdeliveries {
-    label: "# Units in SI - Overdeliveries Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_overdeliveries_issue_bucket {
+    label: "# Units in Overdeliveries Bucket"
+    group_label: "Supplier Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to suppliers delivering more than ordered/expected (Supplier Issue) - In Selling Units."
-    sql: ${TABLE}.si_overdeliveries ;;
+    description: "Bucket that shows possible over/under deliveries due to suppliers delivering more than ordered/expected (Supplier Issue) - in selling units."
+    sql: ${quantities_in_overdeliveries_issue_bucket} ;;
   }
 
-  measure: sum_of_si_underdeliveries {
-    label: "# Units in SI - Underdeliveries Bucket"
-    group_label: "WIMS Buckets"
+  measure: sum_of_quantities_in_underdeliveries_issue_bucket {
+    label: "# Units in Underdeliveries Bucket"
+    group_label: "Supplier Issues"
     type: sum
-    description: "Bucket that shows possible over/under deliveries due to suppliers delivering less than ordered/expected (Supplier Issue) - In Selling Units."
-    sql: ${TABLE}.si_underdeliveries ;;
+    description: "Bucket that shows possible over/under deliveries due to suppliers delivering less than ordered/expected (Supplier Issue) - in selling units."
+    sql: ${quantities_in_underdeliveries_issue_bucket} ;;
   }
 
-  measure: sum_of_total_wims_buckets_quantities {
-    label: "# WIMS Buckets Quantity"
-    group_label: "WIMS Buckets"
+  measure: sum_of_total_quantity_in_wims_buckets {
+    label: "# Total Units in WIMS Buckets"
     type: sum
     description: "This field shows the total quantities that fall into the different buckets."
-    sql: ${TABLE}.wims_buckets_quantities ;;
+    sql: ${total_quantity_in_wims_buckets} ;;
   }
 
 
