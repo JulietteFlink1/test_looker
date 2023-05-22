@@ -478,6 +478,22 @@ view: orders {
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
+  dimension: delta_to_pdt_minutes_including_tolerance_buffer{
+    group_label: "* Operations / Logistics *"
+    label: "Delta to PDT (min) (Including 15% DPT tolerance)"
+    description: "Delta to promised delivery time (as shown to customer) + 15% tolerance buffer"
+    type: number
+    sql: round(
+      timestamp_diff(
+        ${delivery_timestamp_raw},
+        -- add 15% of pdt as tolerance buffer
+        timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+        second
+      ) / 60,
+      2
+    ) ;;
+  }
+
   dimension: delivery_delay_since_pdt_seconds {
     alias: [delivery_delay_since_eta_seconds]
     group_label: "* Operations / Logistics *"
@@ -1966,7 +1982,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG PDT"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"
-    hidden:  no
+    hidden:  yes
     type: average
     sql: ${delivery_eta_minutes};;
     value_format_name: decimal_1
@@ -3297,11 +3313,11 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (30 sec tolerance)"
+    label: "# Orders delivered on time (Including 15% tolerance)"
     description: "Count of Orders delivered no later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:"<=0.5"]
+    filters: [delta_to_pdt_minutes_including_tolerance_buffer:"<=0.5"]
     value_format: "0"
   }
 
@@ -3669,7 +3685,7 @@ view: orders {
     description: "Count of Orders delivered >5min later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:">=5"]
+    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=5"]
     value_format: "0"
   }
 
@@ -3679,7 +3695,7 @@ view: orders {
     description: "Count of Orders delivered >10min later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:">=10"]
+    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=10"]
     value_format: "0"
   }
 
@@ -3689,7 +3705,7 @@ view: orders {
     description: "Count of Orders delivered >15min later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:">=15"]
+    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=15"]
     value_format: "0"
   }
 
