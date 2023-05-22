@@ -1191,12 +1191,25 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_rider_refilled_shift {
+    group_label: "> Rider Measures"
+    label: "# Punched Refilled Rider Hours"
+    description: "# Punched Rider Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_refilled_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_worked_hours_rider_extra {
     group_label: "> Rider Measures"
-    label: "# Extra Punched Rider Hours (EC, NS+, WFS)"
-    description: "# Punched Rider Hours from shifts with project code NS+. WFS and EC shifts"
+    label: "# Extra Punched Rider Hours (EC, NS+, WFS, Refilled)"
+    description: "# Punched Rider Hours from shifts with project code NS+. WFS, EC and Refilled shifts"
     type: number
-    sql: ${number_of_worked_hours_rider_ns_shift} + ${number_of_worked_hours_rider_ec_shift} + ${number_of_worked_hours_rider_wfs_shift};;
+    sql: ${number_of_worked_hours_rider_ns_shift} +
+    ${number_of_worked_hours_rider_ec_shift} +
+    ${number_of_worked_hours_rider_wfs_shift} +
+    ${number_of_worked_hours_rider_refilled_shift}
+    ;;
     value_format_name: decimal_1
   }
 
@@ -1273,12 +1286,24 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_worked_hours_ops_associate_refilled_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Punched Refilled Ops Associate Hours"
+    description: "# Punched Ops Associate Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_worked_minutes_refilled_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_worked_hours_ops_associate_extra {
     group_label: "> Ops Associate Measures"
-    label: "# Extra Punched Ops Associate Hours (EC, NS+, WFS)"
-    description: "# Punched Ops Associate Hours from shifts with project code NS+. WFS and EC shifts"
+    label: "# Extra Punched Ops Associate Hours (EC, NS+, WFS, Refilled)"
+    description: "# Punched Ops Associate Hours from shifts with project code NS+. WFS, EC and Refilled shifts"
     type: number
-    sql: ${number_of_worked_hours_ops_associate_ns_shift} + ${number_of_worked_hours_ops_associate_ec_shift} + ${number_of_worked_hours_ops_associate_wfs_shift};;
+    sql: ${number_of_worked_hours_ops_associate_ns_shift} +
+    ${number_of_worked_hours_ops_associate_ec_shift} +
+    ${number_of_worked_hours_ops_associate_wfs_shift} +
+    ${number_of_worked_hours_ops_associate_refilled_shift};;
     value_format_name: decimal_1
   }
 
@@ -1545,6 +1570,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_unassigned_hours_rider_refilled_shift {
+    group_label: "> Rider Measures"
+    label: "# Open Refilled Rider Hours"
+    description: "# Open Rider Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_refilled_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_unassigned_hours_ops_associate_ec_shift {
     group_label: "> Ops Associate Measures"
     label: "# Open EC Ops Associate Hours"
@@ -1578,6 +1612,15 @@ view: staffing {
     description: "# Open Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_unassigned_hours_ops_associate_refilled_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Open Refilled Ops Associate Hours"
+    description: "# Open Ops Associate Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_unassigned_minutes_refilled_shift_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -1662,6 +1705,15 @@ view: staffing {
     description: "# Filled Ops Associate Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ns_shift_ops_associate /60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_ops_associate_refilled_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Filled (Assigned) Refilled Ops Associate Hours"
+    description: "# Filled Ops Associate Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_refilled_shift_ops_associate /60;;
     value_format_name: decimal_1
   }
 
@@ -1757,6 +1809,15 @@ view: staffing {
     description: "# Filled Rider Hours from shifts with project code = 'NS+ shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ns_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_planned_hours_rider_refilled_shift {
+    group_label: "> Rider Measures"
+    label: "# Filled (Assigned) Refilled Rider Hours"
+    description: "# Filled Rider Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_planned_minutes_refilled_shift_rider/60;;
     value_format_name: decimal_1
   }
 
@@ -1992,13 +2053,32 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_rider_refilled_shift {
+    group_label: "> Rider Measures"
+    label: "# Scheduled Refilled Rider Hours"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned Refilled shift hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_rider_refilled_shift}+${number_of_planned_hours_rider_refilled_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_rider_extra {
     group_label: "> Rider Measures"
-    label: "# Extra Scheduled Rider Hours (EC, NS, WFS)"
-    description: "# Extra Scheduled Rider Hours  (Assigned + Unassigned EC, NS+ and WFS shift hours)"
+    label: "# Extra Scheduled Rider Hours (EC, NS, WFS, Refilled)"
+    description: "# Extra Scheduled Rider Hours  (Assigned + Unassigned EC, NS+, WFS and Refilled shift hours)"
     type: number
-    sql: (${number_of_unassigned_hours_rider_ec_shift} + ${number_of_unassigned_hours_rider_ns_shift} + ${number_of_unassigned_hours_rider_wfs_shift})
-      + (${number_of_planned_hours_rider_ec_shift} + ${number_of_planned_hours_rider_ns_shift} + ${number_of_planned_hours_rider_wfs_shift});;
+    sql: (
+    ${number_of_unassigned_hours_rider_ec_shift} +
+    ${number_of_unassigned_hours_rider_ns_shift} +
+    ${number_of_unassigned_hours_rider_wfs_shift} +
+    ${number_of_unassigned_hours_rider_refilled_shift}
+    ) +
+    (
+    ${number_of_planned_hours_rider_ec_shift} +
+    ${number_of_planned_hours_rider_ns_shift} +
+    ${number_of_planned_hours_rider_wfs_shift} +
+    ${number_of_planned_hours_rider_refilled_shift}
+    );;
     value_format_name: decimal_1
   }
 
@@ -2076,12 +2156,25 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_scheduled_hours_ops_associate_refilled_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# Scheduled NS+ Ops Associate Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned 'Refilled Shift' Hours)"
+    type: number
+    sql: ${number_of_unassigned_hours_ops_associate_refilled_shift}+${number_of_planned_hours_ops_associate_refilled_shift};;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_scheduled_hours_ops_associate_extra {
     group_label: "> Ops Associate Measures"
-    label: "# Extra Scheduled Ops Associate Hours (EC, NS+, WFS)"
-    description: "# Extra Scheduled Ops Associate Hours  (Assigned + Unassigned EC, NS+ and WFS hours)"
+    label: "# Extra Scheduled Ops Associate Hours (EC, NS+, WFS, Refilled)"
+    description: "# Extra Scheduled Ops Associate Hours  (Assigned + Unassigned EC, NS+, WFS and Refilled hours)"
     type: number
-    sql: ${number_of_scheduled_hours_ops_associate_ec_shift} + ${number_of_scheduled_hours_ops_associate_wfs_shift} + ${number_of_scheduled_hours_ops_associate_ns_shift};;
+    sql: ${number_of_scheduled_hours_ops_associate_ec_shift} +
+    ${number_of_scheduled_hours_ops_associate_wfs_shift} +
+    ${number_of_scheduled_hours_ops_associate_ns_shift} +
+    ${number_of_scheduled_hours_ops_associate_refilled_shift}
+    ;;
     value_format_name: decimal_1
   }
 
@@ -2174,6 +2267,35 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: temp_number_of_no_show_hours_rider {
+    group_label: "> Rider Measures"
+    label: "(old) # No Show Rider Hours"
+    type: number
+    sql: ${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_refilled_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_refilling_hours_rider {
+    group_label: "> Rider Measures"
+    label: "# No Show Refilling Rider Hours"
+    description: "# No show Hours + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_no_show_hours_rider} + ${number_of_unassigned_hours_rider_ns_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_no_show_refilling_hours_rider {
+    group_label: "> Rider Measures"
+    label: "% No Show Refilling Rider Hours"
+    description: "# No Show Refilling Rider Hours / # Filled Rider Hours (Excl. shifts with project code = 'Refilled shift') + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_no_show_refilling_hours_rider} /nullif(
+          ${number_of_planned_hours_rider} +
+          ${number_of_unassigned_hours_rider_ns_shift},0
+          );;
+    value_format_name: percent_1
+  }
+
   measure: number_of_no_show_hours_rider_ec_shift {
     group_label: "> Rider Measures"
     label: "# No Show EC Rider Hours"
@@ -2219,6 +2341,15 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  measure: number_of_no_show_hours_rider_refilled_shift {
+    group_label: "> Rider Measures"
+    label: "# No Show Refilled Rider Hours"
+    description: "# No Show Rider Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_rider/60;;
+    value_format_name: decimal_1
+  }
+
   measure: number_of_no_show_hours_ops_associate_ec_shift {
     group_label: "> Ops Associate Measures"
     label: "# No Show EC Ops Associate Hours"
@@ -2253,6 +2384,36 @@ view: staffing {
     type: sum
     sql: ${TABLE}.number_of_no_show_minutes_ns_shift_ops_associate/60;;
     value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_hours_ops_associate_refilled_shift {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Refilled Ops Associate Hours"
+    description: "# No Show Ops Associate Hours from shifts with project code = 'Refilled shift'"
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_ops_associate/60;;
+    value_format_name: decimal_1
+  }
+
+  measure: number_of_no_show_refilling_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "# No Show Refilling Ops Associate Hours"
+    description: "# No show Hours + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_no_show_hours_ops_associate} + ${number_of_unassigned_hours_ops_associate_ns_shift};;
+    value_format_name: decimal_1
+  }
+
+  measure: pct_no_show_refilling_hours_ops_associate {
+    group_label: "> Ops Associate Measures"
+    label: "% No Show Refilling Ops Associate Hours"
+    description: "# No Show Refilling Ops Associate Hours / # Filled Ops Associate Hours (Excl. shifts with project code = 'Refilled shift') + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_no_show_refilling_hours_ops_associate} /nullif(
+          ${number_of_planned_hours_ops_associate} +
+          ${number_of_unassigned_hours_ops_associate_ns_shift},0
+          );;
+    value_format_name: percent_1
   }
 
   measure: number_of_no_show_hours_shift_lead {
@@ -2807,6 +2968,24 @@ view: staffing {
     sql: ${number_of_planned_hours_by_position}/nullif(${number_of_scheduled_hours_by_position},0);;
   }
 
+  measure: pct_fill_rate_rider_ns_shift {
+    group_label: "> Rider Measures"
+    label: "% Fill Rate NS+ Rider Hours"
+    description: "% Filled Hours (Assigned to an Employee) from shifts with project code = 'NS+ shift' / # Scheduled Hours (Assigned Hours + Open Hours) from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_planned_hours_rider_ns_shift}/nullif(${number_of_scheduled_hours_rider_ns_shift},0);;
+    value_format_name: percent_2
+  }
+
+  measure: pct_fill_rate_ops_associate_ns_shift {
+    group_label: "> Ops Associate Measures"
+    label: "% Fill Rate NS+ Ops Associate Hours"
+    description: "% Filled Hours (Assigned to an Employee) from shifts with project code = 'NS+ shift' / # Scheduled Hours (Assigned Hours + Open Hours) from shifts with project code = 'NS+ shift'"
+    type: number
+    sql: ${number_of_planned_hours_ops_associate_ns_shift}/nullif(${number_of_scheduled_hours_ops_associate_ns_shift},0);;
+    value_format_name: percent_2
+  }
+
   measure: pct_unassignment_rate {
     type: number
     label: "% Unassignment Rate (Incl. EC Shift)"
@@ -2996,10 +3175,24 @@ view: staffing {
         end ;;
   }
 
+  measure: number_of_scheduled_hours_by_position_refilled_shift {
+    type: number
+    label: "# Refilled Scheduled Hours (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) shifts with project code = 'Refilled shift' (Incl. Deleted Excused No Show)"
+    value_format_name: decimal_1
+    group_label: "> Dynamic Measures"
+    sql:
+        case
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_scheduled_hours_rider_refilled_shift}
+          when {% parameter position_parameter %} = 'Ops Associate' THEN ${number_of_scheduled_hours_ops_associate_refilled_shift}
+          else null
+        end ;;
+  }
+
   measure: number_of_scheduled_hours_by_position_extra {
     type: number
-    label: "# Extra Scheduled Hours (EC, NS+. WFS Shifts) (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show)"
+    label: "# Extra Scheduled Hours (EC, NS+. WFS, Refilled Shifts) (Incl. Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (Incl. Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3012,8 +3205,8 @@ view: staffing {
 
   measure: pct_extra_scheduled_hours_by_position {
     type: number
-    label: "% Extra Scheduled Hours (EC, NS+, WFS Shifts) (Incl. Deleted Excused No Show)"
-    description: "Share of Assigned and Unassigned (Open) EC, NS+ and WFS shift hours (Incl. Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
+    label: "% Extra Scheduled Hours (EC, NS+, WFS, Refilled Shifts) (Incl. Deleted Excused No Show)"
+    description: "Share of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (Incl. Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_scheduled_hours_by_position_extra}/${number_of_scheduled_hours_by_position} ;;
@@ -3021,8 +3214,8 @@ view: staffing {
 
   measure: number_of_worked_hours_by_position_extra {
     type: number
-    label: "# Extra Punched Hours (EC, NS+, WFS Shifts)"
-    description: "Sum of Worked Hours from shifts with project code NS+. WFS and EC shifts"
+    label: "# Extra Punched Hours (EC, NS+, WFS, Refilled Shifts)"
+    description: "Sum of Worked Hours from shifts with project code NS+. WFS, EC and Refilled shifts"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3049,8 +3242,8 @@ view: staffing {
 
   measure: pct_extra_worked_hours_by_position {
     type: number
-    label: "% Extra Punched Hours (EC, NS+, WFS Shifts)"
-    description: "Share of Worked Hours from shifts with project code NS+. WFS and EC shifts over all Worked hours"
+    label: "% Extra Punched Hours (EC, NS+, WFS, Refilled Shifts)"
+    description: "Share of Worked Hours from shifts with project code NS+. WFS, EC and Refilled shifts over all Worked hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql: ${number_of_worked_hours_by_position_extra}/${number_of_worked_hours_by_position} ;;
