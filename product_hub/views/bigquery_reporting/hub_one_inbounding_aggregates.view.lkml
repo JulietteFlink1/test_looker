@@ -293,9 +293,9 @@ view: hub_one_inbounding_aggregates {
 
   measure: number_of_products_quantity_modified {
     type: sum
-    label: "Sum Quantity Modifed"
+    label: "Number of Distinct Products Updated"
     group_label: "Total Metrics"
-    description: "Sum of quantity of products modified"
+    description: "Sum of distinct number of products modified"
     sql: ${TABLE}.is_quantity_modified  ;;
   }
 
@@ -354,7 +354,15 @@ view: hub_one_inbounding_aggregates {
     group_label: "Total Times"
     description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_minutes ;;
+    sql: ${TABLE}.time_list_verification_minutes ;;
+  }
+
+  measure: sum_time_list_verification_hours {
+    type: sum
+    group_label: "Total Times"
+    description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_hours ;;
   }
 
   # =========  Average Times   =========
@@ -411,7 +419,7 @@ view: hub_one_inbounding_aggregates {
     group_label: "Avg Times"
     description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_minutes ;;
+    sql: ${TABLE}.time_list_verification_minutes ;;
   }
 
   measure: avg_time_list_verification_hours {
@@ -419,7 +427,7 @@ view: hub_one_inbounding_aggregates {
     group_label: "Avg Times"
     description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
     value_format: "0.00"
-    sql: ${TABLE}.time_inbounding_hours ;;
+    sql: ${TABLE}.time_list_verification_hours ;;
   }
 
   # =========  Productivity   =========
@@ -454,7 +462,7 @@ view: hub_one_inbounding_aggregates {
     description: "Share of products that went through list verification process"
     type: number
 
-    sql: safe_divide(${number_of_distinct_products_verified}, ${number_of_products_dropped})  ;;
+    sql: safe_divide(${number_of_distinct_products_verified}, ${number_of_distinct_products_dropped})  ;;
 
     value_format_name: percent_2
   }
