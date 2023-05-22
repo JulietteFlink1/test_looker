@@ -828,6 +828,7 @@ view: orders {
   dimension: is_order_within_30_days_after_customers_first_order {
     group_label: "* Order Dimensions *"
     label: "Is Order within 30 days after Customer First Order"
+    description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
     type: yesno
     sql: ${TABLE}.is_order_within_30_days_after_customers_first_order ;;
   }
@@ -835,6 +836,7 @@ view: orders {
   dimension: is_customers_first_order_month {
     group_label: "* Order Dimensions *"
     label: "Is Customers First Order Month"
+    description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
     type: yesno
     sql: ${TABLE}.is_customers_first_order_month ;;
   }
@@ -3143,7 +3145,7 @@ view: orders {
   measure: cnt_orders_per_unique_customer {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders per Unique Customer"
-    description: "Count of Orders per Unique Customer"
+    description: "Count of Orders per Customer"
     hidden:  no
     type: number
     sql: safe_divide(${cnt_orders}, ${cnt_unique_customers}) ;;
