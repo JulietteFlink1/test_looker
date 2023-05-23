@@ -3,6 +3,9 @@ view: cc_contacts {
     ;;
 
   dimension: agent_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "> Agent & Team"
     description: "Email of the last agent who took part in the chat"
     type: string
@@ -17,6 +20,9 @@ view: cc_contacts {
   }
 
   dimension: agent_name {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "> Agent & Team"
     description: "Name of the last agent who took part in the chat"
     type: string
@@ -33,19 +39,23 @@ view: cc_contacts {
   }
 
   dimension: user_phone_number {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "> User"
     type: string
     description: "Phone number of the user who created the contact"
     sql: ${TABLE}.user_phone_number ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "> User"
     type: string
     description: "Email of the user who created the contact"
     sql: ${TABLE}.user_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: intercom_user_id {
@@ -56,11 +66,13 @@ view: cc_contacts {
   }
 
   dimension: user_name {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "> User"
     type: string
     description: "Name of the user who created the contact"
     sql: ${TABLE}.user_name ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: cc_team {

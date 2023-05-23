@@ -55,10 +55,12 @@ view: customers_metrics {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: customer_id {

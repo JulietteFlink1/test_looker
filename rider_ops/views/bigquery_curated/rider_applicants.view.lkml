@@ -3,6 +3,9 @@ view: rider_applicants {
     ;;
 
   dimension: applicant_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* Applicant Dimensions *"
     type: string
     sql: ${TABLE}.applicant_email ;;

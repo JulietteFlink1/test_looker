@@ -21,6 +21,9 @@ view: braintree_data {
   }
 
   dimension: customer_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.customer_email ;;
   }

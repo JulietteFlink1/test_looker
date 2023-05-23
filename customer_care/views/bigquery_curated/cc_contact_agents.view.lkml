@@ -5,6 +5,9 @@ view: cc_contact_agents {
   dimension: agent_email {
     type: string
     sql: ${TABLE}.agent_email ;;
+
+    required_access_grants: [can_access_pii_customers]
+
   }
 
   dimension: agent_id {
@@ -15,6 +18,9 @@ view: cc_contact_agents {
   dimension: agent_name {
     type: string
     sql: ${TABLE}.agent_name ;;
+
+    required_access_grants: [can_access_pii_customers]
+
   }
 
   dimension: contact_admin_uuid {
