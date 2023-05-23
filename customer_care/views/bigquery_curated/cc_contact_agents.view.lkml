@@ -6,7 +6,7 @@ view: cc_contact_agents {
     type: string
     sql: ${TABLE}.agent_email ;;
 
-    required_access_grants: [can_access_pii_customers]
+    required_access_grants: [can_access_pii_hq_employees]
 
   }
 
@@ -19,7 +19,7 @@ view: cc_contact_agents {
     type: string
     sql: ${TABLE}.agent_name ;;
 
-    required_access_grants: [can_access_pii_customers]
+    required_access_grants: [can_access_pii_hq_employees]
 
   }
 

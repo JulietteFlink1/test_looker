@@ -4,7 +4,7 @@ view: rider_hires {
 
   dimension: applicant_email {
 
-    required_access_grants: [can_access_pii_customers]
+    required_access_grants: [can_access_pii_hub_employees]
 
     group_label: "* Applicant Dimensions *"
     type: string

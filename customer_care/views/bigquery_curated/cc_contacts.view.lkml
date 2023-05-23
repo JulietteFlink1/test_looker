@@ -4,7 +4,7 @@ view: cc_contacts {
 
   dimension: agent_email {
 
-    required_access_grants: [can_access_pii_customers]
+    required_access_grants: [can_access_pii_hq_employees]
 
     group_label: "> Agent & Team"
     description: "Email of the last agent who took part in the chat"
@@ -21,7 +21,7 @@ view: cc_contacts {
 
   dimension: agent_name {
 
-    required_access_grants: [can_access_pii_customers]
+    required_access_grants: [can_access_pii_hq_employees]
 
     group_label: "> Agent & Team"
     description: "Name of the last agent who took part in the chat"
