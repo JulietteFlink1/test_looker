@@ -222,7 +222,7 @@ view: hub_uph_30min {
 ###### MEASURES ######
 
   measure: sum_number_of_events {
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Events"
     description: "Total number of Events included in a given session. Based on Hub One data."
     type: sum
@@ -230,7 +230,7 @@ view: hub_uph_30min {
   }
 
   measure: sum_number_of_checks {
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Checks"
     description: "Number of Checks finished. 1 check = 1 SKU. Based on Hub One data."
     type: sum
@@ -238,7 +238,7 @@ view: hub_uph_30min {
   }
 
   measure: sum_number_of_picked_items {
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Picked Items"
     description: "Number of Items scanned during the picking process. Action can be item picked, skipped, reset or refunded. Based on Hub One data."
     type: sum
@@ -246,7 +246,7 @@ view: hub_uph_30min {
   }
 
   measure: sum_number_of_dropped_items {
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Dropped Items"
     description: "Number of dropped items during the inbounding process. Based on Hub One data."
     type: sum
@@ -254,7 +254,7 @@ view: hub_uph_30min {
   }
 
   measure: sum_number_of_picked_orders{
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Picked Orders"
     description: "Number of picked orders. Based on Hub One data."
     type: sum
@@ -425,7 +425,7 @@ view: hub_uph_30min {
   }
 
   measure: uph_picking {
-    group_label: "> Productivity Metrics"
+    group_label: "> Productivity Metrics All Positions"
     type: number
     label: "UPH Order Preparation"
     description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
@@ -434,7 +434,7 @@ view: hub_uph_30min {
   }
 
   measure: oph_picking {
-    group_label: "> Productivity Metrics"
+    group_label: "> Productivity Metrics All Positions"
     type: number
     description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
     label: "OPH"
@@ -443,7 +443,7 @@ view: hub_uph_30min {
   }
 
   measure: uph_inbounding {
-    group_label: "> Productivity Metrics"
+    group_label: "> Productivity Metrics All Positions"
     type: number
     label: "UPH Inbounding"
     description: "Units dropped per Hour. Formula:  # Dropped Items / ( # Direct Inbounding Hours + # Internal Inbounding Hours )"
@@ -452,7 +452,7 @@ view: hub_uph_30min {
   }
 
   measure: uph_inventory_check {
-    group_label: "> Productivity Metrics"
+    group_label: "> Productivity Metrics All Positions"
     type: number
     description: "Checks per Hour. Formula: # Checks / ( # Direct Inventory Hours + # Internal Inventory Hours )"
     label: "UPH Inventory Check"
@@ -462,7 +462,7 @@ view: hub_uph_30min {
 
   measure: number_of_unique_shifts {
     type: count_distinct
-    group_label: "> Quantities"
+    group_label: "> Quantities All Positions"
     label: "# Shifts"
     description: "Number of unique shifts."
     sql: ${shift_id} ;;
