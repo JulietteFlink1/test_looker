@@ -825,12 +825,12 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
-  dimension: is_order_within_30_days_after_customers_first_order {
+  dimension: is_customers_first_order_30_days {
     group_label: "* Order Dimensions *"
     label: "Is Order within 30 days after Customer First Order"
     description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
     type: yesno
-    sql: ${TABLE}.is_order_within_30_days_after_customers_first_order ;;
+    sql: ${TABLE}.is_customers_first_order_30_days ;;
   }
 
   dimension: is_customers_first_order_month {
@@ -3142,9 +3142,9 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_per_unique_customer {
+  measure: avg_orders_per_customer {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders per Unique Customer"
+    label: "AVG # Orders per Customer"
     description: "Count of Orders per Customer"
     hidden:  no
     type: number
@@ -3295,6 +3295,46 @@ view: orders {
     type: count
     value_format: "0"
     filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: cnt_unique_orders_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders from First Month Customers"
+    description: "Count of successful Orders placed by customers in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders from Non First Month Customers"
+    description: "Count of successful Orders placed by customers NOT in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "no"]
+  }
+
+  measure: cnt_unique_orders_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders from First 30 days Customers"
+    description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders from Non First 30 days Customers"
+    description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "no"]
   }
 
   measure: cnt_orders_with_delivery_eta_available {
