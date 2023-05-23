@@ -1220,6 +1220,14 @@ view: daily_user_aggregates {
     sql: ${daily_user_uuid} ;;
     filters: [is_address_deliverable: "yes"]
   }
+  measure: daily_users_with_category_selected {
+    group_label: "User Metrics - Daily"
+    label: "# Daily Active Users with Category Selected"
+    description: "Number of daily users who clicked on a category at least once"
+    type: count_distinct
+    sql: ${user_uuid} ;;
+    filters: [is_category_selected: "yes"]
+  }
   measure: daily_users_with_add_to_cart {
     group_label: "User Metrics - Daily"
     label: "# Daily Active Users with Add-to-Cart"
@@ -1905,8 +1913,8 @@ view: daily_user_aggregates {
 
   measure: daily_users_with_any_reco_atc {
     group_label: "User Metrics - Daily"
-    label: "# Daily Users with ATC from any recommendation lane including last-bought on home"
-    description: "count of users with ATC from any reco lane including last bought from home"
+    label: "# Daily Users with ATC from any recommendation lane"
+    description: "Count of users with ATC from any reco lane including last-bought on home, top-picks on home and highlights"
     type: count_distinct
     hidden:  no
     sql: ${daily_user_uuid} ;;
