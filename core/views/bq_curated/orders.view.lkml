@@ -3329,7 +3329,7 @@ view: orders {
 
   measure: cnt_unique_orders_non_first_30_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders after 30d from first Order"
+    label: "# Orders after 30d since first Order"
     description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
     hidden:  no
     type: count
