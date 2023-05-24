@@ -63,10 +63,11 @@ explore: end_to_end_supplier_matching {
     view_label: "WIMS Buckets"
     type: left_outer
     relationship: many_to_one
-    sql_on: ${advanced_supplier_matching.hub_code}    = ${advanced_supplier_matching_wims_definition.hub_code} and
-            ${advanced_supplier_matching.parent_sku}  = ${advanced_supplier_matching_wims_definition.parent_sku} and
-            ${advanced_supplier_matching.report_date} = ${advanced_supplier_matching_wims_definition.report_date} and
-            ${advanced_supplier_matching.table_uuid}  = ${advanced_supplier_matching_wims_definition.table_uuid};;
+    sql_on: ${advanced_supplier_matching.hub_code}             = ${advanced_supplier_matching_wims_definition.hub_code} and
+            ${advanced_supplier_matching.parent_sku}           = ${advanced_supplier_matching_wims_definition.parent_sku} and
+            ${advanced_supplier_matching.report_date}          = ${advanced_supplier_matching_wims_definition.report_date} and
+            ${advanced_supplier_matching.supplier_location_id} = ${advanced_supplier_matching_wims_definition.supplier_location_id} and
+            ${advanced_supplier_matching.table_uuid}           = ${advanced_supplier_matching_wims_definition.table_uuid};;
   }
 
 

@@ -31,12 +31,30 @@ view: advanced_supplier_matching_wims_definition {
     hidden: yes
   }
 
+  dimension: country_iso {
+    label: "Country ISO"
+    group_label: "WIMS Buckets"
+    type: string
+    description: "Country ISO based on 'hub_code'."
+    sql: ${TABLE}.country_iso ;;
+    hidden: yes
+  }
+
   dimension: parent_sku {
     label: "Parent SKU"
     group_label: "WIMS Buckets"
     type: string
     description: "Parent SKU of a product. This groups several child SKUs that belongs to the same replenishment substitute group."
     sql: ${TABLE}.parent_sku ;;
+    hidden: yes
+  }
+
+  dimension: supplier_location_id {
+    label: "Supplier Location ID"
+    group_label: "WIMS Buckets"
+    type: string
+    description: "Site ID of the supplier/vendor of a product."
+    sql: ${TABLE}.supplier_location_id ;;
     hidden: yes
   }
 
@@ -217,6 +235,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to hub status issues (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_hub_status_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_incorrect_ean_hei_wrong_scanning_issue_bucket {
@@ -225,6 +244,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to either wrong EANs codes or wrong scanning at the hub (Master Data / Human Error Issue) - in selling units."
     sql: ${number_of_items_in_incorrect_ean_hei_wrong_scanning_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_incorrect_pack_factor_issue_bucket {
@@ -233,6 +253,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to wrong quantity per handling units issue(Master Data Issue) - in selling units."
     sql: ${number_of_items_in_incorrect_pack_factor_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_introduction_date_issue_bucket {
@@ -241,6 +262,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to wrong ERP item-location introduction date (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_introduction_date_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_lead_time_issue_bucket {
@@ -249,6 +271,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to wrong lead times definition between purchase orders and inbounds (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_lead_time_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_missing_ean_hu_issue_bucket {
@@ -257,6 +280,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to missing EAN handling unit (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_missing_ean_hu_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_purchase_order_issue_bucket {
@@ -265,6 +289,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to wrong purchase order attributes that causes mismatches issues (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_purchase_order_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_similar_ean_and_ean_hu_issue_bucket {
@@ -273,6 +298,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to similar EAN and EAN handling unit issue (Master Data Issue) - in selling units."
     sql: ${number_of_items_in_similar_ean_and_ean_hu_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_inbounding_issue_bucket {
@@ -281,6 +307,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to wrong inbounds caused by ops associates at the hub (Human Error Issue) - in selling units."
     sql: ${number_of_items_in_inbounding_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_overdeliveries_issue_bucket {
@@ -289,6 +316,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to suppliers delivering more than ordered/expected (Supplier Issue) - in selling units."
     sql: ${number_of_items_in_overdeliveries_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_underdeliveries_issue_bucket {
@@ -297,6 +325,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "Bucket that shows possible over/under deliveries due to suppliers delivering less than ordered/expected (Supplier Issue) - in selling units."
     sql: ${number_of_items_in_underdeliveries_issue_bucket} ;;
+    value_format_name: decimal_1
   }
 
   measure: sum_of_items_in_wims_buckets {
@@ -304,6 +333,7 @@ view: advanced_supplier_matching_wims_definition {
     type: sum
     description: "This field shows the total quantities that fall into the different buckets."
     sql: ${number_of_items_in_wims_buckets} ;;
+    value_format_name: decimal_1
   }
 
 
