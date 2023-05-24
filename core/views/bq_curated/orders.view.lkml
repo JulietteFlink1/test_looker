@@ -3299,7 +3299,7 @@ view: orders {
 
   measure: cnt_unique_orders_first_month_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders from First Month Customers"
+    label: "# Orders within Month of First Order"
     description: "Count of successful Orders placed by customers in the calendar month they first ordered in"
     hidden:  no
     type: count
@@ -3309,7 +3309,7 @@ view: orders {
 
   measure: cnt_unique_orders_non_first_month_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders from Non First Month Customers"
+    label: "# Orders after Month of First Order"
     description: "Count of successful Orders placed by customers NOT in the calendar month they first ordered in"
     hidden:  no
     type: count
@@ -3319,7 +3319,7 @@ view: orders {
 
   measure: cnt_unique_orders_first_30_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders from First 30 days Customers"
+    label: "# Orders within 30d of first Order"
     description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
     hidden:  no
     type: count
@@ -3329,7 +3329,7 @@ view: orders {
 
   measure: cnt_unique_orders_non_first_30_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders from Non First 30 days Customers"
+    label: "# Orders after 30d from first Order"
     description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
     hidden:  no
     type: count
