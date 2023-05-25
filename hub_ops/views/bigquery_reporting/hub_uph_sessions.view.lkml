@@ -4,7 +4,7 @@
 
 
 view: hub_uph_sessions {
-  sql_table_name: `flink-data-dev.dbt_vbreda_reporting.hub_uph_sessions`
+  sql_table_name: `flink-data-prod.reporting.hub_uph_sessions`
     ;;
 
   dimension: country_iso {
