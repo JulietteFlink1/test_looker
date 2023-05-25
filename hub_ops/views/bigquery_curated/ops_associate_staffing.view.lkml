@@ -260,7 +260,7 @@ view: ops_associate_staffing {
   ######## Schedule Deviations
 
   measure: pct_schedule_deviation_ops_associates {
-    label: "% Schedule Deviation Ops Associate"
+    label: "% Schedule Deviation Ops Associates"
     description: "Computed as # Scheduled Ops Associates / # Forecasted Ops Associates - 1"
     type: number
     sql: safe_divide(${ops.number_of_scheduled_hours_ops_associate}*2,${ops_associate_staffing.sum_number_of_forecasted_total_ops_associates})-1 ;;
