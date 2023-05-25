@@ -260,6 +260,7 @@ view: ops_associate_staffing {
   ######## Schedule Deviations
 
   measure: pct_schedule_deviation_ops_associates {
+    group_label: "> Schedule Deviations"
     label: "% Schedule Deviation Ops Associates"
     description: "Computed as # Scheduled Ops Associates / # Forecasted Ops Associates - 1"
     type: number
@@ -268,6 +269,7 @@ view: ops_associate_staffing {
   }
 
   measure: pct_schedule_deviation_hub_staff {
+    group_label: "> Schedule Deviations"
     label: "% Schedule Deviation Hub Staff"
     description: "Computed as # Scheduled Hub Staff / # Forecasted Hub Staff - 1"
     type: number
