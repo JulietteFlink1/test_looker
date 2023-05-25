@@ -257,18 +257,18 @@ view: ops_associate_staffing {
     value_format_name: decimal_1
   }
 
-  ######## Scheduling Deviations
+  ######## Schedule Deviations
 
-  measure: scheduling_deviation_ops_associates {
-    label: "% Scheduling Deviation Ops Associate"
+  measure: pct_schedule_deviation_ops_associates {
+    label: "% Schedule Deviation Ops Associate"
     description: "Computed as # Scheduled Ops Associates / # Forecasted Ops Associates - 1"
     type: number
     sql: safe_divide(${ops.number_of_scheduled_hours_ops_associate}*2,${ops_associate_staffing.sum_number_of_forecasted_total_ops_associates})-1 ;;
     value_format_name: percent_1
   }
 
-  measure: scheduling_deviation_hub_staff {
-    label: "% Scheduling Deviation Hub Staff"
+  measure: pct_schedule_deviation_hub_staff {
+    label: "% Schedule Deviation Hub Staff"
     description: "Computed as # Scheduled Hub Staff / # Forecasted Hub Staff - 1"
     type: number
     sql: safe_divide(${ops.number_of_scheduled_hours_hub_staff}*2,${ops_associate_staffing.sum_number_of_forecasted_total_hub_staff})-1 ;;
