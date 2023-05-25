@@ -29,13 +29,6 @@ view: customer_cohorts_base {
     sql: ${TABLE}.country_iso ;;
   }
 
-  #dimension: unique_id {
-  #  group_label: "* IDs *"
-  #. hidden: yes
-  #  primary_key: no
-  #  sql: concat(${country_iso}, ${user_email}) ;;
-  #}
-
   dimension: customer_id_mapped {
     group_label: "* IDs *"
     hidden: no
@@ -49,12 +42,6 @@ view: customer_cohorts_base {
     type: string
     sql: ${TABLE}.first_order_country_iso ;;
   }
-
-  # dimension: user_email {
-  #   group_label: "* User Dimensions *"
-  #   type: string
-  #   sql: ${TABLE}.customer_email ;;
-  # }
 
   dimension: customer_id {
     group_label: "* IDs *"

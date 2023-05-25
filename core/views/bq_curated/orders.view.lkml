@@ -283,10 +283,12 @@ view: orders {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: customer_id {
@@ -304,6 +306,9 @@ view: orders {
   }
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     label: "Add. Customer Information"
     type: string
