@@ -33,6 +33,9 @@ view: cs_conversations {
   }
 
   dimension: contact_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.contact_email ;;
   }
@@ -58,6 +61,9 @@ view: cs_conversations {
   }
 
   dimension: conv_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.conv_email ;;
   }
