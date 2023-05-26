@@ -219,103 +219,65 @@ view: hub_uph_sessions {
     sql: case when ${session_type} like '%idle%' and  ${session_duration_hours}>2 then true else false end  ;;
   }
 
-  ### These dimensions flag in which of the UPHs flow calculations the limit idle sessions that should be included
-
-  dimension: is_limit_idle_inbounding {
-    hidden: yes
-    type: yesno
-    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inbounding')
-      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inbounding')
-      or (${sub_flow} = 'break_idle' and ${next_flow} = 'inbounding')
-      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'inbounding');;
-  }
-
-  dimension: is_limit_idle_inventory_check {
-    hidden: yes
-    type: yesno
-    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'inventory_check')
-      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'inventory_check')
-      or (${sub_flow} = 'break_idle' and ${next_flow} = 'inventory_check')
-      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'inventory_check');;
-  }
-
-  dimension: is_limit_idle_order_preparation {
-    hidden: yes
-    type: yesno
-    sql: (${sub_flow} = 'start_idle' and ${next_flow} = 'order_preparation')
-      or (${sub_flow} = 'break_idle' and ${prev_flow} = 'order_preparation')
-      or (${sub_flow} = 'break_idle' and ${next_flow} = 'order_preparation')
-      or (${sub_flow} = 'end_idle' and ${prev_flow} = 'order_preparation');;
-  }
-
   ####### Measures used to include transition + limit idle into UPHs calculations ########
 
   measure: sum_of_transition_idle_session_duration_hours_leaving_inbounding {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Transition Idle Hours - Inbounding"
     description: "Number of hours spent on transition idle after inbounding."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "transition_idle",
-      sub_flow: "transition_inbounding_order_preparation, transition_inbounding_inventory_check"]
+    filters: [session_type: "transition_idle", flow: "inbounding"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_transition_idle_session_duration_hours_leaving_inventory_check {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Transition Idle Hours - Inventory Checks"
     description: "Number of hours spent on transition idle after inventory checks."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "transition_idle",
-      sub_flow: "transition_inventory_check_inbounding, transition_inventory_check_order_preparation"]
+    filters: [session_type: "transition_idle", flow: "inventory_check"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_transition_idle_session_duration_hours_leaving_order_preparation {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Transition Idle Hours - Order Preparation"
     description: "Number of hours spent on transition idle after order preparation."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "transition_idle",
-      sub_flow: "transition_order_preparation_inbounding, transition_order_preparation_inventory_check"]
+    filters: [session_type: "transition_idle", flow: "order_preparation"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_limit_idle_session_duration_hours_inbounding {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Limit Idle Hours - Inbounding"
     description: "Number of hours spent on limit idle before/after inbounding."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [is_limit_idle_inbounding: "yes"]
+    filters: [flow: "inbounding", session_type: "limit_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_limit_idle_session_duration_hours_inventory_check {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Limit Idle Hours - Inventory Check"
     description: "Number of hours spent on limit idle before/after inventory check."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [is_limit_idle_inventory_check: "yes"]
+    filters: [flow: "inventory_check", session_type: "limit_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_limit_idle_session_duration_hours_order_preparation {
-    # hidden: yes
     group_label: "> Durations"
     label: "SUM Limit Idle Hours - Order Preparation"
     description: "Number of hours spent on limit idle before/after order preparation."
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [is_limit_idle_order_preparation: "yes"]
+    filters: [flow: "order_preparation", session_type: "limit_idle"]
     value_format_name: decimal_2
   }
 

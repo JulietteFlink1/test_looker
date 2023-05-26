@@ -283,10 +283,12 @@ view: orders {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: customer_id {
@@ -304,6 +306,9 @@ view: orders {
   }
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     label: "Add. Customer Information"
     type: string
@@ -823,6 +828,22 @@ view: orders {
     group_label: "* Order Dimensions *"
     type: yesno
     sql: ${TABLE}.is_first_order ;;
+  }
+
+  dimension: is_customers_first_order_30_days {
+    group_label: "* Order Dimensions *"
+    label: "Is Order within 30 days after Customer First Order"
+    description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_30_days ;;
+  }
+
+  dimension: is_customers_first_order_month {
+    group_label: "* Order Dimensions *"
+    label: "Is Customers First Order Month"
+    description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_month ;;
   }
 
   dimension: is_rider_tip {
@@ -2664,7 +2685,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes}+${rider_preparing_for_trip_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
@@ -3126,6 +3147,16 @@ view: orders {
     value_format: "0"
   }
 
+  measure: avg_orders_per_customer {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Orders per Customer"
+    description: "Count of Orders per Customer"
+    hidden:  no
+    type: number
+    sql: safe_divide(${cnt_orders}, ${cnt_unique_customers}) ;;
+    value_format: "0.00"
+  }
+
   measure: cnt_internal_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Internal Orders"
@@ -3269,6 +3300,46 @@ view: orders {
     type: count
     value_format: "0"
     filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: cnt_unique_orders_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within Month of First Order"
+    description: "Count of successful Orders placed by customers in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after Month of First Order"
+    description: "Count of successful Orders placed by customers NOT in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "no"]
+  }
+
+  measure: cnt_unique_orders_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within 30d since first Order"
+    description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after 30d since first Order"
+    description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "no"]
   }
 
   measure: cnt_orders_with_delivery_eta_available {
