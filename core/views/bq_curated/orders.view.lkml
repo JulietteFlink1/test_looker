@@ -2685,7 +2685,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes}+${rider_preparing_for_trip_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
