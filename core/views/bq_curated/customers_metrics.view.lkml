@@ -366,7 +366,43 @@ view: customers_metrics {
     intervals: [week]
   }
 
+  dimension: amt_ltv_prediction_1_month {
+    label: "EUR Lifetime Value Prediction - Month 1"
+    description: "Predicted livetime value of a customer after 1 months"
+    group_label: "* Forecasts *"
+    type: number
+    sql: ${TABLE}.amt_ltv_prediction_1_month ;;
+    value_format_name: eur
+    hidden: yes
+  }
 
+  dimension: amt_ltv_prediction_3_month {
+    label: "EUR Lifetime Value Prediction - Month 3"
+    description: "Predicted livetime value of a customer after 3 months"
+    group_label: "* Forecasts *"
+    type: number
+    sql: ${TABLE}.amt_ltv_prediction_3_month ;;
+    hidden: yes
+  }
+
+  dimension: amt_ltv_prediction_5_month {
+    label: "EUR Lifetime Value Prediction - Month 5"
+    description: "Predicted livetime value of a customer after 5 months"
+    group_label: "* Forecasts *"
+    type: number
+    sql: ${TABLE}.amt_ltv_prediction_5_month ;;
+    hidden: yes
+  }
+
+  dimension: churn_probability {
+    label: "% Churn Probability"
+    description: "Probability for a customer to churn"
+    group_label: "* Forecasts *"
+    type: number
+    sql: ${TABLE}.churn_probability ;;
+    value_format_name: percent_0
+    hidden: yes
+  }
 
   ################## Measures
 
@@ -392,6 +428,42 @@ view: customers_metrics {
     type: average
     value_format_name: euro_accounting_2_precision
     sql: ${lifetime_revenue_gross} ;;
+  }
+
+  measure: avg_amt_ltv_prediction_1_month {
+    label: "AVG EUR Lifetime Value Prediction - Month 1"
+    description: "Predicted livetime value of a customer after 1 months"
+    group_label: "* Forecasts *"
+    type: average
+    sql: ${amt_ltv_prediction_1_month} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_ltv_prediction_3_month {
+    label: "AVG EUR Lifetime Value Prediction - Month 3"
+    description: "Predicted livetime value of a customer after 3 months"
+    group_label: "* Forecasts *"
+    type: average
+    sql: ${amt_ltv_prediction_3_month} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_ltv_prediction_5_month {
+    label: "AVG EUR Lifetime Value Prediction - Month 5"
+    description: "Predicted livetime value of a customer after 5 months"
+    group_label: "* Forecasts *"
+    type: average
+    sql: ${amt_ltv_prediction_5_month} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_churn_probability {
+    label: "AVG % Churn Probability"
+    description: "Probability for a customer to churn"
+    group_label: "* Forecasts *"
+    type: average
+    sql: ${churn_probability} ;;
+    value_format_name: percent_0
   }
 
   dimension: weeks_time_since_sign_up_number {
