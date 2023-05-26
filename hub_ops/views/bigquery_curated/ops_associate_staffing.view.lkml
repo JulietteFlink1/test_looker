@@ -206,7 +206,7 @@ view: ops_associate_staffing {
   measure: sum_number_of_manual_input_ops_associates_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Ops Associates Hours - Manual Input"
-    description: "Number of manually added Ops Associates hours to solve capacity issues. For instance we need to add an additional OA for contract compliance. Computed as the half hourly number divided by 2."
+    description: "Number of manually added Ops Associates hours to solve capacity issues. For instance we need to add an additional OA for contract compliance. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_manual_input_ops_associates}/2 ;;
     value_format_name: decimal_1
@@ -215,7 +215,7 @@ view: ops_associate_staffing {
     measure: sum_number_of_forecasted_total_hub_staff_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Hub Staff Hours - Total"
-    description: "Total number of Ops Associates, Ops Associates+ and Shift Leads hours needed. Computed as the half hourly number divided by 2."
+    description: "Total number of Ops Associates, Ops Associates+ and Shift Leads hours needed. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_forecasted_total_ops_associates_incl_shift_leads}/2 ;;
     value_format_name: decimal_1
@@ -224,7 +224,7 @@ view: ops_associate_staffing {
   measure: sum_number_of_forecasted_inbound_ops_associates_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Ops Associates Hours - Inbound"
-    description: "Number of forecasted Ops Associates hours needed to perform inbounding related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+    description: "Number of forecasted Ops Associates hours needed to perform inbounding related tasks. Based on Ops team model. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_forecasted_inbound_ops_associates}/2 ;;
     value_format_name: decimal_1
@@ -233,7 +233,7 @@ view: ops_associate_staffing {
   measure: sum_number_of_forecasted_checks_ops_associates_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Ops Associates Hours - Inventory Checks"
-    description: "Number of forecasted Ops Associates hours needed to perform inventory checks related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+    description: "Number of forecasted Ops Associates hours needed to perform inventory checks related tasks. Based on Ops team model. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_forecasted_checks_ops_associates}/2 ;;
     value_format_name: decimal_1
@@ -242,7 +242,7 @@ view: ops_associate_staffing {
   measure: sum_number_of_forecasted_picking_ops_associates_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Ops Associates Hours - Picking"
-    description: "Number of forecasted Ops Associates hours needed to perform picking related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+    description: "Number of forecasted Ops Associates hours needed to perform picking related tasks. Based on Ops team model. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_forecasted_picking_ops_associates}/2 ;;
     value_format_name: decimal_1
@@ -251,7 +251,7 @@ view: ops_associate_staffing {
   measure: sum_number_of_forecasted_total_ops_associates_hours {
     group_label: "> Forecasted Ops Associates Hours"
     label: "# Forecasted Ops Associates Hours - Total"
-    description: "Total number of Ops Associates hours needed. This is the number sent to Quinyx. It represent the rounded sum of check, inbound, picking OA needed and of the potential manual adjustment of OA needed. Computed as the half hourly number divided by 2."
+    description: "Total number of Ops Associates hours needed. This is the number sent to Quinyx. It represent the rounded sum of check, inbound, picking OA needed and of the potential manual adjustment of OA needed. Computed as the half hourly headcount number divided by 2."
     type: sum
     sql: ${number_of_forecasted_total_ops_associates}/2 ;;
     value_format_name: decimal_1
