@@ -458,7 +458,7 @@ view: customers_metrics {
   }
 
   measure: avg_churn_probability {
-    label: "% Churn Probability"
+    label: "AVG % Churn Probability"
     description: "Probability for a customer to churn"
     group_label: "* Forecasts *"
     type: average
