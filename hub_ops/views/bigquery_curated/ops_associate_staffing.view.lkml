@@ -147,7 +147,7 @@ view: ops_associate_staffing {
   ############ Half Hourly forecats
 
   measure: sum_number_of_manual_input_ops_associates {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Ops Associates - Manual Input (30min)"
     description: "Number of manually added Ops Associates to solve capacity issues. For instance we need to add an additional OA for contract compliance."
     type: sum
@@ -156,7 +156,7 @@ view: ops_associate_staffing {
   }
 
   measure: sum_number_of_forecasted_total_hub_staff {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Hub Staff - Total (30min)"
     description: "Total number of Hub Staff (Ops Associates, Ops Associate+ and Shift Leads) needed."
     type: sum
@@ -165,7 +165,7 @@ view: ops_associate_staffing {
   }
 
   measure: sum_number_of_forecasted_inbound_ops_associates {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Ops Associates - Inbound (30min)"
     description: "Number of forecasted Ops Associates needed to perform inbounding related tasks. Based on Ops team model."
     type: sum
@@ -174,7 +174,7 @@ view: ops_associate_staffing {
   }
 
   measure: sum_number_of_forecasted_checks_ops_associates {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Ops Associates - Inventory Checks (30min)"
     description: "Number of forecasted Ops Associates needed to perform inventory checks related tasks. Based on Ops team model."
     type: sum
@@ -183,7 +183,7 @@ view: ops_associate_staffing {
   }
 
   measure: sum_number_of_forecasted_picking_ops_associates {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Ops Associates - Picking (30min)"
     description: "Number of forecasted Ops Associates needed to perform picking related tasks. Based on Ops team model."
     type: sum
@@ -192,7 +192,7 @@ view: ops_associate_staffing {
   }
 
   measure: sum_number_of_forecasted_total_ops_associates {
-    group_label: "> Forecasted Ops Associates - Half Hourly"
+    group_label: "> Forecasted Ops Associates Headcount (Half Hourly)"
     label: "# Forecasted Ops Associates - Total (30min)"
     description: "Total number of Ops Associates needed. This is the number sent to Quinyx. It represent the rounded sum of check, inbound, picking OA needed and of the potential manual adjustment of OA needed."
     type: sum
@@ -200,58 +200,58 @@ view: ops_associate_staffing {
     value_format_name: decimal_1
   }
 
-  ######### Hourly Metrics
+  ######### Forecasted Hours
 
 
-  measure: sum_number_of_manual_input_ops_associates_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Ops Associates - Manual Input (hourly)"
-    description: "Number of manually added Ops Associates to solve capacity issues. For instance we need to add an additional OA for contract compliance. Computed as the half hourly number divided by 2."
+  measure: sum_number_of_manual_input_ops_associates_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Ops Associates Hours - Manual Input"
+    description: "Number of manually added Ops Associates hours to solve capacity issues. For instance we need to add an additional OA for contract compliance. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_manual_input_ops_associates}/2 ;;
     value_format_name: decimal_1
     }
 
-    measure: sum_number_of_forecasted_total_hub_staff_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Hub Staff - Total (hourly)"
-    description: "Total number of Ops Associates, Ops Associates+ and Shift Leads needed. Computed as the half hourly number divided by 2."
+    measure: sum_number_of_forecasted_total_hub_staff_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Hub Staff Hours - Total"
+    description: "Total number of Ops Associates, Ops Associates+ and Shift Leads hours needed. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_forecasted_total_ops_associates_incl_shift_leads}/2 ;;
     value_format_name: decimal_1
   }
 
-  measure: sum_number_of_forecasted_inbound_ops_associates_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Ops Associates - Inbound (hourly)"
-    description: "Number of forecasted Ops Associates needed to perform inbounding related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+  measure: sum_number_of_forecasted_inbound_ops_associates_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Ops Associates Hours - Inbound"
+    description: "Number of forecasted Ops Associates hours needed to perform inbounding related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_forecasted_inbound_ops_associates}/2 ;;
     value_format_name: decimal_1
   }
 
-  measure: sum_number_of_forecasted_checks_ops_associates_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Ops Associates - Inventory Checks (hourly)"
-    description: "Number of forecasted Ops Associates needed to perform inventory checks related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+  measure: sum_number_of_forecasted_checks_ops_associates_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Ops Associates Hours - Inventory Checks"
+    description: "Number of forecasted Ops Associates hours needed to perform inventory checks related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_forecasted_checks_ops_associates}/2 ;;
     value_format_name: decimal_1
   }
 
-  measure: sum_number_of_forecasted_picking_ops_associates_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Ops Associates - Picking (hourly)"
-    description: "Number of forecasted Ops Associates needed to perform picking related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
+  measure: sum_number_of_forecasted_picking_ops_associates_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Ops Associates Hours - Picking"
+    description: "Number of forecasted Ops Associates hours needed to perform picking related tasks. Based on Ops team model. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_forecasted_picking_ops_associates}/2 ;;
     value_format_name: decimal_1
   }
 
-  measure: sum_number_of_forecasted_total_ops_associates_hourly {
-    group_label: "> Forecasted Ops Associates - Hourly"
-    label: "# Forecasted Ops Associates - Total (hourly)"
-    description: "Total number of Ops Associates needed. This is the number sent to Quinyx. It represent the rounded sum of check, inbound, picking OA needed and of the potential manual adjustment of OA needed. Computed as the half hourly number divided by 2."
+  measure: sum_number_of_forecasted_total_ops_associates_hours {
+    group_label: "> Forecasted Ops Associates Hours"
+    label: "# Forecasted Ops Associates Hours - Total"
+    description: "Total number of Ops Associates hours needed. This is the number sent to Quinyx. It represent the rounded sum of check, inbound, picking OA needed and of the potential manual adjustment of OA needed. Computed as the half hourly number divided by 2."
     type: sum
     sql: ${number_of_forecasted_total_ops_associates}/2 ;;
     value_format_name: decimal_1
