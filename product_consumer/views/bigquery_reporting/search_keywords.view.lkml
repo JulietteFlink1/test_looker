@@ -190,6 +190,14 @@ view: search_keywords {
     sql: ${TABLE}.is_pdp_after_search ;;
   }
 
+  dimension: is_ct_after_search {
+    group_label: "Search Dimensions"
+    label: "Is ATC or PDP after Search"
+    description: "Whether an ATC or PDP event followed after a search query"
+    type: yesno
+    sql: ${is_pdp_after_search} OR ${is_added_to_cart_after_search} ;;
+  }
+
   dimension: product_position_from_search_clickthrough {
     group_label: "Search Dimensions"
     label: "Product Rank At Clickthrough"
@@ -333,7 +341,17 @@ view: search_keywords {
     sql: ${event_uuid} ;;
     filters: [is_pdp_after_search: "yes"]
   }
-    measure: number_of_all_zero_search_results {
+  measure: number_of_searches_with_clickthrough {
+    group_label: "Search Measures"
+    label: "# Searches with ATC or PDP"
+    description: "Total number of executed searches that resulted in an add-to-cart event or a product details viewed"
+    type: count_distinct
+    hidden: no
+    sql: ${event_uuid} ;;
+    filters: [is_ct_after_search: "yes"]
+  }
+
+  measure: number_of_all_zero_search_results {
     group_label: "Search Measures"
     label: "# No Results Searches"
     description: "Total number of searches which returned 0 results"
@@ -411,7 +429,7 @@ view: search_keywords {
     type: number
     description: "# searches with either PDP or Add-to-Cart / # total searches"
     value_format_name: percent_2
-    sql: (${number_of_searches_with_pdp} + ${number_of_searches_with_atc}) / nullif(${number_of_all_searches},0);;
+    sql: (${number_of_searches_with_clickthrough}) / nullif(${number_of_all_searches},0);;
   }
   measure: add_to_cart_rate {
     group_label: "Rates (%)"

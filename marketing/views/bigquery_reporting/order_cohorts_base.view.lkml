@@ -136,6 +136,9 @@ view: order_cohorts_base {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
@@ -157,6 +160,9 @@ view: order_cohorts_base {
 
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.customer_note ;;
   }

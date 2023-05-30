@@ -272,6 +272,9 @@ view: cc_contactrate {
   }
 
   dimension: agent_email {
+
+    required_access_grants: [can_access_pii_hq_employees]
+
     group_label: "* Agent & Team *"
     description: "Email of the last agent who took part in the conversation"
     type: string
@@ -286,6 +289,9 @@ view: cc_contactrate {
   }
 
   dimension: agent_name {
+
+    required_access_grants: [can_access_pii_hq_employees]
+
     group_label: "* Agent & Team *"
     description: "Name of the last agent who took part in the conversation"
     type: string
@@ -302,6 +308,9 @@ view: cc_contactrate {
   }
 
   dimension: contact_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* Contact *"
     type: string
     description: "Email of the user who created the conversation"
@@ -316,6 +325,9 @@ view: cc_contactrate {
   }
 
   dimension: contact_name {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* Contact *"
     type: string
     description: "Name of the user who created the conversation"
