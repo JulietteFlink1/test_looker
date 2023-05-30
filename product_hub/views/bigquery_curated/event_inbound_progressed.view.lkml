@@ -339,6 +339,7 @@ view: event_inbound_progressed {
     type: sum
     filters: [action: "product_dropped"]
     value_format: "0.##"
+    hidden: yes
     sql: SAFE_DIVIDE(${quantity}, coalesce(cast(${products.units_per_handling_unit} as int64),1)) ;;
   }
 

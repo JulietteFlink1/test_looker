@@ -143,6 +143,14 @@ view: hub_one_inbounding_aggregates {
     sql: if(${distinct_products_dropped}=1,true, false) ;;
   }
 
+  dimension: is_quantity_modified {
+    type: yesno
+    label: "Is Quantity Modifed"
+    group_label: "Dropping List Attributes"
+    description: "True when at least one item was modified via verification process"
+    sql: if(${TABLE}.is_quantity_modified > 0, true, false) ;;
+  }
+
   # =========  Dates and Timestamps   =========
 
   dimension_group: event {
@@ -189,7 +197,6 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.dropping_list_started_at ;;
   }
 
-
   dimension_group: dropping_list_finished {
     type: time
     description: "Timestamp when the user finishes dropping the products on the shelfs (state = dropping_list_finished)."
@@ -203,8 +210,6 @@ view: hub_one_inbounding_aggregates {
     convert_tz: no
     sql: ${TABLE}.dropping_list_finished_at ;;
   }
-
-
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -279,6 +284,21 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.number_of_products_dropped ;;
   }
 
+  measure: number_of_distinct_products_verified {
+    group_label: "Total Metrics"
+    type: sum
+    description: "Sum of quantity of distinct products veriied."
+    sql: ${TABLE}.number_of_distinct_products_verified ;;
+  }
+
+  measure: number_of_products_quantity_modified {
+    type: sum
+    label: "Number of Distinct Products Updated"
+    group_label: "Total Metrics"
+    description: "Sum of distinct number of products modified"
+    sql: ${TABLE}.is_quantity_modified  ;;
+  }
+
   # =========  Total Times   =========
 
   measure: sum_time_populating_list_hours {
@@ -329,12 +349,28 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.time_inbounding_minutes ;;
   }
 
+  measure: sum_time_list_verification_minutes {
+    type: sum
+    group_label: "Total Times"
+    description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_minutes ;;
+  }
+
+  measure: sum_time_list_verification_hours {
+    type: sum
+    group_label: "Total Times"
+    description: "Total duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_hours ;;
+  }
+
   # =========  Average Times   =========
 
   measure: avg_time_populating_list_hours {
     type: average
     group_label: "Avg Times"
-    description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    description: "Average time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
     value_format: "0.00"
     sql: ${TABLE}.time_populating_list_hours ;;
   }
@@ -342,7 +378,7 @@ view: hub_one_inbounding_aggregates {
   measure: avg_time_populating_list_minutes {
     type: average
     group_label: "Avg Times"
-    description: "Total time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
+    description: "Average time spent populating the cart during inbounding process in the specified unit (from list_preparation_started to dropping_list_started)"
     value_format: "0.00"
     sql: ${TABLE}.time_populating_list_minutes ;;
   }
@@ -350,14 +386,14 @@ view: hub_one_inbounding_aggregates {
   measure: avg_time_dropping_products_hours {
     type: average
     group_label: "Avg Times"
-    description: "Total time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
+    description: "Average time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
     sql: ${TABLE}.time_dropping_products_hours ;;
   }
 
   measure: avg_time_dropping_products_minutes {
     type: average
     group_label: "Avg Times"
-    description: "Total time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
+    description: "Average time spent dropping products on shelf during inbounding process in the specified unit (from dropping_list_started to dropping_list_finished)."
     value_format: "0.00"
     sql: ${TABLE}.time_dropping_products_minutes ;;
   }
@@ -365,7 +401,7 @@ view: hub_one_inbounding_aggregates {
   measure: avg_time_inbounding_hours {
     type: average
     group_label: "Avg Times"
-    description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    description: "Average duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
     value_format: "0.00"
     sql: ${TABLE}.time_inbounding_hours ;;
   }
@@ -373,9 +409,25 @@ view: hub_one_inbounding_aggregates {
   measure: avg_time_inbounding_minutes {
     type: average
     group_label: "Avg Times"
-    description: "Total duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
+    description: "Average duration of the inbounding process in the specified unit (from list_preparation_started to dropping_list_finished)."
     value_format: "0.00"
     sql: ${TABLE}.time_inbounding_minutes ;;
+  }
+
+  measure: avg_time_list_verification_minutes {
+    type: average
+    group_label: "Avg Times"
+    description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_minutes ;;
+  }
+
+  measure: avg_time_list_verification_hours {
+    type: average
+    group_label: "Avg Times"
+    description: "Average duration of the list verification process in the specified unit (from list_verification_started to list_preparation_started)."
+    value_format: "0.00"
+    sql: ${TABLE}.time_list_verification_hours ;;
   }
 
   # =========  Productivity   =========
@@ -400,5 +452,29 @@ view: hub_one_inbounding_aggregates {
     sql: safe_divide(${number_of_products_dropped}, ${sum_time_inbounding_hours})  ;;
 
     value_format_name: decimal_2
+  }
+
+  # =========  List Verification Process   =========
+
+  measure: sku_share_list_verification {
+    label: "% Products Verified"
+    group_label: "List Verification"
+    description: "Share of products that went through list verification process"
+    type: number
+
+    sql: safe_divide(${number_of_distinct_products_verified}, ${number_of_distinct_products_dropped})  ;;
+
+    value_format_name: percent_2
+  }
+
+  measure: sku_share_list_modified{
+    label: "% Products Modified"
+    group_label: "List Verification"
+    description: "Share of products that were modified via list verification process."
+    type: number
+
+    sql: safe_divide(${number_of_products_quantity_modified}, ${number_of_distinct_products_verified})  ;;
+
+    value_format_name: percent_2
   }
 }

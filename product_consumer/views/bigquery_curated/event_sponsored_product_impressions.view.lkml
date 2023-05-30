@@ -201,6 +201,13 @@ view: event_sponsored_product_impressions {
     sql: ${TABLE}.product_sku ;;
   }
 
+  dimension: categories_with_reco_highlights {
+    description: "Lists categories in which recommendation highlights occur"
+    type: string
+    sql: CASE WHEN NOT ${is_sponsored_product} THEN ${category_name} ELSE NULL END ;;
+
+  }
+
   dimension_group: received {
     type: time
     timeframes: [
@@ -229,6 +236,15 @@ view: event_sponsored_product_impressions {
     description: "The name of the subcategory as shown to the user"
     type: string
     sql: ${TABLE}.sub_category_name ;;
+  }
+
+  dimension: is_sponsored_product {
+    group_label: "Event Dimensions"
+    label: "Is Sponsored Product"
+    description: "Whether or not the product shown was a sponsored product"
+    type: yesno
+    sql: ${TABLE}.is_sponsored_product ;;
+
   }
 
   # ======= Hidden Dimension ======= #

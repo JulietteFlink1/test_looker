@@ -243,14 +243,20 @@ explore: daily_events {
 
   join: event_sponsored_product_impressions {
     view_label: "Event: Sponsored Product Impressions"
-    fields: [event_sponsored_product_impressions.category_name, event_sponsored_product_impressions.category_id,
+    fields: [event_sponsored_product_impressions.category_name,
+      event_sponsored_product_impressions.category_id,
       event_sponsored_product_impressions.sub_category_name,
       event_sponsored_product_impressions.screen_name,
       event_sponsored_product_impressions.product_sku,
-      event_sponsored_product_impressions.product_placement, event_sponsored_product_impressions.product_position,
-      event_sponsored_product_impressions.ad_decision_id,event_sponsored_product_impressions.event_timestamp_date,
-      event_sponsored_product_impressions.number_of_ad_decisions_ids,event_sponsored_product_impressions.events,
+      event_sponsored_product_impressions.product_placement,
+      event_sponsored_product_impressions.product_position,
+      event_sponsored_product_impressions.ad_decision_id,
+      event_sponsored_product_impressions.event_timestamp_date,
+      event_sponsored_product_impressions.is_sponsored_product,
+      event_sponsored_product_impressions.number_of_ad_decisions_ids,
+      event_sponsored_product_impressions.events,
       event_sponsored_product_impressions.all_users,
+      event_sponsored_product_impressions.categories_with_reco_highlights
       ]
     sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}
            and {% condition global_filters_and_parameters.datasource_filter %} ${event_sponsored_product_impressions.event_timestamp_date} {% endcondition %}  ;;
@@ -287,12 +293,15 @@ join: daily_violations_aggregates {
              daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed,
              daily_user_aggregates.users_with_add_to_cart,
              daily_user_aggregates.users_with_address,
+            daily_user_aggregates.users_with_category_selected,
              daily_user_aggregates.daily_users_with_address,
              daily_user_aggregates.daily_users_with_product_search_viewed,
             daily_user_aggregates.daily_users_with_cart_viewed,
             daily_user_aggregates.daily_users_with_add_to_cart,
             daily_user_aggregates.daily_users_with_home_viewed,
             daily_user_aggregates.daily_users_with_product_details_viewed,
+            daily_user_aggregates.daily_users_with_category_selected,
+            daily_user_aggregates.is_category_selected,
             daily_user_aggregates.is_active_user,
             daily_user_aggregates.daily_active_users
     ]

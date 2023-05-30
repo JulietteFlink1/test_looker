@@ -283,10 +283,12 @@ view: orders {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: customer_id {
@@ -304,6 +306,9 @@ view: orders {
   }
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     label: "Add. Customer Information"
     type: string
@@ -825,6 +830,22 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
+  dimension: is_customers_first_order_30_days {
+    group_label: "* Order Dimensions *"
+    label: "Is Order within 30 days after Customer First Order"
+    description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_30_days ;;
+  }
+
+  dimension: is_customers_first_order_month {
+    group_label: "* Order Dimensions *"
+    label: "Is Customers First Order Month"
+    description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_month ;;
+  }
+
   dimension: is_rider_tip {
     group_label: "* Order Dimensions *"
     label: "Is Rider Tip Order (Yes/No)"
@@ -1193,8 +1214,65 @@ view: orders {
     sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
+  dimension: amt_daas_cpo_gross_eur {
+    hidden: yes
+    group_label: "* Monetary Values *"
+    label: "DaaS CPO (Gross)"
+    description: "DaaS Cost Per Order (CPO) is the gross fee charged by the provider for the trip. In euros."
+    type: number
+    sql: ${TABLE}.amt_daas_cpo_gross_eur ;;
+  }
 
+  dimension: amt_daas_cpo_gross_eur_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "DaaS CPO (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    style: relational
+    sql: ${amt_daas_cpo_gross_eur} ;;
+  }
 
+  dimension: daas_provider_drop_off_eta_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Drop-Off ETA Timestamp"
+    description: "Provider drop-off eta is the estimated time of arrival of the external rider at the customer's address."
+    type: date_time
+    sql: ${TABLE}.daas_provider_drop_off_eta_timestamp ;;
+  }
+
+  dimension: daas_provider_pick_up_eta_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Pick-Up ETA Timestamp"
+    description: "Provider pick-up eta is the estimated time of arrival of the external rider at the hub to pick the order."
+    type: date_time
+    sql: ${TABLE}.daas_provider_pick_up_eta_timestamp ;;
+  }
+
+  dimension: daas_delta_drop_off_completed_delivery_minutes {
+    hidden: yes
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Drop-Off ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Completed Delivery timestamp."
+    type: number
+    sql: timestamp_diff(
+          timestamp(${daas_provider_drop_off_eta_timestamp}),
+          timestamp(${rider_completed_delivery_timestamp}),
+          minute) ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: daas_delta_pick_up_claimed_minutes {
+    hidden: yes
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Pick-Up ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Claimed timestamp."
+    type: number
+    sql: timestamp_diff(
+          timestamp(${daas_provider_pick_up_eta_timestamp}),
+          timestamp(${order_rider_claimed_timestamp}),
+          minute) ;;
+    value_format_name: decimal_0
+  }
 
   dimension: order_uuid {
     type: string
@@ -1618,6 +1696,22 @@ view: orders {
     description: "Either the name of the CS Agent who cancelled the order, either 'Self' if the customer cancelled him/herself"
     type: string
     sql: ${TABLE}.cancellation_user_name;;
+  }
+
+  dimension: daas_cancellation_reason {
+    group_label: "* Cancelled Orders *"
+    label: "DaaS Cancellation Reason"
+    description: "Reason for the cancellation of the order coming from the DaaS provider."
+    type: string
+    sql: ${TABLE}.daas_cancellation_reason;;
+  }
+
+  dimension: daas_cancellation_source {
+    group_label: "* Cancelled Orders *"
+    label: "DaaS Cancellation Source"
+    description: "Source for the cancellation of the order coming from the DaaS provider. (e.g. Flink, External Rider, Provider)"
+    type: string
+    sql: ${TABLE}.daas_cancellation_source;;
   }
 
   dimension: cancellation_type {
@@ -2591,7 +2685,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes}+${rider_preparing_for_trip_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2862,6 +2956,24 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_daas_cpo_gross_eur {
+    group_label: "* Monetary Values *"
+    label: "SUM DaaS CPO (Gross)"
+    description: "Total DaaS Cost Per Order (CPO). DaaS CPO is the gross fee charged by the provider for the trip. In euros."
+    type: sum
+    sql: ${amt_daas_cpo_gross_eur};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_daas_cpo_gross_eur {
+    group_label: "* Monetary Values *"
+    label: "AVG DaaS CPO (Gross)"
+    description: "Average DaaS Cost Per Order (CPO). DaaS CPO is the gross fee charged by the provider for the trip. In euros."
+    type: average
+    sql: ${amt_daas_cpo_gross_eur};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_quantity_fulfilled {
     label: "Quantity Sold"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
@@ -3035,6 +3147,16 @@ view: orders {
     value_format: "0"
   }
 
+  measure: avg_orders_per_customer {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Orders per Customer"
+    description: "Count of Orders per Customer"
+    hidden:  no
+    type: number
+    sql: safe_divide(${cnt_orders}, ${cnt_unique_customers}) ;;
+    value_format: "0.00"
+  }
+
   measure: cnt_internal_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Internal Orders"
@@ -3178,6 +3300,46 @@ view: orders {
     type: count
     value_format: "0"
     filters: [customer_type: "Existing Customer"]
+  }
+
+  measure: cnt_unique_orders_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within Month of First Order"
+    description: "Count of successful Orders placed by customers in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after Month of First Order"
+    description: "Count of successful Orders placed by customers NOT in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "no"]
+  }
+
+  measure: cnt_unique_orders_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within 30d since first Order"
+    description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_30_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after 30d since first Order"
+    description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_30_days: "no"]
   }
 
   measure: cnt_orders_with_delivery_eta_available {
@@ -4246,6 +4408,26 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
+  }
+
+  measure: avg_delta_daas_pick_up_claimed {
+    group_label: "* Operations / Logistics *"
+    label: "AVG DaaS Delta between Pick-Up ETA and Order Claimed"
+    description: "Formula: Pick-Up ETA timestamp - Order Claimed timestamp (in minutes). Note that Rider arrived at the hub is not available for DaaS orders."
+    type: average
+    value_format_name: decimal_1
+    sql: ${daas_delta_pick_up_claimed_minutes} ;;
+    filters: [daas_provider_pick_up_eta_timestamp: "not null",order_rider_claimed_timestamp: "not null"]
+  }
+
+  measure: avg_delta_daas_drop_off_delivered {
+    group_label: "* Operations / Logistics *"
+    label: "AVG DaaS Delta between Drop-Off ETA and Rider Completed Delivery"
+    description: " Formula: Drop-Off ETA timestamp - Rider Completed Delivery timestamp (in minutes). Note that Rider arrived at Customer is not available for DaaS orders."
+    type: average
+    value_format_name: decimal_1
+    sql: ${daas_delta_drop_off_completed_delivery_minutes} ;;
+    filters: [daas_provider_drop_off_eta_timestamp: "not null",rider_completed_delivery_timestamp: "not null"]
   }
 
 
