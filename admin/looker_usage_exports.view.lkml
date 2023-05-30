@@ -86,6 +86,9 @@ view: looker_usage_exports {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     label: "User Email"
     type: string
     sql: ${TABLE}.user_email ;;

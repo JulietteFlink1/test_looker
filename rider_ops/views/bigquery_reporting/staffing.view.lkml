@@ -274,7 +274,7 @@ view: staffing {
   dimension: number_of_accident_minutes_rider {
     type: number
     label: "# Accident Minutes"
-    sql: ${TABLE}.number_accident_minutes_rider ;;
+    sql: ${TABLE}.number_of_accident_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -282,7 +282,7 @@ view: staffing {
   dimension: number_of_temporary_offline_break_minutes_rider {
     type: number
     label: "# Temporary Offline Break Minutes"
-    sql: ${TABLE}.number_temporary_offline_break_minutes_rider ;;
+    sql: ${TABLE}.number_of_temporary_offline_break_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -290,7 +290,7 @@ view: staffing {
   dimension: number_of_total_temporary_offline_minutes_rider {
     type: number
     label: "# Total Temporary Offline Minutes"
-    sql: ${TABLE}.number_total_temporary_offline_minutes_rider ;;
+    sql: ${TABLE}.number_of_total_temporary_offline_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -298,7 +298,7 @@ view: staffing {
   dimension: number_of_unresponsive_minutes_rider {
     type: number
     label: "# Unresponsive Minutes"
-    sql: ${TABLE}.number_unresponsive_minutes_rider ;;
+    sql: ${TABLE}.number_of_unresponsive_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -306,7 +306,7 @@ view: staffing {
   dimension: number_of_other_temporary_offline_minutes_rider {
     type: number
     label: "# Other Temporary Offline Minutes"
-    sql: ${TABLE}.number_other_temporary_offline_minutes_rider ;;
+    sql: ${TABLE}.number_of_other_temporary_offline_minutes_rider ;;
     value_format_name: decimal_1
     hidden: yes
   }

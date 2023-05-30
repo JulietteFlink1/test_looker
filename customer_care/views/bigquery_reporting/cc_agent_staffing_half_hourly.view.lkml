@@ -29,6 +29,9 @@ view: cc_agent_staffing_half_hourly {
     }
 
   dimension: agent_email {
+
+    required_access_grants: [can_access_pii_hq_employees]
+
     group_label: "> Agent Dimensions"
     type: string
     description: "Quinyx email address of the customer care agent. If the email address starts with 'ext-', we remove that prefix.
@@ -43,6 +46,9 @@ view: cc_agent_staffing_half_hourly {
   }
 
   dimension: agent_name {
+
+    required_access_grants: [can_access_pii_hq_employees]
+
     group_label: "> Agent Dimensions"
     description: "Name of the customer care agent."
     type: string

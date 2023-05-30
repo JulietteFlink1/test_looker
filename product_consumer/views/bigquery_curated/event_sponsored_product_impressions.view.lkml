@@ -201,6 +201,13 @@ view: event_sponsored_product_impressions {
     sql: ${TABLE}.product_sku ;;
   }
 
+  dimension: categories_with_reco_highlights {
+    description: "Lists categories in which recommendation highlights occur"
+    type: string
+    sql: CASE WHEN NOT ${is_sponsored_product} THEN ${category_name} ELSE NULL END ;;
+
+  }
+
   dimension_group: received {
     type: time
     timeframes: [
