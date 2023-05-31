@@ -483,20 +483,38 @@ view: orders {
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delta_to_pdt_minutes_including_tolerance_buffer{
+  dimension: delta_to_pdt_minutes_with_positive_tolerance_buffer{
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min) (Including 15% DPT tolerance)"
+    label: "Delta to PDT (min) (with + 15% DPT tolerance)"
     description: "Delta to promised delivery time (as shown to customer) + 15% tolerance buffer"
     type: number
-    sql: round(
-      timestamp_diff(
-        ${delivery_timestamp_raw},
-        -- add 15% of pdt as tolerance buffer
-        timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
-        second
-      ) / 60,
-      2
-    ) ;;
+    sql:timestamp_diff(
+          ${delivery_timestamp_raw},
+          -- add 15% of pdt as tolerance buffer
+          timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+          second
+        )/60 ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: delta_to_pdt_minutes_with_tolerance_buffer{
+    group_label: "* Operations / Logistics *"
+    label: "Delta to PDT (min) (with +/- 15% DPT tolerance)"
+    description: "Delta to promised delivery time (as shown to customer) +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    type: number
+    sql:case
+          when
+            ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
+          then
+            timestamp_diff(
+              -- subtract 15% of pdt as tolerance buffer
+              timestamp_sub(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+              ${delivery_timestamp_raw},
+              second
+            )/60
+          else ${delta_to_pdt_minutes_with_positive_tolerance_buffer}
+        end;;
+    value_format_name: decimal_1
   }
 
   dimension: delivery_delay_since_pdt_seconds {
@@ -504,7 +522,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "Delivery delay to PDT (sec)"
     description: "Delay versus promised delivery time in seconds (as shown to customer)"
-    hidden: yes
+    hidden: no
     type: number
     sql: ${TABLE}.delivery_delay_since_pdt_minutes * 60 ;;
   }
@@ -3374,7 +3392,6 @@ view: orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Targeted Fulfillment Time is available"
     description: "Count of Orders where a Targeted Delivery Time  is available"
-    hidden:  no
     type: count
     filters: [is_targeted_eta_available: "yes"]
     value_format: "0"
@@ -3384,11 +3401,23 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (Including 15% tolerance)"
+    label: "# Orders delivered on time (with + 15% PDT tolerance)"
     description: "Count of Orders delivered no later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_including_tolerance_buffer:"<=0.5"]
+    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:"<=0.5"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of Orders delivered no later than PDT. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    hidden:  yes
+    type: count
+    filters: [delta_to_pdt_minutes_with_tolerance_buffer:"<=0.5"]
     value_format: "0"
   }
 
@@ -3752,31 +3781,31 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered late >5min"
-    description: "Count of Orders delivered >5min later than PDT"
+    label: "# Orders delivered late >5min (with + 15% DPT tolerance)"
+    description: "Count of Orders delivered >5min later than PDT + 15% tolerance buffer"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=5"]
+    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=5"]
     value_format: "0"
   }
 
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >10min"
-    description: "Count of Orders delivered >10min later than PDT"
+    label: "# Orders delivered late >10min (with + 15% DPT tolerance)"
+    description: "Count of Orders delivered >10min later than PDT + 15% tolerance buffer"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=10"]
+    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=10"]
     value_format: "0"
   }
 
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >15min"
-    description: "Count of Orders delivered >15min later than PDT"
+    label: "# Orders delivered late >15min (with + 15% DPT tolerance)"
+    description: "Count of Orders delivered >15min later than PDT + 15% tolerance buffer"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_including_tolerance_buffer:">=15"]
+    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=15"]
     value_format: "0"
   }
 
@@ -4100,11 +4129,21 @@ view: orders {
 
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (PDT)"
-    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
+    label: "% Orders delivered in time (with + 15% DPT tolerance)"
+    description: "Share of orders delivered no later than PDT + 15% tolerance buffer"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_in_time_with_tolerance_buffer{
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered in time (with +/- 15% PDT tolerance)"
+    description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
