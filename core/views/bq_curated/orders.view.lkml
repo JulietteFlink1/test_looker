@@ -522,7 +522,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "Delivery delay to PDT (sec)"
     description: "Delay versus promised delivery time in seconds (as shown to customer)"
-    hidden: no
+    hidden: yes
     type: number
     sql: ${TABLE}.delivery_delay_since_pdt_minutes * 60 ;;
   }
@@ -2021,7 +2021,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG PDT"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"
-    hidden:  yes
+    hidden:  no
     type: average
     sql: ${delivery_eta_minutes};;
     value_format_name: decimal_1
