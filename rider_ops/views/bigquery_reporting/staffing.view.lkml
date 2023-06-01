@@ -1111,7 +1111,7 @@ view: staffing {
     alias: [pct_no_show_hours_deputy_shift_lead]
     group_label: "> Ops Associate + Measures"
     label: "% No Show Ops Associate + Hours Excl. Refilled Hours"
-    description: "% No Show Ops Associate + Hours (Picker, WH, Rider Captain, Ops Associate) (# No Show Hours Excl. Refilled Hours / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
+    description: "% No Show Ops Associate + Hours (Picker, WH, Rider Captain, Ops Associate). Calculated as: (# No Show Hours Excl. Refilled Hours) / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
     type: number
     sql:(${number_of_no_show_hours_ops_associate_plus})/nullif(${number_of_planned_hours_ops_associate_plus}-${number_of_planned_hours_ops_associate_plus_ec_shift}++${number_of_unassigned_hours_ops_associate_plus_ns_shift},0) ;;
     value_format_name: percent_1
