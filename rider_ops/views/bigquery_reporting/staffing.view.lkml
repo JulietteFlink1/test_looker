@@ -2830,7 +2830,7 @@ view: staffing {
 
   measure: pct_no_show_hours_ops_associate_incl_ec_shift {
     group_label: "> Ops Associate Measures"
-    label: "% No Show Ops Associate Hours Excl. Refilled Hours & with EC Shifts"
+    label: "% No Show Ops Associate Hourswithout Refilled Hours & with EC Shifts"
     description: "(# No Show Hours + # EC No Show Hours) / # Planned Hours"
     type: number
     sql:${number_of_no_show_hours_ops_associate_incl_ec_shift}/nullif(${number_of_planned_hours_ops_associate}+${number_of_unassigned_hours_ops_associate_ns_shift},0) ;;
