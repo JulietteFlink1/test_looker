@@ -3405,7 +3405,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:"<=0.5"]
+    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:"<=0"]
     value_format: "0"
   }
 
@@ -3417,7 +3417,7 @@ view: orders {
     description: "Count of Orders delivered no later than PDT. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_tolerance_buffer:"<=0.5"]
+    filters: [delta_to_pdt_minutes_with_tolerance_buffer:"<=0"]
     value_format: "0"
   }
 
