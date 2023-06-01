@@ -2362,7 +2362,7 @@ view: staffing {
     alias: [number_of_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# No Show Ops Associate Hours without Refilled Hours"
-    description: "# Ops Associate Shift hours (Picker, WH, Rider Captain, Ops Associate) with missing punch and an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')  + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    description: "# Ops Associate Shift hours (Picker, WH, Rider Captain, Ops Associate) with missing punch and an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')  + Unassigned Hours from shifts with project code = 'NS+ shift'"
     type: number
     sql: (${number_of_no_show_minutes_ops_associate}+
          ${number_of_unassigned_hours_ops_associate_ns_shift})/60;;
