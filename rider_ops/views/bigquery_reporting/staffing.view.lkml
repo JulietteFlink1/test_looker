@@ -6,7 +6,7 @@
 # on a hub + 30-min slot level
 
 view: staffing {
-  sql_table_name: `flink-data-prod.reporting.staffing`
+  sql_table_name: `flink-data-dev.dbt_omar_reporting.staffing`
     ;;
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -674,11 +674,11 @@ view: staffing {
     hidden: yes
   }
 
-  measure: number_of_no_show_minutes_ops_associate {
+  measure: number_of_no_show_hours_ops_associate_without_refilled_and_ns_shift {
     group_label: "> Ops Associate Measures"
     label: "# No Show Ops Associate Minutes"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_ops_associate;;
+    sql: ${TABLE}.number_of_no_show_minutes_ops_associate/60;;
     value_format_name: decimal_1
     hidden: yes
   }
@@ -1001,7 +1001,7 @@ view: staffing {
     alias: [number_of_planned_hours_deputy_shift_lead]
     group_label: "> Ops Associate + Measures"
     label: "# Filled (Assigned) Planned Ops Associate + Hours"
-    description: "# Filled (Assigned) Ops Associate + Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled (Assigned) Ops Associate + Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_ops_associate_plus/60 ;;
     value_format_name: decimal_1
@@ -1043,7 +1043,7 @@ view: staffing {
     label: "# Filled (Assigned) Ops Associate + Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_ops_associate_plus/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Ops Associate +) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Ops Associate +) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -1053,7 +1053,7 @@ view: staffing {
     label: "% Filled (Assigned) Ops Associate + Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_ops_associate_plus}/nullif(${number_of_planned_hours_ops_associate_plus},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours without hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
@@ -1063,7 +1063,7 @@ view: staffing {
     label: "# Filled (Assigned) External Ops Associate + Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate_plus/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Ops Associate +) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Ops Associate +) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -1073,7 +1073,7 @@ view: staffing {
     label: "# Filled (Assigned) Internal Ops Associate + Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate_plus/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Ops Associate +) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Ops Associate +) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -1091,7 +1091,7 @@ view: staffing {
     alias: [number_of_scheduled_hours_deputy_shift_lead]
     group_label: "> Ops Associate + Measures"
     label: "# Scheduled Ops Associate + Hours"
-    description: "# Scheduled Ops Associate + Hours (Assigned + Unassigned) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Scheduled Ops Associate + Hours (Assigned + Unassigned) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_ops_associate_plus}+${number_of_planned_hours_ops_associate_plus};;
     value_format_name: decimal_1
@@ -1101,7 +1101,7 @@ view: staffing {
     alias: [number_of_scheduled_hours_external_deputy_shift_lead]
     group_label: "> Ops Associate + Measures"
     label: "# External Scheduled Ops Associate + Hours"
-    description: "# External Scheduled Ops Associate + Hours (Assigned + Unassigned) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# External Scheduled Ops Associate + Hours (Assigned + Unassigned) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: (${number_of_unassigned_hours_external_ops_associate_plus}+${number_of_planned_hours_external_ops_associate_plus})/60;;
     value_format_name: decimal_1
@@ -1110,8 +1110,8 @@ view: staffing {
   measure: pct_no_show_hours_ops_associate_plus {
     alias: [pct_no_show_hours_deputy_shift_lead]
     group_label: "> Ops Associate + Measures"
-    label: "% No Show Ops Associate + Hours Excl. Refilled Hours"
-    description: "% No Show Ops Associate + Hours (Picker, WH, Rider Captain, Ops Associate). Calculated as: (# No Show Hours Excl. Refilled Hours) / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
+    label: "% No Show Ops Associate + Hours without Refilled Hours"
+    description: "% No Show Ops Associate + Hours (Picker, WH, Rider Captain, Ops Associate). Calculated as: (# No Show Hours without Refilled Hours) / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
     type: number
     sql:(${number_of_no_show_hours_ops_associate_plus})/nullif(${number_of_planned_hours_ops_associate_plus}-${number_of_planned_hours_ops_associate_plus_ec_shift}+${number_of_unassigned_hours_ops_associate_plus_ns_shift},0) ;;
     value_format_name: percent_1
@@ -1769,7 +1769,7 @@ view: staffing {
     alias: [number_of_planned_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) Ops Associate Hours"
-    description: "# Filled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_planned_minutes_ops_associate}/60 ;;
     value_format_name: decimal_1
@@ -1851,7 +1851,7 @@ view: staffing {
   measure: number_of_planned_hours_internal_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) Internal Ops Associate Hours"
-    description: "# Filled Internal Ops Associate Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Internal Ops Associate Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_internal_ops_associate/60 ;;
     value_format_name: decimal_1
@@ -1860,7 +1860,7 @@ view: staffing {
   measure: number_of_planned_hours_external_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Filled (Assigned) External Ops Associate Hours"
-    description: "# Filled External Ops Associate Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled External Ops Associate Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_external_ops_associate/60 ;;
     value_format_name: decimal_1
@@ -1869,7 +1869,7 @@ view: staffing {
   measure: number_of_planned_hours_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Assigned) Rider Hours"
-    description: "# Filled Rider Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Rider Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${number_of_planned_minutes_rider}/60;;
     value_format_name: decimal_1
@@ -1878,7 +1878,7 @@ view: staffing {
   measure: number_of_planned_hours_internal_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Assigned) Internal Rider Hours"
-    description: "# Filled Internal Rider Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Internal Rider Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${number_of_planned_minutes_internal_rider}/60;;
     value_format_name: decimal_1
@@ -1887,7 +1887,7 @@ view: staffing {
   measure: number_of_planned_hours_external_rider {
     group_label: "> Rider Measures"
     label: "# Filled (Assigned) External Rider Hours"
-    description: "# Filled External Rider Hours Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled External Rider Hours without hours from shifts with project code = 'Refilled shift'"
     type: sum
     sql: ${number_of_planned_minutes_external_rider}/60;;
     value_format_name: decimal_1
@@ -1944,7 +1944,7 @@ view: staffing {
     label: "# Filled (Assigned) Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_rider/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Rider) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Rider) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -1953,7 +1953,7 @@ view: staffing {
     label: "% Filled (Assigned) Rider Hours Based on Availability"
     type: number
     sql:${number_of_planned_hours_availability_based_rider}/nullif(${number_of_planned_hours_rider},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours without hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
@@ -1962,7 +1962,7 @@ view: staffing {
     label: "# Filled (Assigned) External Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_external_rider/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Rider) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Rider) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -1971,7 +1971,7 @@ view: staffing {
     label: "# Filled (Assigned) Internal Rider Hours Based on Availability"
     type: sum
     sql: ${TABLE}.number_of_planned_minutes_availability_based_internal_rider/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Rider) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Rider) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -2048,8 +2048,8 @@ view: staffing {
 
   measure: number_of_planned_hours_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Assigned) Hub Staff Hours Excl. Refilled Hours"
-    description: "# Filled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Ops Associate +) Excl. hours from shifts with project code = 'Refilled shift'"
+    label: "# Filled (Assigned) Hub Staff Hours without Refilled Hours"
+    description: "# Filled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead, Ops Associate +) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_planned_hours_ops_associate}+${number_of_planned_hours_shift_lead}+${number_of_planned_hours_ops_associate_plus};;
     value_format_name: decimal_1
@@ -2067,40 +2067,40 @@ view: staffing {
 
   measure: number_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Assigned) Hub Staff Hours Based on Availability Excl. Refilled Hours"
+    label: "# Filled (Assigned) Hub Staff Hours Based on Availability without Refilled Hours"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_ops_associate +
       ${TABLE}.number_of_planned_minutes_availability_based_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_ops_associate_plus)/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Hub Staff) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Hub Staff) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
   measure: pct_of_planned_hours_availability_based_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "% Filled (Assigned) Hub Staff Hours Based on Availability Excl. Refilled Hours"
+    label: "% Filled (Assigned) Hub Staff Hours Based on Availability without Refilled Hours"
     type: number
     sql:${number_of_planned_hours_availability_based_hub_staff}/nullif(${number_of_planned_hours_hub_staff},0) ;;
-    description:"Share of Filled Hours based on Availability from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
+    description:"Share of Filled Hours based on Availability from total Filled Hours without hours from shifts with project code = 'Refilled shift' - (# Filled (Assigned) Hours Based on Availability / # Filled (Assigned) Hours)"
     value_format_name: percent_1
   }
 
   measure: number_of_planned_hours_availability_based_external_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Assigned) External Hub Staff Hours Based on Availability Excl. Refilled Hours"
+    label: "# Filled (Assigned) External Hub Staff Hours Based on Availability without Refilled Hours"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate +
       ${TABLE}.number_of_planned_minutes_availability_based_external_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_external_ops_associate_plus)/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Hub Staff) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (External Hub Staff) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
   measure: number_of_planned_hours_availability_based_internal_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Filled (Assigned) Internal Hub Staff Hours Based on Availability Excl. Refilled Hours"
+    label: "# Filled (Assigned) Internal Hub Staff Hours Based on Availability without Refilled Hours"
     type: sum
     sql: (${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate +
       ${TABLE}.number_of_planned_minutes_availability_based_internal_shift_lead + ${TABLE}.number_of_planned_minutes_availability_based_internal_ops_associate_plus)/60;;
-    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Hub Staff) Excl. hours from shifts with project code = 'Refilled shift'"
+    description:"Number of filled (Assigned) hours that are overlapping with provided availability (Internal Hub Staff) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
   }
 
@@ -2119,8 +2119,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_rider {
     group_label: "> Rider Measures"
-    label: "# Scheduled Rider Hours Excl. Refilled Hours"
-    description: "# Scheduled Rider Hours (Assigned + Unassigned) Excl. hours from shifts with project code = 'Refilled shift'"
+    label: "# Scheduled Rider Hours without Refilled Hours"
+    description: "# Scheduled Rider Hours (Assigned + Unassigned) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_rider}+${number_of_planned_hours_rider};;
     value_format_name: decimal_1
@@ -2128,8 +2128,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_internal_rider {
     group_label: "> Rider Measures"
-    label: "# Scheduled Internal Rider Hours Excl. Refilled Hours"
-    description: "# Scheduled Internal Rider Hours (Assigned + Unassigned) Excl. hours from shifts with project code = 'Refilled shift'"
+    label: "# Scheduled Internal Rider Hours without Refilled Hours"
+    description: "# Scheduled Internal Rider Hours (Assigned + Unassigned) without hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_internal_rider}+${number_of_planned_hours_internal_rider};;
     value_format_name: decimal_1
@@ -2211,8 +2211,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# Scheduled Hub Staff Hours Excl. Refilled Hours"
-    description: "# Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# Scheduled Hub Staff Hours without Refilled Hours"
+    description: "# Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned) without hours from assinged shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_scheduled_hours_ops_associate}+${number_of_scheduled_hours_shift_lead}+${number_of_scheduled_hours_ops_associate_plus};;
     value_format_name: decimal_1
@@ -2221,8 +2221,8 @@ view: staffing {
   measure: number_of_scheduled_hours_ops_associate {
     alias: [number_of_scheduled_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Scheduled Ops Associate Hours Excl. Refilled Hours"
-    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# Scheduled Ops Associate Hours without Refilled Hours"
+    description: "# Scheduled Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned) without hours from assinged shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_ops_associate}+${number_of_planned_hours_ops_associate};;
     value_format_name: decimal_1
@@ -2230,8 +2230,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_internal_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# Scheduled Internal Ops Associate Hours Excl. Refilled Hours"
-    description: "# Scheduled Internal Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# Scheduled Internal Ops Associate Hours without Refilled Hours"
+    description: "# Scheduled Internal Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (Assigned + Unassigned) without hours from assinged shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_minutes_internal_ops_associate}/60+${number_of_planned_hours_internal_ops_associate};;
     value_format_name: decimal_1
@@ -2300,8 +2300,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_external_rider {
     group_label: "> Rider Measures"
-    label: "# External Scheduled Rider Hours Excl. Refilled Hours"
-    description: "# External Scheduled Rider Hours  (Assigned + Unassigned) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# External Scheduled Rider Hours without Refilled Hours"
+    description: "# External Scheduled Rider Hours  (Assigned + Unassigned) without hours from assinged shifts with project code = 'Refilled shift'"
     type: sum
     sql: (${number_of_unassigned_minutes_external_rider}+${number_of_planned_minutes_external_rider})/60;;
     value_format_name: decimal_1
@@ -2310,8 +2310,8 @@ view: staffing {
   measure: number_of_scheduled_hours_external_ops_associate {
     alias: [number_of_scheduled_hours_external_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# External Scheduled Ops Associate Hours Excl. Refilled Hours"
-    description: "# External Scheduled Ops Associate Hours  (Assigned + Unassigned) (Picker, WH, Rider Captain, Ops Associate) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# External Scheduled Ops Associate Hours without Refilled Hours"
+    description: "# External Scheduled Ops Associate Hours  (Assigned + Unassigned) (Picker, WH, Rider Captain, Ops Associate) without hours from assinged shifts with project code = 'Refilled shift'"
     type: number
     sql: (${number_of_unassigned_minutes_external_ops_associate}+${number_of_planned_minutes_external_ops_associate})/60;;
     value_format_name: decimal_1
@@ -2328,8 +2328,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_external_hub_staff {
     group_label: "> Hub Staff Measures"
-    label: "# External Scheduled Hub Staff Hours Excl. Refilled Hours"
-    description: "# External Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned) Excl. hours from assinged shifts with project code = 'Refilled shift'"
+    label: "# External Scheduled Hub Staff Hours without Refilled Hours"
+    description: "# External Scheduled Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead) (Assigned + Unassigned) without hours from assinged shifts with project code = 'Refilled shift'"
     type: number
     sql: (${number_of_scheduled_hours_external_ops_associate}+${number_of_scheduled_hours_external_shift_lead})/60;;
     value_format_name: decimal_1
@@ -2362,10 +2362,10 @@ view: staffing {
     alias: [number_of_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "# No Show Ops Associate Hours without Refilled Hours"
-    description: "# Ops Associate Shift hours (Picker, WH, Rider Captain, Ops Associate) with missing punch and an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')  + Unassigned Hours from shifts with project code = 'NS+ shift'"
+    description: "# Ops Associate Shift hours (Picker, WH, Rider Captain, Ops Associate) with missing punch and an absence applied or approved (with deleted shift and excl. shifts with project code = 'Refilled shift')  + Open Hours from shifts with project code = 'NS+ shift'"
     type: number
-    sql: (${number_of_no_show_minutes_ops_associate}+
-         ${number_of_unassigned_hours_ops_associate_ns_shift})/60;;
+    sql: ${number_of_no_show_hours_ops_associate_without_refilled_and_ns_shift}+
+         ${number_of_unassigned_hours_ops_associate_ns_shift};;
     value_format_name: decimal_1
   }
 
@@ -2381,37 +2381,37 @@ view: staffing {
   measure: number_of_no_show_hours_ops_associate_incl_refilled_hours {
     group_label: "> Ops Associate Measures"
     label: "# No Show Ops Associate Hours with Refilled Hours"
-    description: "# Shift hours with missing punch with an absence applied or approved (incl. deleted shift and shifts with project code = 'Refilled shift')"
+    description: "# Shift hours with missing punch with an absence applied or approved (with deleted shift and shifts with project code = 'Refilled shift')"
     type: number
-    sql: (${number_of_no_show_minutes_ops_associate}+
-      ${number_of_no_show_minutes_refilled_shift_ops_associate})/60;;
+    sql: ${number_of_no_show_hours_ops_associate_without_refilled_and_ns_shift}+
+      ${number_of_no_show_hours_refilled_shift_ops_associate};;
     value_format_name: decimal_1
   }
 
-  measure: number_of_no_show_minutes_rider {
+  measure: number_of_no_show_hours_rider_without_refilled_and_ns_shift {
     label: "# No Show Rider Minutes"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_rider ;;
+    sql: ${TABLE}.number_of_no_show_minutes_rider/60 ;;
     hidden: yes
   }
 
   measure: number_of_no_show_hours_rider {
     group_label: "> Rider Measures"
-    label: "# No Show Rider Hours with Refilled Hours"
-    description: "# Shift hours with missing punch with an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')  + Unassinged Hours from shifts with project code = 'NS+ shift'"
+    label: "# No Show Rider Hours without Refilled Hours"
+    description: "# Shift hours with missing punch with an absence applied or approved (with deleted shift and without shifts with project code = 'Refilled shift') + Open Hours from shifts with project code = 'NS+ shift'"
     type: number
-    sql: (${number_of_no_show_minutes_rider}+
-         ${number_of_unassigned_hours_rider_ns_shift})/60;;
+    sql: ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
+         ${number_of_unassigned_hours_rider_ns_shift};;
     value_format_name: decimal_1
   }
 
   measure: number_of_no_show_hours_rider_incl_refilled_hours {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours with Refilled Hours"
-    description: "# Shift hours with missing punch with an absence applied or approved (incl. deleted shift and shifts with project code = 'Refilled shift')"
+    description: "# Shift hours with missing punch with an absence applied or approved (with deleted shift and shifts with project code = 'Refilled shift')"
     type: number
-    sql: (${number_of_no_show_minutes_rider}+
-      ${number_of_no_show_minutes_refilled_shift_rider})/60;;
+    sql: ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
+      ${number_of_no_show_hours_rider_refilled_shift};;
     value_format_name: decimal_1
   }
 
@@ -2460,21 +2460,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_no_show_minutes_refilled_shift_rider {
-    group_label: "> Rider Measures"
-    label: "# Refilled No Show Rider Minutes"
-    type: sum
-    hidden: yes
-    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_rider;;
-    value_format_name: decimal_1
-  }
-
   measure: number_of_no_show_hours_rider_refilled_shift {
     group_label: "> Rider Measures"
     label: "# Refilled No Show Rider Hours"
     description: "# No Show Rider Hours from shifts with project code = 'Refilled shift'"
-    type: number
-    sql: ${number_of_no_show_minutes_refilled_shift_rider}/60;;
+    type: sum
+    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_rider/60;;
     value_format_name: decimal_1
   }
 
@@ -2514,12 +2505,12 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_no_show_minutes_refilled_shift_ops_associate {
+  measure: number_of_no_show_hours_refilled_shift_ops_associate {
     group_label: "> Ops Associate Measures"
     label: "# Refilled No Show Ops Associate Minutes"
     type: sum
     hidden: yes
-    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_ops_associate;;
+    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_ops_associate/60;;
     value_format_name: decimal_1
   }
 
@@ -2528,7 +2519,7 @@ view: staffing {
     label: "# Refilled No Show Ops Associate Hours"
     description: "# No Show Ops Associate Hours from shifts with project code = 'Refilled shift'"
     type: number
-    sql: ${number_of_no_show_minutes_refilled_shift_ops_associate}/60;;
+    sql: ${number_of_no_show_hours_refilled_shift_ops_associate};;
     value_format_name: decimal_1
   }
 
@@ -2718,7 +2709,7 @@ view: staffing {
   measure: number_of_deleted_unexcused_no_show_hours_ops_associate {
     alias: [number_of_deleted_unexcused_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
-    label: "# Deleted Unexcused No Show Ops Associate Hours (Excl. in No Show metric)"
+    label: "# Deleted Unexcused No Show Ops Associate Hours (without in No Show metric)"
     description: "# Deleted Unexcused No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate)"
     type: number
     sql: ${number_of_deleted_unexcused_no_show_minutes_ops_associate}/60;;
@@ -2756,7 +2747,7 @@ view: staffing {
   measure: pct_no_show_hours_rider_ops_associate {
     group_label: "> All Staff Measures"
     label: "% No Show Rider + Ops Associate without Refilled Hours"
-    description: "# No Show Hours (Excl. Refilled Hours)/ (# Planned Hours - # Planned EC Hours + # Open NS+ Rider Hours)"
+    description: "# No Show Hours (without Refilled Hours)/ (# Planned Hours - # Planned EC Hours + # Open NS+ Rider Hours)"
     type: number
     sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_ops_associate})
             /nullif(${number_of_planned_hours_rider} + ${number_of_planned_hours_ops_associate}
@@ -2768,7 +2759,7 @@ view: staffing {
   measure: pct_no_show_hours_rider_incl_ec_shift {
     group_label: "> Rider Measures"
     label: "% No Show Rider Hours without Refilled Hours & with EC Shifts"
-    description: " (# No Show Hours Excl. Refilled Hours + # EC No Show Hours) / (# Planned Hours + # Open NS+ Rider Hours)"
+    description: " (# No Show Hours without Refilled Hours + # EC No Show Hours) / (# Planned Hours + # Open NS+ Rider Hours)"
     type: number
     sql:(${number_of_no_show_hours_rider}+${number_of_no_show_hours_rider_ec_shift})/nullif(${number_of_planned_hours_rider}+${number_of_unassigned_hours_rider_ns_shift},0) ;;
     value_format_name: percent_1
@@ -2804,7 +2795,7 @@ view: staffing {
     alias: [pct_no_show_hours_ops_staff]
     group_label: "> Ops Associate Measures"
     label: "% No Show Ops Associate Hours without Refilled Hours"
-    description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (# No Show Hours Excl. Refilled Hours / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
+    description: "% No Show Ops Associate Hours (Picker, WH, Rider Captain, Ops Associate) (# No Show Hours without Refilled Hours / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours) "
     type: number
     sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_ops_associate}-${number_of_planned_hours_ops_associate_ec_shift}+${number_of_unassigned_hours_ops_associate_ns_shift},0) ;;
     value_format_name: percent_1
@@ -2830,7 +2821,7 @@ view: staffing {
 
   measure: pct_no_show_hours_ops_associate_incl_ec_shift {
     group_label: "> Ops Associate Measures"
-    label: "% No Show Ops Associate Hourswithout Refilled Hours & with EC Shifts"
+    label: "% No Show Ops Associate Hours without Refilled Hours & with EC Shifts"
     description: "(# No Show Hours + # EC No Show Hours) / # Planned Hours"
     type: number
     sql:${number_of_no_show_hours_ops_associate_incl_ec_shift}/nullif(${number_of_planned_hours_ops_associate}+${number_of_unassigned_hours_ops_associate_ns_shift},0) ;;
@@ -3063,12 +3054,12 @@ view: staffing {
   dimension: number_of_no_show_hours_by_position_dimension {
     type: number
     label: "# No Show Hours - Dimension"
-    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    description: "Sum of shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_minutes_rider}/60
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
           else null
         end ;;
     hidden: yes
@@ -3234,7 +3225,7 @@ view: staffing {
   measure: pct_unassignment_rate_internal_riders {
     type: number
     label: "% Unassignment Rate (with EC Shift & without Refilled Hours) Internal Rider "
-    description: "1 - Fill Rate Internal Rider Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "1 - Fill Rate Internal Rider without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Rider Measures"
     sql: 1 - ${pct_fill_rate_internal_rider};;
@@ -3243,7 +3234,7 @@ view: staffing {
   measure: pct_fill_rate_external_rider {
     type: number
     label: "% Fill Rate (with EC Shift & without Refilled Hours) External Rider"
-    description: "# Filled Hours (Assigned to an Employee) External Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Rider Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Hours (Assigned to an Employee) External Rider / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Rider without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Rider Measures"
     sql: ${number_of_planned_hours_external_rider}/nullif(${number_of_scheduled_hours_external_rider},0);;
@@ -3252,7 +3243,7 @@ view: staffing {
   measure: pct_unassignment_rate_external_riders {
     type: number
     label: "% Unassignment Rate (with EC Shift & without Refilled Hours) External Rider"
-    description: "1 - Fill Rate External Rider Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "1 - Fill Rate External Rider without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Rider Measures"
     sql: 1 - ${pct_fill_rate_external_rider};;
@@ -3261,7 +3252,7 @@ view: staffing {
   measure: pct_fill_rate_internal_ops_associate {
     type: number
     label: "% Fill Rate (with EC Shift & without Refilled Hours) Internal Ops Associate"
-    description: "# Filled Hours (Assigned to an Employee) Internal Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) Internal Ops Associate Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Hours (Assigned to an Employee) Internal Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) Internal Ops Associate without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Ops Associate Measures"
     sql: ${number_of_planned_hours_internal_ops_associate}/nullif(${number_of_scheduled_hours_internal_ops_associate},0);;
@@ -3270,7 +3261,7 @@ view: staffing {
   measure: pct_unassignment_rate_internal_ops_associate {
     type: number
     label: "% Unassignment Rate (with EC Shift & without Refilled Hours) Internal Ops Associate"
-    description: "1 - Fill Rate Internal Ops Associate Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "1 - Fill Rate Internal Ops Associate without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Ops Associate Measures"
     sql: 1 - ${pct_fill_rate_internal_ops_associate};;
@@ -3279,7 +3270,7 @@ view: staffing {
   measure: pct_fill_rate_external_ops_associate {
     type: number
     label: "% Fill Rate (with EC Shift & without Refilled Hours) External Ops Associate"
-    description: "# Filled Hours (Assigned to an Employee) External Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Ops Associate Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Filled Hours (Assigned to an Employee) External Ops Associate / # Scheduled Hours (Total Scheduled Shift Hours = Assigned Hours + Open Hours) External Ops Associate without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Ops Associate Measures"
     sql: ${number_of_planned_hours_external_ops_associate}/nullif(${number_of_scheduled_hours_external_ops_associate},0);;
@@ -3288,7 +3279,7 @@ view: staffing {
   measure: pct_unassignment_rate_external_ops_associate {
     type: number
     label: "% Unassignment Rate (with EC Shift & without Refilled Hours) External Ops Associate"
-    description: "1 - Fill Rate External Ops Associate Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "1 - Fill Rate External Ops Associate without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Ops Associate Measures"
     sql: 1 - ${pct_fill_rate_external_ops_associate};;
@@ -3297,7 +3288,7 @@ view: staffing {
   measure: pct_unexcused_absence {
     type: number
     label: "% Unexcused Absence (without EC Shift & Refilled Hours)"
-    description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Unexcused No Show Hours / # Filled Hours (Assigned to an Employee) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: (${number_of_unexcused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
@@ -3306,7 +3297,7 @@ view: staffing {
   measure: pct_excused_absence {
     type: number
     label: "% Excused Absence (without EC Shift & Refilled Hours)"
-    description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Excused No Show Hours / # Filled Hours (Assigned to an Employee) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: percent_2
     group_label: "> Dynamic Measures"
     sql: (${number_of_deleted_excused_no_show_hours_by_position}+${number_of_excused_no_show_hours_by_position})/nullif(${number_of_planned_hours_by_position}-${number_of_planned_hours_ec_shift_by_position},0);;
@@ -3315,7 +3306,7 @@ view: staffing {
   measure: number_of_unassigned_hours_by_position {
     type: number
     label: "# Open Hours (with EC Shift & without Refilled Hours)"
-    description: "# Open Shift Hours (Not assigned to an Employee) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "# Open Shift Hours (Not assigned to an Employee) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3332,7 +3323,7 @@ view: staffing {
   measure: number_of_scheduled_hours_by_position {
     type: number
     label: "# Scheduled Hours (with Deleted Excused No Show and EC Shift without Refilled Hours)"
-    description: "Sum of Assigned and Unassigned (Open) Shift Hours (Incl. Deleted Excused No Show) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours (with Deleted Excused No Show) without hours from shifts with project code = 'Refilled shift'"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3348,8 +3339,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_ec_shift {
     type: number
-    label: "# EC Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) Shift Hours from EC shifts (Incl. Deleted Excused No Show)"
+    label: "# EC Scheduled Hours (with Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from EC shifts (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3362,8 +3353,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_wfs_shift {
     type: number
-    label: "# WFS Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) Shift Hours from WFS shifts (Incl. Deleted Excused No Show)"
+    label: "# WFS Scheduled Hours (with Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from WFS shifts (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3376,8 +3367,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_wfs_shift_extended {
     type: number
-    label: "# Extended WFS Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Extended Assigned and Unassigned (Open) Shift Hours from WFS shifts (Incl. Deleted Excused No Show)"
+    label: "# Extended WFS Scheduled Hours (with Deleted Excused No Show)"
+    description: "Sum of Extended Assigned and Unassigned (Open) Shift Hours from WFS shifts (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3390,8 +3381,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_ns_shift {
     type: number
-    label: "# NS+ Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) Shift Hours from NS+ shifts (Incl. Deleted Excused No Show)"
+    label: "# NS+ Scheduled Hours (with Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) Shift Hours from NS+ shifts (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3404,8 +3395,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_refilled_shift {
     type: number
-    label: "# Refilled Scheduled Hours (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) shifts with project code = 'Refilled shift' (Incl. Deleted Excused No Show)"
+    label: "# Refilled Scheduled Hours (with Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) shifts with project code = 'Refilled shift' (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3418,8 +3409,8 @@ view: staffing {
 
   measure: number_of_scheduled_hours_by_position_extra {
     type: number
-    label: "# Extra Scheduled Hours (EC, NS+. WFS, Refilled Shifts) (Incl. Deleted Excused No Show)"
-    description: "Sum of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (Incl. Deleted Excused No Show)"
+    label: "# Extra Scheduled Hours (EC, NS+. WFS, Refilled Shifts) (with Deleted Excused No Show)"
+    description: "Sum of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3432,11 +3423,11 @@ view: staffing {
 
   measure: pct_extra_scheduled_hours_by_position {
     type: number
-    label: "% Extra Scheduled Hours (EC, NS+, WFS, Refilled Shifts) (Incl. Deleted Excused No Show)"
-    description: "Share of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (Incl. Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
+    label: "% Extra Scheduled Hours (EC, NS+, WFS, Refilled Shifts) (with Deleted Excused No Show)"
+    description: "Share of Assigned and Unassigned (Open) EC, NS+, WFS and Refilled shift hours (with Deleted Excused No Show) over all Assigned and Unassigned (Open) shift hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${number_of_scheduled_hours_by_position_extra}/${number_of_scheduled_hours_by_position} ;;
+    sql: ${number_of_scheduled_hours_by_position_extra}/nullif(${number_of_scheduled_hours_by_position},0) ;;
   }
 
   measure: number_of_worked_hours_by_position_extra {
@@ -3473,7 +3464,7 @@ view: staffing {
     description: "Share of Worked Hours from shifts with project code NS+. WFS, EC and Refilled shifts over all Worked hours"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
-    sql: ${number_of_worked_hours_by_position_extra}/${number_of_worked_hours_by_position} ;;
+    sql: ${number_of_worked_hours_by_position_extra}/nullif(${number_of_worked_hours_by_position},0) ;;
 
   }
 
@@ -3496,8 +3487,8 @@ view: staffing {
 
   dimension: number_of_scheduled_hours_by_position_dimension {
     type: number
-    label: "# Scheduled Hours (Incl. Deleted Excused No Show) - Dimension"
-    description: "Sum of Assigned and Unassigned Shift Hours (Incl. Deleted Excused No Show)"
+    label: "# Scheduled Hours (with Deleted Excused No Show) - Dimension"
+    description: "Sum of Assigned and Unassigned Shift Hours (with Deleted Excused No Show)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3563,7 +3554,7 @@ view: staffing {
   measure: number_of_no_show_hours_by_position {
     type: number
     label: "# No Show Hours (without Refilled Hours & EC Shift)"
-    description: "Sum of shift hours (Excl. Refilled Hours & EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    description: "Sum of shift hours (without Refilled Hours & EC Shifts) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3580,7 +3571,7 @@ view: staffing {
   measure: number_of_no_show_hours_by_position_ec_shift {
     type: number
     label: "# EC No Show Hours"
-    description: "Sum of EC Shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    description: "Sum of EC Shift hours when an employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3594,7 +3585,7 @@ view: staffing {
   measure: number_of_no_show_hours_by_position_incl_ec_shift {
     type: number
     label: "# No Show Hours (with EC Shift & without Refilled Hours)"
-    description: "Sum of hours (Incl. EC Shifts & Excl. Refilled Hours) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
+    description: "Sum of hours (with EC Shifts & without Refilled Hours) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them. includes (Excused No show Hours, Unexcused No show Hours, Excused Deleted No show Hours)"
     value_format_name: decimal_1
     group_label: "> Dynamic Measures"
     sql:
@@ -3625,7 +3616,7 @@ view: staffing {
   measure: pct_no_show_hours_by_position {
     type: number
     label: "% No Show Hours (without EC Shift & Refilled Hours)"
-    description: "% shift hours (Excl. EC Shift) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    description: "% shift hours (without EC Shift) when an employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them.
     It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # No Show Hours / (# Planned Hours - # Planned EC Hours + # Open NS+ Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -3643,7 +3634,7 @@ view: staffing {
   measure: pct_no_show_hours_by_position_ec_shifts {
     type: number
     label: "% EC No Show Hours"
-    description: "% shift hours when an EC employee has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    description: "% shift hours when an EC employee has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them.
     It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: # EC No Show Hours / # Planned EC Hours"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -3658,7 +3649,7 @@ view: staffing {
   measure: pct_no_show_hours_by_position_incl_ec_shifts {
     type: number
     label: "% No Show Hours (without Refilled Hours & with EC Shift)"
-    description: "% shift hours when an employee (Incl. EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shift hours when deletion date is on or after shift date.
+    description: "% shift hours when an employee (with EC Shifts) has a scheduled shift but does not show up to it without leave reason including deleted shifts only if there are approved or applied absences on top of them.
     It includes Excused No Show Hours, Unexcused No Show Hours, Excused Deleted No Show Hours. Formula: (# No Show Hours + # EC No Show Hours) / (# Planned Hours + # Open NS+ Hours)"
     value_format_name: percent_1
     group_label: "> Dynamic Measures"
@@ -3708,7 +3699,7 @@ view: staffing {
     description: "Share of Overpunched hours over Punched hours."
     value_format_name: percent_2
     group_label: "> Dynamic Measures"
-    sql: ${number_of_overpunched_hours_by_position}/${number_of_worked_hours_by_position} ;;
+    sql: ${number_of_overpunched_hours_by_position}/nullif(${number_of_worked_hours_by_position},0) ;;
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
