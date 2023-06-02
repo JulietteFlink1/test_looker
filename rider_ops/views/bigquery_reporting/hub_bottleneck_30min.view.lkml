@@ -1,4 +1,6 @@
-# The name of this view in Looker is "Hub Bottlenecks 30 Mins"
+# Author: Justine Grammatikas
+# Created on: 2023-06-01
+
 view: hub_bottleneck_30min {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
