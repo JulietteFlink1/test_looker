@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders`
+  sql_table_name: `flink-data-dev.dbt_jdavies_curated.orders`
     ;;
 
   view_label: "* Orders *"
@@ -844,6 +844,22 @@ view: orders {
     description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
     type: yesno
     sql: ${TABLE}.is_customers_first_order_month ;;
+  }
+
+  dimension: customer_first_order_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Customer First Order Date"
+    description: "First order date of a customer (based on customer_uuid)."
+    type: date
+    sql: ${TABLE}.customer_first_order_date ;;
+  }
+
+  dimension: customer_monthly_activity_status {
+    group_label: "* Order Dimensions *"
+    label: "Customer Monthly Activity Status"
+    description: "Status per month per customer. Each customer can be either retained (Order M-1), Reactivated (Order > M-1) or New."
+    type: string
+    sql: ${TABLE}.customer_monthly_activity_status ;;
   }
 
   dimension: is_rider_tip {
@@ -3340,6 +3356,42 @@ view: orders {
     type: count
     value_format: "0"
     filters: [is_customers_first_order_30_days: "no"]
+  }
+
+  measure: cnt_unique_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "Unique Retained Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Retained"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "Cumulative Monthly Retained Customers"
+    description: "Cumulative distinct count of customers with 'Retained' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_retained_customers} ;;
+  }
+
+  measure: cnt_unique_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "Unique Reactivated Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Reactivated"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "Cumulative Monthly Reactivated Customers"
+    description: "Cumulative distinct count of customers with 'Reactivated' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_reactivated_customers} ;;
   }
 
   measure: cnt_orders_with_delivery_eta_available {
