@@ -1,4 +1,4 @@
-# Owner: Galina Larina
+# Owner: Galina Larina, Patricia Mitterova
 # Created: 2023-03-01
 
 # This view contains classification of each order based on a set of rules. It is used to understand what jobs customers are using Flink for.
@@ -39,6 +39,86 @@ view: user_attributes_order_classification {
     label: "Order Classification - Job to be Done"
     description: "Order classification based upon customer use cases of Flink (Breakfast, Part time, etc.). Currently, classification is based on a set of rules"
     sql: ${TABLE}.order_classification ;;
+  }
+
+  dimension: is_jtbd_breakfast_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Breakfast Order"
+    description: "TRUE if an order was classified as breakfast (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_breakfast_order ;;
+  }
+
+  dimension: is_jtbd_lunch_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Lunch Order"
+    description: "TRUE if an order was classified as lunch (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_lunch_order ;;
+  }
+
+  dimension: is_jtbd_party_time_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Party Order"
+    description: "TRUE if an order was classified as party (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_party_time_order ;;
+  }
+
+  dimension: is_jtbd_late_night_snack_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Late Night Snack Order"
+    description: "TRUE if an order was classified as laste night snack (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_late_night_snack_order ;;
+  }
+
+  dimension: is_jtbd_non_food_household_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Non-Food Household Order"
+    description: "TRUE if an order was classified as non-food household (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_non_food_household_order ;;
+  }
+
+  dimension: is_jtbd_food_household_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Food Household Order"
+    description: "TRUE if an order was classified as food household (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_food_household_order ;;
+  }
+
+  dimension: is_jtbd_emergency_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Emergency Order"
+    description: "TRUE if an order was classified as emergency (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_emergency_order ;;
+  }
+
+  dimension: is_jtbd_vegetarian_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Vegetarian Order"
+    description: "TRUE if an order was classified as vegetarian (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_vegetarian_order ;;
+  }
+
+  dimension: is_jtbd_baby_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Baby Order"
+    description: "TRUE if an order was classified as baby (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_baby_order ;;
+  }
+
+  dimension: is_jtbd_pet_order {
+    group_label: "* Order Dimensions *"
+    label: "Is JTBD Pet Order"
+    description: "TRUE if an order was classified as pet (based on JobsToBeDone framework)."
+    type: yesno
+    sql: ${TABLE}.is_pet_order ;;
   }
 
  # ======= Dates / Timestamps ======= #
