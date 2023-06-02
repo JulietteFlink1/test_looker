@@ -213,6 +213,7 @@ view: hub_uph_30min {
   }
 
   dimension: quinyx_badge_number {
+    required_access_grants: [can_access_pii_hub_employees]
     description: "Unique employee identifier in Quinyx."
     hidden: yes
     type: string

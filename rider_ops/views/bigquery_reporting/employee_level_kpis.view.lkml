@@ -40,6 +40,7 @@ view: employee_level_kpis {
   }
 
   dimension: rider_id {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "> IDs"
     type: string
     label: "Rider ID (old ID)"
@@ -47,6 +48,7 @@ view: employee_level_kpis {
   }
 
   dimension: auth0_id {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "> IDs"
     type: string
     label: "Rider ID (auth0_id)"
@@ -54,6 +56,7 @@ view: employee_level_kpis {
   }
 
   dimension: employment_id {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "> IDs"
     type: string
     label: "Employee ID"
@@ -79,6 +82,7 @@ view: employee_level_kpis {
   }
 
   dimension: staff_number {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "> IDs"
     type:  number
     label: "Staff Number"
@@ -96,6 +100,7 @@ view: employee_level_kpis {
   }
 
   dimension: ats_id {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "> IDs"
     type: string
     label: "ATS ID"
