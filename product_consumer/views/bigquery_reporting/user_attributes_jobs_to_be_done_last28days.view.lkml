@@ -61,11 +61,6 @@ view: user_attributes_jobs_to_be_done_last28days {
     hidden:  yes
     sql: ${TABLE}.days_since_last_lunch_order ;;
   }
-  dimension: days_since_last_local_order {
-    type: number
-    hidden:  yes
-    sql: ${TABLE}.days_since_last_local_order ;;
-  }
 
   dimension: number_of_breakfast_orders {
     type: number
@@ -100,13 +95,6 @@ view: user_attributes_jobs_to_be_done_last28days {
     label: "Number of Lunch Orders"
     group_label: "User Activity"
     sql: ${TABLE}.number_of_lunch_orders ;;
-  }
-
-  dimension: number_of_local_orders {
-    type: number
-    label: "Number of Local Orders"
-    group_label: "User Activity"
-    sql: ${TABLE}.number_of_local_orders ;;
   }
 
   dimension: number_of_orders {
@@ -195,14 +183,6 @@ view: user_attributes_jobs_to_be_done_last28days {
       ELSE FALSE END ;;
   }
 
-  dimension: has_local_orders {
-    type: yesno
-    label: "Has Local Orders"
-    group_label: "User Activity"
-    description: "Yes if the user has local  orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_local_orders > 0 THEN TRUE
-      ELSE FALSE END ;;
-  }
 
 ### Measures
 
@@ -271,21 +251,13 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${number_of_lunch_orders};;
   }
 
-  measure: local_orders {
-    group_label: "Counts (#)"
-    label: "# Local Orders"
-    type: sum
-    description: "Number of local orders (orders where SKUs are available only in one city)"
-    sql: ${number_of_local_orders};;
-  }
-
   measure: unclassified_orders {
     group_label: "Counts (#)"
     label: "# Unclassified Orders"
     type: number
     description: "Number of household orders"
     sql: ${total_orders} - ${breakfast_orders} - ${party_orders} - ${emergency_orders} - ${late_night_snack_orders}
-      - ${household_orders} - ${lunch_orders} - ${local_orders};;
+      - ${household_orders} - ${lunch_orders};;
   }
 
   measure: breakfast_order_rate {
@@ -340,15 +312,6 @@ view: user_attributes_jobs_to_be_done_last28days {
     description: "Number of lunch orders, over total orders"
     value_format_name: percent_1
     sql: ${lunch_orders} / nullif(${total_orders},0);;
-  }
-
-  measure: local_rate {
-    group_label: "Shares (%)"
-    label: "Local Order Rate"
-    type: number
-    description: "Number of local orders, over total orders"
-    value_format_name: percent_1
-    sql: ${local_orders} / nullif(${total_orders},0);;
   }
 
   measure: unclassified_rate {

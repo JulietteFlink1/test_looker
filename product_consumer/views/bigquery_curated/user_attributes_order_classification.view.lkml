@@ -26,13 +26,6 @@ view: user_attributes_order_classification {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: is_local_order {
-    type: yesno
-    hidden: yes
-    description: "If an order contans items that is available only in that one city. Local orders have been defined only for DE and AT market"
-    sql: ${TABLE}.is_local_order ;;
-  }
-
   dimension: order_classification {
     type: string
     group_label: "* Order Dimensions *"
