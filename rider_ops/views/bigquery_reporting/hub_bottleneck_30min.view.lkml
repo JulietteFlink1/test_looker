@@ -2,16 +2,8 @@
 # Created on: 2023-06-01
 
 view: hub_bottleneck_30min {
-  # The sql_table_name parameter indicates the underlying database table
-  # to be used for all fields in this view.
-  sql_table_name: `flink-data-dev.dbt_jgrammatikas_curated.hub_bottleneck_30min`
+  sql_table_name: `flink-data-prod.curated.hub_bottleneck_30min`
     ;;
-  # No primary key is defined for this view. In order to join this view in an Explore,
-  # define primary_key: yes on a dimension that has no repeated values.
-
-  # Here's what a typical dimension looks like in LookML.
-  # A dimension is a groupable field that can be used to filter query results.
-  # This dimension will be called "Country Iso" in Explore.
 
   dimension: country_iso {
     hidden: yes
@@ -19,9 +11,6 @@ view: hub_bottleneck_30min {
     description: "Country ISO based on 'hub_code'."
     sql: ${TABLE}.country_iso ;;
   }
-
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
 
   dimension_group: end_timestamp {
     type: time
@@ -72,38 +61,6 @@ view: hub_bottleneck_30min {
     sql: ${TABLE}.event_working_date ;;
   }
 
-  dimension: hub_code {
-    hidden: yes
-    type: string
-    description: "Code of a hub identical to back-end source tables."
-    sql: ${TABLE}.hub_code ;;
-  }
-
-  dimension: number_of_ordering_bottleneck_minutes {
-    hidden: yes
-    type: number
-    description: "Number of minutes spent with order bottleneck. It means there were not enough orders for the given number of minutes."
-    sql: ${TABLE}.number_of_ordering_bottleneck_minutes ;;
-  }
-
-  # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
-  # measures for this dimension, but you can also add measures of many different aggregates.
-  # Click on the type parameter to see all the options in the Quick Help panel on the right.
-
-  dimension: number_of_picking_bottleneck_minutes {
-    type: number
-    hidden: yes
-    description: "Number of minutes spent with ops associate bottleneck. It means there were not enough ops associates for the given number of minutes."
-    sql: ${TABLE}.number_of_picking_bottleneck_minutes ;;
-  }
-
-  dimension: number_of_riding_bottleneck_minutes {
-    type: number
-    hidden: yes
-    description: "Number of minutes spent with rider bottleneck. It means there were not enough riders for the given number of minutes."
-    sql: ${TABLE}.number_of_riding_bottleneck_minutes ;;
-  }
-
   dimension_group: start_timestamp {
     hidden: yes
     type: time
@@ -119,6 +76,34 @@ view: hub_bottleneck_30min {
       year
     ]
     sql: ${TABLE}.start_timestamp ;;
+  }
+
+  dimension: hub_code {
+    hidden: yes
+    type: string
+    description: "Code of a hub identical to back-end source tables."
+    sql: ${TABLE}.hub_code ;;
+  }
+
+  dimension: number_of_ordering_bottleneck_minutes {
+    hidden: yes
+    type: number
+    description: "Number of minutes spent with order bottleneck. It means there were not enough orders for the given number of minutes."
+    sql: ${TABLE}.number_of_ordering_bottleneck_minutes ;;
+  }
+
+  dimension: number_of_picking_bottleneck_minutes {
+    type: number
+    hidden: yes
+    description: "Number of minutes spent with ops associate bottleneck. It means there were not enough ops associates for the given number of minutes."
+    sql: ${TABLE}.number_of_picking_bottleneck_minutes ;;
+  }
+
+  dimension: number_of_riding_bottleneck_minutes {
+    type: number
+    hidden: yes
+    description: "Number of minutes spent with rider bottleneck. It means there were not enough riders for the given number of minutes."
+    sql: ${TABLE}.number_of_riding_bottleneck_minutes ;;
   }
 
   dimension: table_uuid {
