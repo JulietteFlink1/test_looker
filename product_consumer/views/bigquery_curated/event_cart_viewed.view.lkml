@@ -31,6 +31,7 @@ view: event_cart_viewed {
   }
 
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     type: string
     hidden: yes
     sql: ${TABLE}.device_id ;;
