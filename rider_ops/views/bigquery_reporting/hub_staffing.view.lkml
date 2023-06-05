@@ -509,9 +509,9 @@ view: hub_staffing {
   }
 
   measure: pct_assigned_hours{
-    label:"% Assigned Hours"
+    label:"% Filled (Assigned) Hours"
     type: number
-    description: "Assigned Hours / (Assigned Hours + Open Hours) Excl. hours from shifts with project code = 'Refilled shift'"
+    description: "Filled (Assigned) Hours / (Filled Hours + Open Hours) Excl. hours from shifts with project code = 'Refilled shift'"
     sql:(${sum_planned_hours})/nullif(${sum_planned_hours} + ${number_of_unassigned_hours},0) ;;
     value_format_name: percent_1
   }
