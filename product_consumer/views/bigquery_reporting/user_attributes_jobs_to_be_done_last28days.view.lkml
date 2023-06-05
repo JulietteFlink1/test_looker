@@ -183,7 +183,6 @@ view: user_attributes_jobs_to_be_done_last28days {
       ELSE FALSE END ;;
   }
 
-
 ### Measures
 
   measure: users {

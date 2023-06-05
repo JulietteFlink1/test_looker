@@ -8,6 +8,24 @@ view: user_attributes_order_classification {
   view_label: "JTBD Order Classification"
 
 
+# ====================      Sets      ====================
+
+
+  set: order_classifications {
+    fields: [
+      is_jtbd_breakfast_order,
+      is_jtbd_lunch_order,
+      is_jtbd_party_time_order,
+      is_jtbd_late_night_snack_order,
+      is_jtbd_non_food_household_order,
+      is_jtbd_food_household_order,
+      is_jtbd_emergency_order,
+      is_jtbd_vegetarian_order,
+      is_jtbd_baby_order,
+      is_jtbd_pet_order
+    ]
+  }
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~     Dimensions    ~~~~~~~~~~~~~~~ #
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
