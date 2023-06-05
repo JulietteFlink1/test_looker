@@ -63,6 +63,7 @@ view: event_address_confirmed {
     sql: ${TABLE}.anonymous_id ;;
   }
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     group_label: "IDs"
     label: "Device ID"
     description: "ID of an device"
@@ -197,6 +198,7 @@ view: event_address_confirmed {
   # ======= Event Dimensions =======#
 
   dimension: delivery_lat {
+    required_access_grants: [can_access_pii_customers]
     group_label: "Event Dimensions"
     description: "Latitude of selected delivery location"
     type: number
@@ -204,6 +206,7 @@ view: event_address_confirmed {
   }
 
   dimension: delivery_lng {
+    required_access_grants: [can_access_pii_customers]
     group_label: "Event Dimensions"
     description: "Longitude of selected delivery location"
     type: number
