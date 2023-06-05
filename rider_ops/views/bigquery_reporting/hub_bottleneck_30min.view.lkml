@@ -175,7 +175,7 @@ view: hub_bottleneck_30min {
     label: "% Ordering Bottleneck"
     type: number
     description: "Share of total minutes spent with order bottleneck"
-    sql: ${sum_number_of_ordering_bottleneck_minutes} / (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes}) ;;
+    sql: safe_divide(${sum_number_of_ordering_bottleneck_minutes}, (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes})) ;;
     value_format_name: percent_1
   }
 
@@ -183,7 +183,7 @@ view: hub_bottleneck_30min {
     label: "% Picking Bottleneck"
     type: number
     description: "Share of total minutes spent with picking bottleneck"
-    sql: ${sum_number_of_picking_bottleneck_minutes} / (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes}) ;;
+    sql: safe_divide(${sum_number_of_picking_bottleneck_minutes}, (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes})) ;;
     value_format_name: percent_1
   }
 
@@ -191,7 +191,7 @@ view: hub_bottleneck_30min {
     label: "% Riding Bottleneck"
     type: number
     description: "Share of total minutes spent with riding bottleneck"
-    sql: ${sum_number_of_riding_bottleneck_minutes} / (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes}) ;;
+    sql: safe_divide(${sum_number_of_riding_bottleneck_minutes}, (${sum_number_of_ordering_bottleneck_minutes} + ${sum_number_of_riding_bottleneck_minutes} + ${sum_number_of_picking_bottleneck_minutes})) ;;
     value_format_name: percent_1
   }
 
