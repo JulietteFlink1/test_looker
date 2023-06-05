@@ -209,6 +209,7 @@ view: daily_user_aggregates {
     sql: ${TABLE}.country_iso ;;
   }
   dimension: delivery_lat {
+    required_access_grants: [can_access_pii_customers]
     group_label: "Location Dimensions"
     label: "Delivery Latitude"
     description: "Latitude of the delivery address"
@@ -217,6 +218,7 @@ view: daily_user_aggregates {
     sql: ${TABLE}.delivery_lat ;;
   }
   dimension: delivery_lng {
+    required_access_grants: [can_access_pii_customers]
     group_label: "Location Dimensions"
     label: "Delivery Longitude"
     description: "Longitude of the delivery address"

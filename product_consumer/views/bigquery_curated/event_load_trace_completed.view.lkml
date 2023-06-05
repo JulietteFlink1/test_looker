@@ -36,6 +36,7 @@ view: event_load_trace_completed {
   }
 
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     type: string
     description: "Unique ID for each device."
     sql: ${TABLE}.device_id ;;
