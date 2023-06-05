@@ -851,6 +851,7 @@ view: orders {
     label: "Customer First Order Date"
     description: "First order date of a customer (based on customer_uuid)."
     type: date
+    datatype: date
     sql: ${TABLE}.customer_first_order_date ;;
   }
 
@@ -3360,7 +3361,7 @@ view: orders {
 
   measure: cnt_unique_retained_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "Unique Retained Customers"
+    label: "# Monthly Retained Customers"
     hidden:  yes
     type: count_distinct
     sql: ${customer_uuid} ;;
@@ -3369,7 +3370,7 @@ view: orders {
 
   measure: running_total_cnt_unique_customers_monthly_retained_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "Cumulative Monthly Retained Customers"
+    label: "# Cumulative Monthly Retained Customers"
     description: "Cumulative distinct count of customers with 'Retained' status over a given month"
     hidden:  no
     type: running_total
@@ -3378,7 +3379,7 @@ view: orders {
 
   measure: cnt_unique_reactivated_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "Unique Reactivated Customers"
+    label: "# Monthly Reactivated Customers"
     hidden:  yes
     type: count_distinct
     sql: ${customer_uuid} ;;
@@ -3387,7 +3388,7 @@ view: orders {
 
   measure: running_total_cnt_unique_customers_monthly_reactivated_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "Cumulative Monthly Reactivated Customers"
+    label: "# Cumulative Monthly Reactivated Customers"
     description: "Cumulative distinct count of customers with 'Reactivated' status over a given month"
     hidden:  no
     type: running_total
