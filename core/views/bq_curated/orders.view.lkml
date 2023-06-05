@@ -831,6 +831,7 @@ view: orders {
   }
 
   dimension: is_customers_first_order_28_days {
+    alias: [is_customers_first_order_30_days]
     group_label: "* Order Dimensions *"
     label: "Is Order within 28 days after Customer First Order"
     description: "TRUE if the order falls within 28 days of the customer's first order (based on unique customer UUID)."
