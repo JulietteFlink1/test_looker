@@ -43,7 +43,6 @@ view: event_order_tracking_viewed {
   }
 
   dimension: delivery_pdt {
-    required_access_grants: [can_access_pii_customers]
     type: number
     description: "PDT (promised delivery time) - time estimation (in minutes) when users can expect their order to be delivered."
     sql: ${TABLE}.delivery_pdt ;;
