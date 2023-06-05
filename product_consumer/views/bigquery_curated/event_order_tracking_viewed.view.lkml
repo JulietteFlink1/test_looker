@@ -27,6 +27,7 @@ view: event_order_tracking_viewed {
   }
 
   dimension: delivery_lat {
+    required_access_grants: [can_access_pii_customers]
     type: number
     hidden: yes
     description: "Latitude of the address selected by the customer."
@@ -34,6 +35,7 @@ view: event_order_tracking_viewed {
   }
 
   dimension: delivery_lng {
+    required_access_grants: [can_access_pii_customers]
     type: number
     hidden: yes
     description: "Longitude of the address selected by the customer."
@@ -47,6 +49,7 @@ view: event_order_tracking_viewed {
   }
 
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     type: string
     description: "Unique ID for each device."
     sql: ${TABLE}.device_id ;;
