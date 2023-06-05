@@ -2507,22 +2507,12 @@ view: staffing {
 
   measure: number_of_no_show_hours_refilled_shift_ops_associate {
     group_label: "> Ops Associate Measures"
-    label: "# Refilled No Show Ops Associate Minutes"
+    label: "# Refilled No Show Ops Associate Hours"
+    description: "# No Show Ops Associate Hours from shifts with project code = 'Refilled shift'"
     type: sum
-    hidden: yes
     sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_ops_associate/60;;
     value_format_name: decimal_1
   }
-
-  measure: number_of_no_show_hours_ops_associate_refilled_shift {
-    group_label: "> Ops Associate Measures"
-    label: "# Refilled No Show Ops Associate Hours"
-    description: "# No Show Ops Associate Hours from shifts with project code = 'Refilled shift'"
-    type: number
-    sql: ${number_of_no_show_hours_refilled_shift_ops_associate};;
-    value_format_name: decimal_1
-  }
-
 
   measure: number_of_no_show_hours_shift_lead {
     group_label: "> Shift Lead Measures"
