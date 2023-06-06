@@ -830,12 +830,13 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
-  dimension: is_customers_first_order_30_days {
+  dimension: is_customers_first_order_28_days {
+    alias: [is_customers_first_order_30_days]
     group_label: "* Order Dimensions *"
-    label: "Is Order within 30 days after Customer First Order"
-    description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
+    label: "Is Order within 28 days after Customer First Order"
+    description: "TRUE if the order falls within 28 days of the customer's first order (based on unique customer UUID)."
     type: yesno
-    sql: ${TABLE}.is_customers_first_order_30_days ;;
+    sql: ${TABLE}.is_customers_first_order_28_days ;;
   }
 
   dimension: is_customers_first_order_month {
@@ -3339,24 +3340,24 @@ view: orders {
     filters: [is_customers_first_order_month: "no"]
   }
 
-  measure: cnt_unique_orders_first_30_day_customers {
+  measure: cnt_unique_orders_first_28_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders within 30d since first Order"
-    description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
+    label: "# Orders within 28d since first Order"
+    description: "Count of successful Orders placed by customers in the first 28 days after they first ordered"
     hidden:  no
     type: count
     value_format: "0"
-    filters: [is_customers_first_order_30_days: "yes"]
+    filters: [is_customers_first_order_28_days: "yes"]
   }
 
-  measure: cnt_unique_orders_non_first_30_day_customers {
+  measure: cnt_unique_orders_non_first_28_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders after 30d since first Order"
-    description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
+    label: "# Orders after 28d since first Order"
+    description: "Count of successful Orders placed by customers NOT in the first 28 days after they first ordered"
     hidden:  no
     type: count
     value_format: "0"
-    filters: [is_customers_first_order_30_days: "no"]
+    filters: [is_customers_first_order_28_days: "no"]
   }
 
   measure: cnt_unique_retained_customers {
