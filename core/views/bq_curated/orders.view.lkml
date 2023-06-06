@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: `flink-data-dev.dbt_jdavies_curated.orders`
+  sql_table_name: `flink-data-prod.curated.orders`
     ;;
 
   view_label: "* Orders *"
