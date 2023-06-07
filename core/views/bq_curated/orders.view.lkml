@@ -477,15 +477,15 @@ view: orders {
 
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "# Delay (min)"
+    label: "# Delayed (min)"
     description: "# Delayed minutes from promised delivery time (as shown to customer)"
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries{
+  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries {
     group_label: "* Operations / Logistics *"
-    label: "# Delay (min) (with + 15% PDT tolerance)"
+    label: "# Delayed (min) (with + 15% PDT tolerance)"
     description: "# Delayed minutes from promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. '+ 15%' implies that we look at *delayed* deliveries, not the ones that were delivered *earlier* than promised."
     type: number
     sql:timestamp_diff(
@@ -497,7 +497,7 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries{
+  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries {
     group_label: "* Operations / Logistics *"
     label: "# Delayed (min) (with +/- 15% PDT tolerance)"
     description: "# Delayed (min) from promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
@@ -3835,8 +3835,8 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered late >5min (with + 15% PDT tolerance)"
-    description: "Count of orders delivered >5min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
+    label: "# Orders delivered late >5min"
+    description: "Count of Orders delivered >5min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=5"]
@@ -3845,8 +3845,8 @@ view: orders {
 
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >10min (with + 15% PDT tolerance)"
-    description: "Count of orders delivered >10min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
+    label: "# Orders delivered late >10min"
+    description: "Count of Orders delivered >10min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=10"]
@@ -3855,8 +3855,8 @@ view: orders {
 
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >15min (with + 15% PDT tolerance)"
-    description: "Count of orders delivered >15min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
+    label: "# Orders delivered late >15min"
+    description: "Count of Orders delivered >15min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=15"]
@@ -3869,7 +3869,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered no later than internal time estimate"
     hidden:  yes
     type: count
@@ -3881,7 +3881,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered no later than internal time estimate"
     hidden:  yes
     type: count
@@ -3893,7 +3893,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered >5min later than internal time estimate"
     hidden:  yes
     type: count
@@ -3905,7 +3905,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered >10min later than internal time estimate"
     hidden:  yes
     type: count
@@ -4181,7 +4181,7 @@ view: orders {
     value_format: "0.0%"
   }
 
-  measure: pct_delivery_in_time{
+  measure: pct_delivery_in_time {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with + 15% PDT tolerance)"
     description: "Share of orders delivered no later than PDT + 15% tolerance buffer"
@@ -4191,7 +4191,7 @@ view: orders {
     value_format: "0%"
   }
 
-  measure: pct_delivery_in_time_with_tolerance_buffer{
+  measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
     description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
