@@ -4139,7 +4139,7 @@ view: orders {
 
   measure: pct_delivery_in_time_with_tolerance_buffer{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (with +/- 15% PDT tolerance)"
+    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
     description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
     hidden:  no
     type: number
