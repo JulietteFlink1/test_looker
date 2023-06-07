@@ -477,16 +477,16 @@ view: orders {
 
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min)"
-    description: "Delta to promised delivery time (as shown to customer)"
+    label: "# Delay (min)"
+    description: "# Delayed minutes from promised delivery time (as shown to customer)"
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries{
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min) (with + 15% PDT tolerance)"
-    description: "Delta to promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. "+15%" implies that we look at *delayed* deliveries, not the ones that were delivered *earlier* than promised."
+    label: "# Delay (min) (with + 15% PDT tolerance)"
+    description: "# Delayed minutes from promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. '+ 15%' implies that we look at *delayed* deliveries, not the ones that were delivered *earlier* than promised."
     type: number
     sql:timestamp_diff(
           ${delivery_timestamp_raw},
@@ -499,8 +499,8 @@ view: orders {
 
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries{
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min) (with +/- 15% PDT tolerance)"
-    description: "Delta to promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
+    label: "# Delayed (min) (with +/- 15% PDT tolerance)"
+    description: "# Delayed (min) from promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
     type: number
     sql:case
           when
@@ -3835,7 +3835,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered late >5min (with + 15% DPT tolerance)"
+    label: "# Orders delivered late >5min (with + 15% PDT tolerance)"
     description: "Count of orders delivered >5min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
@@ -3845,7 +3845,7 @@ view: orders {
 
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >10min (with + 15% DPT tolerance)"
+    label: "# Orders delivered late >10min (with + 15% PDT tolerance)"
     description: "Count of orders delivered >10min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
@@ -3855,7 +3855,7 @@ view: orders {
 
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
-    label: "# Orders delivered late >15min (with + 15% DPT tolerance)"
+    label: "# Orders delivered late >15min (with + 15% PDT tolerance)"
     description: "Count of orders delivered >15min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
@@ -4183,7 +4183,7 @@ view: orders {
 
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered on time (with + 15% DPT tolerance)"
+    label: "% Orders delivered on time (with + 15% PDT tolerance)"
     description: "Share of orders delivered no later than PDT + 15% tolerance buffer"
     hidden:  no
     type: number
