@@ -382,39 +382,39 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Filled Hours (Incl. Deleted Excused No Show)"
-    description: "Number of Scheduled(Assigned) Hours (including deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    label: "# Filled (Assigned) Hours"
+    description: "# Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_excluding_deleted_shifts{
     type: number
-    label:"# Filled Hours (excl. Deleted Excused No Show)"
-    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    label:"# Filled Hours without Deleted Excused No Show"
+    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and absence) Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${sum_planned_hours} - ${number_of_deleted_excused_no_show_minutes};;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external{
     type: sum
-    label: "# Filled External Hours"
-    description: "Number of Scheduled External Hours"
+    label: "# Filled (Assigned) External Hours"
+    description: "# Filled External Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external_partnership{
     type: sum
-    label: "# Filled External Partnership Hours"
-    description: "Number of Scheduled External Partnership Hours"
+    label: "# Filled External Partnership Hours without Refilled Hours"
+    description: "Number of Scheduled External Partnership Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
     value_format_name: decimal_1
   }
 
   measure: pct_assigned_hours_external_partnership {
-    label: "% Filled External Partnership Hours"
-    description: "Share of External Partnership Hours from total Filled Hours"
+    label: "% Filled External Partnership Hours without Refilled Hours"
+    description: "Share of External Partnership Hours from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${sum_planned_hours_external_partnership}/${sum_planned_hours};;
     value_format_name: percent_1
@@ -422,15 +422,15 @@ view: hub_staffing {
 
   measure: sum_planned_hours_external_one_time{
     type: sum
-    label: "# Filled External One-time Hours"
-    description: "Number of Scheduled External One-time Hours"
+    label: "# Filled External One-time Hours without Refilled Hours"
+    description: "Number of Scheduled External One-time Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
     value_format_name: decimal_1
   }
 
   measure: pct_assigned_hours_external_one_time {
-    label: "% Filled External One-time Hours"
-    description: "Share of External One-time Hours from total Filled Hours"
+    label: "% Filled External One-time Hours without Refilled Hours"
+    description: "Share of External One-time Hours from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${sum_planned_hours_external_one_time}/${sum_planned_hours};;
     value_format_name: percent_1
@@ -486,7 +486,7 @@ view: hub_staffing {
 
   measure: number_of_scheduled_hours {
     label: "# Scheduled Hours"
-    description: "# Scheduled Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# Scheduled Hours (Post-Adjustments) (Assigned + Open) Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours}+${sum_planned_hours};;
     value_format_name: decimal_1
@@ -494,7 +494,7 @@ view: hub_staffing {
 
   measure: number_of_scheduled_hours_external {
     label: "# Scheduled External Hours"
-    description: "# Scheduled External Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# Scheduled External Hours (Post-Adjustments) (Assigned + Open) Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_external}+${sum_planned_hours_external};;
     value_format_name: decimal_1
@@ -509,9 +509,9 @@ view: hub_staffing {
   }
 
   measure: pct_assigned_hours{
-    label:"% Assigned Hours"
+    label:"% Filled (Assigned) Hours"
     type: number
-    description: "Assigned Hours / (Assigned Hours + Open Hours)"
+    description: "Filled (Assigned) Hours / (Filled Hours + Open Hours) Excl. hours from shifts with project code = 'Refilled shift'"
     sql:(${sum_planned_hours})/nullif(${sum_planned_hours} + ${number_of_unassigned_hours},0) ;;
     value_format_name: percent_1
   }
@@ -528,7 +528,7 @@ view: hub_staffing {
   measure: number_of_unassigned_hours{
     type: sum
     label:"# Open Hours"
-    description: "Number of Unassigned(Open) Hours"
+    description: "Number of Unassigned(Open) Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
     value_format_name: decimal_1
   }
@@ -536,7 +536,7 @@ view: hub_staffing {
   measure: number_of_unassigned_hours_external{
     type: sum
     label: "# Open External Hours"
-    description: "Number of Unassigned(Open) External Hours"
+    description: "Number of Unassigned(Open) External Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
   }
@@ -544,13 +544,13 @@ view: hub_staffing {
   measure: sum_no_show_hours{
     label:"# Actual No Show Hours"
     type: sum
-    description: "Sum of No Show Hours"
+    description: "# Shift hours with missing punch with an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')"
     sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: number_of_excused_no_show_minutes{
-    label:"# Excused No Show Hours (included in No show)"
+    label:"# Excused No Show Hours without Refilled Hours"
     type: sum
     description: "Sum of Excused No Show Hours (shifts with missing punch and absence)"
     sql:${TABLE}.number_of_excused_no_show_minutes/60;;
@@ -558,7 +558,7 @@ view: hub_staffing {
   }
 
   measure: number_of_unexcused_no_show_minutes{
-    label:"# Unexcused No Show Hours (included in No show)"
+    label:"# Unexcused No Show Hours without Refilled Hours"
     type: sum
     description: "Sum of Unexcused No Show Hours (shifts with missing punch and no absence)"
     sql:${TABLE}.number_of_unexcused_no_show_minutes/60;;
@@ -566,25 +566,25 @@ view: hub_staffing {
   }
 
   measure: number_of_deleted_excused_no_show_minutes{
-    label:"# Deleted Excused No Show Hours (included in No show)"
+    label:"# Deleted Excused No Show Hours without Refilled Hours"
     type: sum
-    description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence)"
     sql:${TABLE}.number_of_deleted_excused_no_show_minutes/60;;
     value_format_name: decimal_1
   }
 
   measure: number_of_deleted_unexcused_no_show_minutes{
-    label:"# Deleted Unexcused No Show Hours (not included in No show)"
+    label:"# Deleted Unexcused No Show Hours (not included in No show) without Refilled Hours"
     type: sum
-    description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence)"
     sql:${TABLE}.number_of_deleted_unexcused_no_show_minutes/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_no_show_hours_external{
-    label: "# No Show External Hours"
+    label: "# No Show External Hours without Refilled Hours"
     type: sum
-    description: "Sum of No Show External Hours"
+    description: "# External shift hours with missing punch with an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')"
     sql:${number_of_no_show_minutes_external}/60;;
     value_format_name: decimal_1
   }

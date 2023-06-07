@@ -1799,6 +1799,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# No Show Hours"
+    description: "Shift hours with missing punch including deleted shifts only if there are approved or applied absences on top of them & excluding shifts with project code = 'Refilled shift')"
     sql: ${TABLE}.number_of_no_show_minutes/60 ;;
     value_format_name: decimal_1
   }
