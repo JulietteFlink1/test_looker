@@ -503,7 +503,9 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries {
     group_label: "* Operations / Logistics *"
     label: "# Delayed (min) (with +/- 15% PDT tolerance)"
-    description: "# Delayed (min) from promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
+    description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. 
++/- 15% implies that we tolerate both delayed and earlier deliveries.
+Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
     type: number
     sql:case
           when
