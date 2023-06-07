@@ -3063,7 +3063,8 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
+      ${number_of_unassigned_hours_ns_shift_rider}
           else null
         end ;;
     hidden: yes
