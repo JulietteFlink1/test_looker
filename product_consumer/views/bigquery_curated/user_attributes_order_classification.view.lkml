@@ -75,97 +75,6 @@ view: user_attributes_order_classification {
     sql: ${TABLE}.is_breakfast_order ;;
   }
 
-  measure: nb_jtbd_breakfast_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    label: "# Breakfast Orders"
-    description: "Number of breakfast orders, classified according to JobsToBeDone framework."
-    type: count_distinct
-    sql: case when ${TABLE}.is_breakfast_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_lunch_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of lunch orders, classified according to JobsToBeDone framework."
-    label: "# Lunch Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_lunch_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_party_time_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of party orders, classified according to JobsToBeDone framework."
-    label: "# Party Time Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_party_time_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_late_night_snack_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of late night snack orders, classified according to JobsToBeDone framework."
-    label: "# Late Night Snack Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_late_night_snack_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_food_household_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of food household orders, classified according to JobsToBeDone framework."
-    label: "# Food Household Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_food_household_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_non_food_household_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of non-food household orders, classified according to JobsToBeDone framework."
-    label: "# Non-Food Household Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_non_food_household_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_emergency_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of emergency orders, classified according to JobsToBeDone framework."
-    label: "# Emergency Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_emergency_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_vegetarian_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of vegetarian orders, classified according to JobsToBeDone framework."
-    label: "# Vegetarian Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_vegetariant_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_baby_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of baby orders, classified according to JobsToBeDone framework."
-    label: "# Baby Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_baby_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-  measure: nb_jtbd_pet_orders {
-    group_label: "* Jobs To Be Done Classification *"
-    description: "Number of pet orders, classified according to JobsToBeDone framework."
-    label: "# Pet Orders"
-    type: count_distinct
-    sql: case when ${TABLE}.is_pet_order = true then ${order_uuid} end;;
-    value_format: "0"
-  }
-
-
   dimension: is_jtbd_lunch_order {
     group_label: "* Order Dimensions *"
     label: "Is JTBD Lunch Order"
@@ -262,6 +171,106 @@ view: user_attributes_order_classification {
     description: "Number of placed orders"
     type: count_distinct
     sql: ${TABLE}.order_uuid ;;
+  }
+
+  measure: nb_jtbd_breakfast_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    label: "# Breakfast Orders"
+    description: "Number of breakfast orders, classified according to JobsToBeDone framework."
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_breakfast_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_lunch_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of lunch orders, classified according to JobsToBeDone framework."
+    label: "# Lunch Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_lunch_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_party_time_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of party orders, classified according to JobsToBeDone framework."
+    label: "# Party Time Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_party_time_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_late_night_snack_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of late night snack orders, classified according to JobsToBeDone framework."
+    label: "# Late Night Snack Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_late_night_snack_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_food_household_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of food household orders, classified according to JobsToBeDone framework."
+    label: "# Food Household Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_food_household_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_non_food_household_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of non-food household orders, classified according to JobsToBeDone framework."
+    label: "# Non-Food Household Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_non_food_household_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_emergency_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of emergency orders, classified according to JobsToBeDone framework."
+    label: "# Emergency Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_emergency_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_vegetarian_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of vegetarian orders, classified according to JobsToBeDone framework."
+    label: "# Vegetarian Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_vegetarian_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_baby_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of baby orders, classified according to JobsToBeDone framework."
+    label: "# Baby Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_baby_order: "yes"]
+    value_format: "0"
+  }
+
+  measure: nb_jtbd_pet_orders {
+    group_label: "* Jobs To Be Done Classification *"
+    description: "Number of pet orders, classified according to JobsToBeDone framework."
+    label: "# Pet Orders"
+    type: count_distinct
+    sql: ${order_uuid} ;;
+    filters: [is_jtbd_pet_order: "yes"]
+    value_format: "0"
   }
 
 }
