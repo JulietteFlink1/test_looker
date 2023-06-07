@@ -4197,7 +4197,7 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
   measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
