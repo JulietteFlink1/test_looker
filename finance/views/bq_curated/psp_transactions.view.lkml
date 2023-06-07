@@ -421,6 +421,48 @@ view: psp_transactions {
     sql: ${TABLE}.referral_raw ;;
   }
 
+  dimension: is_network_token_available {
+    group_label: "> Received Payments"
+    type: yesno
+    description: "TRUE if a network token is available for the payment. A network token is a 16-digit Primary Account Number (PAN) alternative that is unique for each card-device-wallet pairing. It is created when the cardholder adds their Adyen-issued card to the digital wallet."
+    sql: ${TABLE}.is_network_token_available ;;
+  }
+
+  dimension: is_network_token_used {
+    group_label: "> Received Payments"
+    type: yesno
+    description: "TRUE if a network token is used for the payment. A network token is a 16-digit Primary Account Number (PAN) alternative that is unique for each card-device-wallet pairing. It is created when the cardholder adds their Adyen-issued card to the digital wallet."
+    sql: ${TABLE}.is_network_token_used ;;
+  }
+
+  dimension: pos_entry_mode {
+    group_label: "> Received Payments"
+    label: "PoS Entry Mode"
+    type: string
+    description: "Point-of-Sale Entry Mode. The means by which the card number (PAN) is propagated to the payment terminal. For example, Keyed, Swiped, NFC."
+    sql: ${TABLE}.pos_entry_mode ;;
+  }
+
+  dimension: pos_store {
+    group_label: "> Received Payments"
+    label: "PoS Store"
+    type: string
+    description: "The store in which the Point-of-Sale transaction happened."
+    sql: ${TABLE}.pos_store ;;
+  }
+
+  dimension_group: pos_transaction {
+    group_label: "> Received Payments"
+    type: time
+    description: "Point-of-Sale transaction date."
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
+    sql: ${TABLE}.pos_transaction_date ;;
+  }
 
 ##################    MEASURES  ###################
 
