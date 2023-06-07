@@ -864,12 +864,13 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
-  dimension: is_customers_first_order_30_days {
+  dimension: is_customers_first_order_28_days {
+    alias: [is_customers_first_order_30_days]
     group_label: "* Order Dimensions *"
-    label: "Is Order within 30 days after Customer First Order"
-    description: "TRUE if the order falls within 30 days of the customer's first order (based on unique customer UUID)."
+    label: "Is Order within 28 days after Customer First Order"
+    description: "TRUE if the order falls within 28 days of the customer's first order (based on unique customer UUID)."
     type: yesno
-    sql: ${TABLE}.is_customers_first_order_30_days ;;
+    sql: ${TABLE}.is_customers_first_order_28_days ;;
   }
 
   dimension: is_customers_first_order_month {
@@ -878,6 +879,23 @@ view: orders {
     description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
     type: yesno
     sql: ${TABLE}.is_customers_first_order_month ;;
+  }
+
+  dimension: customer_first_order_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Customer First Order Date"
+    description: "First order date of a customer (based on customer_uuid)."
+    type: date
+    datatype: date
+    sql: ${TABLE}.customer_first_order_date ;;
+  }
+
+  dimension: customer_monthly_activity_status {
+    group_label: "* Order Dimensions *"
+    label: "Customer Monthly Activity Status"
+    description: "Status per month per customer. Each customer can be either retained (Order M-1), Reactivated (Order > M-1) or New."
+    type: string
+    sql: ${TABLE}.customer_monthly_activity_status ;;
   }
 
   dimension: is_rider_tip {
@@ -3356,24 +3374,60 @@ view: orders {
     filters: [is_customers_first_order_month: "no"]
   }
 
-  measure: cnt_unique_orders_first_30_day_customers {
+  measure: cnt_unique_orders_first_28_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders within 30d since first Order"
-    description: "Count of successful Orders placed by customers in the first 30 days after they first ordered"
+    label: "# Orders within 28d since first Order"
+    description: "Count of successful Orders placed by customers in the first 28 days after they first ordered"
     hidden:  no
     type: count
     value_format: "0"
-    filters: [is_customers_first_order_30_days: "yes"]
+    filters: [is_customers_first_order_28_days: "yes"]
   }
 
-  measure: cnt_unique_orders_non_first_30_day_customers {
+  measure: cnt_unique_orders_non_first_28_day_customers {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "# Orders after 30d since first Order"
-    description: "Count of successful Orders placed by customers NOT in the first 30 days after they first ordered"
+    label: "# Orders after 28d since first Order"
+    description: "Count of successful Orders placed by customers NOT in the first 28 days after they first ordered"
     hidden:  no
     type: count
     value_format: "0"
-    filters: [is_customers_first_order_30_days: "no"]
+    filters: [is_customers_first_order_28_days: "no"]
+  }
+
+  measure: cnt_unique_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Monthly Retained Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Retained"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Cumulative Monthly Retained Customers"
+    description: "Cumulative distinct count of customers with 'Retained' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_retained_customers} ;;
+  }
+
+  measure: cnt_unique_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Monthly Reactivated Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Reactivated"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Cumulative Monthly Reactivated Customers"
+    description: "Cumulative distinct count of customers with 'Reactivated' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_reactivated_customers} ;;
   }
 
   measure: cnt_orders_with_delivery_eta_available {
