@@ -250,6 +250,7 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${number_of_lunch_orders};;
   }
 
+
   measure: unclassified_orders {
     group_label: "Counts (#)"
     label: "# Unclassified Orders"
@@ -312,6 +313,7 @@ view: user_attributes_jobs_to_be_done_last28days {
     value_format_name: percent_1
     sql: ${lunch_orders} / nullif(${total_orders},0);;
   }
+
 
   measure: unclassified_rate {
     group_label: "Shares (%)"
