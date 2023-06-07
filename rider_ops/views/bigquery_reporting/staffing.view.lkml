@@ -1274,10 +1274,10 @@ view: staffing {
     description: "# Punched Rider Hours from shifts with project code NS+. WFS, EC and Refilled shifts"
     type: number
     sql: ${number_of_worked_hours_rider_ns_shift} +
-    ${number_of_worked_hours_rider_ec_shift} +
-    ${number_of_worked_hours_rider_wfs_shift} +
-    ${number_of_worked_hours_rider_refilled_shift}
-    ;;
+          ${number_of_worked_hours_rider_ec_shift} +
+          ${number_of_worked_hours_rider_wfs_shift} +
+          ${number_of_worked_hours_rider_refilled_shift}
+          ;;
     value_format_name: decimal_1
   }
 
@@ -1387,9 +1387,9 @@ view: staffing {
     description: "# Punched Ops Associate Hours from shifts with project code NS+. WFS, EC and Refilled shifts"
     type: number
     sql: ${number_of_worked_hours_ops_associate_ns_shift} +
-    ${number_of_worked_hours_ops_associate_ec_shift} +
-    ${number_of_worked_hours_ops_associate_wfs_shift} +
-    ${number_of_worked_hours_ops_associate_refilled_shift};;
+          ${number_of_worked_hours_ops_associate_ec_shift} +
+          ${number_of_worked_hours_ops_associate_wfs_shift} +
+          ${number_of_worked_hours_ops_associate_refilled_shift};;
     value_format_name: decimal_1
   }
 
@@ -1647,12 +1647,19 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  dimension: number_of_unassigned_hours_ns_shift_rider {
+    label: "# Open NS+ Rider Hours"
+    type: number
+    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_rider/60 ;;
+    hidden: yes
+  }
+
   measure: number_of_unassigned_hours_rider_ns_shift {
     group_label: "> Rider Measures"
     label: "# Open NS+ Rider Hours"
     description: "# Open Rider Hours from shifts with project code = 'NS+ shift'"
     type: sum
-    sql: ${TABLE}.number_of_unassigned_minutes_ns_shift_rider/60;;
+    sql: ${number_of_unassigned_hours_ns_shift_rider};;
     value_format_name: decimal_1
   }
 
@@ -2186,17 +2193,17 @@ view: staffing {
     description: "# Extra Scheduled Rider Hours  (Assigned + Unassigned EC, NS+, WFS and Refilled shift hours)"
     type: number
     sql: (
-    ${number_of_unassigned_hours_rider_ec_shift} +
-    ${number_of_unassigned_hours_rider_ns_shift} +
-    ${number_of_unassigned_hours_rider_wfs_shift} +
-    ${number_of_unassigned_hours_rider_refilled_shift}
-    ) +
-    (
-    ${number_of_planned_hours_rider_ec_shift} +
-    ${number_of_planned_hours_rider_ns_shift} +
-    ${number_of_planned_hours_rider_wfs_shift} +
-    ${number_of_planned_hours_rider_refilled_shift}
-    );;
+          ${number_of_unassigned_hours_rider_ec_shift} +
+          ${number_of_unassigned_hours_rider_ns_shift} +
+          ${number_of_unassigned_hours_rider_wfs_shift} +
+          ${number_of_unassigned_hours_rider_refilled_shift}
+          ) +
+          (
+          ${number_of_planned_hours_rider_ec_shift} +
+          ${number_of_planned_hours_rider_ns_shift} +
+          ${number_of_planned_hours_rider_wfs_shift} +
+          ${number_of_planned_hours_rider_refilled_shift}
+          );;
     value_format_name: decimal_1
   }
 
@@ -2289,10 +2296,10 @@ view: staffing {
     description: "# Extra Scheduled Ops Associate Hours  (Assigned + Unassigned EC, NS+, WFS and Refilled hours)"
     type: number
     sql: ${number_of_scheduled_hours_ops_associate_ec_shift} +
-    ${number_of_scheduled_hours_ops_associate_wfs_shift} +
-    ${number_of_scheduled_hours_ops_associate_ns_shift} +
-    ${number_of_scheduled_hours_ops_associate_refilled_shift}
-    ;;
+          ${number_of_scheduled_hours_ops_associate_wfs_shift} +
+          ${number_of_scheduled_hours_ops_associate_ns_shift} +
+          ${number_of_scheduled_hours_ops_associate_refilled_shift}
+          ;;
     value_format_name: decimal_1
   }
 
@@ -2365,7 +2372,7 @@ view: staffing {
     description: "# Ops Associate Shift hours (Picker, WH, Rider Captain, Ops Associate) with missing punch and an absence applied or approved (with deleted shift and excl. shifts with project code = 'Refilled shift')  + Open Hours from shifts with project code = 'NS+ shift'"
     type: number
     sql: ${number_of_no_show_hours_ops_associate_without_refilled_and_ns_shift}+
-         ${number_of_unassigned_hours_ops_associate_ns_shift};;
+      ${number_of_unassigned_hours_ops_associate_ns_shift};;
     value_format_name: decimal_1
   }
 
@@ -2388,9 +2395,9 @@ view: staffing {
     value_format_name: decimal_1
   }
 
-  measure: number_of_no_show_hours_rider_without_refilled_and_ns_shift {
-    label: "# No Show Rider Minutes"
-    type: sum
+  dimension: number_of_no_show_hours_rider_without_refilled_and_ns_shift {
+    label: "# No Show Rider Hours"
+    type: number
     sql: ${TABLE}.number_of_no_show_minutes_rider/60 ;;
     hidden: yes
   }
@@ -2399,9 +2406,9 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours without Refilled Hours"
     description: "# Shift hours with missing punch with an absence applied or approved (with deleted shift and without shifts with project code = 'Refilled shift') + Open Hours from shifts with project code = 'NS+ shift'"
-    type: number
-    sql: ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
-         ${number_of_unassigned_hours_rider_ns_shift};;
+    type: sum
+    sql: (${TABLE}.number_of_no_show_minutes_rider+
+      ${TABLE}.number_of_unassigned_minutes_ns_shift_rider)/60;;
     value_format_name: decimal_1
   }
 
@@ -2409,9 +2416,9 @@ view: staffing {
     group_label: "> Rider Measures"
     label: "# No Show Rider Hours with Refilled Hours"
     description: "# Shift hours with missing punch with an absence applied or approved (with deleted shift and shifts with project code = 'Refilled shift')"
-    type: number
+    type: sum
     sql: ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
-      ${number_of_no_show_hours_rider_refilled_shift};;
+      ${number_of_no_show_hours_refilled_shift_rider};;
     value_format_name: decimal_1
   }
 
@@ -2460,12 +2467,19 @@ view: staffing {
     value_format_name: decimal_1
   }
 
+  dimension: number_of_no_show_hours_refilled_shift_rider {
+    label: "# Refilled No Show Rider Hours"
+    type: number
+    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_rider/60 ;;
+    hidden: yes
+  }
+
   measure: number_of_no_show_hours_rider_refilled_shift {
     group_label: "> Rider Measures"
     label: "# Refilled No Show Rider Hours"
     description: "# No Show Rider Hours from shifts with project code = 'Refilled shift'"
     type: sum
-    sql: ${TABLE}.number_of_no_show_minutes_refilled_shift_rider/60;;
+    sql: ${number_of_no_show_hours_refilled_shift_rider};;
     value_format_name: decimal_1
   }
 
@@ -3049,7 +3063,8 @@ view: staffing {
     group_label: "> Dynamic Measures"
     sql:
         case
-          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider}
+          when {% parameter position_parameter %} = 'Rider' THEN ${number_of_no_show_hours_rider_without_refilled_and_ns_shift}+
+      ${number_of_unassigned_hours_ns_shift_rider}
           else null
         end ;;
     hidden: yes
