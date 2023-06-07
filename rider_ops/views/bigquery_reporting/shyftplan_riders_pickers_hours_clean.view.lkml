@@ -974,7 +974,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: sum_no_show_hours{
     label:"Sum Rider Actual No Show Hours"
     type: sum
-    description: "Sum Rider Actual No Show Hours"
+    description: "Sum Rider Actual No Show Hours without hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_no_show_minutes}/60;;
     filters: [position_name: "rider"]
     group_label: "No Show"
@@ -984,7 +984,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_no_show_hours_rider_picker{
     label:"Sum Rider+Picker No Show Hours"
     type: sum
-    description: "Sum Rider+Picker No Show Hours"
+    description: "Sum Rider+Picker No Show Hours without hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_no_show_minutes}/60;;
     filters: [position_name: "rider, picker"]
     group_label: "No Show"
@@ -995,7 +995,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_no_show_hours_hub_employees{
     label:"Sum Rider + Picker + WH + Rider Captain + Ops Associate No Show Hours"
     type: sum
-    description: "Sum Rider + Picker + WH + Rider Captain + Ops Associate No Show Hours"
+    description: "Sum Rider + Picker + WH + Rider Captain + Ops Associate No Show Hours without hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_no_show_minutes}/60;;
     filters: [position_name: "rider, picker,wh, rider captain, ops associate"]
     group_label: "No Show"
@@ -1005,7 +1005,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: number_of_no_show_hours_ops_associate{
     label:"Sum Picker + WH + Rider Captain + Ops Associate No Show Hours"
     type: sum
-    description: "Sum Picker + WH + Rider Captain + Ops Associate No Show Hours"
+    description: "Sum Picker + WH + Rider Captain + Ops Associate No Show Hours without hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_no_show_minutes}/60;;
     filters: [position_name: "rider, picker,wh, rider captain, ops associate"]
     group_label: "No Show"
@@ -1015,7 +1015,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_no_show_employees{
     label:"% Actual No Show Rider Hours"
     type: number
-    description: "% Actual No Show Rider Hours"
+    description: "% Actual No Show Rider Hours without hours from shifts with project code = 'Refilled shift'"
     sql:(${sum_no_show_hours})/nullif(${sum_planned_hours},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
@@ -1024,7 +1024,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_no_show_hours_rider_picker{
     label:"% Actual No Show Rider+Picker Hours"
     type: number
-    description: "% Actual No Show Rider + Picker Hours"
+    description: "% Actual No Show Rider + Picker Hours without hours from shifts with project code = 'Refilled shift'"
     sql:(${number_of_no_show_hours_rider_picker})/nullif(${number_of_planned_hours_rider_picker},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
@@ -1033,7 +1033,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_no_show_hours_hub_employees{
     label:"% Actual No Show Rider + Picker + WH +Rider Captain + Ops Associate Hours"
     type: number
-    description: "% Actual No Show Rider + Picker + WH +Rider Captain + Ops Associate Hours"
+    description: "% Actual No Show Rider + Picker + WH +Rider Captain + Ops Associate Hours without hours from shifts with project code = 'Refilled shift'"
     sql:(${number_of_no_show_hours_hub_employees})/nullif(${number_of_planned_hours_hub_employees},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
@@ -1042,7 +1042,7 @@ view: shyftplan_riders_pickers_hours_clean {
   measure: pct_no_show_hours_ops_associate{
     label:"% Actual No Show Picker + WH + Rider Captain + Ops Associate Hours"
     type: number
-    description: "% Actual No Show Picker + WH +Rider Captain + Ops Associate Hours"
+    description: "% Actual No Show Picker + WH +Rider Captain + Ops Associate Hours without hours from shifts with project code = 'Refilled shift'"
     sql:(${number_of_no_show_hours_ops_associate})/nullif(${number_of_planned_hours_hub_employees},0) ;;
     group_label: "No Show"
     value_format_name: percent_1
