@@ -486,7 +486,10 @@ view: orders {
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries {
     group_label: "* Operations / Logistics *"
     label: "# Delayed (min) (with + 15% PDT tolerance)"
-    description: "# Delayed minutes from promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. '+ 15%' implies that we look at *delayed* deliveries, not the ones that were delivered *earlier* than promised."
+    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. 
+Plus 15% implies that we tolerate *delayed* deliveries, and not the ones that were delivered *earlier* than promised.
+Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied
+    "
     type: number
     sql:timestamp_diff(
           ${delivery_timestamp_raw},
@@ -500,7 +503,9 @@ view: orders {
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries {
     group_label: "* Operations / Logistics *"
     label: "# Delayed (min) (with +/- 15% PDT tolerance)"
-    description: "# Delayed (min) from promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
+    description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. 
++/- 15% implies that we tolerate both delayed and earlier deliveries.
+Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
     type: number
     sql:case
           when
@@ -4194,7 +4199,7 @@ view: orders {
   measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
