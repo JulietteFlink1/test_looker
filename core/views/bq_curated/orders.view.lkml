@@ -483,7 +483,7 @@ view: orders {
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delta_to_pdt_minutes_with_positive_tolerance_buffer{
+  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries{
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min) (with + 15% DPT tolerance)"
     description: "Delta to promised delivery time (as shown to customer) + 15% tolerance buffer"
@@ -497,7 +497,7 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  dimension: delta_to_pdt_minutes_with_tolerance_buffer{
+  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries{
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min) (with +/- 15% DPT tolerance)"
     description: "Delta to promised delivery time (as shown to customer) +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
@@ -512,7 +512,7 @@ view: orders {
               ${delivery_timestamp_raw},
               second
             )/60
-          else ${delta_to_pdt_minutes_with_positive_tolerance_buffer}
+          else ${delta_to_pdt_minutes_with_buffer_for_delayed_deliveries}
         end;;
     value_format_name: decimal_1
   }
@@ -3402,10 +3402,10 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of Orders delivered no later than PDT"
+    description: "Count of orders delivered no later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:"<=0"]
+    filters: [delta_to_pdt_minutes_with_buffer_for_delayed_deliveries:"<=0"]
     value_format: "0"
   }
 
@@ -3414,10 +3414,10 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Count of Orders delivered no later than PDT. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_tolerance_buffer:"<=0"]
+    filters: [delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries:"<=0"]
     value_format: "0"
   }
 
@@ -3782,30 +3782,30 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min (with + 15% DPT tolerance)"
-    description: "Count of Orders delivered >5min later than PDT + 15% tolerance buffer"
+    description: "Count of orders delivered >5min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=5"]
+    filters: [delta_to_pdt_minutes:">=5"]
     value_format: "0"
   }
 
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >10min (with + 15% DPT tolerance)"
-    description: "Count of Orders delivered >10min later than PDT + 15% tolerance buffer"
+    description: "Count of orders delivered >10min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=10"]
+    filters: [delta_to_pdt_minutes:">=10"]
     value_format: "0"
   }
 
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >15min (with + 15% DPT tolerance)"
-    description: "Count of Orders delivered >15min later than PDT + 15% tolerance buffer"
+    description: "Count of orders delivered >15min later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_tolerance_buffer:">=15"]
+    filters: [delta_to_pdt_minutes:">=15"]
     value_format: "0"
   }
 
@@ -4129,7 +4129,7 @@ view: orders {
 
   measure: pct_delivery_in_time{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (with + 15% DPT tolerance)"
+    label: "% Orders delivered on time (with + 15% DPT tolerance)"
     description: "Share of orders delivered no later than PDT + 15% tolerance buffer"
     hidden:  no
     type: number
@@ -4139,7 +4139,7 @@ view: orders {
 
   measure: pct_delivery_in_time_with_tolerance_buffer{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (with +/- 15% PDT tolerance)"
+    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
     description: "Share of orders delivered no later than PDT +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
     hidden:  no
     type: number
@@ -4303,7 +4303,7 @@ view: orders {
 
   measure: pct_delivery_in_time_time_estimate{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (targeted estimate)"
+    label: "% Orders delivered on time (targeted estimate)"
     description: "Share of orders delivered no later than targeted estimate"
     hidden:  no
     type: number
