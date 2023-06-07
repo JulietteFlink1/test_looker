@@ -128,12 +128,7 @@ view: hub_one_inventory_checking {
     description: "  Status of the task. Corresponds to status in hub_task schema. Possible values are: OPEN, CANCELED, DONE, SKIPPED, IN_PROGRESS."
     group_label: "Task Attributes"
     type: string
-    sql: case when ${task_type} = 'STOCK_CORRECTION' or ${TABLE}.task_status in ('OPEN', 'IN_PROGRESS') then ${TABLE}.task_status
-              when ${TABLE}.task_status in ('CANCELED', 'DONE') and ${updated_at_timestamp_date} > ${scheduled_at_date} then 'OPEN'
-              when ${TABLE}.task_status in ('CANCELED', 'DONE') and ${updated_at_timestamp_date} = ${scheduled_at_date} then ${TABLE}.task_status
-              when ${TABLE}.task_status in ('SKIPPED') and ${updated_at_timestamp_date} <= ${scheduled_at_date} then ${TABLE}.task_status
-              when ${TABLE}.task_status in ('SKIPPED') and ${updated_at_timestamp_date} > ${scheduled_at_date} then 'OPEN'
-              else 'NO STATUS' end;;
+    sql: ${TABLE}.updated_task_status ;;
   }
 
   dimension: task_type {
