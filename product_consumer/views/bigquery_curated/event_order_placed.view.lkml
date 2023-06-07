@@ -21,6 +21,7 @@ view: event_order_placed {
   }
 
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     group_label: "IDs Dimension"
     type: string
     sql: ${TABLE}.device_id ;;

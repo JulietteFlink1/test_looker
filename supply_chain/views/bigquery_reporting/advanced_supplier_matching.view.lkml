@@ -142,7 +142,7 @@ view: advanced_supplier_matching {
   }
 
   dimension: order_number {
-    type: number
+    type: string
     description: "This is the identifier of a purchase order. A purchase order is a document, that is sent to a supplier and indicates, which products Flink wants to buy."
     group_label: "IDs"
     sql: ${TABLE}.order_number ;;

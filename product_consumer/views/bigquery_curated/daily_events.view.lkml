@@ -36,6 +36,7 @@ view: daily_events {
     sql: ${TABLE}.anonymous_id ;;
   }
   dimension: device_id {
+    required_access_grants: [can_access_pii_customers]
     group_label: "IDs"
     label: "Device ID"
     description: "ID of an device"

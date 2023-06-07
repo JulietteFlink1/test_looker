@@ -14,13 +14,15 @@ view: event_bbd_date_correction_finished {
       origin,
       product_sku,
       next_expiration_date_after,
-      next_expiration_date_before
+      next_expiration_date_before,
+      date_difference_before_after
     ]
   }
 
   set: to_include_measures {
     fields: [
-      number_of_events
+      number_of_events,
+      difference_days_before_after_bbd_check
     ]
   }
 
@@ -173,13 +175,33 @@ view: event_bbd_date_correction_finished {
     description: "Describes the new value for the next_expiration_date."
     sql: ${TABLE}.next_expiration_date_after ;;
   }
-
   dimension: next_expiration_date_before {
     group_label: "BBD Date Correction Finished Dimensions"
     type: string
     description: "Describes the previous value for the next_expiration_date."
     sql: ${TABLE}.next_expiration_date_before ;;
   }
+  dimension: after_check_next_expiration_date {
+    group_label: "BBD Date Correction Finished Dimensions"
+    hidden:  yes
+    type: string
+    description: "Describes the previous value for the next_expiration_date in date format"
+    sql: ${TABLE}.after_check_next_expiration_date ;;
+  }
+  dimension: before_check_next_expiration_date {
+    group_label: "BBD Date Correction Finished Dimensions"
+    hidden:  yes
+    type: string
+    description: "Describes the previous value for the next_expiration_date in date format"
+    sql: ${TABLE}.before_check_next_expiration_date ;;
+  }
+  dimension: date_difference_before_after {
+    group_label: "BBD Date Correction Finished Dimensions"
+    description: "Difference in days between after vs. before bbd check"
+    type: number
+    sql: date_diff(after_check_next_expiration_date,before_check_next_expiration_date, day)  ;;
+  }
+
   # =========  Other Dimensions   =========
 
   dimension: context_ip {
@@ -220,5 +242,12 @@ view: event_bbd_date_correction_finished {
     description: "Number of events triggered"
     type: count_distinct
     sql: ${TABLE}.event_uuid ;;
+  }
+  measure: difference_days_before_after_bbd_check {
+    group_label: "BBD Date Check Finished Measures"
+    label: "AVG Days Difference Before vs. After BBD Check"
+    description: "AVG Difference in days between after vs. before bbd check"
+    type: average
+    sql: date_diff(after_check_next_expiration_date,before_check_next_expiration_date, day)  ;;
   }
 }
