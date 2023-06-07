@@ -486,7 +486,7 @@ view: orders {
   dimension: delta_to_pdt_minutes_with_positive_tolerance_buffer{
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min) (with + 15% PDT tolerance)"
-    description: "Delta to promised delivery time (as shown to customer) + 15% tolerance buffer"
+    description: "Delta to promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. "+15%" implies that we look at *delayed* deliveries, not the ones that were delivered *earlier* than promised."
     type: number
     sql:timestamp_diff(
           ${delivery_timestamp_raw},
