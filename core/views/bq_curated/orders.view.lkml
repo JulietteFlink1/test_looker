@@ -500,7 +500,7 @@ view: orders {
   dimension: delta_to_pdt_minutes_with_tolerance_buffer{
     group_label: "* Operations / Logistics *"
     label: "Delta to PDT (min) (with +/- 15% PDT tolerance)"
-    description: "Delta to promised delivery time (as shown to customer) +/- 15% tolerance buffer. When PDT Delivery Timestamp is later than Actual Delivery Timestamp then subtract 15% of PDT, else add 15% of PDT"
+    description: "Delta to promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. '+/- 15%' implies that both delayed and earlier deliveries are considered."
     type: number
     sql:case
           when
