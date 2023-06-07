@@ -16,17 +16,17 @@ view: noos_list {
 
   dimension: corrected_sales_rank {
     type: number
-    sql: ${TABLE}.corrected_sales_rank ;;
-    label: "Corrected Sales Rank"
-    description: "Shows the rank of corrected sales units belonging to the item locations of the never out of stock list"
+    sql: ${TABLE}.rank_corrected_sales_eur ;;
+    label: "Corrected Sales Ranking (EUR)"
+    description: "Shows the rank of an item in a location according to corrected units sold * price."
     hidden: no
   }
 
   dimension: corrected_sales_units {
     type: number
-    sql: ${TABLE}.corrected_sales_units ;;
-    label: "Corrected Sales Units"
-    description: "Shows the amount of corrected sales units belonging to the item locations of the never out of stock list"
+    sql: ${TABLE}.rank_corrected_sales_units ;;
+    label: "Corrected Sales Units Ranking"
+    description: "Shows the rank of an item in a location according to corrected units sold."
     hidden: no
   }
 
@@ -40,7 +40,7 @@ view: noos_list {
 
   dimension: sequence_added_hub_rank {
     type: number
-    sql: ${TABLE}.sequence_added_hub_rank ;;
+    sql: ${TABLE}.rank_sequence_added ;;
     label: "Sequence-added Hub Ranking"
     description: "Shows the rank of the item-location based on the likehood of the customer adding in the item the basket as first item (per hub ranked) "
     hidden: no
@@ -59,6 +59,14 @@ view: noos_list {
     sql: ${TABLE}.is_noos ;;
     label: "Is Never Out Of Stock (NOOS)"
     description: "Shows if the item-location is marked as an item that should never be out of stock"
+    hidden: no
+  }
+
+  dimension: rank_basket_starter {
+    type: string
+    sql: ${TABLE}.rank_basket_starter ;;
+    label: "Basket Starter Ranking"
+    description: "Ranks items in descending order based on the count of orders for items that are first added (rank 1) in the basket"
     hidden: no
   }
 
