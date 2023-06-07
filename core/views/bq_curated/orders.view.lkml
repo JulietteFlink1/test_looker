@@ -477,7 +477,7 @@ view: orders {
 
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "# Delayed (min)"
+    label: "Delay (min)"
     description: "# Delayed minutes from promised delivery time (as shown to customer)"
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
@@ -485,10 +485,10 @@ view: orders {
 
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries {
     group_label: "* Operations / Logistics *"
-    label: "# Delayed (min) (with + 15% PDT tolerance)"
-    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer. 
-Plus 15% implies that we tolerate *delayed* deliveries, and not the ones that were delivered *earlier* than promised.
-Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied
+    label: "Delay (min) (with + 15% PDT tolerance)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
+    Plus 15% implies that we tolerate *delayed* deliveries, and not the ones that were delivered *earlier* than promised.
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied
     "
     type: number
     sql:timestamp_diff(
@@ -502,10 +502,10 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
 
   dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries {
     group_label: "* Operations / Logistics *"
-    label: "# Delayed (min) (with +/- 15% PDT tolerance)"
-    description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer. 
-+/- 15% implies that we tolerate both delayed and earlier deliveries.
-Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
+    label: "Delay (min) (with +/- 15% PDT tolerance)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
+    +/- 15% implies that we tolerate both delayed and earlier deliveries.
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
     type: number
     sql:case
           when
@@ -2168,8 +2168,8 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
     group_label: "* Operations / Logistics *"
     label: "AVG Waiting For Picker Time (Minutes)"
     description:
-      "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
-      Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
+    "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
+    Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     type: average
     sql:${waiting_for_picker_time};;
     value_format_name: decimal_1
@@ -2630,7 +2630,7 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
     description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
     hidden:  no
     type: average
-      sql: ${item_value_net};;
+    sql: ${item_value_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -3283,7 +3283,7 @@ Negative value is an indication of either: 1) earlier delivery 2) delay with the
     filters: [
       external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
-      ]
+    ]
   }
 
   measure: number_of_unique_flink_delivered_orders {
