@@ -4189,7 +4189,7 @@ view: orders {
   measure: pct_delivery_in_time {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Share of orders delivered no later than PDT + 15% PDT tolerance buffer"
+    description: "Share of orders delivered no later than PDT + 15% PDT tolerance buffer. ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
