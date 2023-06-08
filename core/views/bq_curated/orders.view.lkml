@@ -487,7 +487,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "Delay (min) (with + 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
-    Plus 15% implies that we tolerate *delayed* deliveries, and not the ones that were delivered *earlier* than promised.
+Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
     Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied
     "
     type: number
