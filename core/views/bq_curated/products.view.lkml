@@ -1,6 +1,6 @@
 view: products {
   view_label: "* Product Data *"
-  sql_table_name: `flink-data-prod.curated.products`
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated.products`
     ;;
 
   set: product_attributes {
@@ -112,6 +112,30 @@ view: products {
     label: "SKU + Name"
     type: string
     sql: CONCAT(${TABLE}.global_sku, ' - ', ${TABLE}.product_name) ;;
+  }
+
+  dimension: fresh_check_frequency {
+    label: "Fresh Check Frequency"
+    description: "Frequency at which the sku requires a fresh check to be triggered in HubOne. This value is set in Oracle."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.fresh_check_frequency ;;
+  }
+
+  dimension: extra_check_frequency {
+    label: "Extra Check Frequency"
+    description: "Frequency at which the sku requires an extra check to be triggered in HubOne. This value is set in Oracle."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.extra_check_frequency ;;
+  }
+
+  dimension: bbd_check {
+    label: "BBD Check"
+    description: "Yes if the sku requires BBD checks to be triggered in HubOne, No otherwise, or if this attribute hasn't been set in Oracle."
+    group_label: "ERP fields"
+    type: yesno
+    sql: ${TABLE}.bbd_check ;;
   }
 
   dimension: subcategory {
