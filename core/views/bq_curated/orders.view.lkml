@@ -504,7 +504,7 @@ Delay for delayed deliveries will look smaller, and the earlier deliveries will 
     group_label: "* Operations / Logistics *"
     label: "Delay (min) (with +/- 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
-    +/- 15% implies that we tolerate both delayed and earlier deliveries.
+    +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early).
     Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
     type: number
     sql:case
