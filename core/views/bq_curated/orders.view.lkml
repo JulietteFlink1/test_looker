@@ -4199,7 +4199,7 @@ Delay for delayed deliveries will look smaller, and the earlier deliveries will 
   measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
