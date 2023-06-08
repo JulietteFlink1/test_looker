@@ -144,7 +144,7 @@ explore: orders_cl {
         AND {% condition global_filters_and_parameters.datasource_filter %} ${order_classification.order_timestamp_date} {% endcondition %};;
     relationship: one_to_one
     type: left_outer
-    fields: [order_classification.order_classification]
+    fields: [order_classification.order_classifications*, order_classification.jtbd_orders*]
   }
 
   join: discounts {
