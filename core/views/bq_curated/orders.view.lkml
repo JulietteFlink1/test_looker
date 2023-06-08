@@ -478,12 +478,12 @@ view: orders {
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
     label: "Delay (min)"
-    description: "# Delay minutes from promised delivery time (as shown to customer)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer). Negative value is an indication of an earlier delivery than PDT."
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_deliveries {
+  dimension: delta_to_pdt_minutes_with_positive_buffer {
     group_label: "* Operations / Logistics *"
     label: "Delay (min) (with + 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
@@ -500,7 +500,7 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  dimension: delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries {
+  dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
     group_label: "* Operations / Logistics *"
     label: "Delay (min) (with +/- 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
@@ -517,7 +517,7 @@ view: orders {
               ${delivery_timestamp_raw},
               second
             )/60
-          else ${delta_to_pdt_minutes_with_buffer_for_delayed_deliveries}
+          else ${delta_to_pdt_minutes_with_positive_buffer}
         end;;
     value_format_name: decimal_1
   }
@@ -3464,7 +3464,7 @@ view: orders {
     description: "Count of orders delivered no later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance implies that only delayed deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_buffer_for_delayed_deliveries:"<=0"]
+    filters: [delta_to_pdt_minutes_with_positive_buffer:"<=0"]
     value_format: "0"
   }
 
@@ -3476,7 +3476,7 @@ view: orders {
     description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_buffer_for_delayed_and_earlier_deliveries:"<=0"]
+    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
     value_format: "0"
   }
 
@@ -4189,7 +4189,7 @@ view: orders {
   measure: pct_delivery_in_time {
     group_label: "* Operations / Logistics *"
     label: "% Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Share of orders delivered no later than PDT + 15% tolerance buffer"
+    description: "Share of orders delivered no later than PDT + 15% PDT tolerance buffer"
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
