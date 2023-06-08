@@ -3472,7 +3472,7 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance implies that both delayed and earlier deliveries are considered."
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
