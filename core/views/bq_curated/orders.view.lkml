@@ -478,7 +478,7 @@ view: orders {
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
     label: "Delay (min)"
-    description: "# Delayed minutes from promised delivery time (as shown to customer)"
+    description: "# Delay minutes from promised delivery time (as shown to customer)"
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
