@@ -229,8 +229,8 @@ view: orders_with_ops_metrics {
 
   measure: pct_delivery_in_time {
     group_label: "> Operations / Logistics"
-    label: "% Orders delivered in time (PDT)"
-    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
+    label: "% Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Share of orders delivered on time (with + 15% PDT tolerance). ‘+ 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look even earlier."
     type: number
     value_format_name: percent_0
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -328,8 +328,8 @@ view: orders_with_ops_metrics {
 
   measure: cnt_orders_delayed_under_0_min {
     group_label: "> Basic Counts"
-    label: "# Orders delivered on time (30 sec tolerance)"
-    description: "Count of Orders delivered no later than PDT"
+    label: "# Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look earlier."
     type: sum
     hidden: yes
   }
