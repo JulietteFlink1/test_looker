@@ -535,7 +535,13 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_unplanned_inbound ;;
   }
 
-
+  dimension: is_matched_with_over_and_under_deliveries {
+    type: yesno
+    label: "Is Matched with Over and Under Deliveries"
+    description: "TRUE in those cases where we have lineitems matched (same_date, too_late, etc) but exhibit variations in the quantities ordered/delivered and inbounded. These variations should also be considered as over/under deliveries. "
+    group_label: "Boolean Fields"
+    sql: ${TABLE}.is_matched_with_over_and_under_deliveries ;;
+  }
 
 
 
