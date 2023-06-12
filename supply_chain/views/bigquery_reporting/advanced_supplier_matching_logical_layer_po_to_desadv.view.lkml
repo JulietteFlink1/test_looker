@@ -967,8 +967,8 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | In Quality"
 
     type: sum
-    sql: ${inbounded_quantity} ;;
-    filters: [is_desadv_row_exists: "yes", is_quality_issue: "no"]
+    sql: ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0) ;;
+    filters: [is_desadv_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
@@ -988,9 +988,8 @@ view: +advanced_supplier_matching {
     group_label: "DESADV >> Inbound | OTIFIQ"
 
     type: sum
-    sql: ${inbounded_quantity} ;;
+    sql: ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0) ;;
     filters: [is_desadv_row_exists: "yes",
-              is_quality_issue: "no",
               is_matched_on_same_date: "yes"]
     value_format_name: decimal_0
   }
@@ -1014,10 +1013,9 @@ view: +advanced_supplier_matching {
     sql: if(
               ${inbounded_quantity} > ${total_quantity_desadv}
             , ${total_quantity_desadv}
-            , ${inbounded_quantity}
+            , ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0)
             );;
     filters: [is_desadv_row_exists: "yes",
-      is_quality_issue: "no",
       is_matched_on_same_date: "yes"]
     value_format_name: decimal_0
   }
@@ -1495,9 +1493,8 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | In Quality"
 
     type: sum
-    sql: ${inbounded_quantity} ;;
-    filters: [is_purchase_order_row_exists: "yes",
-              is_quality_issue: "no"]
+    sql: ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0) ;;
+    filters: [is_purchase_order_row_exists: "yes"]
     value_format_name: decimal_0
   }
 
@@ -1517,9 +1514,8 @@ view: +advanced_supplier_matching {
     group_label: "PO >> Inbound | OTIFIQ"
 
     type: sum
-    sql: ${inbounded_quantity} ;;
+    sql: ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0);;
     filters: [is_purchase_order_row_exists: "yes",
-              is_quality_issue: "no",
               is_matched_purchase_order_specifc: "same_day"]
     value_format_name: decimal_0
   }
@@ -1543,10 +1539,9 @@ view: +advanced_supplier_matching {
     sql: if(
               ${inbounded_quantity} > ${total_quantity_purchase_order}
             , ${total_quantity_purchase_order}
-            , ${inbounded_quantity}
+            , ${inbounded_quantity} - coalesce(${number_of_delivery_damaged_quality_issues}, 0)
             );;
     filters: [is_purchase_order_row_exists: "yes",
-      is_quality_issue: "no",
       is_matched_purchase_order_specifc: "same_day"]
     value_format_name: decimal_0
   }
