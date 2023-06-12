@@ -3462,7 +3462,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries are considered 'on time'."
+    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes_with_positive_buffer:"<=0"]
