@@ -21,6 +21,7 @@ include: "/core/views/bq_curated/products.view.lkml"
 include: "/supply_chain/views_externals/demand_planning_test_cohort.view.lkml"
 include: "/supply_chain/views_externals/availability_waterfall_actions.view.lkml"
 include: "/supply_chain/views_externals/noos_list.view.lkml"
+include: "/supply_chain/views_externals/availability_waterfall_daily.view.lkml"
 
 
 
@@ -170,6 +171,22 @@ join: availability_waterfall {
      ${demand_planning_dashboard_explore.hub_code} = ${noos_list.hub_code}
     ;;
     relationship: many_to_one
+    type: left_outer
+  }
+
+####################################################################################################################################
+###################### Join availability_waterfall_daily in order to get the avail. buckets fields on a daily level #######################################
+####################################################################################################################################
+
+  join: availability_waterfall_daily {
+    view_label: "Availability waterfall (Daily)"
+    sql_on:
+     ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall_daily.parent_sku} and
+     ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall_daily.hub_code} and
+     ${demand_planning_dashboard_explore.report_date} = ${availability_waterfall_daily.report_date} and
+     ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall_daily.vendor_id}
+    ;;
+    relationship: one_to_one
     type: left_outer
   }
 
