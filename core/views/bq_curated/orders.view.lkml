@@ -4241,7 +4241,7 @@ view: orders {
   measure: pct_delivery_late_over_10_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >10min"
-    description: "Share of orders delivered >10min later than PDT. Measured against raw Delay / delta to PDT. No tolerance buffer is applied."
+    description: "Share of orders delivered >10min later than PDT. Measured against raw 'Delay' / 'delta to PDT'. No tolerance buffer is applied."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
