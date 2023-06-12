@@ -3462,7 +3462,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed."
+    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes_with_positive_buffer:"<=0"]
@@ -3479,7 +3479,6 @@ view: orders {
     filters: [delta_to_pdt_minutes:"<=0"]
     value_format: "0"
   }
-
 
   measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
     # group_label: "* Operations / Logistics *"
