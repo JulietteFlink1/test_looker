@@ -32,7 +32,7 @@ view: offline_customer_acquisition_cost {
   dimension_group: report {
     type: time
     label: "Report"
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     timeframes: [
       week,
       month,
@@ -46,7 +46,7 @@ view: offline_customer_acquisition_cost {
 
   dimension: country_iso {
     label: "Marketing Country"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Country of marketing activity"
     type: string
     sql: ${TABLE}.country_iso ;;
@@ -54,7 +54,7 @@ view: offline_customer_acquisition_cost {
 
   dimension: channel {
     label: "Marketing Channel"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Category of marketing channel"
     type: string
     sql: ${TABLE}.channel ;;
@@ -62,7 +62,7 @@ view: offline_customer_acquisition_cost {
 
   dimension: network {
     label: "Marketing Network"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Sub category of marketing channel"
     type: string
     sql: ${TABLE}.network ;;
@@ -71,7 +71,7 @@ view: offline_customer_acquisition_cost {
   # =========  Parameters   =========
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     hidden: no
     type: unquoted
@@ -86,7 +86,7 @@ view: offline_customer_acquisition_cost {
 # =========  Dynamic dimensions   =========
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -102,7 +102,7 @@ view: offline_customer_acquisition_cost {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: yes
@@ -126,7 +126,7 @@ view: offline_customer_acquisition_cost {
 
     label: "SUM Offline Spend"
     description: "Total of marketing spend, offline sources only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${amt_spend_net} ;;
@@ -138,7 +138,7 @@ view: offline_customer_acquisition_cost {
 
     label: "# Offline Acquisitions"
     description: "Total of acquisitions, offline sources only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${number_of_acquisitions} ;;
@@ -150,7 +150,7 @@ view: offline_customer_acquisition_cost {
     type: number
     label: "Offline CAC"
     description: "Customer Acquisition Cost: how much does it cost marketing to get a conversion, offline sources only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: ${sum_of_amt_spend_net} / NULLIF(${sum_of_number_of_acquisitions}, 0);;
     value_format_name: euro_accounting_2_precision
   }
