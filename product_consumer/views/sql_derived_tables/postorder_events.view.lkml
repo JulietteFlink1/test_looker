@@ -301,7 +301,7 @@ view: postorder_events {
   ########## Device attributes #########
 
   dimension: full_app_version {
-    group_label: "* Device Dimensions *"
+    group_label: "> Device Dimensions"
     label: "Full App Version Detailed"
     description: "Combined device type and detailed app version"
     type: string
@@ -310,7 +310,7 @@ view: postorder_events {
   }
 
   dimension: main_app_version {
-    group_label: "* Device Dimensions *"
+    group_label: "> Device Dimensions"
     label: "Full App Version Main"
     description: "Combined device type and main app version"
     type: string
@@ -319,7 +319,7 @@ view: postorder_events {
   }
 
   dimension: basic_padded_app_version {
-    group_label: "* Device Dimensions *"
+    group_label: "> Device Dimensions"
     label: "App Version Main"
     description: "App version with only the major version identifiers. Hotfixes are grouped together. E.g. 2.09.01 and 2.09.02 are combined and displayed as 2.09"
     type: string
@@ -327,7 +327,7 @@ view: postorder_events {
   }
 
   dimension: padded_app_version {
-    group_label: "* Device Dimensions *"
+    group_label: "> Device Dimensions"
     label: "App Version Detailed"
     description: "Full app version including hotfix versions separated"
     type: string
@@ -335,7 +335,7 @@ view: postorder_events {
   }
 
   dimension: context_device_type {
-    group_label: "* Device Dimensions *"
+    group_label: "> Device Dimensions"
     label: "Device Type"
     description: "Android or iOS"
     type: string
@@ -382,7 +382,7 @@ view: postorder_events {
   ######## * Count Tracking Events * ########
 
   measure: cnt_unique_order_ccs_intent {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# Unique Orders With CCS Intent"
     type: count_distinct
     sql: ${order_id} ;;
@@ -390,7 +390,7 @@ view: postorder_events {
   }
 
   measure: cnt_order_placed {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# Order Placed events"
     type: count_distinct
     sql: ${order_id} ;;
@@ -398,7 +398,7 @@ view: postorder_events {
   }
 
   measure: cnt_order_tracking_viewed {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# Order Tracking Viewed"
     description: "# Order Tracking Viewed events"
     type: count
@@ -406,7 +406,7 @@ view: postorder_events {
   }
 
   measure: cnt_help_intent {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# CCS Intent Total"
     description: "# Intent to Contact Customer Service events"
     type: count
@@ -414,7 +414,7 @@ view: postorder_events {
   }
 
   measure: cnt_help_intent_step1 {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# CCS Intent in Step1"
     description: "# intent to contact customer service in the ORDER CONFIRMATION stage"
     type: count_distinct
@@ -423,7 +423,7 @@ view: postorder_events {
   }
 
   measure: cnt_help_intent_step2 {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# CCS Intent in Step2"
     description: "# intent to contact customer service in the PACKING or PACKED stage "
     type: count_distinct
@@ -435,7 +435,7 @@ view: postorder_events {
   }
 
   measure: cnt_help_intent_step3 {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# CCS Intent in Step3"
     description: "# intent to contact customer service in the PICKED UP or RIDER ON WAY stage"
     type: count_distinct
@@ -447,7 +447,7 @@ view: postorder_events {
   }
 
   measure: cnt_help_intent_step4 {
-    group_label: "* Count Tracking Events *"
+    group_label: "> Count Tracking Events"
     label: "# CCS Intent in Step4"
     description: "# intent to contact customer service in the ARRIVED or DELIVERED stage"
     type: count_distinct
@@ -462,7 +462,7 @@ view: postorder_events {
   ######## * Percentages * ########
 
   measure: pct_orders_ccs_intent {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent"
     description: "# orders with CCS intent divided by the total # orders."
     type: number
@@ -472,7 +472,7 @@ view: postorder_events {
 
 
   measure: pct_orders_ccs_intent_step1 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Confirmation"
     description: "# orders with CCS intent on the order confirmation step divided by the total # orders."
     type: number
@@ -481,7 +481,7 @@ view: postorder_events {
   }
 
   measure: pct_orders_ccs_intent_step2 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Packing"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -490,7 +490,7 @@ view: postorder_events {
   }
 
   measure: pct_orders_ccs_intent_step3 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order In Delivery"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -499,7 +499,7 @@ view: postorder_events {
   }
 
   measure: pct_orders_ccs_intent_step4 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Delivered"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -571,7 +571,7 @@ view: postorder_events {
   ########## * Times & Durations * #########
 
   dimension: time_since_order_duration{
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Time Since Order (minutes)"
     description: "# minutes since the order was placed."
     type: duration_minute
@@ -580,7 +580,7 @@ view: postorder_events {
   }
 
   dimension: timesdiff_to_pdt{
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Time To PDT (minutes)"
     description: "# minutes compared to the PDT when order was placed. Negative numbers with events indicate they were triggered before PDT. E.g. if PDT = 10 min. and an event is triggered at 8 min., the value of this field would be -2."
     type: number
@@ -588,7 +588,7 @@ view: postorder_events {
   }
 
   dimension: time_since_order_tiers {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Time Since Order Tiers (minutes)"
     description: "Tiers of Time Since Order [0, >60)"
     type: tier
@@ -598,7 +598,7 @@ view: postorder_events {
   }
 
   dimension: timesdiff_to_pdt_tiers {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Time To PDT Tiers (minutes)"
     description: "Tiers of Time To PDT [-20, >60) in bins of 4 minutes"
     type: tier
@@ -608,7 +608,7 @@ view: postorder_events {
   }
 
   dimension_group: timestamp {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Event Timestamp"
     description: "Timestamp at which the postorder event (order placement, order tracking, contact customer service intent) took place"
     type: time
@@ -627,7 +627,7 @@ view: postorder_events {
   }
 
   dimension_group: order_placed_timestamp {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     description: "Timestamp at which the order was placed"
     type: time
     timeframes: [
@@ -646,7 +646,7 @@ view: postorder_events {
   }
 
   dimension: fulfillment_time {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     description: "# minutes from order placement until order fulfillment"
     type: number
     sql: ${TABLE}.fulfillment_time ;;
@@ -663,7 +663,7 @@ view: postorder_events {
   }
 
   dimension: anonymous_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     description: "Anonymous ID generated by Segment as user identifier"
     type: string
     sql: ${TABLE}.anonymous_id ;;
@@ -672,7 +672,7 @@ view: postorder_events {
   # hidden because merging with order_comments later and the set from orders is more complete than this one
   dimension: order_id {
     hidden: yes
-    group_label: "IDs"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.order_id ;;
   }
@@ -680,13 +680,13 @@ view: postorder_events {
   # hidden because merging with order_comments later and the set from orders is more complete than this one
   dimension: order_number {
     hidden: yes
-    group_label: "IDs"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.order_number ;;
   }
 
   dimension: returning_customer {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     description: "Whether the order was placed by a user that has placed a previous order (client-based tracking)"
     type: yesno
     sql: NOT(${is_first_order}) ;;
@@ -738,13 +738,13 @@ view: postorder_events {
   ########## Location attributes #########
 
   dimension: hub_slug {
-    group_label: "* Location Dimensions *"
+    group_label: "> Location Dimensions"
     type: string
     sql: ${TABLE}.hub_slug ;;
   }
 
   dimension: country_iso {
-    group_label: "* Location Dimensions *"
+    group_label: "> Location Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -753,14 +753,14 @@ view: postorder_events {
   ###### * Order Dimensions * #######
 
   dimension: order_status {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     description: "Order status at the time of the postorder tracking event"
     type: string
     sql: ${TABLE}.order_status ;;
   }
 
   dimension: order_placed_delivery_eta {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     label: "Order Placed Delivery PDT"
     description: "Delivery ETA when the order was placed"
     type: number
@@ -770,7 +770,7 @@ view: postorder_events {
   ###### * Delivery Dimensions * #######
 
   dimension: delivery_eta {
-    group_label: "* Delivery Dimensions *"
+    group_label: "> Delivery Dimensions"
     label: "Delivery ETA"
     description: "Order ETA at the time of the postorder tracking event"
     type: number
@@ -778,7 +778,7 @@ view: postorder_events {
   }
 
   dimension: delayed_component {
-    group_label: "* Delivery Dimensions *"
+    group_label: "> Delivery Dimensions"
     description: "If there was a delay at the time of the postorder tracking event, which part of the process was delayed"
     type: string
     sql: ${TABLE}.delayed_component ;;
