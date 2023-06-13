@@ -74,7 +74,7 @@ view: hiring_funnel_marketing_summary {
   #}
 
   dimension: date_ {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -151,7 +151,7 @@ view: hiring_funnel_marketing_summary {
   ###### Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
