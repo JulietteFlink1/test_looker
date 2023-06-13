@@ -110,7 +110,7 @@ view: dynamic_pop_comparison {
 
   dimension: order_uuid {
     type: string
-    group_label: "* IDs *"
+    group_label: "> IDs"
     label: "Order UUID"
     hidden: yes
   }
@@ -207,7 +207,7 @@ view: dynamic_pop_comparison {
     label: "Second P. - SUM Item Prices Sold (gross)"
     type: sum
     sql: ${sum_item_price_gross};;
-    group_label: "SUM Item Prices Sold (gross)"
+    group_label: "> SUM Item Prices Sold (gross)"
     filters: [period_selected: "Second Period"]
     value_format_name: euro_accounting_2_precision
   }
@@ -217,7 +217,7 @@ view: dynamic_pop_comparison {
     label: "First P. - SUM Item Prices Sold (gross)"
     type: sum
     sql: ${sum_item_price_gross};;
-    group_label: "SUM Item Prices Sold (gross)"
+    group_label: "> SUM Item Prices Sold (gross)"
     filters: [period_selected: "First Period"]
     value_format_name: euro_accounting_2_precision
   }
@@ -227,7 +227,7 @@ view: dynamic_pop_comparison {
     label: "% PoP - SUM Item Prices Sold (gross)"
     type: number
     sql: (1.0 * ${second_period_sum_item_price_gross} / NULLIF(${first_period_sum_item_price_gross} ,0)) - 1 ;;
-    group_label: "SUM Item Prices Sold (gross)"
+    group_label: "> SUM Item Prices Sold (gross)"
     value_format_name: percent_2
   }
 
@@ -237,7 +237,7 @@ view: dynamic_pop_comparison {
     label: "Second P. - SUM Item Quantity Sold"
     type: sum
     sql: ${sum_item_quantity};;
-    group_label: "SUM Item Quantity Sold"
+    group_label: "> SUM Item Quantity Sold"
     filters: [period_selected: "Second Period"]
     value_format_name: decimal_0
   }
@@ -247,7 +247,7 @@ view: dynamic_pop_comparison {
     label: "First P. - SUM Item Quantity Sold"
     type: sum
     sql: ${sum_item_quantity};;
-    group_label: "SUM Item Quantity Sold"
+    group_label: "> SUM Item Quantity Sold"
     filters: [period_selected: "First Period"]
     value_format_name: decimal_0
   }
@@ -257,7 +257,7 @@ view: dynamic_pop_comparison {
     label: "% PoP - SUM Item Quantity Sold"
     type: number
     sql: (1.0 * ${second_period_sum_item_quantity} / NULLIF(${first_period_sum_item_quantity} ,0)) - 1 ;;
-    group_label: "SUM Item Quantity Sold"
+    group_label: "> SUM Item Quantity Sold"
     value_format_name: percent_2
   }
 
@@ -267,7 +267,7 @@ view: dynamic_pop_comparison {
     label: "Second P. - # of Orders"
     type: count_distinct
     sql: ${order_uuid};;
-    group_label: "# of Orders"
+    group_label: "> # of Orders"
     filters: [period_selected: "Second Period"]
     value_format_name: decimal_0
   }
@@ -277,7 +277,7 @@ view: dynamic_pop_comparison {
     label: "First P. - # of Orders"
     type: count_distinct
     sql: ${order_uuid};;
-    group_label: "# of Orders"
+    group_label: "> # of Orders"
     filters: [period_selected: "First Period"]
     value_format_name: decimal_0
   }
@@ -287,7 +287,7 @@ view: dynamic_pop_comparison {
     label: "% PoP - # of Orders"
     type: number
     sql: (1.0 * ${second_period_cnt_orders} / NULLIF(${first_period_cnt_orders} ,0)) - 1 ;;
-    group_label: "# of Orders"
+    group_label: "> # of Orders"
     value_format_name: percent_2
   }
 
@@ -297,7 +297,7 @@ view: dynamic_pop_comparison {
 #    label: "Second P. - € Sum Gross Profit"
 #    type: sum
 #    sql: ${margin_absolute};;
-#    group_label: "€ Sum Gross Profit"
+#    group_label: "> € Sum Gross Profit"
 #    filters: [period_selected: "Second Period"]
 #    value_format_name: euro_accounting_2_precision
 #  }
@@ -307,7 +307,7 @@ view: dynamic_pop_comparison {
 #    label: "First P. - € Sum Gross Profit"
 #    type: sum
 #    sql: ${margin_absolute};;
-#    group_label: "€ Sum Gross Profit"
+#    group_label: "> € Sum Gross Profit"
 #    filters: [period_selected: "First Period"]
 #    value_format_name: euro_accounting_2_precision
 #  }
@@ -317,7 +317,7 @@ view: dynamic_pop_comparison {
 #    label: "% PoP - € Sum Gross Profit"
 #    type: number
 #    sql: (1.0 * ${second_period_sum_total_margin_abs} / NULLIF(${first_period_sum_total_margin_abs} ,0)) - 1 ;;
-#    group_label: "€ Sum Gross Profit"
+#    group_label: "> € Sum Gross Profit"
 #    value_format_name: percent_2
 #  }
 
