@@ -6,38 +6,38 @@ view: rider_applicants {
 
     required_access_grants: [can_access_pii_hub_employees]
 
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.applicant_email ;;
   }
 
   dimension: applicant_uuid {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     primary_key: yes
     type: string
     sql: ${TABLE}.applicant_uuid ;;
   }
 
   dimension: channel {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: country {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: applied_at {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -52,7 +52,7 @@ view: rider_applicants {
   }
 
   dimension_group: last_updated_at {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -67,7 +67,7 @@ view: rider_applicants {
   }
 
   dimension: position {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -75,7 +75,7 @@ view: rider_applicants {
   ##################### Measures
 
   measure: count_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Applicants"
     type: count
     drill_fields: []
