@@ -4,14 +4,14 @@ view: orders_using_hubs {
   view_label: "* Orders *"
 
   dimension: hub_location  {
-    group_label: "* Hub Dimensions *"
+    group_label: "> Hub Dimensions"
     type: location
     sql_latitude: ${hubs.latitude};;
     sql_longitude: ${hubs.longitude};;
   }
 
   dimension_group: time_between_hub_launch_and_order {
-    group_label: "* Hub Dimensions *"
+    group_label: "> Hub Dimensions"
     datatype: date
     type: duration
     sql_start: ${hubs.start_date} ;;
@@ -19,7 +19,7 @@ view: orders_using_hubs {
   }
 
   dimension: hub_to_customer_distance_m {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Hub to Customer Distance (m)"
     type: distance
     units: meters
@@ -29,7 +29,7 @@ view: orders_using_hubs {
   }
 
   dimension: hub_to_customer_distance_km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Hub to Customer Distance (km)"
     type: distance
     units: kilometers
@@ -39,7 +39,7 @@ view: orders_using_hubs {
   }
 
   dimension: hub_to_customer_distance_tier {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Hub to Customer Distance Tier (km)"
     type: tier
     tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
@@ -48,7 +48,7 @@ view: orders_using_hubs {
   }
 
   dimension: is_hub_to_customer_distance_over_10km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Is Hub to Customer Distance Over 10 km"
     type: yesno
     sql: IF(${hub_to_customer_distance_km} > 10, TRUE, FALSE);;
@@ -56,7 +56,7 @@ view: orders_using_hubs {
 
 
   measure: avg_hub_to_customer_distance_km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Hub to Customer Distance (km)"
     description: "Average distance between hub and customer dropoff in kilometers (most direct path / straight line)."
     hidden:  no
@@ -67,7 +67,7 @@ view: orders_using_hubs {
   }
 
   dimension: delivery_distance_m {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Delivery Distance (m)"
     type: number
     sql: ${TABLE}.delivery_distance_km/1000 ;;
@@ -76,7 +76,7 @@ view: orders_using_hubs {
   }
 
   dimension: delivery_distance_km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Delivery Distance (km)"
     type: number
     sql: ${TABLE}.delivery_distance_km ;;
@@ -84,7 +84,7 @@ view: orders_using_hubs {
     }
 
   dimension: delivery_distance_tier {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Delivery Distance Tier (0.1 km)"
     type: tier
     tiers: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0]
@@ -93,7 +93,7 @@ view: orders_using_hubs {
   }
 
   dimension: delivery_distance_tier_step_1km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Delivery Distance Tier (km)"
     type: tier
     tiers: [0,1,2,3,4]
@@ -102,14 +102,14 @@ view: orders_using_hubs {
   }
 
   dimension: is_delivery_distance_over_10km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Is Delivery Distance Over 10 km"
     type: yesno
     sql: IF(${delivery_distance_km} > 10, TRUE, FALSE);;
   }
 
   measure: avg_delivery_distance_km {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Delivery Distance (km)"
     description: "Average distance between hub and customer dropoff in kilometers(most direct path / straight line). For stacked orders, it is the average distance from previous customer."
     hidden:  no
@@ -122,7 +122,7 @@ view: orders_using_hubs {
   ######### Order New/Existing Hubs - Cell Split Hubs
 
   dimension: is_order_new_hub {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     label: "Is Order From New Hub"
     description: "An order is considered to come from a new hub if it was placed less than 30 days after the hub start date"
     type: yesno
@@ -130,7 +130,7 @@ view: orders_using_hubs {
   }
 # (date_diff(${order_date},${hubs.start_date},day)<= 30)
   dimension: is_order_from_cell_split_hub{
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     label: "Is Order From Cell Split Hub"
     description: "Order coming from an identified cell split hub"
     hidden:  yes
@@ -139,7 +139,7 @@ view: orders_using_hubs {
   }
 
   dimension: riding_to_customer_speed_dimension {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Riding to Customer Speed (km/h)"
     description: "Distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time."
     type: number
@@ -151,7 +151,7 @@ view: orders_using_hubs {
   ###### Average
 
   measure: avg_riding_to_customer_speed_approx {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Riding to Customer Speed (approximation, km/h)"
     description: "Average of distance to customer (straight line) from the previous destination (hub for the 1st order in the stack and previous customer for the subsequent orders) divided by riding to customer time. Outliers excluded (speed >40 km/h. distance >10km)."
     type: average
@@ -163,7 +163,7 @@ view: orders_using_hubs {
   ###### Sums
 
   measure: sum_gmv_existing_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM GMV Existing Hubs"
     description: "GMV from orders from existing hubs."
     type: sum
@@ -173,7 +173,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_gmv_new_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM GMV New Hubs"
     description: "GMV from orders from new hubs."
     type: sum
@@ -183,7 +183,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_gmv_new_cell_split_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM GMV New Hubs (Cell Split)"
     description: "GMV from orders from new hubs that are cell split."
     type: sum
@@ -193,7 +193,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_gmv_new_non_cell_split_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM GMV New Hubs (Non Cell Split)"
     description: "GMV from orders from new hubs that are not cell split."
     type: sum
@@ -204,7 +204,7 @@ view: orders_using_hubs {
 
 ### # orders
   measure: sum_orders_existing_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "# Orders Existing Hubs"
     description: "# Orders coming from existing hubs."
     type: count_distinct
@@ -214,7 +214,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_orders_new_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "# Orders New Hubs"
     description: "# Orders coming from new hubs. Don't take cell split into account"
     type: count_distinct
@@ -224,7 +224,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_orders_new_cell_split_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "# Orders New Hubs (Cell Split)"
     description: "# Orders coming from hubs that are new and cell split."
     type: count_distinct
@@ -234,7 +234,7 @@ view: orders_using_hubs {
   }
 
   measure: sum_orders_new_non_cell_split_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "# Orders New Hubs (Non Cell Split)"
     description: "# Orders coming from hubs that are new and non cell split."
     type: count_distinct
@@ -246,7 +246,7 @@ view: orders_using_hubs {
   ##### Shares
 
   measure: pct_gmv_existing_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "% GMV Existing Hubs"
     description: "% GMV coming from existing hubs."
     type: number
@@ -255,7 +255,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_gmv_new_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "% GMV New Hubs"
     description: "% GMV coming from new hubs."
     type: number
@@ -264,7 +264,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_gmv_new_cell_split_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "% GMV New Hubs (Cell Split)"
     description: "% GMV coming from new hubs that are cell split."
     type: number
@@ -273,7 +273,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_gmv_new_non_cell_split_hubs {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "% GMV New Hubs (Non Cell Split)"
     description: "% GMV coming from new hubs that are not cell split."
     type: number
@@ -282,7 +282,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_orders_existing_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "% Orders Existing Hubs"
     description: "Share of orders coming from existing hubs."
     type: number
@@ -291,7 +291,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_orders_new_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "% Orders New Hubs"
     description: "Share of orders coming from new hubs."
     type: number
@@ -300,7 +300,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_orders_new_cell_split_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "% Orders New Hubs (Cell Split)"
     description: "Share of orders coming from new hubs that are cell split."
     type: number
@@ -309,7 +309,7 @@ view: orders_using_hubs {
   }
 
   measure: pct_orders_new_non_cell_split_hubs {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "% Orders New Hubs (Non Cell Split)"
     description: "Share of orders coming from new hubs that are not cell split."
     type: number
