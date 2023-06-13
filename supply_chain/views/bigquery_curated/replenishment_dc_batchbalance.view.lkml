@@ -9,7 +9,7 @@ view: replenishment_dc_batchbalance {
 
   dimension_group: stock_balance_date {
     label: "Balance"
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     description: "Inventory balance date"
     type: time
     timeframes: [
@@ -32,7 +32,7 @@ view: replenishment_dc_batchbalance {
       year
     ]
     hidden: yes
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.stock_balance_timestamp ;;
   }
 
@@ -42,7 +42,7 @@ view: replenishment_dc_batchbalance {
       date
     ]
     hidden: yes
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.delivery_timestamp ;;
   }
 
@@ -54,7 +54,7 @@ view: replenishment_dc_batchbalance {
     convert_tz: no
     datatype: date
     hidden: yes
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.production_date ;;
   }
 
@@ -65,7 +65,7 @@ view: replenishment_dc_batchbalance {
     ]
     type: time
     datatype: date
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.sku_expiration_date ;;
   }
 
@@ -77,7 +77,7 @@ view: replenishment_dc_batchbalance {
     ]
     convert_tz: no
     datatype: date
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.sku_max_outbound_date ;;
   }
 
@@ -89,7 +89,7 @@ view: replenishment_dc_batchbalance {
     ]
     convert_tz: no
     datatype: date
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     sql: ${TABLE}.sku_min_outbound_date ;;
   }
 
@@ -140,19 +140,19 @@ view: replenishment_dc_batchbalance {
 
 
   dimension: available_stock {
-    group_label: "* Numeric Dimensions *"
+    group_label: "> Numeric Dimensions"
     type: number
     sql: ${TABLE}.available_stock ;;
   }
 
   dimension: blocked_stock {
-    group_label: "* Numeric Dimensions *"
+    group_label: "> Numeric Dimensions"
     type: number
     sql: ${TABLE}.blocked_stock ;;
   }
 
   dimension: current_stock {
-    group_label: "* Numeric Dimensions *"
+    group_label: "> Numeric Dimensions"
     type: number
     hidden: yes
     sql: ${TABLE}.current_stock ;;
@@ -160,13 +160,13 @@ view: replenishment_dc_batchbalance {
 
 
   dimension: inbounded_amount {
-    group_label: "* Numeric Dimensions *"
+    group_label: "> Numeric Dimensions"
     type: number
     sql: ${TABLE}.inbounded_amount ;;
   }
 
   dimension: outbounded_amount {
-    group_label: "* Numeric Dimensions *"
+    group_label: "> Numeric Dimensions"
     type: number
     sql: ${TABLE}.outbounded_amount ;;
   }
@@ -177,7 +177,7 @@ view: replenishment_dc_batchbalance {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #  parameter: expires_in {
-#    group_label: "* Parameters & Dynamic Fields *"
+#    group_label: "> Parameters & Dynamic Fields"
 #    label: "Expires in the next 'x' days"
 #    type: unquoted
 #    allowed_value: { value: "0" label: "7 days" }
@@ -206,27 +206,27 @@ view: replenishment_dc_batchbalance {
 
   dimension: is_expiration_date_in_the_next_7days{
     label: "Expires within the next 7 days"
-    group_label: "* Expiration Filters *"
+    group_label: "> Expiration Filters"
     type: yesno
     sql: ${date_diff_numeric} <= 7 ;;
   }
 
   dimension: is_expiration_date_in_the_next_15days{
     label: "Expires within the next 15 days"
-    group_label: "* Expiration Filters *"
+    group_label: "> Expiration Filters"
     type: yesno
     sql: ${date_diff_numeric} <= 15 ;;
   }
 
   dimension: is_expiration_date_in_the_next_30days{
     label: "Expires within the next 30 days"
-    group_label: "* Expiration Filters *"
+    group_label: "> Expiration Filters"
     type: yesno
     sql: ${date_diff_numeric} <= 30 ;;
   }
 
  # dimension: expires {
-#    group_label: "*"
+#    group_label: ">"
 #    type: number
 #    sql:
 #
@@ -324,7 +324,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_7days  {
     label: "AVG Stock Available HU in the last 7 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "last 7 days"]
@@ -335,7 +335,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_7days_pre  {
     label: "Period before the last 7 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "14 days ago for 7 days"]
@@ -346,7 +346,7 @@ view: replenishment_dc_batchbalance {
   measure: delta_last_7days {
     label: "% Delta last 7 days over previous period"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: number
     sql: (${stock_available_last_7days}/ nullif(${stock_available_last_7days_pre},0)) - 1 ;;
     value_format_name: percent_1
@@ -356,7 +356,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_15days  {
     label: "AVG Stock Available HU in the last 15 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "last 15 days"]
@@ -367,7 +367,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_15days_pre  {
     label: "Period before the last 15 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "30 days ago for 15 days"]
@@ -378,7 +378,7 @@ view: replenishment_dc_batchbalance {
   measure: delta_last_15days {
     label: "% Delta last 15 days over previous period"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: number
     sql: (${stock_available_last_15days}/ nullif(${stock_available_last_15days_pre},0)) - 1 ;;
     value_format_name: percent_1
@@ -388,7 +388,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_30days  {
     label: "AVG Stock Available HU in the last 30 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "last 30 days"]
@@ -399,7 +399,7 @@ view: replenishment_dc_batchbalance {
   measure: stock_available_last_30days_pre  {
     label: "Period before the last 30 days"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: average
     sql:  ${replenishment_dc_agg_derived_table.total_stock_available} / cast(${replenishment_dc_assortment.pu_per_hu} as numeric);;
     filters: [stock_balance_date_date: "60 days ago for 30 days"]
@@ -410,7 +410,7 @@ view: replenishment_dc_batchbalance {
   measure: delta_last_30days {
     label: "% Delta last 30 days over previous period"
     hidden: yes
-    group_label: "Variation Metrics"
+    group_label: "> Variation Metrics"
     type: number
     sql: (${stock_available_last_30days}/ nullif(${stock_available_last_30days_pre},0)) - 1 ;;
     value_format_name: percent_1
