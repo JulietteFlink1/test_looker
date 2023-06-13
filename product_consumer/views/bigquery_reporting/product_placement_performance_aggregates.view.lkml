@@ -58,7 +58,7 @@ view: product_placement_performance_aggregates {
   # ======= Dimensions ======= #
 
   dimension: product_placement_aggr_uuid {
-    group_label: "Dimensions"
+    group_label: "> Dimensions"
     label: "Event UUID"
     type: string
     primary_key: yes
@@ -68,7 +68,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: country_iso {
-    group_label: "Dimensions"
+    group_label: "> Dimensions"
     label: "Country ISO"
     type: string
     hidden: no
@@ -78,7 +78,7 @@ view: product_placement_performance_aggregates {
 
   dimension: hub_code {
     label: "Hub Code"
-    group_label: "Dimensions"
+    group_label: "> Dimensions"
     type: string
     hidden: no
     description: "Code of a hub identical to back-end source tables."
@@ -87,7 +87,7 @@ view: product_placement_performance_aggregates {
 
   dimension: platform {
     label: "Platform"
-    group_label: "Dimensions"
+    group_label: "> Dimensions"
     type: string
     hidden: no
     description: "Platform which user used, can be 'web', 'android' or 'ios'."
@@ -97,7 +97,7 @@ view: product_placement_performance_aggregates {
   # ======= Product Dimensions ======= #
 
   dimension: product_placement {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "Product Placement"
     description: "Placement in the app where product was listed, i.e. search, pdp, category"
     type: string
@@ -107,7 +107,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: screen_name {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "Screen Name"
     description: "Name of the screen."
     type: string
@@ -115,7 +115,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: category_name {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "Category Name"
     description: "For categories, the name of the category where the product was listed. For collections, the name of the collection. For other product placements, the highest level collection name (only where applicable)."
     type: string
@@ -123,7 +123,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: subcategory_name {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "Sub-Category Name"
     description: "For categories, the name of the sub-category where the product was listed. For collections, the name of the sub-collection. For other product placements, the granular sub-grouping (only where applicable)."
     type: string
@@ -131,7 +131,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: pdp_origin {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "PDP Origin"
     description: "Product placement where the user clicked through to the Product Details Page"
     type: string
@@ -139,7 +139,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: product_sku {
-    group_label: "Product Dimensions"
+    group_label: "> Product Dimensions"
     label: "Product SKU"
     description: "SKU of the product"
     type: string
@@ -150,7 +150,7 @@ view: product_placement_performance_aggregates {
 # ======= Flags ======= #
 
   dimension: is_exposed_to_impressions {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Exposed To Impressions"
     type: yesno
     description: "If a user was exposed to product impressions in this placement"
@@ -158,7 +158,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: is_discount_applied {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Discount Applied"
     type: yesno
     description: "If a discount was applied to a product"
@@ -168,7 +168,7 @@ view: product_placement_performance_aggregates {
   # =======  User Measures ======= #
 
   dimension: count_of_distinct_users_with_product_impression {
-    group_label: "User Measures"
+    group_label: "> User Measures"
     label: "Count of users with product impression."
     type: number
     hidden: yes
@@ -177,7 +177,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: count_of_distinct_users_with_product_added_to_cart {
-    group_label: "User Measures"
+    group_label: "> User Measures"
     label: "Count of users with product added to cart."
     type: number
     hidden: yes
@@ -186,7 +186,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: count_of_distinct_users_with_product_removed_from_cart {
-    group_label: "User Measures"
+    group_label: "> User Measures"
     label: "Count of users with product removed from cart."
     type: number
     hidden: yes
@@ -195,7 +195,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: count_of_distinct_users_with_pdp_viewed {
-    group_label: "User Measures"
+    group_label: "> User Measures"
     label: "Count of users with PDP viewed."
     type: number
     hidden: yes
@@ -204,7 +204,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: count_of_distinct_users_with_order_placed {
-    group_label: "User Measures"
+    group_label: "> User Measures"
     label: "Count of users placed an order"
     type: number
     hidden: yes
@@ -214,7 +214,7 @@ view: product_placement_performance_aggregates {
 
   # ======= Product Quantity Aggregates ======= #
   dimension: number_of_product_impressions {
-    group_label: "Product Quantity Aggregates"
+    group_label: "> Product Quantity Aggregates"
     label: "Count of impressions triggered"
     type: number
     hidden: yes
@@ -222,7 +222,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: number_of_product_add_to_carts {
-    group_label: "Product Quantity Aggregates"
+    group_label: "> Product Quantity Aggregates"
     label: "Count of unique products added to cart"
     type: number
     hidden: yes
@@ -230,7 +230,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: number_of_product_removed_from_carts {
-    group_label: "Product Quantity Aggregates"
+    group_label: "> Product Quantity Aggregates"
     label: "Count of unique products removed from cart"
     type: number
     hidden: yes
@@ -238,7 +238,7 @@ view: product_placement_performance_aggregates {
   }
 
   dimension: number_of_orders_with_product {
-    group_label: "Product Quantity Aggregates"
+    group_label: "> Product Quantity Aggregates"
     label: "Count of orders containing the product"
     type: number
     hidden: yes
@@ -248,7 +248,7 @@ view: product_placement_performance_aggregates {
   # =======  Date Timestamp ======= #
 
   dimension_group: event_date {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "Event Date"
     type: time
     timeframes: [
@@ -268,7 +268,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_exposed_to_product{
     type: sum
-    group_label: "* SKU & Placement Numbers *"
+    group_label: "> SKU & Placement Numbers"
     label: "Number of Users with Product Impression"
     description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
@@ -277,7 +277,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_product_added_to_cart{
     type: sum
-    group_label: "* SKU & Placement Numbers *"
+    group_label: "> SKU & Placement Numbers"
     label: "Number of Users who Added Product to Cart"
     description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
@@ -286,7 +286,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_order_placed{
     type: sum
-    group_label: "* SKU & Placement Numbers *"
+    group_label: "> SKU & Placement Numbers"
     label: "Number of Users who Placed an Order"
     description: "This field should only be used at a SKU & Placement level and not at any higher aggregation."
     hidden:  no
@@ -295,7 +295,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_exposed_to_product_filtered{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Users with Product Impression Filtered"
     hidden:  yes
     sql: ${count_of_distinct_users_with_product_impression} ;;
@@ -304,7 +304,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_product_added_to_cart_filtered{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Users Added Product to Cart Filtered"
     hidden:  yes
     sql: ${count_of_distinct_users_with_product_added_to_cart} ;;
@@ -313,7 +313,7 @@ view: product_placement_performance_aggregates {
 
   measure: number_of_users_with_order_placed_filtered{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Users Placed an Order Filtered"
     hidden:  yes
     sql: ${count_of_distinct_users_with_order_placed} ;;
@@ -324,7 +324,7 @@ view: product_placement_performance_aggregates {
 
   measure: numbers_of_product_impressions{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Product Impressions"
     description: "The total number of times the product was viewed. Not all users are exposed to impressions, so this number is sampled. Please filter for 'Is Exposed to Impressions'."
     hidden:  no
@@ -333,7 +333,7 @@ view: product_placement_performance_aggregates {
 
   measure: numbers_of_product_added_to_carts{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Products Added to Cart"
     description: "The total number of times the product was added to cart."
     hidden:  no
@@ -342,7 +342,7 @@ view: product_placement_performance_aggregates {
 
   measure: numbers_of_products_removed_from_carts{
     type: sum
-    group_label: "* Numbers *"
+    group_label: "> Numbers"
     label: "Number of Products Removed from Cart"
     description: "The total number of times the product was removed from cart."
     hidden:  no
@@ -351,7 +351,7 @@ view: product_placement_performance_aggregates {
 
   measure: numbers_of_orders_with_product{
     type: sum
-    group_label: "* SKU & Placement Numbers *"
+    group_label: "> SKU & Placement Numbers"
     label: "Number of Orders with Product - See Description"
     description: "This field should only be used at a SKU & Placement level and not at any higher aggregation. Please, always refer to the Orders explore for sales source of truth"
     hidden:  no
@@ -361,7 +361,7 @@ view: product_placement_performance_aggregates {
   ######## * Percentages * ########
 
   measure: pct_users_added_product_to_cart {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% Users Added Product to Cart from Impression"
     description: "# Users added product to cart divided by the # of users exposed to the product."
     type: number
@@ -370,7 +370,7 @@ view: product_placement_performance_aggregates {
   }
 
   measure: pct_users_placed_order_added_to_cart {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% Users Who Added to Cart that Placed an Order "
     description: "# Users who placed an order divided by the # users who added product to cart."
     type: number
@@ -379,7 +379,7 @@ view: product_placement_performance_aggregates {
   }
 
   measure: pct_users_placed_order_exposed_to_product {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% Users with Impression that Placed an Order"
     description: "# Users who placed an order divided by the # of users exposed to the product."
     type: number
