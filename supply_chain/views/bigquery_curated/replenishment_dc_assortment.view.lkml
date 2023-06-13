@@ -9,7 +9,7 @@ view: replenishment_dc_assortment {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dimension_group: last_assortment {
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     type: time
     timeframes: [
       date
@@ -21,7 +21,7 @@ view: replenishment_dc_assortment {
 
   dimension_group: last_assortment_timestamp {
     type: time
-    group_label: "* Date Dimensions *"
+    group_label: "> Date Dimensions"
     hidden: yes
     timeframes: [
       raw,
