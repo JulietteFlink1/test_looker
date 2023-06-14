@@ -18,8 +18,8 @@ view: availability_waterfall_daily {
   dimension: bucket {
     type: string
     sql: ${TABLE}.bucket ;;
-    label: "Bucket"
-    description: "Bucket allocated to product-location for availability topics"
+    label: "Out of Stock Bucket (Daily level)"
+    description: "Bucket allocated to product-location for availability topics based on MECE Logic (mutually exclusive and collectively exhaustive)"
     hidden: no
   }
 
@@ -36,7 +36,7 @@ view: availability_waterfall_daily {
     type: number
     sql: ${TABLE}.flag_batch_size_greater_max_op ;;
     group_label: "Flags"
-    label: "Batch Size greater than Maximum Order Parameter flag"
+    label: "Flag Batch Size > Max. Order Parameter"
     description: "Flag that shows Shelf space restriction, with the condition that the batch size is greater than the maximum order parameter."
     hidden: no
   }
@@ -279,7 +279,7 @@ view: availability_waterfall_daily {
   }
 
   dimension: is_active_hub {
-    type: string
+    type: yesno
     sql: ${TABLE}.is_active_hub ;;
     label: "Is active hub "
     description: "Shows if hub is active for product-location"
@@ -298,7 +298,7 @@ view: availability_waterfall_daily {
   dimension: lost_sales_eur {
     type: number
     sql: ${TABLE}.lost_sales_eur ;;
-    label: "Lost Sales (EUR)"
+    label: "€ Lost Sales"
     description: "Shows the value (in EUR) of the lost revenue due to Out-of-Stock reasons"
     hidden: no
   }
@@ -306,8 +306,8 @@ view: availability_waterfall_daily {
   dimension: lost_sales_units {
     type: number
     sql: ${TABLE}.lost_sales_units ;;
-    label: "Lost Sales (Units)"
-    description: "Shows the amount of units of the lost revenue due to Out-of-Stock reasons"
+    label: "Lost Sales in Handling Units"
+    description: "Shows the amount of handling units of the lost revenue due to Out-of-Stock reasons"
     hidden: no
 
   }
@@ -315,8 +315,8 @@ view: availability_waterfall_daily {
   dimension: parent_bucket {
     type: string
     sql: ${TABLE}.parent_bucket ;;
-    label: "Parent bucket"
-    description: "Department represented for tackling the availability bucket main issue"
+    label: "Parent Out of Stock Bucket (Daily level)"
+    description: "Department represented for tackling the availability bucket main issue. Allocated to product-location for availability topics based on MECE Logic (mutually exclusive and collectively exhaustive"
     hidden: no
   }
 
@@ -341,7 +341,7 @@ view: availability_waterfall_daily {
   dimension: rank_corrected_sales_eur {
     type: number
     sql: ${TABLE}.rank_corrected_sales_eur ;;
-    label: "Corrected Sales (EUR) Rank"
+    label: "€ Corrected Sales Rank"
     group_label: "Rankers"
     description: "Ranks items in descending order based on the amount of lost sales for items that are added in the basket"
     hidden: no
@@ -350,7 +350,7 @@ view: availability_waterfall_daily {
   dimension: rank_corrected_sales_units {
     type: number
     sql: ${TABLE}.rank_corrected_sales_units ;;
-    label: "Corrected Sales (Units) Rank"
+    label: "Corrected Sales in Handling Units Rank"
     group_label: "Rankers"
     description: "Ranks items in descending order based on the amount of lost sales units for items that are added in the basket"
     hidden: no
@@ -359,7 +359,7 @@ view: availability_waterfall_daily {
   dimension: rank_sequence_added {
     type: number
     sql: ${TABLE}.rank_sequence_added ;;
-    label: "Corrected Sales (Units) Rank"
+    label: "Sequence-added Hub Ranking"
     group_label: "Rankers"
     description: "Shows the rank of the item-location based on the likehood of the customer adding in the item the basket as first item (per hub ranked) "
     hidden: no
@@ -371,11 +371,9 @@ view: availability_waterfall_daily {
   dimension_group: report {
     type: time
     timeframes: [
-      raw,
       date,
       week,
       month,
-      quarter,
       year
     ]
     convert_tz: no
