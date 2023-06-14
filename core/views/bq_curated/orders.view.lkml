@@ -3620,7 +3620,7 @@ view: orders {
   }
 
   measure: number_of_orders_with_late_night_fee {
-    group_label: "Basic Counts (Orders / Customers etc.)"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     label: "# Orders with Late Night Fee"
     description: "Number of orders for which late night fee applied."
     type: count_distinct
