@@ -46,6 +46,8 @@ view: orders_with_ops_metrics {
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
+      column: cnt_orders_delayed_under_0_min_raw {}
+      column: cnt_orders_delayed_under_0_min_with_tolerance_buffer {}
       column: cnt_external_orders {}
       column: cnt_orders_with_delivery_eta_available {}
       column: cnt_orders_with_targeted_eta_available {}
@@ -227,13 +229,32 @@ view: orders_with_ops_metrics {
     type: average
   }
 
+  measure: pct_delivery_in_time_raw {
+    group_label: "> Operations / Logistics"
+    label: "% Orders delivered on time"
+    description: "Share of orders delivered on time."
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_delivery_in_time {
     group_label: "> Operations / Logistics"
     label: "% Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Share of orders delivered on time (with + 15% PDT tolerance). ‘+ 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look even earlier."
+    description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
     value_format_name: percent_0
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+  }
+
+  measure: pct_delivery_in_time_with_tolerance_buffer {
+    group_label: "> Operations / Logistics"
+    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
+    Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
   }
 
   measure: pct_fulfillment_over_30_min {
@@ -305,6 +326,7 @@ view: orders_with_ops_metrics {
     description: "Share of orders delivered no later than targeted estimate"
     value_format_name: percent_0
     type: number
+    hidden: yes
     sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
   }
 
@@ -327,15 +349,31 @@ view: orders_with_ops_metrics {
   }
 
   measure: cnt_orders_delayed_under_0_min {
-    group_label: "> Basic Counts"
+    group_label: "> Operations / Logistics"
     label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with + 15% PDT tolerance). ‘+ 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look earlier."
+    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: sum
     hidden: yes
   }
 
+  measure: cnt_orders_delayed_under_0_min_raw {
+    group_label: "> Operations / Logistics"
+    label: "# Orders delivered on time "
+    description: "Count of orders delivered no later than PDT."
+    hidden:  yes
+    type: sum
+  }
+
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+    group_label: "> Operations / Logistics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    hidden:  yes
+    type: sum
+  }
+
   measure: cnt_orders_fulfilled_over_30_min {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "# Orders fulfilled >30min"
     description: "Count of Orders delivered >30min fulfillment time"
     hidden:  yes
@@ -418,7 +456,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_waiting_for_rider_decision_time {
     alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Waiting for Rider Decision Time (Minutes)"
     description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
@@ -427,7 +465,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_waiting_for_available_rider_time_minutes {
     alias: [avg_withheld_from_rider_time_minutes]
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Waiting For Available Rider Time (Minutes)"
     description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
     type: average
@@ -435,7 +473,7 @@ view: orders_with_ops_metrics {
   }
 
   measure: avg_waiting_for_trip_readiness_time_minutes {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Waiting For Trip Readiness Time (Minutes)"
     description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
     type: average
@@ -443,7 +481,7 @@ view: orders_with_ops_metrics {
   }
 
   measure: avg_rider_preparing_for_trip_time_minutes {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Rider Preparing For Trip Time (Minutes)"
     description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
     type: average
@@ -451,7 +489,7 @@ view: orders_with_ops_metrics {
   }
 
   measure: avg_number_of_offered_to_riders_events {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Offered To Riders Events"
     description: "Average number of Offered to Riders events orders had. Multiple events might mean offers were rejected by riders or expired."
     type: average
@@ -459,7 +497,7 @@ view: orders_with_ops_metrics {
   }
 
   measure: avg_number_of_withheld_from_riders_events {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "AVG Withheld From Riders Events"
     description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
     type: average
