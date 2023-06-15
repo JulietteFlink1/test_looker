@@ -114,6 +114,32 @@ view: products {
     sql: CONCAT(${TABLE}.global_sku, ' - ', ${TABLE}.product_name) ;;
   }
 
+  dimension: fresh_check_frequency {
+    label: "Fresh Check Frequency"
+    description: "Frequency at which the sku requires a fresh check to be triggered in HubOne. Null if this attribute hasn't been set in Oracle. "
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.fresh_check_frequency ;;
+  }
+
+  dimension: extra_check_frequency {
+    label: "Extra Check Frequency"
+    description: "Frequency at which the sku requires an extra check to be triggered in HubOne. Null if this attribute hasn't been set in Oracle. "
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.extra_check_frequency ;;
+  }
+
+  dimension: bbd_check {
+    label: "BBD Check"
+    description: "Yes if the sku requires BBD checks to be triggered in HubOne, No otherwise.
+    Null if this attribute hasn't been set in Oracle.
+    This field is a string - not a boolean, to allow it to be null if the value is not set in Oracle."
+    group_label: "ERP fields"
+    type: string
+    sql: ${TABLE}.bbd_check ;;
+  }
+
   dimension: subcategory {
     alias: [random_ct_subcategory, ct_subcategory]
     label: "Sub-Category"

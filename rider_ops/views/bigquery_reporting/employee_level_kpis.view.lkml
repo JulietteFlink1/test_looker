@@ -5,7 +5,6 @@
 view: employee_level_kpis {
   sql_table_name: `flink-data-prod.reporting.employee_level_kpis`
     ;;
-
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,9 +416,20 @@ view: employee_level_kpis {
     type: duration
     intervals: [day, week, year]
     label: "Duration between hire date and today"
-    sql_start: timestamp(${TABLE}.hire_date) ;;
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
     sql_end: current_timestamp ;;
     group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and today (if hire date is not existing then consider Employment Start Date instead)"
+  }
+
+  dimension_group: time_between_hire_date_and_shift_date {
+    type: duration
+    intervals: [day, week, year]
+    label: "Duration between hire date and shift date"
+    sql_start: coalesce(timestamp(${TABLE}.hire_date), timestamp(${TABLE}.employment_start_date)) ;;
+    sql_end: timestamp(${shift_date}) ;;
+    group_label: "> Dates & Timestamps"
+    description: "Duration between hire date and shift date (if hire date is not existing then consider Employment Start Date instead)"
   }
 
   dimension: number_of_planned_minutes_availability_based {
@@ -605,6 +615,114 @@ view: employee_level_kpis {
     sql: ${TABLE}.hourly_rate ;;
     value_format_name: decimal_1
     hidden: yes
+  }
+
+  dimension: pct_fringe {
+    group_label: "> Payroll"
+    type: number
+    label: "% Fringe"
+    description: " The estimated rate of employer-related social contributions that are mandatory contributions
+      for employers. Employers are required to pay it as a percentage of their their employees' gross salaries to various social security programs"
+    sql: ${TABLE}.pct_fringe ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: amt_byod_bonus_net {
+    group_label: "> Payroll"
+    type: number
+    label: "AMT BYOD Bonus"
+    description: "Net bonus amount paid to riders for bringing and using their own devices."
+    sql: ${TABLE}.amt_byod_bonus_net ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_hub_one_tasks_minutes {
+    type: number
+    label: "# Hub One Tasks Minutes"
+    sql: ${TABLE}.number_of_rider_hub_one_tasks_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_equipment_issue_minutes {
+    type: number
+    label: "# Equipment Issue Minutes"
+    sql: ${TABLE}.number_of_rider_equipment_issue_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_large_order_support_minutes {
+    type: number
+    label: "# Large Order Support Minutes"
+    sql: ${TABLE}.number_of_rider_large_order_support_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_accident_minutes {
+    type: number
+    label: "# Accident Minutes"
+    sql: ${TABLE}.number_of_rider_accident_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_temporary_offline_break_minutes {
+    type: number
+    label: "# Temporary Offline Break Minutes"
+    sql: ${TABLE}.number_of_rider_temporary_offline_break_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_total_temporary_offline_minutes {
+    type: number
+    label: "# Total Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_total_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_unresponsive_minutes {
+    type: number
+    label: "# Unresponsive Minutes"
+    sql: ${TABLE}.number_of_rider_unresponsive_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_other_temporary_offline_minutes {
+    type: number
+    label: "# Other Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_other_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_idle_minutes {
+    type: number
+    label: "# Idle Minutes"
+    sql: ${TABLE}.number_of_rider_idle_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_idle_minutes_quinyx {
+    type: number
+    label: "# Idle Minutes - Quinyx"
+    sql: ${TABLE}.number_of_idle_minutes_quinyx ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_waiting_for_rider_decision_time_minutes {
+    type: number
+    label: "# Waiting For Rider Decision Time (min)"
+    sql: ${TABLE}.number_of_waiting_for_rider_decision_time_minutes ;;
+    value_format_name: decimal_1
   }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -954,16 +1072,6 @@ view: employee_level_kpis {
     value_format_name: decimal_1
   }
 
-  measure: sum_rider_idle_time_minutes {
-    group_label: "> Performance"
-    type: sum
-    label: "# Rider Idle Time (min)"
-    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
-    sql: ${TABLE}.number_of_idle_minutes ;;
-    filters: [position_name: "rider"]
-    value_format_name: decimal_1
-  }
-
   measure: sum_picking_time_minutes {
     group_label: "> Logistics"
     type: sum
@@ -1109,13 +1217,149 @@ view: employee_level_kpis {
     value_format_name: percent_1
   }
 
+  measure: number_of_rider_hub_one_tasks_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Hub One Tasks Hours"
+    description: "Number of hours rider spent temporary offline due to doing hub one tasks or shelf restocking.
+    It is calculated based on rider state change reason in Workforce app."
+    sql: ${number_of_rider_hub_one_tasks_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_equipment_issue_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Equipment Issue Hours"
+    description: "Number of hours rider spent temporary offline due to equipment issues.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_large_order_support_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Large Order Support Hours"
+    description: "Number of hours rider spent temporary offline due to supporting large orders.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_large_order_support_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_accident_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Accident Hours"
+    description: "Number of hours rider spent temporary offline due to an accident.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_accident_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_temporary_offline_break_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Temporary Offline Break Hours"
+    description: "Number of hours rider spent temporary offline due to taking break.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_temporary_offline_break_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_total_temporary_offline_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_total_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_other_temporary_offline_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Other Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline due to doing other tasks than hub one tasks, shelf restocking, equipment issues, supporting large orders, accident and breaks.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_other_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_unresponsive_hours {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Unresponsive Hours"
+    description: "Number of hours rider spent temporary offline due to order rejection or expiration."
+    sql: ${number_of_rider_unresponsive_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_idle_time_hours {
+    group_label: "> Performance"
+    type: number
+    label: "# Rider Idle Time (Hour) (Online hours based)"
+    description: "Number of hours rider spent idle. Calculated as: (# Online Minutes - # Rider Handling Time)/60."
+    sql: ${sum_rider_idle_time_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: sum_rider_idle_time_minutes {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Idle Time (min) (Online hours based)"
+    description: "Sum of idle time (min) - the difference between worked minutes and rider handling time minutes"
+    sql: ${number_of_idle_minutes} ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+  }
+
+  measure: sum_idle_time_minutes_quinyx {
+    group_label: "> Performance"
+    type: sum
+    label: "# Rider Idle Time (min) (Quinyx based)"
+    description: "Number of hours rider spent idle. Calculated as: # Worked Minutes - # Rider Handling Time."
+    sql: ${number_of_idle_minutes_quinyx} ;;
+    filters: [position_name: "rider"]
+    value_format_name: decimal_1
+    hidden: no
+  }
+
+  measure: number_of_idle_time_hours_quinyx {
+    group_label: "> Performance"
+    type: number
+    label: "# Rider Idle Time (Hour) (Quinyx based)"
+    description: "Number of hours rider spent idle. Calculated as: (# Worked Minutes - # Rider Handling Time)/60."
+    sql: ${sum_idle_time_minutes_quinyx}/60 ;;
+    value_format_name: decimal_2
+  }
+
   measure: pct_rider_idle_time {
     group_label: "> Performance"
     type: number
-    label: "% Worked Time Spent Idle (Riders)"
-    description: "% of worked time (min) not spent handling an order - compares the difference between worked time (min) and rider handling time (min) with total worked time (min)"
-    sql: ${sum_rider_idle_time_minutes} / nullif(${sum_worked_time_minutes_rider},0) ;;
+    label: "% Worked Time Spent Idle (Online Hours Based)"
+    description: "% of online hours (from Workforce app) not spent handling an order - compares the difference between online time and rider handling time with total online time."
+    sql: ${number_of_idle_time_hours} / nullif(${number_of_online_hours},0) ;;
     value_format_name: percent_2
+  }
+
+  measure: pct_rider_idle_time_quinyx {
+    group_label: "> Performance"
+    type: number
+    label: "% Worked Time Spent Idle (Quinyx Based)"
+    description: "% of punched hours not spent handling an order - compares the difference between worked time and rider handling time with total worked time."
+    sql: ${number_of_idle_time_hours_quinyx} / nullif(${number_of_worked_hours},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: sum_waiting_for_rider_decision_time_minutes {
+    group_label: "> Logistics"
+    type: sum
+    label: "# Waiting For Rider Decision Time (min)"
+    description: "Number of minutes an order waited for rider to accept (or reject) the offer."
+    sql: ${number_of_waiting_for_rider_decision_time_minutes} ;;
+    value_format_name: decimal_1
   }
 
   # ~~~~~~~~~~~~~~~     Shift related     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1555,6 +1799,7 @@ view: employee_level_kpis {
     group_label: "> Shift Related"
     type: sum
     label: "# No Show Hours"
+    description: "Shift hours with missing punch including deleted shifts only if there are approved or applied absences on top of them & excluding shifts with project code = 'Refilled shift')"
     sql: ${TABLE}.number_of_no_show_minutes/60 ;;
     value_format_name: decimal_1
   }
@@ -1843,7 +2088,9 @@ view: employee_level_kpis {
       number_of_vacation_hours_payroll,
       hourly_rate,
       sum_signon_bonus_gross,
-      sum_referral_bonus_net
+      sum_referral_bonus_net,
+      pct_fringe,
+      amt_byod_bonus_net
     ]
   }
 

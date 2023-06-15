@@ -16,7 +16,7 @@ explore: key_value_items {
   join: key_value_items {
     sql_on: ${key_value_items.sku}           = ${orderline.product_sku} and
             ${key_value_items.country_iso}   = ${orderline.country_iso} and
-            extract(month from ${key_value_items.kvi_date}) = extract(month from current_date())
+            extract(year from ${key_value_items.kvi_date})||extract(month from ${key_value_items.kvi_date}) = extract(year from current_date())||extract(month from current_date())
             ;;
     type: left_outer
     relationship: many_to_one

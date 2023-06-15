@@ -19,8 +19,12 @@ view: orders_with_ops_metrics {
       column: avg_estimated_queuing_time_for_picker_minutes {}
       column: avg_estimated_queuing_time_for_rider_minutes {}
       column: avg_waiting_for_picker_time {}
-      column: avg_waiting_for_rider_time {}
-      column: avg_withheld_from_rider_time_minutes {}
+      column: avg_waiting_for_rider_decision_time {}
+      column: avg_waiting_for_available_rider_time_minutes {}
+      column: avg_waiting_for_trip_readiness_time_minutes {}
+      column: avg_rider_preparing_for_trip_time_minutes {}
+      column: avg_number_of_offered_to_riders_events {}
+      column: avg_number_of_withheld_from_riders_events {}
       column: avg_withheld_from_picking_time_minutes {}
       column: avg_fulfillment_time {}
       column: avg_estimated_riding_time_minutes {}
@@ -42,6 +46,8 @@ view: orders_with_ops_metrics {
       column: created_date {}
       column: created_minute30 {}
       column: cnt_orders_delayed_under_0_min {}
+      column: cnt_orders_delayed_under_0_min_raw {}
+      column: cnt_orders_delayed_under_0_min_with_tolerance_buffer {}
       column: cnt_external_orders {}
       column: cnt_orders_with_delivery_eta_available {}
       column: cnt_orders_with_targeted_eta_available {}
@@ -52,6 +58,7 @@ view: orders_with_ops_metrics {
       column: cnt_orders_fulfilled_over_30_min {}
       column: sum_rider_handling_time_minutes_saved_with_stacking {}
       column: sum_rider_handling_time_minutes {}
+      column: sum_rider_handling_time_minutes_last_mile {}
       column: sum_potential_rider_handling_time_without_stacking_minutes {}
       column: avg_picking_time_per_item {}
       column: cnt_internal_orders {}
@@ -137,7 +144,7 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# Click & Collect Orders"
     description: "Count of Click & Collect Orders"
-    hidden:  yes
+    hidden:  no
     type: sum
     value_format_name: decimal_0
     }
@@ -146,15 +153,24 @@ view: orders_with_ops_metrics {
     group_label: "> Basic Counts"
     label: "# DaaS Orders"
     description: "Count of Delivery as a Service Orders (e.g. Uber Direct)"
-    hidden:  yes
+    hidden:  no
     type: sum
     value_format_name: decimal_0
+  }
+
+  measure: share_of_daas_orders_over_all_internal_orders {
+    group_label:  "> Operations / Logistics"
+    label: "% DaaS Orders"
+    description: "Share of DaaS orders over total number of internal orders"
+    type: number
+    sql: ${cnt_daas_orders} / NULLIF(${cnt_internal_orders}, 0);;
+    value_format: "0.0%"
   }
 
   measure: cnt_internal_orders {
     group_label: "> Basic Counts"
     label: "# Internal Orders"
-    description: "Count of Internal Orders"
+    description: "Count of Internal Orders. All orders placed via Flink App."
     hidden:  no
     type: sum
     value_format_name: decimal_0
@@ -187,6 +203,16 @@ view: orders_with_ops_metrics {
     type: sum
     }
 
+  measure: number_of_rider_required_orders {
+    group_label: "> Basic Counts"
+    label: "# RR Orders"
+    hidden: yes
+    description: "Count of Successful Rider Required Orders (excl. Cancelled, Click & Collect and External Orders) that require riders. Include Flink delivered orders and DaaS orders."
+    value_format_name: decimal_0
+    type: number
+    sql: ${cnt_daas_orders}+${number_of_unique_flink_delivered_orders}  ;;
+  }
+
   measure: avg_number_items {
     group_label: "> Basic Counts"
     label: "AVG # Items"
@@ -203,13 +229,32 @@ view: orders_with_ops_metrics {
     type: average
   }
 
+  measure: pct_delivery_in_time_raw {
+    group_label: "> Operations / Logistics"
+    label: "% Orders delivered on time"
+    description: "Share of orders delivered on time."
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
   measure: pct_delivery_in_time {
     group_label: "> Operations / Logistics"
-    label: "% Orders delivered in time (PDT)"
-    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
+    label: "% Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
     value_format_name: percent_0
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+  }
+
+  measure: pct_delivery_in_time_with_tolerance_buffer {
+    group_label: "> Operations / Logistics"
+    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
+    Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
   }
 
   measure: pct_fulfillment_over_30_min {
@@ -281,6 +326,7 @@ view: orders_with_ops_metrics {
     description: "Share of orders delivered no later than targeted estimate"
     value_format_name: percent_0
     type: number
+    hidden: yes
     sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
   }
 
@@ -303,15 +349,31 @@ view: orders_with_ops_metrics {
   }
 
   measure: cnt_orders_delayed_under_0_min {
-    group_label: "> Basic Counts"
-    label: "# Orders delivered on time (30 sec tolerance)"
-    description: "Count of Orders delivered no later than PDT"
+    group_label: "> Operations / Logistics"
+    label: "# Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: sum
     hidden: yes
   }
 
+  measure: cnt_orders_delayed_under_0_min_raw {
+    group_label: "> Operations / Logistics"
+    label: "# Orders delivered on time "
+    description: "Count of orders delivered no later than PDT."
+    hidden:  yes
+    type: sum
+  }
+
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+    group_label: "> Operations / Logistics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    hidden:  yes
+    type: sum
+  }
+
   measure: cnt_orders_fulfilled_over_30_min {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "# Orders fulfilled >30min"
     description: "Count of Orders delivered >30min fulfillment time"
     hidden:  yes
@@ -385,33 +447,66 @@ view: orders_with_ops_metrics {
 
   measure: avg_waiting_for_picker_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Waiting For Picker Time"
+    label: "AVG Waiting For Picker Time (Minutes)"
     description: "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
     Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     value_format_name: decimal_1
     type: average
   }
 
-  measure: avg_waiting_for_rider_time {
-    alias: [avg_rider_queuing_time]
+  measure: avg_waiting_for_rider_decision_time {
+    alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
     group_label: "> Operations / Logistics"
-    label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
-    value_format_name: decimal_1
+    label: "AVG Waiting for Rider Decision Time (Minutes)"
+    description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
+    value_format_name: decimal_1
   }
 
-  measure: avg_withheld_from_rider_time_minutes {
+  measure: avg_waiting_for_available_rider_time_minutes {
+    alias: [avg_withheld_from_rider_time_minutes]
     group_label: "> Operations / Logistics"
-    label: "AVG Withheld From Rider Time"
-    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    label: "AVG Waiting For Available Rider Time (Minutes)"
+    description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_trip_readiness_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Waiting For Trip Readiness Time (Minutes)"
+    description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_preparing_for_trip_time_minutes {
+    group_label: "> Operations / Logistics"
+    label: "AVG Rider Preparing For Trip Time (Minutes)"
+    description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_offered_to_riders_events {
+    group_label: "> Operations / Logistics"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Offered to Riders events orders had. Multiple events might mean offers were rejected by riders or expired."
+    type: average
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_withheld_from_riders_events {
+    group_label: "> Operations / Logistics"
+    label: "AVG Withheld From Riders Events"
+    description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
     type: average
     value_format_name: decimal_1
   }
 
   measure: avg_withheld_from_picking_time_minutes {
     group_label: "> Operations / Logistics"
-    label: "AVG Withheld From Picking Time"
+    label: "AVG Withheld From Picking Time (Minutes)"
     description: "Average dispatch-related (withheld) queuing time - from order created to order offered to hub for picking. Outliers excluded (<0min or >120min)"
     value_format_name: decimal_1
     type: average
@@ -493,7 +588,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_targeted_delivery_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Targeted Fulfillment Time (min)"
+    label: "AVG Targeted Fulfillment Time (Minutes)"
     description: "Average internal targeted delivery time for hub ops."
     value_format_name: decimal_1
     type: average
@@ -501,7 +596,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_riding_to_hub_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Riding to Hub time"
+    label: "AVG Riding to Hub time (Minutes)"
     description: "Average riding time from customer location back to the hub (<1min or >30min)."
     value_format_name: decimal_1
     type: average
@@ -509,7 +604,7 @@ view: orders_with_ops_metrics {
 
   measure: avg_riding_to_customer_time {
     group_label: "> Operations / Logistics"
-    label: "AVG Riding To Customer Time"
+    label: "AVG Riding To Customer Time (Minutes)"
     description: "Average riding to customer time considering delivery start to arrival at customer. Outliers excluded (<1min or >30min)"
     value_format_name: decimal_1
     type: average
@@ -539,6 +634,14 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_1
   }
 
+  measure: sum_rider_handling_time_minutes_last_mile {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Minutes) - Last Mile"
+    hidden:  no
+    type: sum
+    value_format_name: decimal_1
+  }
+
   measure: sum_rider_handling_time_hours {
     group_label: "> Operations / Logistics"
     label: "SUM Rider Handling Times (Hours)"
@@ -546,6 +649,15 @@ view: orders_with_ops_metrics {
     type: number
     value_format_name: decimal_1
     sql: ${sum_rider_handling_time_minutes}/60 ;;
+  }
+
+  measure: sum_rider_handling_time_hours_last_mile {
+    group_label: "> Operations / Logistics"
+    label: "SUM Rider Handling Times (Hours) - Last Mile"
+    hidden:  no
+    type: number
+    value_format_name: decimal_1
+    sql: ${sum_rider_handling_time_minutes_last_mile}/60 ;;
   }
 
 
@@ -600,7 +712,7 @@ view: orders_with_ops_metrics {
     value_format_name: decimal_1
     sql:
       case
-        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_time}
+        when {% parameter ops.position_parameter %} = 'Rider' THEN ${avg_waiting_for_rider_decision_time}
         when {% parameter ops.position_parameter %} = 'Picker' THEN ${avg_waiting_for_picker_time}
         else null
       end ;;
@@ -640,7 +752,7 @@ view: orders_with_ops_metrics {
           when {% parameter kpi_1 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
           when {% parameter kpi_1 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
           when {% parameter kpi_1 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
-          when {% parameter kpi_1 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          when {% parameter kpi_1 %} = 'AVG Waiting for Rider Decision Time' then ${avg_waiting_for_rider_decision_time}
           else null
       end ;;
   }
@@ -660,7 +772,7 @@ view: orders_with_ops_metrics {
           when {% parameter kpi_2 %} = 'AVG Delivery Distance' then ${avg_delivery_distance_km}
           when {% parameter kpi_2 %} = 'AVG Riding to Customer Time' then ${avg_riding_to_customer_time}
           when {% parameter kpi_2 %} = 'AVG # Daily Orders' then ${avg_daily_orders}
-          when {% parameter kpi_2 %} = 'AVG Waiting for Rider Time' then ${avg_waiting_for_rider_time}
+          when {% parameter kpi_2 %} = 'AVG Waiting for Rider Decision Time' then ${avg_waiting_for_rider_decision_time}
           else null
       end ;;
   }
@@ -678,7 +790,7 @@ view: orders_with_ops_metrics {
     allowed_value: { value: "AVG Delivery Distance" }
     allowed_value: { value: "AVG Riding to Customer Time" }
     allowed_value: { value: "AVG # Daily Orders" }
-    allowed_value: { value: "AVG Waiting for Rider Time" }
+    allowed_value: { value: "AVG Waiting for Rider Decision Time" }
   }
 
   parameter: kpi_2 {
@@ -690,7 +802,7 @@ view: orders_with_ops_metrics {
     allowed_value: { value: "AVG Delivery Distance" }
     allowed_value: { value: "AVG Riding to Customer Time" }
     allowed_value: { value: "AVG # Daily Orders" }
-    allowed_value: { value: "AVG Waiting for Rider Time" }
+    allowed_value: { value: "AVG Waiting for Rider Decision Time" }
   }
 
 }

@@ -142,7 +142,7 @@ view: advanced_supplier_matching {
   }
 
   dimension: order_number {
-    type: number
+    type: string
     description: "This is the identifier of a purchase order. A purchase order is a document, that is sent to a supplier and indicates, which products Flink wants to buy."
     group_label: "IDs"
     sql: ${TABLE}.order_number ;;
@@ -535,7 +535,13 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.is_unplanned_inbound ;;
   }
 
-
+  dimension: is_matched_with_over_and_under_deliveries {
+    type: yesno
+    label: "Is Matched with Over and Under Deliveries"
+    description: "TRUE in those cases where we have items matched (same_date, too_late, etc) but exhibit variations in the quantities ordered/delivered and inbounded. These variations should also be considered as over/under deliveries. "
+    group_label: "Boolean Fields"
+    sql: ${TABLE}.is_matched_with_over_and_under_deliveries ;;
+  }
 
 
 

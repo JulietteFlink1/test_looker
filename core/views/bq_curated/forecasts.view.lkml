@@ -36,20 +36,6 @@ view: forecasts {
     hidden: no
   }
 
-  dimension: quinyx_pipeline_status_rider {
-    label: "Quinyx Pipeline Status - Rider"
-    description: "Status of the Quinyx pipeline for rider headcount (whether it is sent or not to Quinyx)."
-    type: string
-    sql: coalesce(${TABLE}.quinyx_pipeline_status_rider, "n/a") ;;
-  }
-
-  dimension: quinyx_pipeline_status_picker {
-    label: "Quinyx Pipeline Status - Picker"
-    description: "Status of the Quinyx pipeline for picker headcount (whether it is sent or not to Quinyx)."
-    type: string
-    sql: coalesce(${TABLE}.quinyx_pipeline_status_picker, "n/a") ;;
-  }
-
   dimension: is_forecast_hub {
     label: "Is forecast hub?"
     description: "Yes, if the hub has forecast for the given job date"
@@ -77,6 +63,19 @@ view: forecasts {
     type: number
     sql: ${TABLE}.number_of_last_mile_missed_orders_forced_closure ;;
   }
+
+  dimension: number_of_last_mile_missed_orders_pdt_forced_closure {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_pdt_forced_closure ;;
+  }
+
+  dimension: number_of_last_mile_missed_orders_pdt {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.number_of_last_mile_missed_orders_pdt ;;
+  }
+
 
   # =========  Dates   =========
 
@@ -167,6 +166,13 @@ view: forecasts {
     hidden: yes
   }
 
+  dimension: number_of_forecasted_last_mile_orders_adjusted {
+    label: "# Forecasted Last Mile Orders - Adjusted"
+    type: number
+    sql: ${TABLE}.number_of_forecasted_last_mile_orders_adjusted;;
+    hidden: yes
+  }
+
   # =========  Forecasted Hours   =========
 
   dimension: number_of_forecasted_hours_rider_adjusted_dimension {
@@ -179,19 +185,6 @@ view: forecasts {
   dimension: number_of_forecasted_hours_rider_dimension {
     label: "# Forecasted Rider Hours - Dimension"
     sql: ${TABLE}.number_of_forecasted_minutes_rider/60 ;;
-    hidden: yes
-  }
-
-  dimension: number_of_forecasted_hours_picker_adjusted_dimension {
-    alias: [number_of_adjusted_forecasted_hours_picker_dimension]
-    label: "# Adjusted Forecasted Picker Hours - Dimension"
-    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted/60 ;;
-    hidden: yes
-  }
-
-  dimension: number_of_forecasted_hours_picker_dimension {
-    label: "# Forecasted Picker Hours - Dimension"
-    sql: ${TABLE}.number_of_forecasted_minutes_picker/60 ;;
     hidden: yes
   }
 
@@ -249,15 +242,6 @@ view: forecasts {
 
   # =========  Stacking   =========
 
-  measure: stacking_effect_multiplier {
-    group_label: "> Order Measures"
-    label: "Stacking Effect Multiplier"
-    type: average
-    sql: ${TABLE}.stacking_effect_multiplier ;;
-    hidden: yes
-    value_format_name: decimal_1
-  }
-
   measure: number_of_forecasted_stacked_orders {
     group_label: "> Order Measures"
     label: "# Forecasted Stacked Orders"
@@ -305,15 +289,6 @@ view: forecasts {
 
   # =========  Idleness minutes   =========
 
-  measure: number_of_forecasted_idleness_minutes_picker {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Idle Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_idleness_minutes_picker ;;
-    value_format_name: decimal_1
-    hidden: yes
-  }
-
   measure: number_of_forecasted_idleness_minutes_rider {
     group_label: "> Rider Measures"
     label: "# Forecasted Idle Rider Minutes"
@@ -350,26 +325,7 @@ view: forecasts {
     sql: ${number_of_forecasted_idleness_minutes_rider_adjusted}/nullif(${number_of_forecasted_minutes_rider_adjusted},0) ;;
   }
 
-  measure: pct_idleness_target_picker {
-    group_label: "> Picker Measures"
-    label: "% Idleness Assumption Picker"
-    description: "% Time Picker is Idle"
-    type: number
-    value_format_name: percent_1
-    sql: ${number_of_forecasted_idleness_minutes_picker}/nullif(${number_of_forecasted_minutes_picker},0) ;;
-  }
-
   # =========  UTR   =========
-
-  measure: number_of_target_orders_per_picker {
-    group_label: "> Picker Measures"
-    label: "Base UTR Picker"
-    description: "Calculated UTR based on formula - (power(60,2) * (1- idle_pct) / handling_duration) * stacking_multiplier"
-    value_format_name: decimal_2
-    type: average
-    sql: ${TABLE}.number_of_target_orders_per_picker ;;
-    hidden: yes
-  }
 
   measure: number_of_target_orders_per_rider {
     group_label: "> Rider Measures"
@@ -391,22 +347,6 @@ view: forecasts {
     hidden: yes
   }
 
-  measure: final_utr_picker {
-    group_label: "> Picker Measures"
-    label: "Forecasted UTR Picker (Incl. No Show)"
-    description: "Forecasted Orders / Forecasted Picker Hours (Incl. No Show)"
-    value_format_name: decimal_2
-    sql: ${number_of_forecasted_orders}/nullif(${number_of_forecasted_hours_picker},0) ;;
-  }
-
-  measure: final_utr_picker_adjusted {
-    group_label: "> Picker Measures"
-    label: "Adjusted Forecasted UTR Picker (Incl. No Show)"
-    description: "Adjusted Forecasted Orders / Adjusted Forecasted Picker Hours (Incl. No Show)"
-    value_format_name: decimal_2
-    sql: ${number_of_forecasted_orders_adjusted}/nullif(${number_of_forecasted_hours_picker_adjusted},0) ;;
-  }
-
   measure: final_utr_rider {
     group_label: "> Rider Measures"
     label: "Forecasted UTR Rider (Incl. No Show)"
@@ -425,15 +365,6 @@ view: forecasts {
 
   # =========  Forecasted Employees   =========
 
-  measure: number_of_forecasted_pickers {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Pickers"
-    description: "# Forecasted Pickers Needed"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_pickers ;;
-    hidden: yes
-  }
-
   measure: number_of_forecasted_riders {
     group_label: "> Rider Measures"
     label: "# Forecasted Riders"
@@ -448,6 +379,7 @@ view: forecasts {
   measure: number_of_forecasted_orders {
     group_label: "> Order Measures"
     label: "# Forecasted Orders"
+    description: "A total number of orders forecasted for internal Flink riders."
     type: sum
     sql: ${TABLE}.number_of_forecasted_orders ;;
     value_format_name: decimal_0
@@ -474,7 +406,7 @@ view: forecasts {
   measure: sum_number_of_last_mile_missed_orders {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders"
-    description: "# Last Mile Missed orders due to planned or forced closures."
+    description: "# Last Mile Missed Orders due to planned or forced closures."
     type: sum
     sql: ${number_of_last_mile_missed_orders};;
     value_format_name: decimal_0
@@ -483,27 +415,30 @@ view: forecasts {
   measure: pct_cancelled_orders{
     group_label: "> Order Measures"
     label: "% Cancelled Orders"
-    description: "Cancelled orders (cancelled due to operational reasons only) divided by Flink Delivered orders, percentage."
+    description: "Cancelled orders (cancelled due to operational reasons only) divided by Last Mile orders (including DaaS and Flink delivered orders), percentage."
     type: number
-    sql: ${number_of_cancelled_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${number_of_cancelled_orders}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders},0) ;;
     value_format_name: percent_2
   }
 
   measure: pct_missed_orders{
     group_label: "> Order Measures"
     label: "% Missed Orders"
-    description: "Missed orders divided by Flink Delivered orders, percentage."
+    description: "Missed orders divided by the sum of Missed Orders and non-external successful orders (including DaaS, Flink delivered and CLick&Collect orders), percentage."
     type: number
-    sql: ${number_of_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${number_of_missed_orders}/
+    nullif(${orders_with_ops_metrics.cnt_internal_orders}+${number_of_missed_orders},0) ;;
     value_format_name: percent_2
   }
 
   measure: pct_last_mile_missed_orders{
     group_label: "> Order Measures"
     label: "% Last Mile Missed Orders"
-    description: "Last Mile Missed orders divided by Flink Delivered orders, percentage."
+    description: "Last Mile Missed Orders divided by sum of Last Mile Missed Orders and Last Mile orders (including DaaS and Flink delivered orders), percentage."
     type: number
-    sql: ${sum_number_of_last_mile_missed_orders}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${sum_number_of_last_mile_missed_orders}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${sum_number_of_last_mile_missed_orders} ,0) ;;
     value_format_name: percent_2
   }
 
@@ -519,27 +454,67 @@ view: forecasts {
   measure: sum_number_of_last_mile_missed_orders_forced_closure {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders - Forced Closure"
-    description: "# Last Mile Missed orders due to forced closure."
+    description: "# Last Mile Missed Orders due to forced closure."
     type: sum
     sql: ${number_of_last_mile_missed_orders_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_last_mile_missed_orders_pdt_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - PDT or Forced Closure"
+    description: "# Last Mile Missed Orders due to high PDT and Forced closure. High PDT are PDT>30min and in the 20% highest values for the day. Doesn't necessarily mean that the hub was closed."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_last_mile_missed_orders_pdt {
+    group_label: "> Order Measures"
+    label: "# Last Mile Missed Orders - PDT"
+    description: "# Last Mile Missed Orders during periods of high PDT. High PDT are PDT>30min and in the 20% highest values for the day. Doesn't necessarily mean that the hub was closed.  Include all missed orders during periods when PDT was high, therefore can also include forced closures missed orders."
+    type: sum
+    sql: ${number_of_last_mile_missed_orders_pdt} ;;
     value_format_name: decimal_0
   }
 
   measure: pct_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Forced Closure"
-    description: "Missed orders (forced closure) divided by Flink Delivered orders, percentage."
+    description: "Missed orders (forced closure) divided by the sum of Missed Orders and non-external successful orders (including DaaS, Flink delivered and Click&Collect orders), percentage."
     type: number
-    sql: ${number_of_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${number_of_missed_orders_forced_closure}/
+    nullif(${orders_with_ops_metrics.cnt_internal_orders} + ${number_of_missed_orders_forced_closure},0) ;;
     value_format_name: percent_2
   }
 
   measure: pct_last_mile_missed_orders_forced_closure{
     group_label: "> Order Measures"
     label: "% Last Mile Missed Orders - Forced Closure"
-    description: "Last Mile Missed orders (forced closure) divided by Flink Delivered orders, percentage."
+    description: "Last Mile Missed Orders (forced closure) divided by the sum of Last Mile Missed Orders and Last Mile successful orders (including DaaS and Flink delivered orders), percentage."
     type: number
-    sql: ${sum_number_of_last_mile_missed_orders_forced_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${sum_number_of_last_mile_missed_orders_forced_closure}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${sum_number_of_last_mile_missed_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_pdt_forced_closure{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - PDT or Forced Closure"
+    description: "Last Mile Missed Orders (due to high PDT or to forced closure) divided by the sum of Last Mile Missed Orders and Last Mile orders (including DaaS and Flink delivered orders), percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_pdt_forced_closure}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${sum_number_of_last_mile_missed_orders},0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: pct_last_mile_missed_orders_pdt{
+    group_label: "> Order Measures"
+    label: "% Last Mile Missed Orders - PDT"
+    description: "Last Mile Missed Orders (due to high PDT) divided by the sum of Last Mile Missed Orders and Last Mile orders (including DaaS and Flink delivered orders), percentage."
+    type: number
+    sql: ${sum_number_of_last_mile_missed_orders_pdt}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${sum_number_of_last_mile_missed_orders} ,0) ;;
     value_format_name: percent_2
   }
 
@@ -555,7 +530,7 @@ view: forecasts {
   measure: sum_number_of_last_mile_missed_orders_planned_closure {
     group_label: "> Order Measures"
     label: "# Last Mile Missed Orders - Planned Closure"
-    description: "# Last Mile Missed orders due to planned closure."
+    description: "# Last Mile Missed Orders due to planned closure."
     type: sum
     sql: ${number_of_last_mile_missed_orders_planned_closure} ;;
     value_format_name: decimal_0
@@ -564,18 +539,20 @@ view: forecasts {
   measure: pct_missed_orders_planned_closure{
     group_label: "> Order Measures"
     label: "% Missed Orders - Planned Closure"
-    description: "Missed orders (planned closure) divided by Flink Delivered orders, percentage."
+    description: "Missed orders (planned closure) divided by the sum of Missed Orders and non-external successful orders (including DaaS, Flink delivered and Click&Collect orders), percentage."
     type: number
-    sql: ${number_of_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${number_of_missed_orders_planned_closure}/
+    nullif(${orders_with_ops_metrics.cnt_internal_orders} + ${number_of_missed_orders_planned_closure},0) ;;
     value_format_name: percent_2
   }
 
   measure: pct_last_mile_missed_orders_planned_closure{
     group_label: "> Order Measures"
     label: "% Last Mile Missed Orders - Planned Closure"
-    description: "Last Mile Missed orders (planned closure) divided by Flink Delivered orders, percentage."
+    description: "Last Mile Missed Orders (planned closure) divided by the sum of Last Mile Missed Orders and Last Mile orders (including DaaS and Flink delivered orders), percentage."
     type: number
-    sql: ${sum_number_of_last_mile_missed_orders_planned_closure}/nullif(${orders_with_ops_metrics.number_of_unique_flink_delivered_orders},0) ;;
+    sql: ${sum_number_of_last_mile_missed_orders_planned_closure}/
+    nullif(${orders_with_ops_metrics.number_of_rider_required_orders} + ${sum_number_of_last_mile_missed_orders} ,0) ;;
     value_format_name: percent_2
   }
 
@@ -583,15 +560,26 @@ view: forecasts {
     alias: [number_of_adjusted_forecasted_orders]
     group_label: "> Order Measures"
     label: "# Adjusted Forecasted Orders"
+    description: "A total number of orders forecasted for internal Flink riders including adjustments made by the Rider Ops team using Airtable."
     type: sum
     sql: ${TABLE}.number_of_forecasted_orders_adjusted ;;
     value_format_name: decimal_0
   }
 
+  measure: sum_forecasted_last_mile_orders_adjusted {
+    group_label: "> Order Measures"
+    label: "# Adjusted Forecasted Last Mile Orders"
+    description: "A total number of orders forecasted for internal Flink riders and DAAS riders including adjustments made by the Rider Ops team using Airtable."
+    type: sum
+    sql: ${number_of_forecasted_last_mile_orders_adjusted} ;;
+    value_format_name: decimal_0
+  }
+
+
   measure: number_of_actual_orders {
     group_label: "> Order Measures"
     label: "# Actual Orders (Forecast-Related)"
-    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed orders (due to forced closures)."
+    description: "# Actual orders related to forecast: Excl. click & collect and external orders; Including Cancelled orders with operations-related cancellation reasons and Last Mile Missed Orders (due to forced closures). Including DaaS orders."
     type: sum
     sql: ${TABLE}.number_of_actual_orders;;
     value_format_name: decimal_0
@@ -600,7 +588,7 @@ view: forecasts {
   measure: number_of_cancelled_orders {
     group_label: "> Order Measures"
     label: "# Cancelled Orders (Forecast-Related)"
-    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons."
+    description: "# Cancelled orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons. Including DaaS orders."
     type: sum
     sql: ${number_of_cancelled_orders_dimension} ;;
     value_format_name: decimal_0
@@ -609,10 +597,29 @@ view: forecasts {
   measure: number_of_cancelled_and_missed_orders {
     group_label: "> Order Measures"
     label: "# Cancelled and Last Mile Missed Orders (Forecast-Related)"
-    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures."
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to forced closures. Including DaaS orders."
     type: number
     sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_forced_closure} ;;
     value_format_name: decimal_0
+  }
+
+  measure: number_of_cancelled_and_missed_orders_pdt_forced_closure {
+    group_label: "> Order Measures"
+    label: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure"
+    description: "# Cancelled and Last Mile Missed orders that are relevant for the forecast: Excl. click & collect and external orders; Including only operations-related cancellation reasons and last mile orders missed due to high PDT or forced closures. Including DaaS orders."
+    type: number
+    sql: ${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt_forced_closure} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: share_of_cancelled_and_missed_orders_pdt_forced_closure {
+    group_label: "> Order Measures"
+    label: "% Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure"
+    description: "# Cancelled and Last Mile Missed Orders (Forecast-Related) - PDT or Forced Closure divided by the sum of Last Mile orders and Last Mile Missed orders."
+    type: number
+    sql: safe_divide(${number_of_cancelled_orders} + ${sum_number_of_last_mile_missed_orders_pdt_forced_closure},
+     ${orders_with_ops_metrics.number_of_rider_required_orders} +  ${sum_number_of_last_mile_missed_orders});;
+    value_format_name: percent_2
   }
 
   measure: pct_actually_needed_hours_deviation {
@@ -867,21 +874,6 @@ view: forecasts {
 
   # =========  Forecasted minutes   =========
 
-  measure: number_of_forecasted_minutes_picker {
-    label: "# Forecasted Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_minutes_picker ;;
-    hidden: yes
-  }
-
-  measure: number_of_forecasted_minutes_picker_adjusted {
-    alias: [number_of_adjusted_forecasted_minutes_picker]
-    label: "# Adjusted Forecasted Picker Minutes"
-    type: sum
-    sql: ${TABLE}.number_of_forecasted_minutes_picker_adjusted ;;
-    hidden: yes
-  }
-
   measure: number_of_forecasted_minutes_rider {
     label: "# Forecasted Rider Minutes"
     type: sum
@@ -1029,23 +1021,6 @@ view: forecasts {
     value_format_name: decimal_1
   }
 
-  measure: number_of_forecasted_hours_picker {
-    group_label: "> Picker Measures"
-    label: "# Forecasted Picker Hours"
-    description: "# Forecasted Hours Needed for Pickers"
-    type: number
-    sql: ${number_of_forecasted_minutes_picker}/60;;
-    value_format_name: decimal_1
-  }
-
-  measure: number_of_forecasted_hours_picker_adjusted {
-    alias: [number_of_forecasted_adjusted_hours_picker]
-    group_label: "> Picker Measures"
-    label: "# Adjusted Forecasted Picker Hours"
-    type: number
-    sql: ${number_of_forecasted_minutes_picker_adjusted}/60;;
-    value_format_name: decimal_1
-  }
   ##### Forecast errors
 
   measure: wmape_orders {
@@ -1241,8 +1216,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_riders}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_pickers}
           else null
         end ;;
     hidden: yes
@@ -1258,8 +1231,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker}
           else null
         end ;;
   }
@@ -1275,8 +1246,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_adjusted}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_adjusted}
           else null
         end ;;
   }
@@ -1291,8 +1260,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_dimension}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_dimension}
           else null
         end ;;
     hidden: yes
@@ -1310,8 +1277,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_forecasted_hours_rider_adjusted_dimension}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_forecasted_hours_picker_adjusted_dimension}
           else null
         end ;;
     hidden: yes
@@ -1514,8 +1479,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${number_of_target_orders_per_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${number_of_target_orders_per_picker}
           else null
         end ;;
     hidden: yes
@@ -1546,8 +1509,6 @@ view: forecasts {
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then ${pct_idleness_target_rider}
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then ${pct_idleness_target_picker}
           else null
         end ;;
   }
@@ -1624,14 +1585,12 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Target UTR (Excl. No Show)."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position},0)
           else null
         end ;;
   }
@@ -1640,14 +1599,12 @@ view: forecasts {
     type: number
     group_label: "> Dynamic Measures"
     label: "# Adjusted Actually Needed Hours"
-    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Target UTR (Excl. No Show). For pickers it is calculated based on # Actual Orders."
+    description: "# Hours needed based on # Actual Orders (Forecast-related) / Adjusted Target UTR (Excl. No Show)."
     value_format_name: decimal_1
     sql:
         case
           when {% parameter ops.position_parameter %} = 'Rider'
             then nullif(${number_of_actual_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
-          when {% parameter ops.position_parameter %} = 'Picker'
-            then nullif(${orders_with_ops_metrics.sum_orders},0)/nullif(${forecasted_utr_excl_no_show_by_position_adjusted},0)
           else null
         end ;;
   }
@@ -1816,7 +1773,6 @@ view: forecasts {
   parameter: position_parameter {
     type: string
     allowed_value: { value: "Rider" }
-    allowed_value: { value: "Picker" }
     hidden: yes
   }
 

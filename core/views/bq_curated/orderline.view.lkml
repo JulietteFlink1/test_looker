@@ -22,9 +22,18 @@ view: orderline {
 
   dimension: quantity {
     label: "Quantity Sold"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
     alias: [quantity_fulfilled]
     type: number
     sql: ${TABLE}.quantity ;;
+    group_label: "> Monetary Dimensions"
+  }
+
+  dimension: quantity_sampled {
+    label: "Quantity Sampled"
+    description: "The quantity of 'sampled' products - promotional products that were partially or completely sponsored by the producer."
+    type: number
+    sql: ${TABLE}.quantity_sampled ;;
     group_label: "> Monetary Dimensions"
   }
 
@@ -358,6 +367,24 @@ view: orderline {
 
   }
 
+  dimension: is_sampled_item {
+    label: "Is Sampled Item"
+    description: "TRUE if the line-item of an order is a sponsored product by the product manufacturer."
+    group_label: "> Product Attributes"
+    type: yesno
+    sql: ${TABLE}.is_sampled_item ;;
+  }
+
+  dimension: product_sample_type {
+    label: "Product Sample Type"
+    description: "This field defines the type of a sampled product and can have the values {commercial_sample, marketing_sample}. commercial_samples are fully funded by the producer, whereas marketing_samples are covered by both, Flink and the producer as part of a deal."
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.product_sample_type ;;
+  }
+
+
+
   dimension: translated_product_name {
     type: string
     sql: null ;;
@@ -599,9 +626,9 @@ view: orderline {
   ##########
 
   measure: sum_item_quantity {
-    label: "SUM Item Quantity sold"
+    label: "SUM Item Quantity Sold"
     alias: [sum_item_quantity_fulfilled]
-    description: "Quantity of Order Line Items sold"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
     hidden:  no
     type: sum
     sql: ${quantity};;
@@ -609,8 +636,17 @@ view: orderline {
     group_label: "> Absolute Metrics"
   }
 
+  measure: sum_item_quantity_sampled {
+    label: "SUM Item Quantity Sampled"
+    description: "The quantity of products, that have been sold in an order. It excludes sampled products (products that were partially or completely sponsored by the producer)"
+    type: sum
+    sql: ${quantity_sampled};;
+    value_format: "0"
+    group_label: "> Absolute Metrics"
+  }
+
   measure: sum_item_quantity_returned {
-    label: "SUM Item Quantity returned"
+    label: "SUM Item Quantity Returned"
     description: "Quantity of Order Line Items returned"
     hidden:  no
     type: sum
@@ -620,7 +656,7 @@ view: orderline {
   }
 
   measure: sum_item_price_gross {
-    label: "SUM Item Prices sold (gross)"
+    label: "SUM Item Prices Sold (gross)"
     alias: [sum_item_price_fulfilled_gross]
     description: "Sum of sold Item prices (incl. VAT)"
     hidden:  no
@@ -631,7 +667,7 @@ view: orderline {
   }
 
   measure: sum_item_price_net {
-    label: "SUM Item Prices sold (net)"
+    label: "SUM Item Prices Sold (net)"
     alias: [sum_item_price_fulfilled_net]
     description: "Sum of sold Item prices (excl. VAT)"
     hidden:  no
@@ -653,7 +689,7 @@ view: orderline {
   }
 
   measure: sum_item_price_after_product_discount_net {
-    label: "SUM Item Prices sold After Product Discount (net)"
+    label: "SUM Item Prices Sold After Product Discount (net)"
     alias: [sum_item_price_fulfilled_after_product_discount_net]
     description: "Total Price of sold Items after Deduction of Product Discounts. excl. VAT"
     hidden:  no
@@ -1351,6 +1387,129 @@ view: orderline {
     value_format_name: percent_1
   }
 
+  ### --------------------------- POP STARTS --------------------------- ###
 
+  ## ----- POP: Filters  ---- ##
 
+  filter: first_period_filter {
+    label: "Select First Time Period"
+    view_label: "Period over Period (PoP) Comparison"
+    type: date
+    description: "Select the time range. This filter is used alongside the 'Select Second Time Period filter', to be able to compare different time frames to each other. "
+  }
+
+  filter: second_period_filter {
+    label: "Select Second Time Period"
+    view_label: "Period over Period (PoP) Comparison"
+    type: date
+    description: "Select the time range. This filter is used alongside the 'Select First Time Period' filter, to be able to compare different time frames to each other. "
+  }
+
+  ## ---- POP: Dimensions  ---- ##
+
+  dimension: period_selected {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "Filtered Time Period (First/Second)"
+    description: "This dimension only has 2 values: First or Second, representing time periods selected in filters ('Select First Time Period' and 'Select Second Time Period' filters). Use this dimension to see metrics per filtered time period."
+    type: string
+    sql:
+        CASE
+            WHEN {% condition first_period_filter %} ${created_raw} {% endcondition %}
+            THEN 'First Time Period'
+            WHEN {% condition second_period_filter %} ${created_raw} {% endcondition %}
+            THEN 'Second Time Period'
+            END ;;
+  }
+
+  ## ---- POP: Measures  ---- ##
+
+  measure: first_period_cnt_orders {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "First Time Period: # Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [period_selected: "First Time Period"]
+    value_format_name: decimal_0
+    description: "# Orders for the period defined in 'Select First Time Period' filter"
+  }
+
+  measure: second_period_cnt_orders {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "Second Time Period: # Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [period_selected: "Second Time Period"]
+    value_format_name: decimal_0
+    description: "# Orders for the period defined in 'Select Second Time Period' filter"
+  }
+
+  measure: cnt_orders_pop_change {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "% PoP (# Orders)"
+    type: number
+    sql: (1.0 * ${second_period_cnt_orders} / NULLIF(${first_period_cnt_orders} ,0)) - 1 ;;
+    value_format_name: percent_2
+    description: "% Difference in '# Orders' between time periods defined via 'Select First Time Period' and 'Select Second Time Period' filters."
+
+  }
+
+  measure: first_period_sum_item_price_gross {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "First Time Period: SUM Item Prices Sold (Gross)"
+    type: sum
+    sql: ${amt_total_price_gross};;
+    filters: [period_selected: "First Time Period"]
+    value_format_name: euro_accounting_2_precision
+    description: "'SUM Item Prices Sold (Gross)' for the period defined in 'Select First Time Period' filter"
+  }
+
+  measure: second_period_sum_item_price_gross {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "Second Time Period: SUM Item Prices Sold (Gross)"
+    type: sum
+    sql: ${amt_total_price_gross};;
+    filters: [period_selected: "Second Time Period"]
+    value_format_name: euro_accounting_2_precision
+    description: "'SUM Item Prices Sold (Gross)' for the period defined in 'Select Second Time Period' filter"
+  }
+
+  measure: sum_item_price_gross_pop_change {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "% PoP (SUM Item Prices Sold (Gross))"
+    type: number
+    sql: (1.0 * ${second_period_sum_item_price_gross} / NULLIF(${first_period_sum_item_price_gross} ,0)) - 1 ;;
+    value_format_name: percent_2
+    description: "% Difference in 'SUM Item Prices Sold (Gross)' between time periods defined via 'Select First Time Period' and 'Select Second Time Period' filters."
+  }
+
+  measure: first_period_sum_item_quantity {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "First Time Period: SUM Item Quantity Sold"
+    type: sum
+    sql: ${quantity};;
+    filters: [period_selected: "First Time Period"]
+    value_format_name: decimal_0
+    description: "'SUM Item Quantity Sold' for the period defined in 'Select First Time Period' filter"
+  }
+
+  measure: second_period_sum_item_quantity {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "Second Time Period: SUM Item Quantity Sold"
+    type: sum
+    sql: ${quantity};;
+    filters: [period_selected: "Second Time Period"]
+    value_format_name: decimal_0
+    description: "'SUM Item Quantity Sold' for the period defined in 'Select Second Time Period' filter"
+  }
+
+  measure: sum_item_quantity_pop_change {
+    view_label: "Period over Period (PoP) Comparison"
+    label: "% PoP (SUM Item Quantity Sold)"
+    type: number
+    sql: (1.0 * ${second_period_sum_item_quantity} / NULLIF(${first_period_sum_item_quantity} ,0)) - 1 ;;
+    value_format_name: percent_2
+    description: "% Difference in 'SUM Item Quantity Sold' between time periods defined via 'Select First Time Period' and 'Select Second Time Period' filters."
+  }
+
+  ### --------------------------- POP ENDS --------------------------- ###
 }

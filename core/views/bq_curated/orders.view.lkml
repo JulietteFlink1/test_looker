@@ -19,12 +19,12 @@ view: orders {
     ]
   }
 
-  dimension: waiting_for_rider_time_minutes {
-    alias: [acceptance_time, rider_queuing_time]
+  dimension:  waiting_for_rider_decision_time_minutes {
+    alias: [acceptance_time, rider_queuing_time, waiting_for_rider_time_minutes]
     type: number
     group_label: "* Operations / Logistics *"
     hidden: no
-    sql: ${TABLE}.waiting_for_rider_time_minutes ;;
+    sql: ${TABLE}.waiting_for_rider_decision_time_minutes ;;
   }
 
   dimension: google_cycling_time_minutes {
@@ -283,10 +283,12 @@ view: orders {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
-    required_access_grants: [can_access_pii_customers]
   }
 
   dimension: customer_id {
@@ -304,6 +306,9 @@ view: orders {
   }
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     label: "Add. Customer Information"
     type: string
@@ -371,7 +376,9 @@ view: orders {
       week_of_year,
       week,
       month,
+      month_num,
       quarter,
+      quarter_of_year,
       year
     ]
     sql: ${TABLE}.order_timestamp ;;
@@ -470,10 +477,48 @@ view: orders {
 
   dimension: delta_to_pdt_minutes {
     group_label: "* Operations / Logistics *"
-    label: "Delta to PDT (min)"
-    description: "Delta to promised delivery time (as shown to customer)"
+    label: "Delay (min)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer). Negative value is an indication of an earlier delivery than PDT."
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
+  }
+
+  dimension: delta_to_pdt_minutes_with_positive_buffer {
+    group_label: "* Operations / Logistics *"
+    label: "Delay (min) (with + 15% PDT tolerance)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
+    Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
+    type: number
+    sql:timestamp_diff(
+          ${delivery_timestamp_raw},
+          -- add 15% of pdt as tolerance buffer
+          timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+          second
+        )/60 ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
+    group_label: "* Operations / Logistics *"
+    label: "Delay (min) (with +/- 15% PDT tolerance)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
+    +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early).
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
+    type: number
+    sql:case
+          when
+            ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
+          then
+            timestamp_diff(
+              -- subtract 15% of pdt as tolerance buffer
+              timestamp_sub(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+              ${delivery_timestamp_raw},
+              second
+            )/60
+          else ${delta_to_pdt_minutes_with_positive_buffer}
+        end;;
+    value_format_name: decimal_1
   }
 
   dimension: delivery_delay_since_pdt_seconds {
@@ -495,6 +540,7 @@ view: orders {
   }
 
   dimension: delivery_delay_since_time_targeted {
+    hidden: yes
     group_label: "* Operations / Logistics *"
     label: "Delta to Time Targeted (min)"
     description: "Delay versus delivery time targeted (internal model estimate, not necessarily the PDT which was down to customer)"
@@ -633,6 +679,7 @@ view: orders {
   }
 
   dimension: delivery_time_targeted_minutes {
+    hidden:  yes
     label: "Fulfillment Time Targeted (min)"
     description: "The internally targeted time in minutes for the order to arrive at the customer"
     group_label: "* Operations / Logistics *"
@@ -682,7 +729,7 @@ view: orders {
     description: "Withheld From Picking + Waiting For Picker Time + Pick-Pack Handling Time + Withheld From Rider + Waiting For Rider Time"
     group_label: "* Operations / Logistics *"
     type: number
-    sql: ${waiting_for_picker_time} + ${waiting_for_rider_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${withheld_from_rider_time_minutes},0);;
+    sql: ${waiting_for_picker_time} + ${waiting_for_rider_decision_time_minutes} + ${pick_pack_handling_time_minutes} + coalesce(${withheld_from_picking_time_minutes},0) + coalesce(${waiting_for_available_rider_time_minutes},0) + coalesce(${waiting_for_trip_readiness_time_minutes},0);;
   }
 
   dimension: is_critical_delivery_time_estimate_underestimation {
@@ -730,7 +777,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "Fulfillment Time (tiered, 1min)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90]
     style: interval
     sql: ${fulfillment_time} ;;
   }
@@ -744,14 +791,14 @@ view: orders {
     sql: ${fulfillment_time} ;;
   }
 
-  dimension: waiting_for_rider_time_tier{
-    alias: [acceptance_time_tier, rider_queuing_time_tier]
+  dimension: waiting_for_rider_decision_time_tier{
+    alias: [acceptance_time_tier, rider_queuing_time_tier, waiting_for_rider_time_tier]
     group_label: "* Operations / Logistics *"
     label: "Waiting for Rider Time (tiered, 1min)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
-    sql: ${waiting_for_rider_time_minutes} ;;
+    sql: ${waiting_for_rider_decision_time_minutes} ;;
   }
 
   dimension: waiting_for_picker_time_tier {
@@ -823,6 +870,40 @@ view: orders {
     sql: ${TABLE}.is_first_order ;;
   }
 
+  dimension: is_customers_first_order_28_days {
+    alias: [is_customers_first_order_30_days]
+    group_label: "* Order Dimensions *"
+    label: "Is Order within 28 days after Customer First Order"
+    description: "TRUE if the order falls within 28 days of the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_28_days ;;
+  }
+
+  dimension: is_customers_first_order_month {
+    group_label: "* Order Dimensions *"
+    label: "Is Customers First Order Month"
+    description: "TRUE if the order falls in the same calendar month as the customer's first order (based on unique customer UUID)."
+    type: yesno
+    sql: ${TABLE}.is_customers_first_order_month ;;
+  }
+
+  dimension: customer_first_order_date {
+    group_label: "* Dates and Timestamps *"
+    label: "Customer First Order Date"
+    description: "First order date of a customer (based on customer_uuid)."
+    type: date
+    datatype: date
+    sql: ${TABLE}.customer_first_order_date ;;
+  }
+
+  dimension: customer_monthly_activity_status {
+    group_label: "* Order Dimensions *"
+    label: "Customer Monthly Activity Status"
+    description: "Status per month per customer. Each customer can be either retained (Order M-1), Reactivated (Order > M-1) or New."
+    type: string
+    sql: ${TABLE}.customer_monthly_activity_status ;;
+  }
+
   dimension: is_rider_tip {
     group_label: "* Order Dimensions *"
     label: "Is Rider Tip Order (Yes/No)"
@@ -850,7 +931,7 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${waiting_for_rider_time_minutes} < 0 ;;
+    sql: ${waiting_for_rider_decision_time_minutes} < 0 ;;
   }
 
   dimension: is_waiting_for_rider_time_more_than_30_minute {
@@ -858,7 +939,7 @@ view: orders {
     hidden: yes
     group_label: "* Operations / Logistics *"
     type: yesno
-    sql: ${waiting_for_rider_time_minutes} > 30 ;;
+    sql: ${waiting_for_rider_decision_time_minutes} > 30 ;;
   }
 
   dimension: is_waiting_for_picker_time_less_than_0_minute {
@@ -875,12 +956,6 @@ view: orders {
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${waiting_for_picker_time} > 30 ;;
-  }
-
-  dimension: is_internal_order {
-    group_label: "* Order Dimensions *"
-    type: yesno
-    sql: ${TABLE}.is_internal_order ;;
   }
 
   dimension: is_order_delay_above_10min {
@@ -1197,8 +1272,65 @@ view: orders {
     sql: timestamp_diff(timestamp(${rider_completed_delivery_timestamp}), timestamp(${order_on_route_timestamp}), minute)*2 ;;
   }
 
+  dimension: amt_daas_cpo_gross_eur {
+    hidden: yes
+    group_label: "* Monetary Values *"
+    label: "DaaS CPO (Gross)"
+    description: "DaaS Cost Per Order (CPO) is the gross fee charged by the provider for the trip. In euros."
+    type: number
+    sql: ${TABLE}.amt_daas_cpo_gross_eur ;;
+  }
 
+  dimension: amt_daas_cpo_gross_eur_tier_1 {
+    group_label: "* Monetary Values *"
+    label: "DaaS CPO (tiered, 1 EUR)"
+    type: tier
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    style: relational
+    sql: ${amt_daas_cpo_gross_eur} ;;
+  }
 
+  dimension: daas_provider_drop_off_eta_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Drop-Off ETA Timestamp"
+    description: "Provider drop-off eta is the estimated time of arrival of the external rider at the customer's address."
+    type: date_time
+    sql: ${TABLE}.daas_provider_drop_off_eta_timestamp ;;
+  }
+
+  dimension: daas_provider_pick_up_eta_timestamp {
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Pick-Up ETA Timestamp"
+    description: "Provider pick-up eta is the estimated time of arrival of the external rider at the hub to pick the order."
+    type: date_time
+    sql: ${TABLE}.daas_provider_pick_up_eta_timestamp ;;
+  }
+
+  dimension: daas_delta_drop_off_completed_delivery_minutes {
+    hidden: yes
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Drop-Off ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Completed Delivery timestamp."
+    type: number
+    sql: timestamp_diff(
+          timestamp(${daas_provider_drop_off_eta_timestamp}),
+          timestamp(${rider_completed_delivery_timestamp}),
+          minute) ;;
+    value_format_name: decimal_0
+  }
+
+  dimension: daas_delta_pick_up_claimed_minutes {
+    hidden: yes
+    group_label: "* Operations / Logistics *"
+    label: "DaaS Pick-Up ETA Delta"
+    description: "Difference in minutes between the DaaS Drop-Off ETA timestamp and the Rider Claimed timestamp."
+    type: number
+    sql: timestamp_diff(
+          timestamp(${daas_provider_pick_up_eta_timestamp}),
+          timestamp(${order_rider_claimed_timestamp}),
+          minute) ;;
+    value_format_name: decimal_0
+  }
 
   dimension: order_uuid {
     type: string
@@ -1414,12 +1546,29 @@ view: orders {
     sql: ${TABLE}.withheld_from_picking_time_minutes ;;
   }
 
-  dimension: withheld_from_rider_time_minutes {
+  dimension: waiting_for_available_rider_time_minutes {
+    alias: [withheld_from_rider_time_minutes]
     group_label: "* Operations / Logistics *"
-    label: "Withheld From Rider Time Minutes"
-    description: "Time between picking completion and order offered to rider"
+    label: "Waiting For Available Rider Time Minutes"
+    description: "Number of minutes an order waited for an available rider in order to be offered."
     type: number
-    sql: ${TABLE}.withheld_from_rider_time_minutes ;;
+    sql: ${TABLE}.waiting_for_available_rider_time_minutes ;;
+  }
+
+  dimension: waiting_for_trip_readiness_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Waiting For Trip Readiness Time Minutes"
+    description: "Number of minutes an order waited for other orders in the stack to be ready."
+    type: number
+    sql: ${TABLE}.waiting_for_trip_readiness_time_minutes ;;
+  }
+
+  dimension: rider_preparing_for_trip_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "Rider Preparing For Trip Time Minutes"
+    description: "Total number of minutes between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip."
+    type: number
+    sql: ${TABLE}.rider_preparing_for_trip_time_minutes ;;
   }
 
   dimension: at_customer_time_minutes {
@@ -1427,6 +1576,20 @@ view: orders {
     label: "At Customer Time Minutes"
     type: number
     sql: ${TABLE}.at_customer_time_minutes ;;
+  }
+
+  dimension: number_of_offered_to_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "Total number of Offered to Riders events an order had. Multiple events might mean offers were rejected by riders or expired."
+    type: number
+    sql: ${TABLE}.number_of_offered_to_riders_events ;;
+  }
+
+  dimension: number_of_withheld_from_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "Total number of Withheld From Riders events an order had. Multiple events might mean an order's trip changed several times."
+    type: number
+    sql: ${TABLE}.number_of_withheld_from_riders_events ;;
   }
 
   dimension: at_customer_time_minutes_tier_5 {
@@ -1567,6 +1730,7 @@ view: orders {
 
   dimension: is_daas_order {
     group_label: "* Order Dimensions *"
+    label: "Is DaaS Order"
     type: yesno
     sql: ${TABLE}.is_daas_order ;;
     description: "TRUE if the order is created on the Flink app but delivered by an external provider (e.g. Uber Direct)."
@@ -1590,6 +1754,22 @@ view: orders {
     description: "Either the name of the CS Agent who cancelled the order, either 'Self' if the customer cancelled him/herself"
     type: string
     sql: ${TABLE}.cancellation_user_name;;
+  }
+
+  dimension: daas_cancellation_reason {
+    group_label: "* Cancelled Orders *"
+    label: "DaaS Cancellation Reason"
+    description: "Reason for the cancellation of the order coming from the DaaS provider."
+    type: string
+    sql: ${TABLE}.daas_cancellation_reason;;
+  }
+
+  dimension: daas_cancellation_source {
+    group_label: "* Cancelled Orders *"
+    label: "DaaS Cancellation Source"
+    description: "Source for the cancellation of the order coming from the DaaS provider. (e.g. Flink, External Rider, Provider)"
+    type: string
+    sql: ${TABLE}.daas_cancellation_source;;
   }
 
   dimension: cancellation_type {
@@ -1938,22 +2118,59 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_withheld_from_rider_time_minutes {
+  measure: avg_number_of_offered_to_riders_events {
     group_label: "* Operations / Logistics *"
-    label: "AVG Withheld From Rider Time"
-    description: "Average time between picking completion and order offered to rider. Outliers excluded (<0min or >120min)"
+    label: "AVG Offered To Riders Events"
+    description: "Average number of Offered to Riders events orders had. Multiple events might mean offers were rejected by riders or expired."
     type: average
-    sql:${withheld_from_rider_time_minutes};;
+    sql: ${number_of_offered_to_riders_events};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_number_of_withheld_from_riders_events {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Withheld From Riders Events"
+    description: "Average number of Withheld From Riders events orders had. Multiple events might mean an order's trip changed several times."
+    type: average
+    sql: ${number_of_withheld_from_riders_events};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_available_rider_time_minutes {
+    alias: [avg_withheld_from_rider_time_minutes]
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Available Rider Time (Minutes)"
+    description: "Average time an order waited for an available rider in order to be offered. Outliers excluded (<0min or >120min)"
+    type: average
+    sql: ${waiting_for_available_rider_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_waiting_for_trip_readiness_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Waiting For Trip Readiness Time (Minutes)"
+    description: "Average time an order waited for other orders in the stack to be ready. Outliers excluded (<0min or >120min)"
+    type: average
+    sql: ${waiting_for_trip_readiness_time_minutes};;
+    value_format_name: decimal_1
+  }
+
+  measure: avg_rider_preparing_for_trip_time_minutes {
+    group_label: "* Operations / Logistics *"
+    label: "AVG Rider Preparing For Trip Time (Minutes)"
+    description: "Average time between Claimed and On Route state changes. Signifies the time a rider needed to scan containers and start the trip. Outliers excluded (<0min or >60min)"
+    type: average
+    sql: ${rider_preparing_for_trip_time_minutes};;
     value_format_name: decimal_1
   }
 
   measure: avg_waiting_for_picker_time {
     alias: [avg_reaction_time, avg_picker_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Picker Time"
+    label: "AVG Waiting For Picker Time (Minutes)"
     description:
-      "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
-      Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
+    "Average picker acceptance-related queuing - from order offered to hub to order started being picked.
+    Outliers excluded (>120min). If offered to hub time is not available (no dispatching event), takes the time from order created to picking started"
     type: average
     sql:${waiting_for_picker_time};;
     value_format_name: decimal_1
@@ -2130,14 +2347,13 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  measure: avg_waiting_for_rider_time {
-    alias: [avg_acceptance_time, avg_rider_queuing_time]
+  measure: avg_waiting_for_rider_decision_time {
+    alias: [avg_acceptance_time, avg_rider_queuing_time, avg_waiting_for_rider_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting for Rider Time"
-    description: "Average time between order offered to rider and rider having claimed the order. Outliers excluded (>120min)"
-    hidden:  no
+    label: "AVG Waiting for Rider Decision Time"
+    description: "Average time an order spent waiting for rider acceptance. Outliers excluded (<0min or >120min)"
     type: average
-    sql:${waiting_for_rider_time_minutes};;
+    sql:${waiting_for_rider_decision_time_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2351,7 +2567,7 @@ view: orders {
     group_label: "* Operations / Logistics *"
     label: "AVG Targeted Fulfillment Time (min)"
     description: "Average internal targeted delivery time for hub ops."
-    hidden:  no
+    hidden:  yes
     type: average
     sql: ${delivery_time_targeted_minutes};;
     value_format_name: decimal_1
@@ -2415,7 +2631,7 @@ view: orders {
     description: "AIV represents the Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
     hidden:  no
     type: average
-      sql: ${item_value_net};;
+    sql: ${item_value_net};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -2451,7 +2667,7 @@ view: orders {
 
   measure: avg_number_items {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG # items"
+    label: "AVG # Items"
     description: "Average number of items per order"
     hidden:  no
     type: number
@@ -2461,7 +2677,7 @@ view: orders {
 
   measure: avg_number_sku {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
-    label: "AVG # SKUs"
+    label: "AVG # Distinct SKUs"
     description: "Average number of SKUs per order"
     hidden:  no
     type: number
@@ -2527,7 +2743,7 @@ view: orders {
     description: "The mean absolute error between actual riding to customer time and estimated riding to customer time"
     hidden:  no
     type: average
-    sql:  abs(${riding_hub_to_customer_time_minutes} - ${estimated_riding_time_minutes});;
+    sql:  abs(${riding_hub_to_customer_time_minutes}+${rider_preparing_for_trip_time_minutes} - ${estimated_riding_time_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2547,7 +2763,7 @@ view: orders {
     description: "The mean absolute error between actual rider queuing time and estimated rider queuing time"
     hidden:  no
     type: average
-    sql: abs(${waiting_for_rider_time_minutes}+coalesce(${withheld_from_rider_time_minutes}, 0) - ${estimated_queuing_time_for_rider_minutes});;
+    sql: abs(${waiting_for_rider_decision_time_minutes}+coalesce(${waiting_for_available_rider_time_minutes}, 0)+coalesce(${waiting_for_trip_readiness_time_minutes},0) - ${estimated_queuing_time_for_rider_minutes});;
     value_format_name: decimal_1
   }
 
@@ -2798,8 +3014,26 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+  measure: sum_amt_daas_cpo_gross_eur {
+    group_label: "* Monetary Values *"
+    label: "SUM DaaS CPO (Gross)"
+    description: "Total DaaS Cost Per Order (CPO). DaaS CPO is the gross fee charged by the provider for the trip. In euros."
+    type: sum
+    sql: ${amt_daas_cpo_gross_eur};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_daas_cpo_gross_eur {
+    group_label: "* Monetary Values *"
+    label: "AVG DaaS CPO (Gross)"
+    description: "Average DaaS Cost Per Order (CPO). DaaS CPO is the gross fee charged by the provider for the trip. In euros."
+    type: average
+    sql: ${amt_daas_cpo_gross_eur};;
+    value_format_name: euro_accounting_2_precision
+  }
+
   measure: sum_quantity_fulfilled {
-    label: "Item Quantity Fulfilled"
+    label: "Quantity Sold"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Fulfilled Quantity"
     type: sum
@@ -2807,7 +3041,7 @@ view: orders {
   }
 
   measure: sum_distinct_skus {
-    label: "SKU Quantity"
+    label: "# Distinct SKUs Sold"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     description: "Number of distinct SKUs"
     type: sum
@@ -2848,11 +3082,11 @@ view: orders {
   measure: sum_avg_waiting_time {
     alias: [sum_avg_acceptance_reaction_time, sum_avg_queuing_time]
     group_label: "* Operations / Logistics *"
-    label: "AVG Waiting For Picker Time + Waiting for Rider Time"
-    description: "Sum of the average of rider queuing time and the average of waiting for picker time"
+    label: "AVG Waiting For Picker Time + Waiting for Rider Decision Time"
+    description: "Sum of the average of waiting for rider decision and the average of waiting for picker time"
     hidden:  no
     type: number
-    sql:${avg_waiting_for_rider_time} + ${avg_waiting_for_picker_time};;
+    sql: ${avg_waiting_for_rider_decision_time} + ${avg_waiting_for_picker_time};;
     value_format_name: decimal_1
   }
 
@@ -2888,11 +3122,21 @@ view: orders {
 
   measure: sum_rider_handling_time_minutes {
     group_label: "* Operations / Logistics *"
-    label: "SUM Rider Handling Ttimes"
+    label: "SUM Rider Handling Times"
     hidden:  no
     type: sum
     sql: ${rider_handling_time_minutes};;
     value_format_name: decimal_1
+  }
+
+  measure: sum_rider_handling_time_minutes_last_mile {
+    group_label: "* Operations / Logistics *"
+    label: "SUM Rider Handling Times (Last Mile)"
+    hidden:  yes
+    type: sum
+    sql: ${rider_handling_time_minutes};;
+    value_format_name: decimal_1
+    filters: [is_last_mile_order: "yes"]
   }
 
   measure: sum_potential_rider_handling_time_without_stacking_minutes {
@@ -2961,10 +3205,20 @@ view: orders {
     value_format: "0"
   }
 
+  measure: avg_orders_per_customer {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "AVG # Orders per Customer"
+    description: "Count of Orders per Customer"
+    hidden:  no
+    type: number
+    sql: safe_divide(${cnt_orders}, ${cnt_unique_customers}) ;;
+    value_format: "0.00"
+  }
+
   measure: cnt_internal_orders {
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Internal Orders"
-    description: "Count of Internal Orders"
+    description: "Count of Internal Orders. All orders placed via Flink App."
     hidden:  no
     type: count_distinct
     sql: ${order_uuid} ;;
@@ -3030,7 +3284,7 @@ view: orders {
     filters: [
       external_provider: "uber-eats, uber-eats-carrefour",
       is_successful_order: "yes"
-      ]
+    ]
   }
 
   measure: number_of_unique_flink_delivered_orders {
@@ -3106,6 +3360,82 @@ view: orders {
     filters: [customer_type: "Existing Customer"]
   }
 
+  measure: cnt_unique_orders_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within Month of First Order"
+    description: "Count of successful Orders placed by customers in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_month_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after Month of First Order"
+    description: "Count of successful Orders placed by customers NOT in the calendar month they first ordered in"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_month: "no"]
+  }
+
+  measure: cnt_unique_orders_first_28_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders within 28d since first Order"
+    description: "Count of successful Orders placed by customers in the first 28 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_28_days: "yes"]
+  }
+
+  measure: cnt_unique_orders_non_first_28_day_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Orders after 28d since first Order"
+    description: "Count of successful Orders placed by customers NOT in the first 28 days after they first ordered"
+    hidden:  no
+    type: count
+    value_format: "0"
+    filters: [is_customers_first_order_28_days: "no"]
+  }
+
+  measure: cnt_unique_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Monthly Retained Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Retained"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_retained_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Cumulative Monthly Retained Customers"
+    description: "Cumulative distinct count of customers with 'Retained' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_retained_customers} ;;
+  }
+
+  measure: cnt_unique_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Monthly Reactivated Customers"
+    hidden:  yes
+    type: count_distinct
+    sql: ${customer_uuid} ;;
+    filters: [customer_monthly_activity_status: "Reactivated"]
+  }
+
+  measure: running_total_cnt_unique_customers_monthly_reactivated_customers {
+    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    label: "# Cumulative Monthly Reactivated Customers"
+    description: "Cumulative distinct count of customers with 'Reactivated' status over a given month"
+    hidden:  no
+    type: running_total
+    sql: ${cnt_unique_reactivated_customers} ;;
+  }
+
   measure: cnt_orders_with_delivery_eta_available {
     # group_label: "* Operations / Logistics *"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
@@ -3118,11 +3448,11 @@ view: orders {
   }
 
   measure: cnt_orders_with_targeted_eta_available {
+    hidden:  yes
     # group_label: "* Operations / Logistics *"
     group_label: "* Basic Counts (Orders / Customers etc.) *"
     label: "# Orders with Targeted Fulfillment Time is available"
     description: "Count of Orders where a Targeted Delivery Time  is available"
-    hidden:  no
     type: count
     filters: [is_targeted_eta_available: "yes"]
     value_format: "0"
@@ -3131,12 +3461,34 @@ view: orders {
   measure: cnt_orders_delayed_under_0_min {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (30 sec tolerance)"
-    description: "Count of Orders delivered no later than PDT"
+    label: "# Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:"<=0.5"]
+    filters: [delta_to_pdt_minutes_with_positive_buffer:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_under_0_min_raw {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    label: "# Orders delivered on time "
+    description: "Count of orders delivered no later than PDT."
+    hidden:  yes
+    type: count
+    filters: [delta_to_pdt_minutes:"<=0"]
+    value_format: "0"
+  }
+
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    hidden:  yes
+    type: count
+    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
     value_format: "0"
   }
 
@@ -3501,7 +3853,7 @@ view: orders {
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
     label: "# Orders delivered late >5min"
-    description: "Count of Orders delivered >5min later than PDT"
+    description: "Count of Orders delivered >5min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=5"]
@@ -3511,7 +3863,7 @@ view: orders {
   measure: cnt_orders_delayed_over_10_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >10min"
-    description: "Count of Orders delivered >10min later than PDT"
+    description: "Count of Orders delivered >10min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=10"]
@@ -3521,7 +3873,7 @@ view: orders {
   measure: cnt_orders_delayed_over_15_min {
     group_label: "* Operations / Logistics *"
     label: "# Orders delivered late >15min"
-    description: "Count of Orders delivered >15min later than PDT"
+    description: "Count of Orders delivered >15min later than PDT."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes:">=15"]
@@ -3534,7 +3886,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered no later than internal time estimate"
     hidden:  yes
     type: count
@@ -3546,7 +3898,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered no later than internal time estimate"
     hidden:  yes
     type: count
@@ -3558,7 +3910,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered >5min later than internal time estimate"
     hidden:  yes
     type: count
@@ -3570,7 +3922,7 @@ view: orders {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered in time (time estimate)"
+    label: "# Orders delivered on time (time estimate)"
     description: "Count of Orders delivered >10min later than internal time estimate"
     hidden:  yes
     type: count
@@ -3846,20 +4198,39 @@ view: orders {
     value_format: "0.0%"
   }
 
-  measure: pct_delivery_in_time{
+  measure: pct_delivery_in_time_raw {
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (PDT)"
-    description: "Share of orders delivered no later than PDT (30 sec tolerance)"
-    hidden:  no
+    label: "% Orders delivered on time"
+    description: "Share of orders delivered on time."
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_in_time {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered on time (with + 15% PDT tolerance)"
+    description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
     sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    value_format: "0%"
+  }
+
+  measure: pct_delivery_in_time_with_tolerance_buffer {
+    group_label: "* Operations / Logistics *"
+    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
+    Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
+    hidden:  no
+    type: number
+    sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
   measure: pct_delivery_late_over_5_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >5min"
-    description: "Share of orders delivered >5min later than PDT"
+    description: "Share of orders delivered >5min later than PDT. Measured against raw 'Delay' / 'delta to PDT'. No tolerance buffer is applied."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_5_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -3869,7 +4240,7 @@ view: orders {
   measure: pct_delivery_late_over_10_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >10min"
-    description: "Share of orders delivered >10min later than PDT"
+    description: "Share of orders delivered >10min later than PDT. Measured against raw 'Delay' / 'delta to PDT'. No tolerance buffer is applied."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_10_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -3879,7 +4250,7 @@ view: orders {
   measure: pct_delivery_late_over_15_min{
     group_label: "* Operations / Logistics *"
     label: "% Orders delayed >15min"
-    description: "Share of orders delivered >15min later than PDT"
+    description: "Share of orders delivered >15min later than PDT. Measured against raw 'Delay' / 'delta to PDT'. No tolerance buffer is applied."
     hidden:  no
     type: number
     sql: ${cnt_orders_delayed_over_15_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
@@ -4012,9 +4383,9 @@ view: orders {
 
   measure: pct_delivery_in_time_time_estimate{
     group_label: "* Operations / Logistics *"
-    label: "% Orders delivered in time (targeted estimate)"
+    label: "% Orders delivered on time (targeted estimate)"
     description: "Share of orders delivered no later than targeted estimate"
-    hidden:  no
+    hidden:  yes
     type: number
     sql: ${cnt_orders_delayed_under_0_min_time_targeted} / NULLIF(${cnt_orders_with_targeted_eta_available}, 0);;
     value_format: "0%"
@@ -4172,6 +4543,26 @@ view: orders {
     type: number
     value_format: "0.0"
     sql: ${avg_riding_to_customer_time} - ${avg_riding_to_hub_time} ;;
+  }
+
+  measure: avg_delta_daas_pick_up_claimed {
+    group_label: "* Operations / Logistics *"
+    label: "AVG DaaS Delta between Pick-Up ETA and Order Claimed"
+    description: "Formula: Pick-Up ETA timestamp - Order Claimed timestamp (in minutes). Note that Rider arrived at the hub is not available for DaaS orders."
+    type: average
+    value_format_name: decimal_1
+    sql: ${daas_delta_pick_up_claimed_minutes} ;;
+    filters: [daas_provider_pick_up_eta_timestamp: "not null",order_rider_claimed_timestamp: "not null"]
+  }
+
+  measure: avg_delta_daas_drop_off_delivered {
+    group_label: "* Operations / Logistics *"
+    label: "AVG DaaS Delta between Drop-Off ETA and Rider Completed Delivery"
+    description: " Formula: Drop-Off ETA timestamp - Rider Completed Delivery timestamp (in minutes). Note that Rider arrived at Customer is not available for DaaS orders."
+    type: average
+    value_format_name: decimal_1
+    sql: ${daas_delta_drop_off_completed_delivery_minutes} ;;
+    filters: [daas_provider_drop_off_eta_timestamp: "not null",rider_completed_delivery_timestamp: "not null"]
   }
 
 

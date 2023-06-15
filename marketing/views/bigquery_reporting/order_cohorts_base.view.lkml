@@ -136,6 +136,9 @@ view: order_cohorts_base {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     group_label: "* User Dimensions *"
     type: string
     sql: ${TABLE}.customer_email ;;
@@ -157,6 +160,9 @@ view: order_cohorts_base {
 
 
   dimension: customer_note {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.customer_note ;;
   }
@@ -413,12 +419,6 @@ view: order_cohorts_base {
     group_label: "* Operations / Logistics *"
     type: yesno
     sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
-  }
-
-  dimension: is_internal_order {
-    group_label: "* Order Dimensions *"
-    type: yesno
-    sql: ${TABLE}.is_internal_order ;;
   }
 
   dimension: is_order_delay_above_10min {

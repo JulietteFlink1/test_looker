@@ -17,6 +17,9 @@ include: "/**/hub_turf_closures_30min.view"
 include: "/**/hub_turf_closures_daily.view"
 include: "/**/cr_dynamic_ops_metrics.view"
 include: "/**/hub_uph_30min.view"
+include: "/**/ops_associate_staffing.view"
+include: "/**/hub_bottleneck_30min.view"
+
 
 explore: ops {
   from: staffing
@@ -133,7 +136,10 @@ explore: ops {
       hub_turf_closures_30min.sum_number_of_missed_orders_forced_closure,
       hub_turf_closures_30min.share_of_missed_orders_per_number_of_successful_non_external_orders,
       hub_turf_closures_30min.sum_number_of_last_mile_missed_orders_forced_closure,
-      hub_turf_closures_30min.share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders]
+      hub_turf_closures_30min.sum_number_of_last_mile_missed_orders_forced_closure_understaffing_auto_closure,
+      hub_turf_closures_30min.share_of_last_mile_missed_orders_per_number_of_successful_non_external_orders,
+      hub_turf_closures_30min.share_of_last_mile_missed_orders_understaffing_auto_closure_per_number_of_successful_non_external_orders,
+      hub_turf_closures_30min.closure_reason]
   }
 
   join: hub_turf_closures_daily {
@@ -152,6 +158,22 @@ explore: ops {
     view_label: "Hub UPH"
     sql_on: ${hub_uph_30min.hub_code}=${ops.hub_code}
       and ${hub_uph_30min.block_starts_at_minute30}=${time_grid.start_datetime_minute30};;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: ops_associate_staffing {
+    view_label: "Ops Associate Staffing"
+    sql_on: ${ops_associate_staffing.hub_code}=${ops.hub_code}
+      and ${ops_associate_staffing.block_starts_minute30}=${time_grid.start_datetime_minute30};;
+    type: left_outer
+    relationship: one_to_many
+  }
+
+  join: hub_bottleneck_30min {
+    view_label: "Hub Bottleneck"
+    sql_on: ${hub_bottleneck_30min.hub_code}=${ops.hub_code}
+      and ${hub_bottleneck_30min.start_timestamp_minute30}=${time_grid.start_datetime_minute30};;
     type: left_outer
     relationship: one_to_many
   }

@@ -23,6 +23,14 @@ view: waste_waterfall {
     hidden: no
   }
 
+  dimension: parent_bucket {
+    type: string
+    sql: ${TABLE}.parent_bucket ;;
+    label: "Parent Bucket"
+    description: "Bucket allocated to product-location for waste topics on a parent level"
+    hidden: no
+  }
+
   dimension: delisted_flag {
     type: number
     sql: ${TABLE}.flag_delisted ;;
@@ -251,14 +259,69 @@ view: waste_waterfall {
     hidden: no
   }
 
-  dimension: missing_outbound {
+  dimension: flag_freezer_issue {
+    type: number
+    sql: ${TABLE}.flag_freezer_issue ;;
+    label: "Fridge/Freezer Breakdown Flag"
+    group_label: "Markers"
+    description: "Flag for waste caused by a fridge or freezer breakage in spotting abnormal damaged waste on those products (waste > inbound, several sku in damaged...)"
+    hidden: no
+  }
+
+  dimension: flag_aircon_issue {
+    type: number
+    sql: ${TABLE}.flag_aircon_issue ;;
+    label: "Air-conditioner issue flag"
+    group_label: "Markers"
+    description: "Flag for waste caused by air-conditionner issues in spotting abnormal damaged waste on Chocolate as this category is likely to melt when AC issue and high temperature."
+    hidden: no
+  }
+
+  dimension: flag_dry_drinks {
+    type: number
+    sql: ${TABLE}.flag_dry_drinks ;;
+    label: "Dry/Drinks Expired Flag"
+    group_label: "Markers"
+    description: "Remainder expired waste for Dry and Drinks products, as it is not likely to happen often (<0.5% waste target)"
+    hidden: no
+  }
+
+  dimension: flag_missing_outbound {
     type: number
     sql: ${TABLE}.flag_missing_outbound ;;
     label: "Missing Outbound flag"
     group_label: "Markers"
-    description: "Flag for verifying if there is a missing outbound for product-location"
+    description: "verifying if there is a missing outbound for product-location"
     hidden: no
   }
+
+  dimension: flag_frozen {
+    type: number
+    sql: ${TABLE}.flag_frozen ;;
+    label: "Frozen Expired Flag"
+    group_label: "Markers"
+    description: "Remainder expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
+    hidden: no
+  }
+
+  dimension: flag_abnormal_pu {
+    type: number
+    sql: ${TABLE}.flag_abnormal_pu ;;
+    label: "Abnormal PU Flag"
+    group_label: "Markers"
+    description: "Flag for when a Purchase Unit changed abnormally on a Purchase Orders vs the median PU over the last 4 weeks"
+    hidden: no
+  }
+
+  dimension: flag_very_low_performer {
+    type: number
+    sql: ${TABLE}.flag_very_low_performer ;;
+    label: "Very Low Performer Flag"
+    group_label: "Markers"
+    description: "Same logic that the Low Performer bucket but selecting as Very Low Perf when the Low Performer Index < 0.2. As a reminder, Low Performer product when the index < 1."
+    hidden: no
+  }
+
 
   dimension: week {
     type: number
@@ -283,6 +346,8 @@ view: waste_waterfall {
     description: "Shows the ingestion date in BQ from the Waste Knime flow"
     hidden: no
   }
+
+
 
   measure: count {
     type: count
