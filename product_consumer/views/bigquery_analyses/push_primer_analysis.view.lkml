@@ -96,6 +96,11 @@ from  daily_events
     sql: ${TABLE}.platform ;;
   }
 
+  dimension: app_version {
+    type: string
+    sql: ${TABLE}.app_version ;;
+  }
+
   dimension: country_iso {
     type: string
     sql: ${TABLE}.country_iso ;;
