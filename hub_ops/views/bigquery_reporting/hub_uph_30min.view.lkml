@@ -46,7 +46,7 @@ view: hub_uph_30min {
 
   dimension: session_type {
     hidden: yes
-    description: "Type of the session. Sessions can be of type direct (group of events happening one after the other below a certain threshold). Or idle (internal, transition or limit idle). Current threshold: 120seconds for all flows."
+    description: "Type of the session. Sessions can be of type direct (group of events happening one after the other below a certain threshold). Or idle (flow, transition or limit idle). Current threshold: 120seconds for all flows."
     type: string
     sql: ${TABLE}.session_type ;;
   }
@@ -320,31 +320,31 @@ view: hub_uph_30min {
 
   measure: sum_internal_idle_session_order_preparation_duration_hours {
     group_label: "> Durations All Positions"
-    label: "SUM Internal Idle Hours - Order Preparation"
-    description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
+    label: "SUM Flow Idle Hours - Order Preparation"
+    description: "Number of hours spent on the flow idle order preparation process. Filtered for flow order_preparation and session type flow idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle"]
+    filters: [flow: "order_preparation",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inbounding_duration_hours {
     group_label: "> Durations All Positions"
-    label: "SUM Internal Idle Hours - Inbounding"
+    label: "SUM Flow Idle Hours - Inbounding"
     description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle"]
+    filters: [flow: "inbounding",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inventory_check_duration_hours {
     group_label: "> Durations All Positions"
-    label: "SUM Internal Idle Hours - Inventory Check"
+    label: "SUM Flow Idle Hours - Inventory Check"
     description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle"]
+    filters: [flow: "inventory_check",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -360,11 +360,11 @@ view: hub_uph_30min {
 
   measure: sum_internal_idle_session_duration_hours {
     group_label: "> Durations All Positions"
-    label: "SUM Internal Idle Hours"
-    description: "Number of hours spent on internal idle. Including all flows"
+    label: "SUM Flow Idle Hours"
+    description: "Number of hours spent on flow idle. Including all flows"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "internal_idle"]
+    filters: [session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -399,8 +399,8 @@ view: hub_uph_30min {
 
   measure: share_of_internal_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations All Positions"
-    label: "% Internal Idle Hours"
-    description: "Number of hours spent on internal idle divided by all worked hours."
+    label: "% Flow Idle Hours"
+    description: "Number of hours spent on flow idle divided by all worked hours."
     type: number
     sql: safe_divide(${sum_internal_idle_session_duration_hours},${sum_session_duration_hours}) ;;
     value_format_name: percent_1
@@ -428,7 +428,7 @@ view: hub_uph_30min {
     group_label: "> Productivity Metrics All Positions"
     type: number
     label: "UPH Order Preparation"
-    description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
+    description: "Units picked per Hour. Formula: # Picked Items / ( # Direct Order Preparation Hours + # Flow Order Preparation Hours )"
     value_format_name: decimal_0
     sql: safe_divide(${sum_number_of_picked_items},(${sum_direct_session_order_preparation_duration_hours}+${sum_internal_idle_session_order_preparation_duration_hours})) ;;
   }
@@ -436,7 +436,7 @@ view: hub_uph_30min {
   measure: oph_picking {
     group_label: "> Productivity Metrics All Positions"
     type: number
-    description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Internal Order Preparation Hours )"
+    description: "Orders picked per Hour. Formula: # Picked Orders / ( # Direct Order Preparation Hours + # Flow Order Preparation Hours )"
     label: "OPH"
     value_format_name: decimal_1
     sql: safe_divide(${sum_number_of_picked_orders},(${sum_direct_session_order_preparation_duration_hours}+${sum_internal_idle_session_order_preparation_duration_hours})) ;;
@@ -446,7 +446,7 @@ view: hub_uph_30min {
     group_label: "> Productivity Metrics All Positions"
     type: number
     label: "UPH Inbounding"
-    description: "Units dropped per Hour. Formula:  # Dropped Items / ( # Direct Inbounding Hours + # Internal Inbounding Hours )"
+    description: "Units dropped per Hour. Formula:  # Dropped Items / ( # Direct Inbounding Hours + # Flow Inbounding Hours )"
     value_format_name: decimal_0
     sql: safe_divide(${sum_number_of_dropped_items},(${sum_direct_session_inbounding_duration_hours}+${sum_internal_idle_session_inbounding_duration_hours})) ;;
   }
@@ -454,7 +454,7 @@ view: hub_uph_30min {
   measure: uph_inventory_check {
     group_label: "> Productivity Metrics All Positions"
     type: number
-    description: "Checks per Hour. Formula: # Checks / ( # Direct Inventory Hours + # Internal Inventory Hours )"
+    description: "Checks per Hour. Formula: # Checks / ( # Direct Inventory Hours + # Flow Inventory Hours )"
     label: "UPH Inventory Check"
     value_format_name: decimal_0
     sql: safe_divide(${sum_number_of_checks},(${sum_direct_session_inventory_check_duration_hours} +${sum_internal_idle_session_inventory_check_duration_hours}));;
@@ -471,7 +471,7 @@ view: hub_uph_30min {
   measure: share_of_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations All Positions"
     label: "% Idle Hours"
-    description: "Number of hours spent on any idle (internal, transition, limit) divided by all worked hours."
+    description: "Number of hours spent on any idle (flow, transition, limit) divided by all worked hours."
     type: number
     sql: safe_divide( ${sum_internal_idle_session_duration_hours} +
                       ${sum_limit_idle_session_duration_hours}   +
@@ -514,31 +514,31 @@ view: hub_uph_30min {
 
   measure: sum_internal_idle_session_order_preparation_duration_hours_rider {
     group_label: "> Durations Rider"
-    label: "SUM Internal Idle Hours Rider - Order Preparation"
-    description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
+    label: "SUM Flow Idle Hours Rider - Order Preparation"
+    description: "Number of hours spent on the flow idle order preparation process. Filtered for flow order_preparation and session type flow idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle", position_name: "rider"]
+    filters: [flow: "order_preparation",session_type: "flow_idle", position_name: "rider"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inbounding_duration_hours_rider {
     group_label: "> Durations Rider"
-    label: "SUM Internal Idle Hours Rider - Inbounding"
+    label: "SUM Flow Idle Hours Rider - Inbounding"
     description: "Number of hours spent by riders on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle", position_name: "rider"]
+    filters: [flow: "inbounding",session_type: "flow_idle", position_name: "rider"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inventory_check_duration_hours_rider {
     group_label: "> Durations Rider"
-    label: "SUM Internal Idle Hours Rider - Inventory Check"
+    label: "SUM Flow Idle Hours Rider - Inventory Check"
     description: "Number of hours spent by riders on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle", position_name: "rider"]
+    filters: [flow: "inventory_check",session_type: "flow_idle", position_name: "rider"]
     value_format_name: decimal_2
   }
 
@@ -596,31 +596,31 @@ view: hub_uph_30min {
 
   measure: sum_internal_idle_session_order_preparation_duration_hours_oa {
     group_label: "> Durations Ops Associate"
-    label: "SUM Internal Idle Hours Ops Associate - Order Preparation"
-    description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
+    label: "SUM Flow Idle Hours Ops Associate - Order Preparation"
+    description: "Number of hours spent on the flow idle order preparation process. Filtered for flow order_preparation and session type flow idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle", position_name: "ops associate"]
+    filters: [flow: "order_preparation",session_type: "flow_idle", position_name: "ops associate"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inbounding_duration_hours_oa {
     group_label: "> Durations Ops Associate"
-    label: "SUM Internal Idle Hours Ops Associate - Inbounding"
+    label: "SUM Flow Idle Hours Ops Associate - Inbounding"
     description: "Number of hours spent by ops associates on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle",  position_name: "ops associate"]
+    filters: [flow: "inbounding",session_type: "flow_idle",  position_name: "ops associate"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inventory_check_duration_hours_oa {
     group_label: "> Durations Ops Associate"
-    label: "SUM Internal Idle Hours Ops Associate - Inventory Check"
+    label: "SUM Flow Idle Hours Ops Associate - Inventory Check"
     description: "Number of hours spent by ops associates on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle", position_name: "ops associate"]
+    filters: [flow: "inventory_check",session_type: "flow_idle", position_name: "ops associate"]
     value_format_name: decimal_2
   }
 
@@ -680,31 +680,31 @@ view: hub_uph_30min {
 
   measure: sum_internal_idle_sessio_hub_staffrder_preparation_duration_hours_hub_staff {
     group_label: "> Durations Hub Staff"
-    label: "SUM Internal Idle Hours Hub Staff - Order Preparation"
-    description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
+    label: "SUM Flow Idle Hours Hub Staff - Order Preparation"
+    description: "Number of hours spent on the flow idle order preparation process. Filtered for flow order_preparation and session type flow idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle", position_name: "ops associate, ops associate +, shift lead"]
+    filters: [flow: "order_preparation",session_type: "flow_idle", position_name: "ops associate, ops associate +, shift lead"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idl_hub_staffession_inbounding_duration_hours_hub_staff {
     group_label: "> Durations Hub Staff"
-    label: "SUM Internal Idle Hours Hub Staff - Inbounding"
+    label: "SUM Flow Idle Hours Hub Staff - Inbounding"
     description: "Number of hours spent by hub staff (includes shift lead, ops associates and ops associate +) on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle",  position_name: "ops associate, ops associate +, shift lead"]
+    filters: [flow: "inbounding",session_type: "flow_idle",  position_name: "ops associate, ops associate +, shift lead"]
     value_format_name: decimal_2
   }
 
   measure: sum_internal_idle_session_inventory_check_duration_hours_hub_staff {
     group_label: "> Durations Hub Staff"
-    label: "SUM Internal Idle Hours Hub Staff - Inventory Check"
+    label: "SUM Flow Idle Hours Hub Staff - Inventory Check"
     description: "Number of hours spent by hub staff (includes shift lead, ops associates and ops associate +) on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle", position_name: "ops associate, ops associate +, shift lead"]
+    filters: [flow: "inventory_check",session_type: "flow_idle", position_name: "ops associate, ops associate +, shift lead"]
     value_format_name: decimal_2
   }
 
