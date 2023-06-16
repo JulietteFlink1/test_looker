@@ -13,13 +13,6 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${TABLE}.country_iso ;;
   }
 
-  dimension: customer_id {
-    type: string
-    hidden: yes
-    group_label: "Default Identifers"
-    sql: ${TABLE}.customer_id ;;
-  }
-
   dimension: customer_uuid {
     type: string
     hidden: yes
@@ -29,86 +22,139 @@ view: user_attributes_jobs_to_be_done_last28days {
   dimension: days_since_last_breakfast_order {
     type: number
     hidden:  yes
-    sql: ${TABLE}.days_since_last_breakfast_order ;;
-  }
-
-  dimension: days_since_last_emergency_order {
-    type: number
-    hidden:  yes
-    sql: ${TABLE}.days_since_last_emergency_order ;;
-  }
-
-  dimension: days_since_last_household_shopping_order {
-    type: number
-    hidden:  yes
-    sql: ${TABLE}.days_since_last_household_shopping_order ;;
-  }
-
-  dimension: days_since_last_late_night_snack_order {
-    type: number
-    hidden:  yes
-    sql: ${TABLE}.days_since_last_late_night_snack_order ;;
-  }
-
-  dimension: days_since_last_party_time_order {
-    type: number
-    hidden:  yes
-    sql: ${TABLE}.days_since_last_party_time_order ;;
+    sql: ${TABLE}.days_since_last_breakfast_order_last28days ;;
   }
 
   dimension: days_since_last_lunch_order {
     type: number
     hidden:  yes
-    sql: ${TABLE}.days_since_last_lunch_order ;;
+    sql: ${TABLE}.days_since_last_lunch_order_last28days ;;
   }
+
+  dimension: days_since_last_emergency_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_emergency_order_last28days ;;
+  }
+
+  dimension: days_since_last_food_household_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_food_household_order_last28days ;;
+  }
+
+  dimension: days_since_last_non_food_household_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_non_last_food_household_order_last28days ;;
+  }
+
+  dimension: days_since_last_late_night_snack_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_late_night_snack_order_last28days ;;
+  }
+
+  dimension: days_since_last_party_time_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_party_time_order_last28days ;;
+  }
+
+  dimension: days_since_last_vegetarian_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_vegetarian_order_last28days ;;
+  }
+
+  dimension: days_since_last_baby_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_baby_order_last28days ;;
+  }
+
+  dimension: days_since_last_pet_order {
+    type: number
+    hidden:  yes
+    sql: ${TABLE}.days_since_last_pet_order_last28days ;;
+  }
+
 
   dimension: number_of_breakfast_orders {
     type: number
     label: "Number of Breakfast Orders"
     group_label: "User Activity"
-    sql: ${TABLE}.number_of_breakfast_orders ;;
-  }
-
-  dimension: number_of_emergency_orders {
-    type: number
-    label: "Number of Emergency Orders"
-    group_label: "User Activity"
-    sql: ${TABLE}.number_of_emergency_orders ;;
-  }
-
-  dimension: number_of_household_shopping_orders {
-    type: number
-    label: "Number of Household Orders"
-    group_label: "User Activity"
-    sql: ${TABLE}.number_of_household_shopping_orders ;;
-  }
-
-  dimension: number_of_late_night_snack_orders {
-    type: number
-    label: "Number of Late Night Snack Orders"
-    group_label: "User Activity"
-    sql: ${TABLE}.number_of_late_night_snack_orders ;;
+    sql: ${TABLE}.number_of_breakfast_orders_last28days ;;
   }
 
   dimension: number_of_lunch_orders {
     type: number
     label: "Number of Lunch Orders"
     group_label: "User Activity"
-    sql: ${TABLE}.number_of_lunch_orders ;;
+    sql: ${TABLE}.number_of_lunch_orders_last28days ;;
   }
 
-  dimension: number_of_orders {
+  dimension: number_of_emergency_orders {
     type: number
-    label: "Number of Orders"
+    label: "Number of Emergency Orders"
     group_label: "User Activity"
-    sql: ${TABLE}.number_of_orders ;;
+    sql: ${TABLE}.number_of_emergency_orders_last28days ;;
+  }
+
+  dimension: number_of_non_food_household_orders {
+    type: number
+    label: "Number of Non-Food Household Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_non_food_household_orders_last28days ;;
+  }
+
+  dimension: number_of_food_household_orders {
+    type: number
+    label: "Number of Food Household Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_food_household_orders_last28days ;;
+  }
+
+  dimension: number_of_late_night_snack_orders {
+    type: number
+    label: "Number of Late Night Snack Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_late_night_snack_orders_last28days ;;
   }
 
   dimension: number_of_party_time_orders {
     type: number
     label: "Number of Party Time Orders"
     group_label: "User Activity"
-    sql: ${TABLE}.number_of_party_time_orders ;;
+    sql: ${TABLE}.number_of_party_time_orders_last28days  ;;
+  }
+
+  dimension: number_of_vegetarian_orders {
+    type: number
+    label: "Number of vegetarian Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_vegetarian_orders_last28days ;;
+  }
+
+  dimension: number_of_baby_orders {
+    type: number
+    label: "Number of Baby Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_baby_orders_last28days ;;
+  }
+
+  dimension: number_of_pet_orders {
+    type: number
+    label: "Number of Pet Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_pet_orders_last28days ;;
+  }
+
+  dimension: number_of_orders {
+    type: number
+    label: "Number of Orders"
+    group_label: "User Activity"
+    sql: ${TABLE}.number_of_orders_last28days ;;
   }
 
   dimension_group: execution {
@@ -134,43 +180,7 @@ view: user_attributes_jobs_to_be_done_last28days {
     label: "Has Breakfast Orders"
     group_label: "User Activity"
     description: "Yes if the user has breakfast orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_breakfast_orders > 0 THEN TRUE
-      ELSE FALSE END ;;
-  }
-
-  dimension: has_emergency_orders {
-    type: yesno
-    label: "Has Emergency Orders"
-    group_label: "User Activity"
-    description: "Yes if the user has emergency orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_emergency_orders > 0 THEN TRUE
-      ELSE FALSE END ;;
-  }
-
-  dimension: has_household_shopping_orders {
-    type: yesno
-    label: "Has Household Shopping Orders"
-    group_label: "User Activity"
-    description: "Yes if the user has household shopping orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_household_shopping_orders > 0 THEN TRUE
-      ELSE FALSE END ;;
-  }
-
-  dimension: has_late_night_snack_orders {
-    type: yesno
-    label: "Has Late Night Snack Orders"
-    group_label: "User Activity"
-    description: "Yes if the user has last night snack orders orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_late_night_snack_orders > 0 THEN TRUE
-      ELSE FALSE END ;;
-  }
-
-  dimension: has_party_time_orders {
-    type: yesno
-    label: "Has Party Time Orders"
-    group_label: "User Activity"
-    description: "Yes if the user has party time orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_party_time_orders > 0 THEN TRUE
+    sql: CASE WHEN ${number_of_breakfast_orders} > 0 THEN TRUE
       ELSE FALSE END ;;
   }
 
@@ -179,9 +189,82 @@ view: user_attributes_jobs_to_be_done_last28days {
     label: "Has Lunch Orders"
     group_label: "User Activity"
     description: "Yes if the user has lunch orders in the past 28 days"
-    sql: CASE WHEN ${TABLE}.number_of_lunch_orders > 0 THEN TRUE
+    sql: CASE WHEN ${number_of_lunch_orders} > 0 THEN TRUE
       ELSE FALSE END ;;
   }
+
+  dimension: has_emergency_orders {
+    type: yesno
+    label: "Has Emergency Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has emergency orders in the past 28 days"
+    sql: CASE WHEN ${number_of_emergency_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_non_food_household_orders {
+    type: yesno
+    label: "Has Non-Food Household Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has non-food household orders in the past 28 days"
+    sql: CASE WHEN ${number_of_non_food_household_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_food_household_orders {
+    type: yesno
+    label: "Has Food Household Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has food household orders in the past 28 days"
+    sql: CASE WHEN ${number_of_food_household_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_late_night_snack_orders {
+    type: yesno
+    label: "Has Late Night Snack Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has last night snack orders orders in the past 28 days"
+    sql: CASE WHEN ${number_of_late_night_snack_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_party_time_orders {
+    type: yesno
+    label: "Has Party Time Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has party time orders in the past 28 days"
+    sql: CASE WHEN ${number_of_party_time_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_vegetarian_orders {
+    type: yesno
+    label: "Has Vegetarian Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has vegetarian orders in the past 28 days"
+    sql: CASE WHEN ${number_of_vegetarian_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_baby_order {
+    type: yesno
+    label: "Has Baby Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has baby orders in the past 28 days"
+    sql: CASE WHEN ${number_of_baby_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
+  dimension: has_pet_orders {
+    type: yesno
+    label: "Has Pet Orders"
+    group_label: "User Activity"
+    description: "Yes if the user has pet orders in the past 28 days"
+    sql: CASE WHEN ${number_of_party_time_orders} > 0 THEN TRUE
+      ELSE FALSE END ;;
+  }
+
 
 ### Measures
 
@@ -192,7 +275,6 @@ view: user_attributes_jobs_to_be_done_last28days {
     type: count_distinct
     sql: ${customer_uuid} ;;
   }
-
 
   measure: total_orders {
     group_label: "Counts (#)"
@@ -208,6 +290,14 @@ view: user_attributes_jobs_to_be_done_last28days {
     type: sum
     description: "Number of breakfast orders"
     sql: ${number_of_breakfast_orders};;
+  }
+
+  measure: lunch_orders {
+    group_label: "Counts (#)"
+    label: "# Lunch Orders"
+    type: sum
+    description: "Number of lunch orders"
+    sql: ${number_of_lunch_orders};;
   }
 
   measure: party_orders {
@@ -234,31 +324,47 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${number_of_late_night_snack_orders};;
   }
 
-  measure: household_orders {
+  measure: non_food_household_orders {
     group_label: "Counts (#)"
-    label: "# Household Orders"
+    label: "# Non-Food Household Orders"
     type: sum
-    description: "Number of household orders"
-    sql: ${number_of_household_shopping_orders};;
+    description: "Number of non-food household orders"
+    sql: ${number_of_non_food_household_orders};;
   }
 
-  measure: lunch_orders {
+  measure: food_household_orders {
+    group_label: "Counts (#)"
+    label: "# Food Household Orders"
+    type: sum
+    description: "Number of food household orders"
+    sql: ${number_of_food_household_orders};;
+  }
+
+  measure: vegetarian_orders {
     group_label: "Counts (#)"
     label: "# Lunch Orders"
     type: sum
-    description: "Number of lunch orders"
-    sql: ${number_of_lunch_orders};;
+    description: "Number of vegetarian orders"
+    sql: ${number_of_vegetarian_orders};;
   }
 
-
-  measure: unclassified_orders {
+  measure: baby_orders {
     group_label: "Counts (#)"
-    label: "# Unclassified Orders"
-    type: number
-    description: "Number of household orders"
-    sql: ${total_orders} - ${breakfast_orders} - ${party_orders} - ${emergency_orders} - ${late_night_snack_orders}
-      - ${household_orders} - ${lunch_orders};;
+    label: "# Baby Orders"
+    type: sum
+    description: "Number of baby orders"
+    sql: ${number_of_baby_orders};;
   }
+  measure: pet_orders {
+    group_label: "Counts (#)"
+    label: "# Pet Orders"
+    type: sum
+    description: "Number of pet orders"
+    sql: ${number_of_pet_orders};;
+  }
+
+
+  #### RATES ####
 
   measure: breakfast_order_rate {
     group_label: "Shares (%)"
@@ -267,6 +373,15 @@ view: user_attributes_jobs_to_be_done_last28days {
     description: "Number of breakfast orders, over total orders"
     value_format_name: percent_1
     sql: ${breakfast_orders} / nullif(${total_orders},0);;
+  }
+
+  measure: lunch_rate {
+    group_label: "Shares (%)"
+    label: "Lunch Order Rate"
+    type: number
+    description: "Number of lunch orders, over total orders"
+    value_format_name: percent_1
+    sql: ${lunch_orders} / nullif(${total_orders},0);;
   }
 
   measure: party_order_rate {
@@ -296,35 +411,48 @@ view: user_attributes_jobs_to_be_done_last28days {
     sql: ${late_night_snack_orders} / nullif(${total_orders},0);;
   }
 
-  measure: household_rate {
+  measure: non_food_household_rate {
     group_label: "Shares (%)"
-    label: "Household Order Rate"
+    label: "Non-Food Household Order Rate"
     type: number
-    description: "Number of household shopping orders, over total orders"
+    description: "Number of non-food household orders, over total orders"
     value_format_name: percent_1
-    sql: ${household_orders} / nullif(${total_orders},0);;
+    sql: ${non_food_household_orders} / nullif(${total_orders},0);;
   }
 
-  measure: lunch_rate {
+  measure: food_household_rate {
     group_label: "Shares (%)"
-    label: "Lunch Order Rate"
+    label: "Food Household Order Rate"
     type: number
-    description: "Number of lunch orders, over total orders"
+    description: "Number of food household orders, over total orders"
     value_format_name: percent_1
-    sql: ${lunch_orders} / nullif(${total_orders},0);;
+    sql: ${food_household_orders} / nullif(${total_orders},0);;
   }
 
-
-  measure: unclassified_rate {
+  measure: vegetarian_rate {
     group_label: "Shares (%)"
-    label: "Unclassified Order Rate"
+    label: "Vegetarian Order Rate"
     type: number
-    description: "Number of unclassified orders, over total orders"
+    description: "Number of vegetarian orders, over total orders"
     value_format_name: percent_1
-    sql: ${unclassified_orders} / nullif(${total_orders},0);;
+    sql: ${vegetarian_orders} / nullif(${total_orders},0);;
   }
 
+  measure: baby_rate {
+    group_label: "Shares (%)"
+    label: "Baby Order Rate"
+    type: number
+    description: "Number of baby orders, over total orders"
+    value_format_name: percent_1
+    sql: ${baby_orders} / nullif(${total_orders},0);;
+  }
 
-
-
+  measure: pet_rate {
+    group_label: "Shares (%)"
+    label: "Pet Order Rate"
+    type: number
+    description: "Number of pet orders, over total orders"
+    value_format_name: percent_1
+    sql: ${pet_orders} / nullif(${total_orders},0);;
+  }
 }

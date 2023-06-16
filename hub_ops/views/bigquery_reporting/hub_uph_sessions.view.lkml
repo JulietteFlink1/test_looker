@@ -179,7 +179,7 @@ view: hub_uph_sessions {
   }
 
   dimension: session_type {
-    description: "Type of the session. Sessions can be of type direct (group of events happening one after the other below a certain threshold). Or idle (internal, transition or limit idle). Current threshold: 120seconds for all flows."
+    description: "Type of the session. Sessions can be of type direct (group of events happening one after the other below a certain threshold). Or idle (flow, transition or limit idle). Current threshold: 120seconds for all flows."
     type: string
     sql: ${TABLE}.session_type ;;
   }
@@ -215,7 +215,7 @@ view: hub_uph_sessions {
 
   dimension: is_idle_session_more_than_2_hours {
     type: yesno
-    description: "Yes if the session type is idle (transition, limit or internal) and the session duration is > 2 hours."
+    description: "Yes if the session type is idle (transition, limit or flow) and the session duration is > 2 hours."
     sql: case when ${session_type} like '%idle%' and  ${session_duration_hours}>2 then true else false end  ;;
   }
 
@@ -399,31 +399,31 @@ view: hub_uph_sessions {
 
   measure: sum_of_internal_idle_session_order_preparation_duration_hours {
     group_label: "> Durations"
-    label: "SUM Internal Idle Hours - Order Preparation"
-    description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
+    label: "SUM Flow Idle Hours - Order Preparation"
+    description: "Number of hours spent on the flow idle order preparation process. Filtered for flow order_preparation and session type flow idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle"]
+    filters: [flow: "order_preparation",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_internal_idle_session_inbounding_duration_hours {
     group_label: "> Durations"
-    label: "SUM Internal Idle Hours - Inbounding"
+    label: "SUM Flow Idle Hours - Inbounding"
     description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle"]
+    filters: [flow: "inbounding",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
   measure: sum_of_internal_idle_session_inventory_check_duration_hours {
     group_label: "> Durations"
-    label: "SUM Internal Idle Hours - Inventory Check"
+    label: "SUM Flow Idle Hours - Inventory Check"
     description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle"]
+    filters: [flow: "inventory_check",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -439,11 +439,11 @@ view: hub_uph_sessions {
 
   measure: sum_of_internal_idle_session_duration_hours {
     group_label: "> Durations"
-    label: "SUM Internal Idle Hours"
-    description: "Number of hours spent on internal idle. Including all flows"
+    label: "SUM Flow Idle Hours"
+    description: "Number of hours spent on flow idle. Including all flows"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "internal_idle"]
+    filters: [session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -489,11 +489,11 @@ view: hub_uph_sessions {
 
   measure: avg_internal_idle_session_duration_hours {
     group_label: "> Durations"
-    label: "AVG Internal Idle Hours"
-    description: "AVG Number of hours spent on internal idle. Including all flows"
+    label: "AVG Flow Idle Hours"
+    description: "AVG Number of hours spent on flow idle. Including all flows"
     type: average
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "internal_idle"]
+    filters: [session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -508,8 +508,8 @@ view: hub_uph_sessions {
 
   measure: share_of_internal_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations"
-    label: "% Internal Idle Hours"
-    description: "Number of hours spent on internal idle divided by all worked hours."
+    label: "% Flow Idle Hours"
+    description: "Number of hours spent on flow idle divided by all worked hours."
     type: number
     sql: safe_divide(${sum_of_internal_idle_session_duration_hours},${sum_of_session_duration_hours}) ;;
     value_format_name: percent_1
@@ -602,7 +602,7 @@ view: hub_uph_sessions {
     label: "UPH Order Preparation"
     description: "Units picked per Hour. Formula: # Picked Items /
     ( # Direct Order Preparation Hours
-    + # Internal Order Preparation Hours
+    + # Flow Order Preparation Hours
     + # Transition Idle Order Preparation Hours
     + # Limit Idle Order Preparation Hours)"
     value_format_name: decimal_0
@@ -618,7 +618,7 @@ view: hub_uph_sessions {
     type: number
     description: "Orders picked per Hour. Formula: # Picked Orders /
     ( # Direct Order Preparation Hours
-    + # Internal Order Preparation Hours
+    + # Flow Order Preparation Hours
     + # Transition Idle Order Preparation Hours
     + # Limit Idle Order Preparation Hours)"
     label: "OPH"
@@ -636,7 +636,7 @@ view: hub_uph_sessions {
     label: "UPH Inbounding"
     description: "Units dropped per Hour. Formula:  # Dropped Items /
     ( # Direct Inbounding Hours
-    + # Internal Inbounding Hours
+    + # Flow Inbounding Hours
     + # Transition Idle Inbounding Hours
     + # Limit Idle Inbounding Hours)"
     value_format_name: decimal_0
@@ -652,7 +652,7 @@ view: hub_uph_sessions {
     type: number
     description: "Checks per Hour. Formula: # Checks /
     ( # Direct Inventory Hours
-    + # Internal Inventory Hours
+    + # Flow Inventory Hours
     + # Transition Idle Inventory Hours
     + # Limit Idle Inventory Hours )"
     label: "UPH Inventory Check"
@@ -694,7 +694,7 @@ view: hub_uph_sessions {
   measure: share_of_idle_session_duration_hours_over_all_hours {
     group_label: "> Durations"
     label: "% Idle Hours"
-    description: "Number of hours spent on any idle (internal, transition, limit) divided by all worked hours."
+    description: "Number of hours spent on any idle (flow, transition, limit) divided by all worked hours."
     type: number
     sql: safe_divide( ${sum_of_internal_idle_session_duration_hours} +
                       ${sum_of_limit_idle_session_duration_hours}   +
