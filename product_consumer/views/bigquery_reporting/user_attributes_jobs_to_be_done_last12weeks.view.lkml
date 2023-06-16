@@ -5,7 +5,7 @@ sql_table_name: `flink-data-prod.reporting.user_attributes_jobs_to_be_done_last1
 dimension: customer_date_primary_key {
   primary_key: yes
   hidden: yes
-  sql: CONCAT(${customer_uuid}, ${TABLE}.partition_date) ;;
+  sql: CONCAT(${customer_uuid}, ${TABLE}.execution_date) ;;
 }
 
 dimension: country_iso {
@@ -136,7 +136,7 @@ dimension_group: partition {
   ]
   convert_tz: no
   datatype: timestamp
-  sql: TIMESTAMP(${TABLE}.partition_date) ;;
+  sql: TIMESTAMP(${TABLE}.execution_date) ;;
 }
 
 ### Booleans
