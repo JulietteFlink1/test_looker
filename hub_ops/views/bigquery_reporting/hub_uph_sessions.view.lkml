@@ -403,7 +403,7 @@ view: hub_uph_sessions {
     description: "Number of hours spent on the internal idle order preparation process. Filtered for flow order_preparation and session type internal idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "order_preparation",session_type: "internal_idle"]
+    filters: [flow: "order_preparation",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -413,7 +413,7 @@ view: hub_uph_sessions {
     description: "Number of hours spent on the indirect idle inbounding process. Filtered for flow inbounding and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inbounding",session_type: "internal_idle"]
+    filters: [flow: "inbounding",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -423,7 +423,7 @@ view: hub_uph_sessions {
     description: "Number of hours spent on the indirect idle inventory check process. Filtered for flow inventory check and session type indirect idle"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [flow: "inventory_check",session_type: "internal_idle"]
+    filters: [flow: "inventory_check",session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -443,7 +443,7 @@ view: hub_uph_sessions {
     description: "Number of hours spent on internal idle. Including all flows"
     type: sum
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "internal_idle"]
+    filters: [session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
@@ -493,7 +493,7 @@ view: hub_uph_sessions {
     description: "AVG Number of hours spent on internal idle. Including all flows"
     type: average
     sql: ${session_duration_hours} ;;
-    filters: [session_type: "internal_idle"]
+    filters: [session_type: "flow_idle"]
     value_format_name: decimal_2
   }
 
