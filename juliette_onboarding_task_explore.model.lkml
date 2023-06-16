@@ -8,6 +8,7 @@ include: "juliette_onboarding_task.view.lkml"
 
 
 explore: juliette_onboarding_task {
+
   from: juliette_onboarding_task
   view_name: juliette_onboarding_task
   hidden:  yes
@@ -23,7 +24,4 @@ explore: juliette_onboarding_task {
       country_iso: ""
     ]
   }
-
-
-
   }
