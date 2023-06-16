@@ -8,7 +8,7 @@
 view: google_merchant_center {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `flink-data-dev.dbt_astueber_curated.google_merchant_center`
+  sql_table_name: `flink-data-prod.curated.google_merchant_center`
     ;;
   # No primary key is defined for this view. In order to join this view in an Explore,
   # define primary_key: yes on a dimension that has no repeated values.
@@ -41,7 +41,7 @@ view: google_merchant_center {
 
   dimension: condition {
     type: string
-    description: "Applied condition within the Google Merchant Center"
+    description: "Condition of an SKU. Used as a variable for Google Ads to show if a product has been used before"
     sql: ${TABLE}.current_state.condition ;;
 
     group_item_label: "Condition"
@@ -423,7 +423,7 @@ view: google_merchant_center__history {
 
   dimension: condition {
     type: string
-    description: "Applied condition within the Google Merchant Center"
+    description: "Condition of an SKU. Used as a variable for Google Ads to show if a product has been used before"
     sql: condition ;;
   }
 
