@@ -101,6 +101,15 @@ view: orders_using_hubs {
     sql: ${delivery_distance_km} ;;
   }
 
+  dimension: delivery_distance_tier_step_500m {
+    group_label: "* Operations / Logistics *"
+    label: "Delivery Distance Tier (0.5 km)"
+    type: tier
+    tiers: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+    style: interval
+    sql: ${delivery_distance_km} ;;
+  }
+
   dimension: is_delivery_distance_over_10km {
     group_label: "* Operations / Logistics *"
     label: "Is Delivery Distance Over 10 km"
