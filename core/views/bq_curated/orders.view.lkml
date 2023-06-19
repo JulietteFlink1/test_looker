@@ -4573,4 +4573,65 @@ view: orders {
     sql: stddev_pop(${fulfillment_time}) ;;
     value_format_name: decimal_1
   }
+
+  #### Planned Orders
+
+  dimension_group: planned_delivery_window_start {
+    group_label: "> Planned Orders"
+    type: time
+    description: "This field represents the lower limit of the customer's chosen delivery timeslot in case of a planned order. The planned delivery window begins at this timestamp and extends to the 'planned_delivery_window_end_timestamp'."
+    sql: ${TABLE}.planned_delivery_window_start_timestamp;;
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+    ]
+  }
+
+  dimension_group: planned_delivery_window_end {
+    group_label: "> Planned Orders"
+    type: time
+    description: "This field represents the upper limit of the customer's chosen delivery timeslot in case of a planned order. The planned delivery window starts at the 'planned_delivery_window_start_timestamp' and concludes at this timestamp."
+    sql: ${TABLE}.planned_delivery_window_end_timestamp;;
+    timeframes: [
+      time,
+      date,
+      week,
+      month
+      ]
+  }
+
+  dimension: delivery_timeslot_description {
+    group_label: "> Planned Orders"
+    type: string
+    description: "This field specifies the requested delivery timing for an order, allowing it to be set as 'ASAP' for immediate delivery or 'PLANNED - delivery window' to schedule within a designated timeframe."
+    sql: ${TABLE}.delivery_timeslot_description;;
+  }
+
+  dimension: is_planned_order {
+    group_label: "> Planned Orders"
+    type: yesno
+    description: "Yes if the order is a planned order, i.e. the customer selects a specific scheduled delivery window. No for ASAP orders."
+    sql: ${TABLE}.is_planned_order;;
+  }
+
+  measure: avg_delivery_window_duration {
+    group_label: "> Planned Orders"
+    label: "AVG Delivery Window Duration (minutes)"
+    type: number
+    sql: TIMESTAMP_DIFF(${planned_delivery_window_end_time}, ${planned_delivery_window_start_time}, MINUTE);;
+    description: "The average duration of the delivery window for planned orders. In minutes."
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_unique_planned_orders {
+    group_label: "> Planned Orders"
+    label: "# Planned Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_planned_order: "yes"]
+    description: "The count of distinct planned orders."
+  }
+
 }
