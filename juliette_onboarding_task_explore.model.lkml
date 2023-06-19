@@ -5,6 +5,7 @@
 connection: "bq_flat_rate_slots"
 
 include: "juliette_onboarding_task.view.lkml"
+include: "/**/global_filters_and_parameters.view"
 
 
 explore: juliette_onboarding_task {
@@ -21,7 +22,13 @@ explore: juliette_onboarding_task {
 
   always_filter: {
     filters:  [
+      global_filters_and_parameters.datasource_filter: "last 7 days",
       country_iso: ""
     ]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+  relationship: one_to_one
   }
   }
