@@ -4583,9 +4583,9 @@ view: orders {
     sql: ${TABLE}.planned_delivery_window_start_timestamp;;
     timeframes: [
       time,
-      date,
-      week,
-      month
+      minute30,
+      hour,
+      date
     ]
   }
 
@@ -4596,9 +4596,9 @@ view: orders {
     sql: ${TABLE}.planned_delivery_window_end_timestamp;;
     timeframes: [
       time,
-      date,
-      week,
-      month
+      minute30,
+      hour,
+      date
       ]
   }
 
