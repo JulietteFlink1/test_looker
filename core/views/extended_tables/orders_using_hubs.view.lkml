@@ -105,7 +105,7 @@ view: orders_using_hubs {
     group_label: "* Operations / Logistics *"
     label: "Delivery Distance Tier (0.5 km)"
     type: tier
-    tiers: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+    tiers: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
     style: interval
     sql: ${delivery_distance_km} ;;
   }
