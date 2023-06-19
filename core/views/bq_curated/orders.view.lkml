@@ -4579,7 +4579,7 @@ view: orders {
   dimension_group: planned_delivery_window_start {
     group_label: "> Planned Orders"
     type: time
-    description: "This field represents the lower limit of the customer's chosen delivery timeslot in case of a planned order. The planned delivery window begins at this timestamp and extends to the 'planned_delivery_window_end_timestamp'."
+    description: "This field represents the start of the delivery window in case of a planned order. The planned delivery window begins at this timestamp and extends to the 'Planned Delivery Window End Timestamp'."
     sql: ${TABLE}.planned_delivery_window_start_timestamp;;
     timeframes: [
       time,
