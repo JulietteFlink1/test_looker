@@ -4622,6 +4622,7 @@ view: orders {
     type: number
     sql: TIMESTAMP_DIFF(${planned_delivery_window_end_time}, ${planned_delivery_window_start_time}, MINUTE);;
     description: "The average duration of the delivery window for planned orders. In minutes."
+    hidden: yes
     value_format_name: decimal_0
   }
 
