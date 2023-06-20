@@ -4592,7 +4592,7 @@ view: orders {
   dimension_group: planned_delivery_window_end {
     group_label: "> Planned Orders"
     type: time
-    description: "This field represents the end of the delivery window in case of a planned order. The planned delivery window starts at the "Planned Delivery Window Start Timestamp' and concludes at this timestamp."
+    description: "This field represents the end of the delivery window in case of a planned order. The planned delivery window starts at the 'Planned Delivery Window Start Timestamp' and concludes at this timestamp."
     sql: ${TABLE}.planned_delivery_window_end_timestamp;;
     timeframes: [
       time,
