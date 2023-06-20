@@ -2,16 +2,15 @@ view: rider_applicants {
   sql_table_name: `flink-data-prod.curated.rider_applicants`
     ;;
 
-  dimension: applicant_email {
-
+  dimension: applicant_email { 
     required_access_grants: [can_access_pii_hub_employees]
-
     group_label: "* Applicant Dimensions *"
     type: string
     sql: ${TABLE}.applicant_email ;;
   }
 
   dimension: applicant_uuid {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "* IDs *"
     primary_key: yes
     type: string

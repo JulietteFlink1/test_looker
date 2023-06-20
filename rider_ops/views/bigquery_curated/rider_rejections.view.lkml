@@ -3,6 +3,7 @@ view: rider_rejections {
     ;;
 
   dimension: applicant_uuid {
+    required_access_grants: [can_access_pii_hub_employees]
     group_label: "* IDs *"
     primary_key: yes
     type: string
