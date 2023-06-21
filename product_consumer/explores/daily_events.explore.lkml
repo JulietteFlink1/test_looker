@@ -152,7 +152,11 @@ explore: daily_events {
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
             event_checkout_viewed.cart_id,
-            event_checkout_viewed.delivery_pdt]
+            event_checkout_viewed.delivery_pdt,
+            event_checkout_viewed.is_pdt_shown,
+            event_checkout_viewed.is_planned_delivery,
+            event_checkout_viewed.timeslot_start_hour,
+            event_checkout_viewed.timeslot_end_hour]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -211,7 +215,11 @@ explore: daily_events {
             event_order_placed.discount_value,
             event_order_placed.number_of_products_ordered,
             event_order_placed.amt_revenue_eur,
-            event_order_placed.rider_tip_value]
+            event_order_placed.rider_tip_value,
+            event_order_placed.is_pdt_shown,
+            event_order_placed.is_planned_delivery,
+            event_order_placed.timeslot_start_hour,
+            event_order_placed.timeslot_end_hour]
     sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.event_timestamp_date} {% endcondition %};;
     type: left_outer
