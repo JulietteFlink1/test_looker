@@ -1,5 +1,6 @@
 # Owner: Victor Breda
 # Created 2023-06-21
+# This view contains Oracle Fusion data
 view: oracle_fusion_general_ledger_mapping {
 
   sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.oracle_fusion_general_ledger_mapping`
@@ -27,6 +28,8 @@ view: oracle_fusion_general_ledger_mapping {
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
   }
+
+
 
   # Entry attributes are dimensions that make more sense used on a row level
 
@@ -84,7 +87,6 @@ view: oracle_fusion_general_ledger_mapping {
 
 
 
-
   # General attributes are dimensions for which it makes more sense to aggregate the data
 
   dimension: business_area {
@@ -124,7 +126,6 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.party_site_name ;;
   }
 
-
   dimension: balancing_segment_desc {
     group_label: "> General Attributes"
     label: "Balancing Segment"
@@ -149,20 +150,17 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.natural_account_desc ;;
   }
 
-  # dimension: period_name {
-  #   type: string
-  #   description: "Financial term to refer to a certain month (also called accounting period) to which a budget or expense is posted.
-  #   It can sometimes contain information about the country. Example values: '03-2023' or 'DE Budget 10/22'."
-  #   sql: ${TABLE}.period_name ;;
-  # }
+
 
   # main attribute that will be used for P&Ls, thus not grouped under a group label
+
   dimension: mgmt_mapping {
     label: "MGMT Mapping"
     type: string
     description: "P&L category the expense line is mapped to."
     sql: ${TABLE}.mgmt_mapping ;;
   }
+
 
 
   ## Dimensions used to create metrics
@@ -173,6 +171,7 @@ view: oracle_fusion_general_ledger_mapping {
     description: "Recorded value of the transaction. Calculated as debited amount minus credited amount."
     sql: ${TABLE}.amt_accounted_value_eur ;;
   }
+
 
 
   ######### Dates & Timestamps ###########
@@ -211,7 +210,6 @@ view: oracle_fusion_general_ledger_mapping {
     ]
     sql: ${TABLE}.ingestion_timestamp ;;
   }
-
 
   dimension_group: gl {
     group_label: "> Dates & Timestamps"
@@ -254,8 +252,8 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
 
-  ######### Segments ###########
 
+  ######### Segments ###########
 
   dimension: segment1 {
     group_label: "> Segments"
@@ -349,11 +347,13 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.segment11 ;;
   }
 
+
+
 ########### Measures ###########
 
   measure: sum_amt_accounted_value_eur {
     label: "SUM Accounted Value"
-    description: "Sum of the recorded value of the transactions. Calculated as debited amount minus credited amount."
+    description: "Sum of the recorded values of the transactions. Calculated as debited amount minus credited amount."
     type: sum
     sql: ${amt_accounted_value_eur} ;;
     value_format_name: eur
