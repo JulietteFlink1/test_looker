@@ -2,29 +2,24 @@ include: "/*/**/oracle_fusion_general_ledger_mapping.view.lkml"
 include: "/**/hubs_ct.view"
 include: "/**/global_filters_and_parameters.view.lkml"
 
-# This explore provides information about the budget, orders and invoices of hubs.
+# This explore provides information about the profits and losses. Most of the data comes from Oracle Fusion.
 # Author: Victor Breda
-# Created: 2022-11-22
+# Created: 2023-06-21
 
 explore: financial_pl {
   view_name: oracle_fusion_general_ledger_mapping
   group_label: "Finance"
-  view_label: "P&L - Oracle Fusion"
+  label: "P&L"
+  view_label: "Oracle Fusion"
   description: "This explore provides information on Flink expenses."
 
-  # sql_always_where: {% condition global_filters_and_parameters.datasource_filter %} ${oracle_fusion_general_ledger_mapping.period_start_date} {% endcondition %} ;;
+  required_access_grants: [can_access_pl]
 
-  # always_filter: {
-  #   filters: [
-  #     global_filters_and_parameters.datasource_filter: "last 7 days"
-  #   ]
-  # }
-
-#   join: global_filters_and_parameters {
-#     sql: ;;
-#   relationship: one_to_one
-#   fields: [datasource_filter]
-# }
+always_filter: {
+  filters: [
+    oracle_fusion_general_ledger_mapping.period_start_date: "last 1 month"
+  ]
+}
 
 access_filter: {
   field: oracle_fusion_general_ledger_mapping.country_iso

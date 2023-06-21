@@ -10,7 +10,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     hidden: yes
     primary_key: yes
-    description: "Generic identifier of a table in BigQuery that represent 1 unique row of this table."
+    description: "Generic identifier of a table in BigQuery that represents 1 unique row of this table."
     sql: ${TABLE}.table_uuid ;;
   }
 
@@ -28,15 +28,14 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.hub_code ;;
   }
 
+  # Entry attributes are dimensions that make more sense used on a row level
+
   dimension: created_by {
     group_label: "> Entry Attributes"
     type: string
     description: "Email address of the user who entered the row."
     sql: ${TABLE}.created_by ;;
   }
-
-
-
 
   dimension: accounting_sequence_number {
     group_label: "> Entry Attributes"
@@ -62,46 +61,11 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.line_number ;;
   }
 
-
-
-
-  dimension: business_area {
-    group_label: "> General Attributes"
-    type: string
-    description: "Flags whether the expenses are related to a Hub or HQ."
-    sql: ${TABLE}.business_area ;;
-  }
-
-
-
-  dimension: job_function {
-    group_label: "> General Attributes"
-    type: string
-    description: "Role performed by the employee."
-    sql: ${TABLE}.job_function ;;
-  }
-
-  dimension: mgmt_mapping {
-
-    label: "MGMT Mapping"
-    type: string
-    description: "P&L category the expense line is mapped to."
-    sql: ${TABLE}.mgmt_mapping ;;
-  }
-
   dimension: transaction_number {
     group_label: "> Entry Attributes"
     type: string
     description: "Number associated with a transaction. Only populated for payables, i.e. invoices."
     sql: ${TABLE}.transaction_number ;;
-  }
-
-  dimension: je_category_name {
-    group_label: "> General Attributes"
-    label: "JE Category Name"
-    type: string
-    description: "Journal Entry Category associated with the nature of the transaction. E.g. payment, external revenue."
-    sql: ${TABLE}.je_category_name ;;
   }
 
   dimension: line_description {
@@ -116,6 +80,33 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "Currency the amount is in."
     sql: ${TABLE}.entered_currency ;;
+  }
+
+
+
+
+  # General attributes are dimensions for which it makes more sense to aggregate the data
+
+  dimension: business_area {
+    group_label: "> General Attributes"
+    type: string
+    description: "Flags whether the expenses are related to a Hub or HQ."
+    sql: ${TABLE}.business_area ;;
+  }
+
+  dimension: job_function {
+    group_label: "> General Attributes"
+    type: string
+    description: "Role performed by the employee."
+    sql: ${TABLE}.job_function ;;
+  }
+
+  dimension: je_category_name {
+    group_label: "> General Attributes"
+    label: "JE Category Name"
+    type: string
+    description: "Journal Entry Category associated with the nature of the transaction. E.g. payment, external revenue."
+    sql: ${TABLE}.je_category_name ;;
   }
 
   dimension: party_name {
@@ -164,6 +155,17 @@ view: oracle_fusion_general_ledger_mapping {
   #   It can sometimes contain information about the country. Example values: '03-2023' or 'DE Budget 10/22'."
   #   sql: ${TABLE}.period_name ;;
   # }
+
+  # main attribute that will be used for P&Ls, thus not grouped under a group label
+  dimension: mgmt_mapping {
+    label: "MGMT Mapping"
+    type: string
+    description: "P&L category the expense line is mapped to."
+    sql: ${TABLE}.mgmt_mapping ;;
+  }
+
+
+  ## Dimensions used to create metrics
 
   dimension: amt_accounted_value_eur {
     type: number
@@ -356,6 +358,7 @@ view: oracle_fusion_general_ledger_mapping {
 
   measure: sum_amt_accounted_value_eur {
     label: "SUM Accounted Value"
+    description: "Sum of the recorded value of the transactions. Calculated as debited amount minus credited amount."
     type: sum
     sql: ${amt_accounted_value_eur} ;;
     value_format_name: eur
