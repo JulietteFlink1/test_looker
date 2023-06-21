@@ -4585,6 +4585,7 @@ view: orders {
       time,
       minute30,
       hour,
+      hour_of_day,
       date
     ]
   }
@@ -4633,6 +4634,77 @@ view: orders {
     sql: ${order_uuid};;
     filters: [is_planned_order: "yes"]
     description: "The count of distinct planned orders."
+  }
+
+  dimension: is_planned_order_delivered_within_window {
+    group_label: "> Planned Orders"
+    type: yesno
+    sql: ${rider_completed_delivery_timestamp} between ${planned_delivery_window_start_time}
+      and  ${planned_delivery_window_end_time} ;;
+    description: "Yes if the rider completed delivery timestamp is stricly between the planned delivery window start and end timestamps."
+  }
+
+  dimension: is_delayed_planned_order {
+    group_label: "> Planned Orders"
+    type: yesno
+    sql: ${rider_completed_delivery_timestamp} > ${planned_delivery_window_end_time} ;;
+    description: "Yes if the rider completed the delivery after the planned delivery window end time."
+  }
+
+  measure: number_of_planned_orders_delivered_within_delivery_window {
+    group_label: "> Planned Orders"
+    label: "# Planned Orders Delivered within Window"
+    hidden: yes
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_planned_order_delivered_within_window: "yes"]
+    description: "The count of distinct planned orders that were delivered during the delivery window. No tolerance added."
+  }
+
+  measure: number_of_delayed_planned_orders {
+    group_label: "> Planned Orders"
+    label: "# Delayed Planned Orders"
+    hidden: yes
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_delayed_planned_order: "yes"]
+    description: "The count of distinct planned orders that were delivered after the planned delivery window end time."
+  }
+
+  measure: share_of_planned_orders_over_flink_delivered_orders {
+    group_label: "> Planned Orders"
+    label: "% Planned Orders"
+    type: number
+    sql: ${number_of_unique_planned_orders}/${number_of_unique_flink_delivered_orders};;
+    description: "Number of planned orders divided by number of Flink delivered Orders"
+    value_format_name: percent_1
+  }
+
+  measure: share_of_planned_orders_delivered_within_delivery_window_over_planned_orders {
+    group_label: "> Planned Orders"
+    label: "% Planned Orders Delivered within Window"
+    type: number
+    sql: ${number_of_planned_orders_delivered_within_delivery_window}/${number_of_unique_planned_orders};;
+    description: "Number of planned orders that were delivered during the delivery window divided by number of planned orders"
+    value_format_name: percent_1
+  }
+
+  measure: avg_time_between_order_placed_and_planned {
+    group_label: "> Planned Orders"
+    label: "AVG Time Between Order Placed and Planned Window (minutes)"
+    type: average
+    sql: datetime_diff(datetime(${planned_delivery_window_start_time}),datetime(${created_time}),minute);;
+    description: "Average number of minutes between order creation and start of the planned delivery window timestamps."
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_delayed_planned_orders_over_planned_orders {
+    group_label: "> Planned Orders"
+    label: "% Delayed Planned Orders"
+    type: number
+    sql: ${number_of_delayed_planned_orders}/${number_of_unique_planned_orders};;
+    description: "Number of planned orders that were delivered during the delivery window divided by number of planned orders"
+    value_format_name: percent_1
   }
 
 }
