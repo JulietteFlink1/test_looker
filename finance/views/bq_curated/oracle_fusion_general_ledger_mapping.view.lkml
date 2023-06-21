@@ -243,16 +243,11 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.transaction_date ;;
   }
 
-  dimension_group: period_start {
+  dimension: period_month {
     group_label: "> Dates & Timestamps"
-    type: time
+    type: date_month
     description: "Period start date (first date of the month).
     Period is a financial term to refer to a certain month (also called accounting period) to which a budget or expense is posted."
-    timeframes: [
-      date,
-      week,
-      month
-    ]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.period_start_date ;;

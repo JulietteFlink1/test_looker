@@ -1,6 +1,5 @@
 include: "/*/**/oracle_fusion_general_ledger_mapping.view.lkml"
 include: "/**/hubs_ct.view"
-include: "/**/global_filters_and_parameters.view.lkml"
 
 # This explore provides information about the profits and losses. Most of the data comes from Oracle Fusion.
 # Author: Victor Breda
@@ -17,7 +16,7 @@ explore: financial_pl {
 
 always_filter: {
   filters: [
-    oracle_fusion_general_ledger_mapping.period_start_date: "last 1 month"
+    oracle_fusion_general_ledger_mapping.period_month: "last 1 month"
   ]
 }
 
