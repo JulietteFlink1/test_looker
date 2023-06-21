@@ -43,6 +43,8 @@ set: drill_fields_set {
 
   dimension: report_date_dynamic {
     label: "Report Date (Dynamic)"
+    datatype: date
+    type: date
     sql:
     {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
       ${report_date}
