@@ -30,18 +30,15 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
 
-
-  # Entry attributes are dimensions that make more sense used on a row level
-
   dimension: created_by {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Email address of the user who entered the row."
     sql: ${TABLE}.created_by ;;
   }
 
   dimension: accounting_sequence_number {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     hidden: yes
     description: "Value assigned by Oracle Fusion based on the order of posting of the entries of a transaction."
@@ -49,7 +46,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: header_id {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     hidden: yes
     description: "System generated ID of a transaction."
@@ -57,7 +54,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: line_number {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     hidden: yes
     description: "Line number of the transaction entry."
@@ -65,46 +62,42 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: transaction_number {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Number associated with a transaction. Only populated for payables, i.e. invoices."
     sql: ${TABLE}.transaction_number ;;
   }
 
   dimension: line_description {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Description associated with the entered row."
     sql: ${TABLE}.line_description ;;
   }
 
   dimension: entered_currency {
-    group_label: "> Entry Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Currency the amount is in."
     sql: ${TABLE}.entered_currency ;;
   }
 
-
-
-  # General attributes are dimensions for which it makes more sense to aggregate the data
-
   dimension: business_area {
-    group_label: "> General Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Flags whether the expenses are related to a Hub or HQ."
     sql: ${TABLE}.business_area ;;
   }
 
   dimension: job_function {
-    group_label: "> General Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Role performed by the employee."
-    sql: ${TABLE}.job_function ;;
+    sql: ${TABLE}.job_function_name ;;
   }
 
   dimension: je_category_name {
-    group_label: "> General Attributes"
+    group_label: "> Attributes"
     label: "JE Category Name"
     type: string
     description: "Journal Entry Category associated with the nature of the transaction. E.g. payment, external revenue."
@@ -112,42 +105,42 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: party_name {
-    group_label: "> General Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Name of the supplier/customer."
     sql: ${TABLE}.party_name ;;
   }
 
   dimension: party_site_name {
-    group_label: "> General Attributes"
+    group_label: "> Attributes"
     type: string
     description: "Subset of the Party Name that designates more precisely which entity of the party name is being referred to.
     E.g. party name might be 'Rewe', and party site name 'Rewe - Munich'."
     sql: ${TABLE}.party_site_name ;;
   }
 
-  dimension: balancing_segment_desc {
-    group_label: "> General Attributes"
-    label: "Balancing Segment"
+  dimension: company_name {
+    group_label: "> Attributes"
+    label: "Company Name"
     type: string
     description: "Name of the company a transaction relates to."
-    sql: ${TABLE}.balancing_segment_desc ;;
+    sql: ${TABLE}.company_name ;;
   }
 
-  dimension: cost_center_desc {
-    group_label: "> General Attributes"
-    label: "Cost Center"
+  dimension: cost_center_name {
+    group_label: "> Attributes"
+    label: "Cost Center Name"
     type: string
     description: "Name of the department the expense originates from."
-    sql: ${TABLE}.cost_center_desc ;;
+    sql: ${TABLE}.cost_center_name ;;
   }
 
-  dimension: natural_account_desc {
-    group_label: "> General Attributes"
-    label: "Natural Account"
+  dimension: general_ledger_name {
+    group_label: "> Attributes"
+    label: "GL Account Name"
     type: string
     description: "Name of the General Ledger account the transaction was posted into."
-    sql: ${TABLE}.natural_account_desc ;;
+    sql: ${TABLE}.general_ledger_name ;;
   }
 
 
@@ -177,7 +170,7 @@ view: oracle_fusion_general_ledger_mapping {
   ######### Dates & Timestamps ###########
 
   dimension_group: creation {
-    group_label: "> Dates & Timestamps"
+    group_label: "> Dates & Timestamps - Entry Metadata"
     type: time
     timeframes: [
       time,
@@ -187,7 +180,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension_group: last_update {
-    group_label: "> Dates & Timestamps"
+    group_label: "> Dates & Timestamps - Entry Metadata"
     type: time
     description: "Date at which the row was last updated."
     timeframes: [
@@ -201,7 +194,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension_group: ingestion {
-    group_label: "> Dates & Timestamps"
+    group_label: "> Dates & Timestamps - Entry Metadata"
     type: time
     description: "Timestamp at which the row has been ingested."
     timeframes: [
@@ -211,9 +204,9 @@ view: oracle_fusion_general_ledger_mapping {
     sql: ${TABLE}.ingestion_timestamp ;;
   }
 
-  dimension_group: gl {
+  dimension_group: general_ledger {
     group_label: "> Dates & Timestamps"
-    label: "GL"
+    label: "General Ledger"
     type: time
     description: "General ledger date associated with a financial transaction.
     It corresponds to the date at which a transaction is posted."
@@ -224,7 +217,7 @@ view: oracle_fusion_general_ledger_mapping {
     ]
     convert_tz: no
     datatype: date
-    sql: ${TABLE}.gl_date ;;
+    sql: ${TABLE}.general_ledger_date ;;
   }
 
   dimension_group: transaction {
@@ -255,96 +248,99 @@ view: oracle_fusion_general_ledger_mapping {
 
   ######### Segments ###########
 
-  dimension: segment1 {
+  dimension: company_id {
     group_label: "> Segments"
-    label: "Segment 1"
+    label: "1 - Company"
     type: number
-    description: "Segment 1 is the identifier of the company a transaction is associated to."
-    sql: ${TABLE}.segment1 ;;
+    description: "Identifier of the company a transaction is associated to. Corresponds to Segment 1."
+    sql: ${TABLE}.company_id ;;
   }
 
-  dimension: segment2 {
+  dimension: branch_id {
     group_label: "> Segments"
-    label: "Segment 2"
+    label: "2 - Branch"
     type: number
-    description: "Segment 2 is the identifier of the branch a transaction is associated to.
-    Branch is a financial term to refer to a unit of the business - e.g. the Alexanderplatz hub or the Netherlands HQ."
-    sql: ${TABLE}.segment2 ;;
+    description: "Identifier of the branch a transaction is associated to.
+    Branch is a financial term to refer to a unit of the business - e.g. the Alexanderplatz hub or the Netherlands HQ.
+    Corresponds to Segment 2."
+    sql: ${TABLE}.branch_id ;;
   }
 
-  dimension: segment3 {
+  dimension: cost_center_id {
     group_label: "> Segments"
-    label: "Segment 3"
+    label: "3 - Cost Center"
     type: number
-    description: "Segment 3 is the identifier of the cost center a transaction is associated to."
-    sql: ${TABLE}.segment3 ;;
+    description: "`Identifier of the cost center a transaction is associated to. Corresponds to Segment 3."
+    sql: ${TABLE}.cost_center_id ;;
   }
 
-  dimension: segment4 {
+  dimension: general_ledger_account_id {
     group_label: "> Segments"
-    label: "Segment 4"
+    label: "4 - GL Account"
     type: number
-    description: "Segment 4 is the identifier of the General Ledger account a transaction is associated to.
-    A GL account is an account that records costs for specific categories, e.g. travel, salaries, etc."
-    sql: ${TABLE}.segment4 ;;
+    description: "Identifier of the General Ledger account a transaction is associated to.
+    A GL account is an account that records costs for specific categories, e.g. travel, salaries, etc.
+    Corresponds to Segment 4."
+    sql: ${TABLE}.general_ledger_account_id ;;
   }
 
-  dimension: segment5 {
+  dimension: job_function_id {
     group_label: "> Segments"
-    label: "Segment 5"
+    label: "5 - Job Function"
     type: number
-    description: "Segment 5 is the identifier of the job function a transaction is associated to.
+    description: "Identifier of the job function a transaction is associated to.
     Job Function corresponds to the role performed by an employee.
-    It is set to 0 for expenses that are not employee related, e.g. COGS."
-    sql: ${TABLE}.segment5 ;;
+    It is set to 0 for expenses that are not employee related, e.g. COGS.
+    Corresponds to Segment 5."
+    sql: ${TABLE}.job_function_id ;;
   }
 
-  dimension: segment6 {
+  dimension: product_category_id {
     group_label: "> Segments"
-    label: "Segment 6"
+    label: "6 - Product"
     type: number
-    description: "Segment 6 is the identifier of the product category (e.g. dairy, frozen, etc.) a transaction is associated to."
-    sql: ${TABLE}.segment6 ;;
+    description: "Identifier of the product category (e.g. dairy, frozen, etc.) a transaction is associated to. Corresponds to Segment 6."
+    sql: ${TABLE}.product_category_id ;;
   }
 
-  dimension: segment7 {
+  dimension: sales_region_id {
     group_label: "> Segments"
-    label: "Segment 7"
+    label: "7 - Sales Region"
     type: number
-    description: "Segment 7 is the identifier of the sales region a transaction is associated to. 100 for DE, 400 for NL and 500 for FR."
-    sql: ${TABLE}.segment7 ;;
+    description: "Identifier of the sales region a transaction is associated to. 100 for DE, 400 for NL and 500 for FR. Corresponds to Segment 7."
+    sql: ${TABLE}.sales_region_id ;;
   }
 
-  dimension: segment8 {
+  dimension: intercompany_id {
     group_label: "> Segments"
-    label: "Segment 8"
+    label: "8 - Intercompany"
     type: number
-    description: "Segment 8 is the identifier of the intercompany a transaction is associated to."
-    sql: ${TABLE}.segment8 ;;
+    description: "Identifier of the intercompany a transaction is associated to. Corresponds to Segment 8."
+    sql: ${TABLE}.intercompany_id ;;
   }
 
-  dimension: segment9 {
+  dimension: project_id {
     group_label: "> Segments"
-    label: "Segment 9"
+    label: "9 - Project"
     type: number
-    description: "Segment 9 is the identifier of the project a transaction is associated to."
-    sql: ${TABLE}.segment9 ;;
+    description: "Identifier of the project a transaction is associated to. Corresponds to Segment 9."
+    sql: ${TABLE}.project_id ;;
   }
 
-  dimension: segment10 {
+  dimension: future1_id {
     group_label: "> Segments"
-    label: "Segment 10"
+    label: "10 - Future 1"
     type: number
     description: "Segment 10 is currently not used."
-    sql: ${TABLE}.segment10 ;;
+    sql: ${TABLE}.future1_id ;;
   }
 
-  dimension: segment11 {
+  dimension: future2_id {
     group_label: "> Segments"
-    label: "Segment 11"
+    label: "11 - Future 2"
     type: number
     description: "Segment 11 is currently not used."
-    sql: ${TABLE}.segment11 ;;
+    sql: ${TABLE}.future2_id ;;
   }
 
 

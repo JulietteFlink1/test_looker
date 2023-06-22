@@ -1,7 +1,7 @@
 include: "/*/**/oracle_fusion_general_ledger_mapping.view.lkml"
 include: "/**/hubs_ct.view"
 
-# This explore provides information about the profits and losses. Most of the data comes from Oracle Fusion.
+# This explore provides information about the profits and losses. As of 2023-06-22, all of the data comes from Oracle Fusion.
 # Author: Victor Breda
 # Created: 2023-06-21
 
