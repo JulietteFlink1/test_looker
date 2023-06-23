@@ -311,7 +311,9 @@ join: daily_violations_aggregates {
             daily_user_aggregates.daily_users_with_category_selected,
             daily_user_aggregates.is_category_selected,
             daily_user_aggregates.is_active_user,
-            daily_user_aggregates.daily_active_users
+            daily_user_aggregates.daily_active_users,
+            daily_user_aggregates.is_pdt_shown,
+            daily_user_aggregates.is_planned_delivery
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}
