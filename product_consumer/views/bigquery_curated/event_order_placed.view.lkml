@@ -213,6 +213,39 @@ view: event_order_placed {
     sql: ${TABLE}.products ;;
   }
 
+
+# ======= Planned Orders Dimensions ======= #
+
+  dimension: is_pdt_shown {
+    group_label: "Planned Orders Dimensions"
+    type: yesno
+    description: "Boolean, true if a user saw PDT value, and false if a user saw a timeslot or hub was closed"
+    sql: ${TABLE}.is_pdt_shown ;;
+  }
+
+  dimension: is_planned_delivery {
+    group_label: "Planned Orders Dimensions"
+    type: yesno
+    description: "Boolean, true if planned delivery is chosen"
+    sql: ${TABLE}.is_planned_delivery ;;
+  }
+
+  dimension_group: timeslot_start {
+    group_label: "Planned Orders Dimensions"
+    description: "Start of a chosen time slot if planned delivery is chosen"
+    type: time
+    timeframes:  [hour]
+    sql: ${TABLE}.timeslot_start ;;
+  }
+
+  dimension_group: timeslot_end {
+    group_label: "Planned Orders Dimensions"
+    description: "End of a chosen time slot if planned delivery is chosen"
+    type: time
+    timeframes:  [hour]
+    sql: ${TABLE}.timeslot_end ;;
+  }
+
   # ======= Dates / Timestamps =======
 
   dimension_group: event_timestamp {
