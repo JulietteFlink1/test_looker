@@ -12,6 +12,8 @@ explore: financial_pl {
   view_label: "Oracle Fusion"
   description: "This explore provides information on Flink expenses."
 
+  # excluding hub_code and country_iso from the hubs table as oracle_fusion_general_ledger_mapping
+  # contains values that are not included - e.g. de_ber_hq
   fields: [
     ALL_FIELDS*,
     -hubs.hub_code,

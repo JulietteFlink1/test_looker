@@ -184,9 +184,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: time
     description: "Date at which the row was last updated."
     timeframes: [
-      date,
-      week,
-      month
+      date
     ]
     datatype: date
     sql: ${TABLE}.last_update_date ;;
