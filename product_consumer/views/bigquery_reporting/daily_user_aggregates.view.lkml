@@ -257,6 +257,7 @@ view: daily_user_aggregates {
     sql: ${TABLE}.is_user_logged_in ;;
   }
 
+
   # Conversion Flags
   dimension: is_web_app_opened {
     group_label: "Flags | Conversion"
@@ -459,6 +460,24 @@ view: daily_user_aggregates {
     sql: ${TABLE}.is_rider_tip_selected ;;
   }
 
+
+  # Planned Orders flags
+  dimension: is_pdt_shown {
+    group_label: "Flags | Event"
+    description: "Yes a user saw PDT value, and No if a user saw a timeslot or hub was closed. Null if a user used app version without Planned Orders"
+    label: "Is PDT Shown"
+    type: yesno
+    sql: ${TABLE}.is_pdt_shown ;;
+  }
+
+  dimension: is_planned_delivery {
+    group_label: "Flags | Event"
+    description: "Yes if planned delivery is chosen on Home, Checkout or Orders screens"
+    label: "Is Planned Delivery"
+    type: yesno
+    sql: ${TABLE}.is_planned_delivery ;;
+  }
+
   # Generic Flags
   dimension: is_address_confirmed {
     group_label: "Flags | Event"
@@ -565,6 +584,7 @@ view: daily_user_aggregates {
     type: yesno
     sql: ${TABLE}.is_profile_viewed ;;
   }
+
 
 
   # ~~~~~~~~~~~ Hidden Dimensions ~~~~~~~~~~~~ #
