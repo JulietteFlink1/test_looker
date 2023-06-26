@@ -296,7 +296,7 @@ view: product_placement_performance {
     label: "# Orders "
     description: "Number of unique orders based on order_uuid"
     type: count_distinct
-    sql: ${TABLE}.order_uuid ;;
+    sql: ${TABLE}.order_uuid[SAFE_OFFSET(0)] ;;
   }
   measure: ordered_products { ## name should not be changed as charts would break
     group_label: "Product Metrics"
