@@ -12,18 +12,26 @@ explore: financial_pl {
   view_label: "Oracle Fusion"
   description: "This explore provides information on Flink expenses."
 
+  fields: [
+    ALL_FIELDS*,
+    -hubs.hub_code,
+    -hubs.country_iso
+  ]
+
   required_access_grants: [can_access_pl]
 
-always_filter: {
-  filters: [
-    oracle_fusion_general_ledger_mapping.period_month: "last 1 month"
-  ]
-}
+  always_filter: {
+    filters: [
+      oracle_fusion_general_ledger_mapping.period_month: "last 1 month",
+      oracle_fusion_general_ledger_mapping.country_iso: "",
+      oracle_fusion_general_ledger_mapping.hub_code: ""
+    ]
+  }
 
-access_filter: {
-  field: oracle_fusion_general_ledger_mapping.country_iso
-  user_attribute: country_iso
-}
+  access_filter: {
+    field: oracle_fusion_general_ledger_mapping.country_iso
+    user_attribute: country_iso
+  }
 
 join: hubs {
   from: hubs_ct

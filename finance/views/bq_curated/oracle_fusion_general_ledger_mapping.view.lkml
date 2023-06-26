@@ -3,7 +3,7 @@
 # This view contains Oracle Fusion data
 view: oracle_fusion_general_ledger_mapping {
 
-  sql_table_name: `flink-data-dev.dbt_vbreda_curated_finance.oracle_fusion_general_ledger_mapping`
+  sql_table_name: `flink-data-prod.curated_finance.oracle_fusion_general_ledger_mapping`
     ;;
 
 
@@ -31,14 +31,14 @@ view: oracle_fusion_general_ledger_mapping {
 
 
   dimension: created_by {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Email address of the user who entered the row."
     sql: ${TABLE}.created_by ;;
   }
 
   dimension: accounting_sequence_number {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     hidden: yes
     description: "Value assigned by Oracle Fusion based on the order of posting of the entries of a transaction."
@@ -46,7 +46,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: header_id {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     hidden: yes
     description: "System generated ID of a transaction."
@@ -54,7 +54,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: line_number {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     hidden: yes
     description: "Line number of the transaction entry."
@@ -62,42 +62,42 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: transaction_number {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Number associated with a transaction. Only populated for payables, i.e. invoices."
     sql: ${TABLE}.transaction_number ;;
   }
 
   dimension: line_description {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Description associated with the entered row."
     sql: ${TABLE}.line_description ;;
   }
 
   dimension: entered_currency {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Currency the amount is in."
     sql: ${TABLE}.entered_currency ;;
   }
 
   dimension: business_area {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Flags whether the expenses are related to a Hub or HQ."
     sql: ${TABLE}.business_area ;;
   }
 
   dimension: job_function {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Role performed by the employee."
     sql: ${TABLE}.job_function_name ;;
   }
 
   dimension: je_category_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     label: "JE Category Name"
     type: string
     description: "Journal Entry Category associated with the nature of the transaction. E.g. payment, external revenue."
@@ -105,14 +105,14 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: party_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Name of the supplier/customer."
     sql: ${TABLE}.party_name ;;
   }
 
   dimension: party_site_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     type: string
     description: "Subset of the Party Name that designates more precisely which entity of the party name is being referred to.
     E.g. party name might be 'Rewe', and party site name 'Rewe - Munich'."
@@ -120,7 +120,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: company_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     label: "Company Name"
     type: string
     description: "Name of the company a transaction relates to."
@@ -128,7 +128,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: cost_center_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     label: "Cost Center Name"
     type: string
     description: "Name of the department the expense originates from."
@@ -136,7 +136,7 @@ view: oracle_fusion_general_ledger_mapping {
   }
 
   dimension: general_ledger_name {
-    group_label: "> Attributes"
+    group_label: "> Transaction Attributes"
     label: "GL Account Name"
     type: string
     description: "Name of the General Ledger account the transaction was posted into."
@@ -188,13 +188,13 @@ view: oracle_fusion_general_ledger_mapping {
       week,
       month
     ]
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.last_update_date ;;
   }
 
   dimension_group: ingestion {
     group_label: "> Dates & Timestamps - Entry Metadata"
+    hidden: yes
     type: time
     description: "Timestamp at which the row has been ingested."
     timeframes: [
@@ -215,7 +215,6 @@ view: oracle_fusion_general_ledger_mapping {
       week,
       month
     ]
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.general_ledger_date ;;
   }
@@ -229,7 +228,6 @@ view: oracle_fusion_general_ledger_mapping {
       week,
       month
     ]
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.transaction_date ;;
   }
@@ -239,7 +237,6 @@ view: oracle_fusion_general_ledger_mapping {
     type: date_month
     description: "Period start date (first date of the month).
     Period is a financial term to refer to a certain month (also called accounting period) to which a budget or expense is posted."
-    convert_tz: no
     datatype: date
     sql: ${TABLE}.period_start_date ;;
   }
@@ -329,6 +326,7 @@ view: oracle_fusion_general_ledger_mapping {
 
   dimension: future1_id {
     group_label: "> Segments"
+    hidden: yes
     label: "10 - Future 1"
     type: number
     description: "Segment 10 is currently not used."
@@ -337,6 +335,7 @@ view: oracle_fusion_general_ledger_mapping {
 
   dimension: future2_id {
     group_label: "> Segments"
+    hidden: yes
     label: "11 - Future 2"
     type: number
     description: "Segment 11 is currently not used."
@@ -351,6 +350,14 @@ view: oracle_fusion_general_ledger_mapping {
     label: "SUM Accounted Value"
     description: "Sum of the recorded values of the transactions. Calculated as debited amount minus credited amount."
     type: sum
+    sql: ${amt_accounted_value_eur} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_accounted_value_eur {
+    label: "AVG Accounted Value"
+    description: "Average of the recorded values of the transactions. Calculated as debited amount minus credited amount."
+    type: average
     sql: ${amt_accounted_value_eur} ;;
     value_format_name: eur
   }
