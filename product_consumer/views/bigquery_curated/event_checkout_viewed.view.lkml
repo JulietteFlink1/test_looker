@@ -132,6 +132,39 @@ view: event_checkout_viewed {
     sql: ${TABLE}.platform ;;
   }
 
+# ======= Planned Orders Dimensions ======= #
+
+  dimension: is_pdt_shown {
+    group_label: "Planned Orders Dimensions"
+    type: yesno
+    description: "Boolean, true if a user saw PDT value, and false if a user saw a timeslot or hub was closed"
+    sql: ${TABLE}.is_pdt_shown ;;
+  }
+
+  dimension: is_planned_delivery {
+    group_label: "Planned Orders Dimensions"
+    type: yesno
+    description: "Boolean, true if planned delivery is chosen"
+    sql: ${TABLE}.is_planned_delivery ;;
+  }
+
+  dimension_group: timeslot_start {
+    group_label: "Planned Orders Dimensions"
+    description: "Start of a chosen time slot if planned delivery is chosen"
+    type: time
+    timeframes:  [hour]
+    sql: ${TABLE}.timeslot_end ;;
+  }
+
+  dimension_group: timeslot_end {
+    group_label: "Planned Orders Dimensions"
+    description: "End of a chosen time slot if planned delivery is chosen"
+    type: time
+    timeframes:  [hour]
+    sql: ${TABLE}.timeslot_end ;;
+  }
+
+
 # ======= Dynamic Delivery Fee Dimensions ======= #
 
   dimension: amt_delivery_fee_eur {
@@ -192,7 +225,7 @@ view: event_checkout_viewed {
 
   dimension: delivery_pdt {
     type: number
-    description: "Delivery PDT a user saw on Checkout Screen. Available only on mobile platforms"
+    description: "Delivery PDT a user saw on Checkout Screen."
     sql:  ${TABLE}.delivery_pdt ;;
   }
 
