@@ -508,16 +508,15 @@ view: orders {
 
   dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
     group_label: "* Operations / Logistics *"
-    hidden: yes
     label: "Delta to PDT (min) (with +/- 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
     +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early).
-    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied. Null for planned orders."
     type: number
     sql:case
           when
             ${is_planned_order}
-            then ${delivery_delay_raw_minutes}
+            then null
           when
             ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
             then
