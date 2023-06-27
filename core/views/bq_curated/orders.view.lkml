@@ -520,7 +520,12 @@ view: orders {
           when
             ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
             then
-              ${delivery_delay_raw_minutes} + 0.15 * ${delivery_pdt_minutes}
+            timestamp_diff(
+              -- subtract 15% of pdt as tolerance buffer
+              timestamp_sub(${delivery_pdt_timestamp_raw}, interval cast(${delivery_pdt_minutes}*60*0.15 as int64) second),
+              ${delivery_timestamp_raw},
+              second
+            )/60
           else ${delivery_delay_minutes}
         end;;
     value_format_name: decimal_1
