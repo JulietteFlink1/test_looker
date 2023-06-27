@@ -487,7 +487,7 @@ view: orders {
   }
 
   dimension: delivery_delay_raw_minutes {
-    group_label: "> Planned Orders"
+    group_label: "* Operations / Logistics *"
     label: "Raw Delay (min)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) for ASAP orders and from the end of the delivery window for planned orders. No tolerance added."
     type: number
