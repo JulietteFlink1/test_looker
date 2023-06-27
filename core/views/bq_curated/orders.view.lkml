@@ -489,12 +489,12 @@ view: orders {
   dimension: delivery_delay_raw_minutes {
     group_label: "> Planned Orders"
     label: "Raw Delay (min)"
-    description: "Delay in minutes from the promised delivery time (as shown to customer) for ASAP orders and from the end of the delivery window for planned orders."
+    description: "Delay in minutes from the promised delivery time (as shown to customer) for ASAP orders and from the end of the delivery window for planned orders. No tolerance added."
     type: number
     sql: ${TABLE}.delivery_delay_raw_minutes;;
   }
 
-  dimension: delivery_delay_minutes_with_positive_buffer {
+  dimension: delivery_delay_minutes {
     alias: [delta_to_pdt_minutes_with_positive_buffer]
     group_label: "* Operations / Logistics *"
     label: "Delay (min)"
@@ -522,7 +522,7 @@ view: orders {
             ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
             then
               ${delivery_delay_raw_minutes} + 0.15 * ${delivery_pdt_minutes}
-          else ${delivery_delay_minutes_with_positive_buffer}
+          else ${delivery_delay_minutes}
         end;;
     value_format_name: decimal_1
   }
@@ -4235,7 +4235,7 @@ view: orders {
 
   measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
-    hidden: yes
+    hidden: no
     label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
     description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
     Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
