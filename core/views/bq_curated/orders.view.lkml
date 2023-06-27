@@ -3473,15 +3473,15 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+  measure: number_of_orders_on_time {
     # group_label: "* Operations / Logistics *"
+    alias: [cnt_orders_delayed_under_0_min]
     view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    label: "# Orders delivered on time"
+    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
+    filters: [is_order_on_time: "yes"]
     value_format: "0"
   }
 
@@ -3497,15 +3497,15 @@ view: orders {
     value_format: "0"
   }
 
-  measure: number_of_orders_on_time {
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
     # group_label: "* Operations / Logistics *"
-    alias: [cnt_orders_delayed_under_0_min]
     view_label: "* Hubs *"
-    label: "# Orders delivered on time"
-    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
     hidden:  yes
     type: count
-    filters: [is_order_on_time: "yes"]
+    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
     value_format: "0"
   }
 
