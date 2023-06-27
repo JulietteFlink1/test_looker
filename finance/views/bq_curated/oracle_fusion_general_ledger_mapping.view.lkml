@@ -207,7 +207,9 @@ view: oracle_fusion_general_ledger_mapping {
     label: "General Ledger"
     type: time
     description: "General ledger date associated with a financial transaction.
-    It corresponds to the date at which a transaction is posted."
+      It determines the period to which the transaction belongs to.
+      E.g. Paper bags are ordered in March, but should be deducted from February's budget.
+      The transaction date is in March, but the GL Date is set to be in February."
     timeframes: [
       date,
       week,
@@ -220,7 +222,7 @@ view: oracle_fusion_general_ledger_mapping {
   dimension_group: transaction {
     group_label: "> Dates & Timestamps"
     type: time
-    description: "Determines the period to which the transaction belongs to."
+    description: "Date of the transaction, as mentioned on the invoice."
     timeframes: [
       date,
       week,
