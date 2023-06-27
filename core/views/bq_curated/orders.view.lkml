@@ -979,8 +979,15 @@ view: orders {
   dimension: is_order_on_time {
     group_label: "* Operations / Logistics *"
     type: yesno
-    description: "Yes if the order is order is delivered before"
+    description: "Yes if the order arrived before the PDT with a 15% tolerance buffer added for ASAP orders or if the order arrived within the delivery window for planned orders."
     sql: ${TABLE}.is_order_on_time ;;
+  }
+
+  dimension: is_order_on_time_raw {
+    group_label: "* Operations / Logistics *"
+    type: yesno
+    description: "Yes if the order arrived before the PDT for ASAP orders or if the order arrived within the delivery window for planned orders. No tolerance added."
+    sql: ${TABLE}.is_order_on_time_raw ;;
   }
 
   dimension: is_successful_order {
@@ -3466,25 +3473,27 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min {
+  measure: number_of_orders_on_time {
     # group_label: "* Operations / Logistics *"
+    alias: [cnt_orders_delayed_under_0_min]
     view_label: "* Hubs *"
-    label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
+    label: "# Orders delivered on time"
+    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     hidden:  yes
     type: count
-    filters: [delivery_delay_minutes_with_positive_buffer:"<=0"]
+    filters: [is_order_on_time: "yes"]
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min_raw {
+  measure: number_of_orders_on_time_raw {
+    alias: [cnt_orders_delayed_under_0_min_raw]
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
-    label: "# Orders delivered on time "
+    label: "# Orders delivered on time Raw"
     description: "Count of orders delivered no later than PDT for ASAP orders and during delivery window for planned orders."
     hidden:  yes
     type: count
-    filters: [delivery_delay_raw_minutes: "<=0"]
+    filters: [is_order_on_time_raw: "yes"]
     value_format: "0"
   }
 
@@ -4199,7 +4208,7 @@ view: orders {
     label: "% Orders delivered on time Raw"
     description: "Share of orders delivered on time. No tolerance added."
     type: number
-    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
@@ -4208,7 +4217,7 @@ view: orders {
     label: "% Orders delivered on time"
     description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
-    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
