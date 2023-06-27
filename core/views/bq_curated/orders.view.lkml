@@ -3473,18 +3473,6 @@ view: orders {
     value_format: "0"
   }
 
-  measure: number_of_orders_on_time {
-    # group_label: "* Operations / Logistics *"
-    alias: [cnt_orders_delayed_under_0_min]
-    view_label: "* Hubs *"
-    label: "# Orders delivered on time"
-    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
-    hidden:  yes
-    type: count
-    filters: [is_order_on_time: "yes"]
-    value_format: "0"
-  }
-
   measure: number_of_orders_on_time_raw {
     alias: [cnt_orders_delayed_under_0_min_raw]
     # group_label: "* Operations / Logistics *"
@@ -3494,6 +3482,18 @@ view: orders {
     hidden:  yes
     type: count
     filters: [is_order_on_time_raw: "yes"]
+    value_format: "0"
+  }
+
+  measure: number_of_orders_on_time {
+    # group_label: "* Operations / Logistics *"
+    alias: [cnt_orders_delayed_under_0_min]
+    view_label: "* Hubs *"
+    label: "# Orders delivered on time"
+    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
+    hidden:  yes
+    type: count
+    filters: [is_order_on_time: "yes"]
     value_format: "0"
   }
 
