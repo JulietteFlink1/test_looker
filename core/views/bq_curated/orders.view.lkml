@@ -486,7 +486,7 @@ view: orders {
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delivery_delay_minutes {
+  dimension: delivery_delay_raw_minutes {
     group_label: "> Planned Orders"
     label: "Raw Delay (min)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) for ASAP orders and from the end of the delivery window for planned orders."
@@ -506,22 +506,6 @@ view: orders {
     value_format_name: decimal_1
   }
 
-  dimension: delivery_delay_minutes_with_positive_buffer_prod {
-    group_label: "* Operations / Logistics *"
-    label: "Delay (min) PROD"
-    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
-    Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
-    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
-    type: number
-    sql:timestamp_diff(
-          ${delivery_timestamp_raw},
-          -- add 15% of pdt as tolerance buffer
-          timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_pdt_minutes}*60*0.15 as int64) second),
-          second
-        )/60 ;;
-    value_format_name: decimal_1
-  }
-
   dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
     group_label: "* Operations / Logistics *"
     hidden: yes
@@ -533,11 +517,11 @@ view: orders {
     sql:case
           when
             ${is_planned_order}
-            then ${delivery_delay_minutes}
+            then ${delivery_delay_raw_minutes}
           when
             ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
             then
-              ${delivery_delay_minutes} + 0.15 * ${delivery_pdt_minutes}
+              ${delivery_delay_raw_minutes} + 0.15 * ${delivery_pdt_minutes}
           else ${delivery_delay_minutes_with_positive_buffer}
         end;;
     value_format_name: decimal_1
@@ -3493,36 +3477,14 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min_prod {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
-    hidden:  yes
-    type: count
-    filters: [delivery_delay_minutes_with_positive_buffer_prod:"<=0"]
-    value_format: "0"
-  }
   measure: cnt_orders_delayed_under_0_min_raw {
     # group_label: "* Operations / Logistics *"
     view_label: "* Hubs *"
     label: "# Orders delivered on time "
-    description: "Count of orders delivered no later than PDT."
+    description: "Count of orders delivered no later than PDT for ASAP orders and during delivery window for planned orders."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:"<=0"]
-    value_format: "0"
-  }
-
-  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
-    # group_label: "* Operations / Logistics *"
-    view_label: "* Hubs *"
-    group_label: "Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
-    hidden:  yes
-    type: count
-    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
+    filters: [delivery_delay_raw_minutes: "<=0"]
     value_format: "0"
   }
 
@@ -4250,14 +4212,18 @@ view: orders {
     value_format: "0%"
   }
 
-  measure: pct_delivery_in_time_prod {
-    group_label: "* Operations / Logistics *"
-    label: "% Orders delivered on time PROD"
-    description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
-    type: number
-    sql: ${cnt_orders_delayed_under_0_min_prod} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
-    value_format: "0%"
+  measure: cnt_orders_delayed_under_0_min_with_tolerance_buffer {
+    # group_label: "* Operations / Logistics *"
+    view_label: "* Hubs *"
+    group_label: "Hub Leaderboard - Order Metrics"
+    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    hidden:  yes
+    type: count
+    filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
+    value_format: "0"
   }
+
   measure: pct_delivery_in_time_with_tolerance_buffer {
     group_label: "* Operations / Logistics *"
     hidden: yes
@@ -4689,7 +4655,7 @@ view: orders {
   dimension: is_delayed_planned_order {
     group_label: "> Planned Orders"
     type: yesno
-    sql: ${is_planned_order} and ${delivery_delay_minutes} > 0 ;;
+    sql: ${is_planned_order} and ${delivery_delay_raw_minutes} > 0 ;;
     description: "Yes if the rider completed the delivery after the planned delivery window end time."
   }
 
@@ -4709,7 +4675,7 @@ view: orders {
     hidden: yes
     type: count_distinct
     sql: ${order_uuid};;
-    filters: [is_delayed_planned_order: "yes", delivery_delay_minutes: ">0"]
+    filters: [is_delayed_planned_order: "yes", delivery_delay_raw_minutes: ">0"]
     description: "The number of planned orders that were delivered after the planned delivery window end time."
   }
 
