@@ -4653,14 +4653,6 @@ view: orders {
     description: "The count of distinct planned orders."
   }
 
-  dimension: is_planned_order_delivered_within_window {
-    group_label: "> Planned Orders"
-    type: yesno
-    sql: ${rider_completed_delivery_timestamp} between ${planned_delivery_window_start_time}
-      and  ${planned_delivery_window_end_time} ;;
-    description: "Yes if the rider completed delivery timestamp is stricly between the planned delivery window start and end timestamps."
-  }
-
   dimension: is_delayed_planned_order {
     group_label: "> Planned Orders"
     type: yesno
@@ -4674,7 +4666,7 @@ view: orders {
     hidden: yes
     type: count_distinct
     sql: ${order_uuid};;
-    filters: [is_planned_order_delivered_within_window: "yes"]
+    filters: [is_order_on_time: "yes", is_planned_order: "yes"]
     description: "The count of planned orders that were delivered during the delivery window. No tolerance added."
   }
 
