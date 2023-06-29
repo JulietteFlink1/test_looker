@@ -3471,7 +3471,7 @@ view: orders {
   measure: avg_number_of_containers {
     group_label: "> Operations / Logistics"
     label: "AVG # Containers"
-    description: "Average total number of containers used to process the order."
+    description: "Average total number of containers used to process an order."
     type: average
     sql: ${number_of_containers} ;;
   }
@@ -3479,7 +3479,7 @@ view: orders {
   measure: avg_number_of_small_containers {
     group_label: "> Operations / Logistics"
     label: "AVG # Small Containers"
-    description: "Average number of containers of size small used to process the order."
+    description: "Average number of containers of size small used to process an order."
     type: average
     sql: ${number_of_small_containers} ;;
   }
@@ -3487,7 +3487,7 @@ view: orders {
   measure: avg_number_of_medium_containers {
     group_label: "> Operations / Logistics"
     label: "AVG # Medium Containers"
-    description: "Average number of containers of size medium used to process the order."
+    description: "Average number of containers of size medium used to process an order."
     type: average
     sql: ${number_of_medium_containers} ;;
   }
@@ -3495,7 +3495,7 @@ view: orders {
   measure: avg_number_of_large_containers {
     group_label: "> Operations / Logistics"
     label: "AVG # Large Containers"
-    description: "Average number of containers of size large used to process the order."
+    description: "Average number of containers of size large used to process an order."
     type: average
     sql: ${number_of_large_containers} ;;
   }
