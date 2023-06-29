@@ -669,7 +669,7 @@ set: drill_fields_set {
 
   dimension: items_otifiq_stric__desadvs {
     type: number
-    sql: ${TABLE}.sum_of_items_otifiq_stric__desadvs ;;
+    sql: ${TABLE}.sum_of_items_otifiq_stric__desadv ;;
     label: "# OTIFIQ Strict (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
     description: "Number of items, that were delivered on time, in full and in quality (DESADV > Inbound)"
