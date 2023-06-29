@@ -17,6 +17,7 @@ view: inventory {
     description: "Indicates, that the inventory shown is either the most recent data (Yes) or shows historical inventory information (No)"
     type: yesno
     sql: True ;;
+    hidden: yes
   }
 
   dimension: is_oos {
@@ -160,7 +161,7 @@ view: inventory {
     sql: ${TABLE}.quantity_available ;;
     label: "Sum Current Quantity Available"
     description: "The sum of Inventory Quantity Available"
-    filters: [is_most_recent_record: "Yes"]
+    #filters: [is_most_recent_record: "Yes"]
     value_format_name: decimal_1
     group_label: "> Absolute Metrics"
   }
