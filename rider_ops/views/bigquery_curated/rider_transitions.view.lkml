@@ -3,9 +3,7 @@ view: rider_transitions {
     ;;
 
   dimension: applicant_email {
-
     required_access_grants: [can_access_pii_hub_employees]
-
     group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.applicant_email ;;
@@ -13,6 +11,7 @@ view: rider_transitions {
 
   dimension: applicant_uuid {
     group_label: "> IDs"
+    required_access_grants: [can_access_pii_hub_employees]
     type: string
     primary_key: yes
     sql: ${TABLE}.applicant_uuid ;;

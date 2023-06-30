@@ -120,7 +120,7 @@ view: user_attributes_lifecycle_last28days {
   dimension_group: execution {
     label: "Reference"
     description: "Reference date from which last 28 days are considered. Default is to use yesterday as a reference, as this is the latest dataset available"
-    hidden: yes
+    hidden: no
     type: time
     timeframes: [
       raw,

@@ -777,7 +777,7 @@ view: orders {
     group_label: "> Operations / Logistics"
     label: "Fulfillment Time (tiered, 1min)"
     type: tier
-    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+    tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90]
     style: interval
     sql: ${fulfillment_time} ;;
   }
@@ -4573,4 +4573,66 @@ view: orders {
     sql: stddev_pop(${fulfillment_time}) ;;
     value_format_name: decimal_1
   }
+
+  #### Planned Orders
+
+  dimension_group: planned_delivery_window_start {
+    group_label: "> Planned Orders"
+    type: time
+    description: "This field represents the start of the delivery window in case of a planned order. The planned delivery window begins at this timestamp and extends to the 'Planned Delivery Window End Timestamp'."
+    sql: ${TABLE}.planned_delivery_window_start_timestamp;;
+    timeframes: [
+      time,
+      minute30,
+      hour,
+      date
+    ]
+  }
+
+  dimension_group: planned_delivery_window_end {
+    group_label: "> Planned Orders"
+    type: time
+    description: "This field represents the end of the delivery window in case of a planned order. The planned delivery window starts at the 'Planned Delivery Window Start Timestamp' and concludes at this timestamp."
+    sql: ${TABLE}.planned_delivery_window_end_timestamp;;
+    timeframes: [
+      time,
+      minute30,
+      hour,
+      date
+      ]
+  }
+
+  dimension: delivery_timeslot_description {
+    group_label: "> Planned Orders"
+    type: string
+    description: "This field specifies the requested delivery timing for an order, allowing it to be set as 'ASAP' for immediate delivery or 'PLANNED - delivery window' to schedule within a designated timeframe."
+    sql: ${TABLE}.delivery_timeslot_description;;
+  }
+
+  dimension: is_planned_order {
+    group_label: "> Planned Orders"
+    type: yesno
+    description: "Yes if the order is a planned order, i.e. the customer selects a specific scheduled delivery window. No for ASAP orders."
+    sql: ${TABLE}.is_planned_order;;
+  }
+
+  measure: avg_delivery_window_duration {
+    group_label: "> Planned Orders"
+    label: "AVG Delivery Window Duration (minutes)"
+    type: number
+    sql: TIMESTAMP_DIFF(${planned_delivery_window_end_time}, ${planned_delivery_window_start_time}, MINUTE);;
+    description: "The average duration of the delivery window for planned orders. In minutes."
+    hidden: yes
+    value_format_name: decimal_0
+  }
+
+  measure: number_of_unique_planned_orders {
+    group_label: "> Planned Orders"
+    label: "# Planned Orders"
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_planned_order: "yes"]
+    description: "The count of distinct planned orders."
+  }
+
 }
