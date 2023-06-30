@@ -3474,6 +3474,7 @@ view: orders {
     description: "Average total number of containers used to process an order."
     type: average
     sql: ${number_of_containers} ;;
+    value_format_name: decimal_1
   }
 
   measure: avg_number_of_small_containers {
@@ -3482,6 +3483,7 @@ view: orders {
     description: "Average number of containers of size small used to process an order."
     type: average
     sql: ${number_of_small_containers} ;;
+    value_format_name: decimal_1
   }
 
   measure: avg_number_of_medium_containers {
@@ -3490,6 +3492,7 @@ view: orders {
     description: "Average number of containers of size medium used to process an order."
     type: average
     sql: ${number_of_medium_containers} ;;
+    value_format_name: decimal_1
   }
 
   measure: avg_number_of_large_containers {
@@ -3498,6 +3501,7 @@ view: orders {
     description: "Average number of containers of size large used to process an order."
     type: average
     sql: ${number_of_large_containers} ;;
+    value_format_name: decimal_1
   }
 
   measure: cnt_orders_with_delivery_eta_available {
