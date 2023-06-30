@@ -1,7 +1,6 @@
 # Owner: Juliette Hampton
 # Created: 2023-06-14
 # This view was created as part of my onboarding task. It was created from James Davies' table as I don't have access to dbt.
-# Link here: https://goflink.atlassian.net/wiki/spaces/DATA/pages/362481154/Onboarding+Task
 
 view: juliette_onboarding_view_3 {
 
