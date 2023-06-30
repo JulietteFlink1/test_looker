@@ -10,21 +10,21 @@ view: hired_applicants {
 
   dimension: channel {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: type_of_contract {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.type_of_contract ;;
   }
@@ -37,14 +37,14 @@ view: hired_applicants {
 
   dimension: country {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: hire {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -60,7 +60,7 @@ view: hired_applicants {
 
   dimension_group: applied {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -76,7 +76,7 @@ view: hired_applicants {
 
   dimension: position {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -95,7 +95,7 @@ view: hired_applicants {
 
   dimension: contract_label{
     label: "Contract Type label"
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: case
               -- DE/AT Contract Type
@@ -125,7 +125,7 @@ view: hired_applicants {
 
   dimension: date {
     hidden: no
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -140,7 +140,7 @@ view: hired_applicants {
 
   parameter: date_granularity {
     hidden: no
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -151,7 +151,7 @@ view: hired_applicants {
   ###################### Measures
 
   measure: avg_days_to_hire {
-    group_label: "* Averages *"
+    group_label: "> Averages"
     type: average
     label: "AVG Time to Hire (Days)"
     sql: ${days_to_hire} ;;
@@ -159,7 +159,7 @@ view: hired_applicants {
 
   measure: cnt_hires {
     hidden: no
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: sum
     label: "# Hires"
     sql: ${hires} ;;

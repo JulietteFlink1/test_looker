@@ -35,7 +35,7 @@ view: offline_marketing_spend {
   dimension_group: week {
     type: time
     label: "Report"
-    group_label: "* Dates *"
+    group_label: "> Dates"
     timeframes: [
       week,
       month,
@@ -50,7 +50,7 @@ view: offline_marketing_spend {
 # =========  Parameters   =========
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -64,7 +64,7 @@ view: offline_marketing_spend {
 # =========  Dynamic dimensions   =========
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -81,7 +81,7 @@ view: offline_marketing_spend {
 
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes

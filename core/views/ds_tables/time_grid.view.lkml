@@ -76,7 +76,7 @@ view: time_grid {
   }
 
   dimension_group: now {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Now"
     description: "Current Date/Time"
     type: time
@@ -93,7 +93,7 @@ view: time_grid {
   ######## PARAMETERS
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -105,7 +105,7 @@ view: time_grid {
   ######## DYNAMIC DIMENSIONS
 
   dimension: date_dynamic{
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:

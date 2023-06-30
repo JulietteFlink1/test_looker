@@ -24,7 +24,7 @@ view: quinyx_raw_data_monitoring {
   }
 
   dimension_group: extraction {
-    group_label: "* Dates *"
+    group_label: "> Dates"
     type: time
     timeframes: [
       date,
@@ -39,7 +39,7 @@ view: quinyx_raw_data_monitoring {
   }
 
   dimension_group: last_modified {
-    group_label: "* Dates *"
+    group_label: "> Dates"
     type: time
     timeframes: [
       date,

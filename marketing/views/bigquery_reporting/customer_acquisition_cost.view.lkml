@@ -67,7 +67,7 @@ view: customer_acquisition_cost {
   dimension_group: report {
     type: time
     label: "Report"
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     timeframes: [
       raw,
       date,
@@ -82,7 +82,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: campaign_country {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "Campaign Country"
     description: "Two letter abbreviation for country that the campaign where the campaign is run."
     type: string
@@ -90,7 +90,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: campaign_id {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "Campaign ID"
     description: "ID associated with specific campaign, one more level of granularity from partner name."
     type: string
@@ -99,7 +99,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: campaign_name {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "Campaign Name"
     description: "Name associated with the campaign, one more level of granularity from partner name."
     type: string
@@ -107,7 +107,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: campaign_platform {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "Campaign Platform"
     description: "Platform that the adverts are run on."
     type: string
@@ -117,7 +117,7 @@ view: customer_acquisition_cost {
 ###Unsolved bug here when adding extra partners to the CAC dashboard. Workaround would be to write in the names manually
 ###as part of a tag list.
   dimension: partner_name {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "Channel Name"
     description: "Name of the advertising partner."
     type: string
@@ -125,7 +125,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: sem_campaign_type {
-    group_label: "* Campaign Dimensions *"
+    group_label: "> Campaign Dimensions"
     label: "SEM Campaign Type"
     description: "Search engine marketing campaign type, null for non sem campaigns."
     type: string
@@ -135,7 +135,7 @@ view: customer_acquisition_cost {
   # =========  Parameters   =========
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     hidden: no
     type: unquoted
@@ -150,7 +150,7 @@ view: customer_acquisition_cost {
   # =========  Dynamic dimensions   =========
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -168,7 +168,7 @@ view: customer_acquisition_cost {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: yes
@@ -195,7 +195,7 @@ view: customer_acquisition_cost {
     alias: [total_amt_spend]
     label: "SUM Spend"
     description: "Total of online marketing spend"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${amt_spend_net_eur} ;;
@@ -207,7 +207,7 @@ view: customer_acquisition_cost {
 
     label: "SUM Spend, App only"
     description: "Total of online marketing spend, app campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
@@ -220,7 +220,7 @@ view: customer_acquisition_cost {
 
     label: "SUM Spend, Web Only"
     description: "Total of online marketing spend, web campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "Google Ads - SEM"  ]
     type: sum
     sql: ${amt_spend_net_eur} ;;
@@ -234,7 +234,7 @@ view: customer_acquisition_cost {
 
     label: "# Installs"
     description: "Total of installs"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${number_of_installs} ;;
@@ -246,7 +246,7 @@ view: customer_acquisition_cost {
 
     label: "# Installs, App only"
     description: "Total of installs, app campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_installs} ;;
@@ -259,7 +259,7 @@ view: customer_acquisition_cost {
 
     label: "# Acquisitions"
     description: "Total of acquisitions"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${number_of_acquisitions} ;;
@@ -271,7 +271,7 @@ view: customer_acquisition_cost {
 
     label: "# Acquisitions, App only"
     description: "Total of acquisitions, app campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_acquisitions} ;;
@@ -284,7 +284,7 @@ view: customer_acquisition_cost {
 
     label: "# Impressions"
     description: "Total of impressions"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${number_of_impressions} ;;
@@ -296,7 +296,7 @@ view: customer_acquisition_cost {
 
     label: "# Clicks"
     description: "Total of clicks"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
 
     type: sum
     sql: ${number_of_clicks} ;;
@@ -308,7 +308,7 @@ view: customer_acquisition_cost {
 
     label: "# Clicks, App only"
     description: "Total of clicks, app campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "-Google Ads - SEM"  ]
     type: sum
     sql: ${number_of_clicks} ;;
@@ -321,7 +321,7 @@ view: customer_acquisition_cost {
 
     label: "# Orders, Web Only"
     description: "Number of Orders, web campaigns only"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     filters: [partner_name: "Google Ads - SEM" ]
 
     type: sum
@@ -334,7 +334,7 @@ view: customer_acquisition_cost {
     type: number
     label: "CAC"
     description: "Customer Acquisition Cost: how much does it cost marketing to get a conversion"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: safe_divide(${total_amt_spend_eur}, ${total_acquisitions});;
     value_format_name: euro_accounting_2_precision
   }
@@ -346,7 +346,7 @@ view: customer_acquisition_cost {
     type: number
     label: "CPI"
     description: "Cost Per Install: how much do marketing spend on app or web campaigns to get an install? "
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: ${total_amt_spend_eur} / NULLIF(${total_installs}, 0);;
     value_format_name: euro_accounting_2_precision
   }
@@ -355,7 +355,7 @@ view: customer_acquisition_cost {
     type: number
     label: "CPO"
     description: "Cost Per Order: how much do marketing spend on web campaigns to get a web order?"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: ${total_amt_spend_eur_sem_web} / NULLIF(${total_orders}, 0);;
     value_format_name: euro_accounting_2_precision
   }
@@ -365,7 +365,7 @@ view: customer_acquisition_cost {
     type: number
     label: "CPM"
     description: "Cost Per 1k Impressions: how much does it cost marketing to get 1000 impressions"
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: ${total_amt_spend_eur} / NULLIF(${total_impressions}, 0) * 1000;;
     value_format_name: euro_accounting_2_precision
   }
@@ -374,7 +374,7 @@ view: customer_acquisition_cost {
     type: number
     label: "CPC"
     description: "Cost Per Click: how much does it cost marketing to get a click."
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: ${total_amt_spend_eur} / NULLIF(${total_clicks}, 0);;
     value_format_name: euro_accounting_2_precision
   }
@@ -383,7 +383,7 @@ view: customer_acquisition_cost {
     type: number
     label: "% CTR"
     description: "Click Through Rate: what % of impressions result in clicks."
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: NULLIF(${total_clicks}, 0) / NULLIF(${total_impressions}, 0);;
     value_format_name: percent_2
   }
@@ -394,7 +394,7 @@ view: customer_acquisition_cost {
     type: number
     label: "% Install-to-First Order CVR"
     description: "Install Conversion Rate: what % of installs result in first orders for app campaigns only."
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: NULLIF(${total_acquisitions_app}, 0) / NULLIF(${total_installs_app}, 0);;
     value_format_name: percent_2
   }
@@ -405,7 +405,7 @@ view: customer_acquisition_cost {
     type: number
     label: "% Click-to-Install CVR"
     description: "Click Conversion Rate: what % of clicks result in installs for app and web campaigns."
-    group_label: "* CAC Measures *"
+    group_label: "> CAC Measures"
     sql: NULLIF(${total_installs}, 0) / NULLIF(${total_clicks}, 0);;
     value_format_name: percent_2
   }

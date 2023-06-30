@@ -611,7 +611,7 @@ flink_lvl.avg_unit_price_gross as avg_unit_price_gross_company
 
 
   dimension_group: created {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order"
     description: "Order Placement Date"
     type: time

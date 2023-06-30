@@ -10,28 +10,28 @@ view: active_funnel {
 
   dimension: city {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: country {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: position {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
 
   dimension: stage_title {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.stage_title ;;
   }
@@ -45,7 +45,7 @@ view: active_funnel {
   dimension_group: applied {
     hidden: yes
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -63,7 +63,7 @@ view: active_funnel {
 
   dimension: date {
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -78,7 +78,7 @@ view: active_funnel {
 
   parameter: date_granularity {
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -95,7 +95,7 @@ view: active_funnel {
   }
 
   measure: count_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: sum
     label: "# Applicants"
     sql: ${applicants} ;;

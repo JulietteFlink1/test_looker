@@ -4,14 +4,14 @@ view: funnel_marketing_summary {
 
   dimension: channel {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
@@ -24,14 +24,14 @@ view: funnel_marketing_summary {
 
   dimension: country {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: source {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -60,7 +60,7 @@ view: funnel_marketing_summary {
 
   dimension: position {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -131,7 +131,7 @@ view: funnel_marketing_summary {
 
   dimension: date {
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -146,7 +146,7 @@ view: funnel_marketing_summary {
 
   parameter: date_granularity {
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -157,7 +157,7 @@ view: funnel_marketing_summary {
   ################## Measures
 
   measure: avg_days_to_hire {
-    group_label: "* Averages *"
+    group_label: "> Averages"
     label: "AVG Time to Hire (Days)"
     type: average
     sql: ${days_to_hire} ;;
@@ -165,7 +165,7 @@ view: funnel_marketing_summary {
   }
 
   measure: cnt_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hired Applicants"
     type: sum
     sql: ${applicants} ;;

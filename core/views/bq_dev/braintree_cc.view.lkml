@@ -127,7 +127,7 @@ view: braintree_cc {
 
 
   measure: sum_amount_authorized {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Amount Authorized"
     description: "Sum of Amount Authorized"
     hidden:  no
@@ -137,7 +137,7 @@ view: braintree_cc {
   }
 
   measure: sum_amount_submitted_for_settlement {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Amount Submitted for Settlement"
     description: "Sum of Amount Submitted for Settlement"
     hidden:  no
@@ -147,7 +147,7 @@ view: braintree_cc {
   }
 
   measure: sum_cc_transaction_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Transaction Amount"
     description: "Sum of Transaction Amount (Credit Card)"
     hidden:  no
@@ -157,7 +157,7 @@ view: braintree_cc {
   }
 
   measure: sum_cc_interchange_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Interchange Amount"
     description: "Sum of Interchange Amount (Credit Card)"
     hidden:  no
@@ -167,7 +167,7 @@ view: braintree_cc {
   }
 
   measure: sum_total_fee_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Total Fee Amount"
     description: "Sum of Total Fee Amount (Credit Card)"
     hidden:  no
@@ -177,7 +177,7 @@ view: braintree_cc {
   }
 
   measure: sum_paypal_transaction_fee_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Paypal Transaction Fee Amount"
     description: "Sum of Paypal Transaction Fee Amount"
     hidden:  no
@@ -187,7 +187,7 @@ view: braintree_cc {
   }
 
   measure: sum_paypal_refund_from_transaction_fee_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Paypal Refund from Transaction Fee Amount"
     description: "Sum of Paypal Refund from Transaction Fee Amount"
     hidden:  no
@@ -197,7 +197,7 @@ view: braintree_cc {
   }
 
   measure: sum_settlement_amount {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "SUM Settlement Amount"
     description: "Sum of Settlement Amount (Credit Card)"
     hidden:  no

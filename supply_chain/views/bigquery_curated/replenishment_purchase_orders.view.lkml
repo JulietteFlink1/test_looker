@@ -61,7 +61,7 @@ view: replenishment_purchase_orders {
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
     label:       "Show details per metric"
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     description: "Chose yes, if you want to see more details"
 
     type: unquoted
@@ -300,7 +300,7 @@ view: replenishment_purchase_orders {
 
     label:       "Order ID"
     description: "Order ID for orders placed by Flink to it's suppliers"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
 
     type: string
     sql: ${TABLE}.order_id ;;
@@ -311,7 +311,7 @@ view: replenishment_purchase_orders {
 
     label:       "Order Number"
     description: "Order Number for orders placed by Flink to it's suppliers"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
 
     type: string
     sql: safe_cast(${TABLE}.order_number as string) ;;
@@ -321,7 +321,7 @@ view: replenishment_purchase_orders {
 
     label:       "Buyer ID"
     description: "Buyer ID of the purchase order"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
 
     type: string
     sql: ${TABLE}.flink_buyer_id ;;
@@ -443,7 +443,7 @@ view: replenishment_purchase_orders {
 
     label:       "# Upcoming Selling Units Next 7 Days (PO) "
     description: "The amount of ordered items to receive in the next 7 days"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${selling_unit_quantity} ;;

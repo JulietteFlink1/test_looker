@@ -108,14 +108,14 @@ view: user_attributes_lifecycle_first28days {
   #=========================================================================================#
 
   dimension: first_country_iso {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "First country customer ordered to"
     type: string
     sql: ${TABLE}.first_country_iso ;;
   }
 
   dimension_group: first_order {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "First order datetime"
     type: time
     timeframes: [
@@ -132,14 +132,14 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: first_order_platform {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "First platform customer ordered from us on"
     type: string
     sql: ${TABLE}.first_order_platform ;;
   }
 
   dimension_group: first_visit {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "First visit datetime"
     type: time
     timeframes: [
@@ -156,7 +156,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: first_visit_granularity {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     label: "First Visit Cohort (Dynamic)"
     label_from_parameter: timeframe_picker
     description: "Use to set granuality of first visit date field to week, month or year"
@@ -183,21 +183,21 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: first_visit_platform {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "First platform customer visited on"
     type: string
     sql: ${TABLE}.first_visit_platform ;;
   }
 
   dimension: is_xdevice_conversion {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     description: "Whether customer used a different device on first visit vs. first order"
     type: yesno
     sql: ${TABLE}.is_xdevice_conversion ;;
   }
 
   dimension: number_of_days_to_first_order {
-    group_label: "* User Attributes *"
+    group_label: "> User Attributes"
     label: "# Days To First Order"
     description: "How many days there were between the customer's first visit and their first order"
     type: number
@@ -209,7 +209,7 @@ view: user_attributes_lifecycle_first28days {
   #=================================================================================================#
 
   dimension: aov_25 {
-    group_label: " * AOV Percentiles *"
+    group_label: ">  AOV Percentiles"
     label: "AOV 25th Percentile"
     group_item_label: "25th Percentile"
     hidden: yes
@@ -218,7 +218,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: aov_50 {
-    group_label: " * AOV Percentiles *"
+    group_label: ">  AOV Percentiles"
     label: "AOV Median"
     group_item_label: "Median"
     hidden: yes
@@ -227,7 +227,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: aov_75 {
-    group_label: " * AOV Percentiles *"
+    group_label: ">  AOV Percentiles"
     label: "AOV 75th Percentile"
     group_item_label: "75th Percentile"
     hidden: yes
@@ -236,7 +236,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: aov_category {
-    group_label: "* RFM Quartiles *"
+    group_label: "> RFM Quartiles"
     label: "AOV (Gross) Quartiles"
     description: "Dimension that splits customers into quartiles according to their Average Order Value (Gross) in the first 28 days"
     case: {
@@ -261,7 +261,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: gmv_25 {
-    group_label: " * Total GMV Percentiles *"
+    group_label: ">  Total GMV Percentiles"
     label: "GMV 25th Percentile"
     group_item_label: "25th Percentile"
     hidden: yes
@@ -270,7 +270,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: gmv_50 {
-    group_label: " * Total GMV Percentiles *"
+    group_label: ">  Total GMV Percentiles"
     label: "GMV Median"
     group_item_label: "Median"
     hidden: yes
@@ -279,7 +279,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: gmv_75 {
-    group_label: " * Total GMV Percentiles *"
+    group_label: ">  Total GMV Percentiles"
     label: "GMV 75th Percentile"
     group_item_label: "75th Percentile"
     hidden: yes
@@ -288,7 +288,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: gmv_category {
-    group_label: "* RFM Quartiles *"
+    group_label: "> RFM Quartiles"
     label: "Sum GMV (Gross) Quartiles"
     description: "Dimension that splits customers into quartiles according to their total orders value in the first 28 days"
     case: {
@@ -313,7 +313,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_ordering_25 {
-    group_label: " * # Days Ordering Percentiles *"
+    group_label: ">  # Days Ordering Percentiles"
     label: "# Days Ordering 25th"
     hidden: yes
     type: number
@@ -321,7 +321,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_ordering_50 {
-    group_label: " * # Days Ordering Percentiles *"
+    group_label: ">  # Days Ordering Percentiles"
     label: "# Days Ordering Median"
     hidden: yes
     type: number
@@ -329,7 +329,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_ordering_75 {
-    group_label: " * # Days Ordering Percentiles *"
+    group_label: ">  # Days Ordering Percentiles"
     label: "# Days Ordering 75th"
     hidden: yes
     type: number
@@ -337,7 +337,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_ordering_category {
-    group_label: "* RFM Quartiles *"
+    group_label: "> RFM Quartiles"
     label: "# Days Ordering Quartiles"
     description: "Dimension that splits customers into quartiles according to on how many days they've ordered in the first 28 days"
     case: {
@@ -362,7 +362,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_visiting_25 {
-    group_label: " * # Days Visiting Percentiles *"
+    group_label: ">  # Days Visiting Percentiles"
     label: "# Days Visiting 25th"
     hidden: yes
     type: number
@@ -370,7 +370,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_visiting_50 {
-    group_label: " * # Days Visiting Percentiles *"
+    group_label: ">  # Days Visiting Percentiles"
     label: "# Days Visiting Median"
     hidden: yes
     type: number
@@ -378,7 +378,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_visiting_75 {
-    group_label: " * # Days Visiting Percentiles *"
+    group_label: ">  # Days Visiting Percentiles"
     label: "# Days Visiting 75th"
     hidden: yes
     type: number
@@ -386,7 +386,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: days_visiting_category {
-    group_label: "* RFM Quartiles *"
+    group_label: "> RFM Quartiles"
     label: "# Days Visiting Quartiles"
     description: "Dimension that splits customers into quartiles according to on how many days they've visited in the first 28 days"
     case: {
@@ -415,7 +415,7 @@ view: user_attributes_lifecycle_first28days {
   #=========================================================================================#
 
   dimension: avg_gmv_gross_tier_2 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average Order Value (Gross) Per Customer (tiered, 2 EUR)"
     description: "Average Order Value (Gross) Per Customer (tiered, 2 EUR) in the first 28 days"
     type: tier
@@ -425,7 +425,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_gmv_gross_tier_2 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Sum GMV (Gross) Per Customer (tiered, 2 EUR)"
     description: "Sum GMV (Gross) Per Customer (tiered, 2 EUR) in the first 28 days"
     type: tier
@@ -435,7 +435,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_gmv_net_tier_2 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average Order Value (Net) Per Customer (tiered, 2 EUR)"
     description: "Average Order Value (Net) Per Customer (tiered, 2 EUR) in the first 28 days"
     type: tier
@@ -445,7 +445,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_gmv_net_tier_2 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Sum GMV (Net) Per Customer (tiered, 2 EUR)"
     description: "Sum GMV (Net) Per Customer (tiered, 2 EUR) in the first 28 days"
     type: tier
@@ -455,7 +455,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_gmv_gross {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "GMV (Gross) Per Customer"
     description: "Sum GMV (Gross) per customer. Incl. fees and incl. VAT, before deduction of discounts"
     type: number
@@ -463,7 +463,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_gmv_net {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "GMV (Net) Per Customer"
     description: "Sum GMV (Net) per customer. Incl. fees and excl. VAT, before deduction of discounts"
     type: number
@@ -471,7 +471,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_revenue_gross {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Revenue (Gross) Per Customer"
     description: "Revenue (Gross) per customer"
     type: number
@@ -480,7 +480,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_gmv_gross {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average Order Value (Gross) Per Customer"
     description: "Average Order Value (Gross) per customer"
     type: number
@@ -488,7 +488,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_gmv_net {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average Order Value (Net) Per Customer"
     description: "Average Order Value (Net) per customer"
     type: number
@@ -496,7 +496,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_revenue_gross {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average Revenue (Gross) Per Customer"
     description: "Average Revenue (Gross) per customer"
     type: number
@@ -509,7 +509,7 @@ view: user_attributes_lifecycle_first28days {
   #==========================================================================================#
 
   dimension: avg_days_between_orders {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "AVG Days Between Orders"
     description: "Average number of days between orders in the first 28 days"
     type: number
@@ -517,7 +517,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_days_between_visits {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "AVG Days Between Visits"
     description: "Average number of days between visits in the first 28 days"
     type: number
@@ -525,7 +525,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: number_of_days_ordering {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "# Days Ordering"
     description: "Number of days the customer has ordered with us in the first 28 days"
     type: number
@@ -533,7 +533,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: number_of_days_visited {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "# Days Visited"
     description: "Number of days the customer has visited us in the first 28 days"
     type: number
@@ -541,7 +541,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: number_of_orders {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "# Orders"
     description: "Number of orders in the first 28 days"
     type: number
@@ -550,7 +550,7 @@ view: user_attributes_lifecycle_first28days {
 
   dimension: order_to_visit_ratio_tier {
     hidden: yes
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "Order To Visit Ratio (tiered, 0.05)"
     type: tier
     tiers: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1]
@@ -559,7 +559,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: order_to_visit_ratio_tier3 {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     label: "Order To Visit Ratio (tiered, 0.33)"
     description: "Tiers for ratio of how many orders occur per visit in the first 28 days"
     type: tier
@@ -569,7 +569,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: order_to_visit_ratio {
-    group_label: "* Frequency Values*"
+    group_label: "> Frequency Values"
     description: "Ratio of how many orders occur per visit in the first 28 days"
     type: number
     sql: 1.0* ${number_of_days_ordering}/${number_of_days_visited} ;;
@@ -581,7 +581,7 @@ view: user_attributes_lifecycle_first28days {
   #========================================================================================#
 
   dimension_group: last_visit {
-    group_label: "* Recency Dates *"
+    group_label: "> Recency Dates"
     description: "Last Visit Date in the first 28 days"
     type: time
     timeframes: [
@@ -598,7 +598,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension_group: last_order {
-    group_label: "* Recency Dates *"
+    group_label: "> Recency Dates"
     description: "Last Order Date in the first 28 days"
     type: time
     timeframes: [
@@ -619,7 +619,7 @@ view: user_attributes_lifecycle_first28days {
   #=============================================================================================#
 
   dimension: amt_discount_gross_tier_1 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Sum discount value (gross) per customer (tiered, 1 EUR)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -628,7 +628,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_discount_net_tier_1 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Sum discount value (net) per customer (tiered, 1 EUR)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -637,7 +637,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_discount_gross_tier_1 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average discount value (gross) per customer (tiered, 1 EUR)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -646,7 +646,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: avg_discount_net_tier_1 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     label: "Average discount value (net) per customer (tiered, 1 EUR)"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -655,35 +655,35 @@ view: user_attributes_lifecycle_first28days {
   }
 
   dimension: amt_discount_gross {
-    group_label: "* Discount Dimensions *"
+    group_label: "> Discount Dimensions"
     description: "Sum discount value (gross) that the customer applied in total. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.amt_discount_gross ;;
   }
 
   dimension: amt_discount_net {
-    group_label: "* Discount Dimensions *"
+    group_label: "> Discount Dimensions"
     description: "Sum discount value (net) that the customer applied in total. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.amt_discount_net ;;
   }
 
   dimension: avg_discount_gross {
-    group_label: "* Discount Dimensions *"
+    group_label: "> Discount Dimensions"
     description: "Average discount value (gross) that the customer applied per order. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.avg_discount_gross ;;
   }
 
   dimension: avg_discount_net {
-    group_label: "* Discount Dimensions *"
+    group_label: "> Discount Dimensions"
     description: "Average discount value (net) that the customer applied per order. Note this field can be used for filters and custom measures. Use tiered dimensions for distributions."
     type: number
     sql: ${TABLE}.avg_discount_net ;;
   }
 
   dimension: number_of_discounted_orders {
-    group_label: "* Discount Dimensions *"
+    group_label: "> Discount Dimensions"
     description: "Sum number of order with discounts per customer"
     type: number
     sql: ${TABLE}.number_of_discounted_orders ;;
@@ -706,7 +706,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: avg_total_gmv_gross {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "AVG"
     label: "Total GMV AVG"
     description: "Average of the total GMV over customers in the first 28 days"
@@ -715,7 +715,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: total_gmv_gross {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "Sum"
     label: "Total GMV Sum"
     description: "Sum of the total GMV over customers in the first 28 days"
@@ -724,7 +724,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: total_gmv_min {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "Minimum"
     label: "Total GMV Min"
     description: "Min of the total GMV over customers"
@@ -734,7 +734,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: total_gmv_percentile_25 {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "25th Percentile"
     label: "Total GMV 25th Perc."
     description: "25th percentile of the total GMV over customers"
@@ -745,7 +745,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: total_gmv_percentile_50 {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "50th Percentile"
     label: "Total GMV 50th Perc."
     description: "50th percentile of the total GMV over customers"
@@ -755,7 +755,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: total_gmv_percentile_75 {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "75th Percentile"
     label: "Total GMV 75th Perc."
     description: "75th percentile of the total GMV over customers"
@@ -766,7 +766,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   # measure: total_gmv_percentile_25 {
-  #   group_label: "* Sum GMV Per Customer *"
+  #   group_label: "> Sum GMV Per Customer"
   #   group_item_label: "25th Percentile"
   #   label: "Total GMV 25th Perc."
   #   type: percentile
@@ -776,7 +776,7 @@ view: user_attributes_lifecycle_first28days {
   # }
 
   measure: total_gmv_percentile_95 {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "95th Percentile"
     label: "Total GMV 95th Perc."
     description: "95th percentile of the total GMV over customers"
@@ -786,7 +786,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: total_gmv_max {
-    group_label: "* Sum GMV Per Customer *"
+    group_label: "> Sum GMV Per Customer"
     group_item_label: "Maximum"
     label: "Total GMV Max"
     description: "Max of the total GMV over customers"
@@ -797,7 +797,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: avg_number_of_days_visiting {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "AVG"
     label: "# Days Visiting AVG"
     description: "Average number of days visited in the first 28 days"
@@ -807,7 +807,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: number_of_days_visiting_min {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "Minimum"
     label: "# Days Visiting Min"
     description: "Minimum number of days visited"
@@ -815,7 +815,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_visited} ;;
   }
   measure: number_of_days_visiting_percentile_25 {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "25th Percentile"
     label: "# Days Visiting 25th Perc."
     description: "25th percentile of number of days visited"
@@ -824,7 +824,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_visited} ;;
   }
   measure: number_of_days_visiting_percentile_50 {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "50th Percentile"
     label: "# Days Visiting 50th Perc."
     description: "50th percentile of number of days visited"
@@ -832,7 +832,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_visited} ;;
   }
   measure: number_of_days_visiting_percentile_75 {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "75th Percentile"
     label: "# Days Visiting 75th Perc."
     description: "75th percentile of number of days visited"
@@ -841,7 +841,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_visited} ;;
   }
   measure: number_of_days_visiting_percentile_95 {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "95th Percentile"
     label: "# Days Visiting 95th Perc."
     description: "95th percentile of number of days visited"
@@ -850,7 +850,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_visited} ;;
   }
   measure: number_of_days_visiting_max {
-    group_label: "* # Days Visiting *"
+    group_label: "> # Days Visiting"
     group_item_label: "Maximum"
     label: "# Days Visiting Max"
     description: "Maximum number of days visited"
@@ -859,7 +859,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: avg_gmv_avg {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     group_item_label: "AVG"
     label: "AOV (Gross) - AVG"
     description: "The average AOV across customers in the first 28 days"
@@ -869,7 +869,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: avg_gmv_min {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - Min"
     group_item_label: "Minimum"
     description: "The minimum AOV Per Customer across customers"
@@ -878,7 +878,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: avg_gmv_percentile_25 {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - 25th Percentile"
     group_item_label: "25th Percentile"
     description: "The 25th percentile AOV Per Customer across customers"
@@ -888,7 +888,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: avg_gmv_percentile_50 {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - 50th Percentile"
     group_item_label: "50th Percentile"
     description: "The 50th percentile AOV Per Customer across customers"
@@ -897,7 +897,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: avg_gmv_percentile_75 {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - 75th Percentile"
     group_item_label: "75th Percentile"
     description: "The 75th percentile AOV Per Customer across customers"
@@ -907,7 +907,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: avg_gmv_percentile_95 {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - 95th Percentile"
     group_item_label: "95th Percentile"
     description: "The 95th percentile AOV Per Customer across customers"
@@ -917,7 +917,7 @@ view: user_attributes_lifecycle_first28days {
     value_format_name: eur
   }
   measure: avg_gmv_max {
-    group_label: "* AOV Per Customer *"
+    group_label: "> AOV Per Customer"
     label: "AOV (Gross) - Max"
     group_item_label: "Maximum"
     description: "The MAX AOV Per Customer across customers"
@@ -927,7 +927,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: avg_number_of_days_ordering {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering AVG"
     group_item_label: "AVG"
     description: "Average number of days ordered in the first 28 days"
@@ -937,7 +937,7 @@ view: user_attributes_lifecycle_first28days {
   }
 
   measure: number_of_days_ordering_min {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering Min"
     group_item_label: "Minimum"
     description: "Minimum number of days ordered"
@@ -945,7 +945,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_ordering} ;;
   }
   measure: number_of_days_ordering_percentile_25 {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering 25th Perc."
     group_item_label: "25th Percentile"
     description: "25th percentile of number of days ordered"
@@ -954,7 +954,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_ordering} ;;
   }
   measure: number_of_days_ordering_percentile_50 {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering 50th Perc."
     group_item_label: "50th Percentile"
     description: "50th percentile of number of days ordered"
@@ -962,7 +962,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_ordering} ;;
   }
   measure: number_of_days_ordering_percentile_75 {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering 75th Perc."
     group_item_label: "75th Percentile"
     description: "75th percentile of number of days ordered"
@@ -971,7 +971,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_ordering} ;;
   }
   measure: number_of_days_ordering_percentile_95 {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering 95th Perc."
     group_item_label: "95th Percentile"
     description: "95th percentile of number of days ordered"
@@ -980,7 +980,7 @@ view: user_attributes_lifecycle_first28days {
     sql: ${number_of_days_ordering} ;;
   }
   measure: number_of_days_ordering_max {
-    group_label: "* # Days Ordering *"
+    group_label: "> # Days Ordering"
     label: "# Days Ordering Max"
     group_item_label: "Maximum"
     description: "Max number of days ordered"
