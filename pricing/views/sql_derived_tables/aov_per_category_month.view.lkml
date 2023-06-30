@@ -207,7 +207,7 @@ view: aov_per_category_month{
 
 
   dimension_group: created {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order"
     description: "Order Placement Date"
     type: time
@@ -248,7 +248,7 @@ view: aov_per_category_month{
   }
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -258,7 +258,7 @@ view: aov_per_category_month{
   }
 
   dimension: order_date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:

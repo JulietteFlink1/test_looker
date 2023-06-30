@@ -34,7 +34,7 @@ view: nps_comments_words_count {
   }
 
   dimension_group: submitted {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -50,7 +50,7 @@ view: nps_comments_words_count {
   }
 
   parameter: date_granularity {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -60,7 +60,7 @@ view: nps_comments_words_count {
   }
 
   dimension: date {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Submitted Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -74,7 +74,7 @@ view: nps_comments_words_count {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes

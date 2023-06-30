@@ -163,6 +163,15 @@ view: vehicle_suppliers {
     filters: [operational_status: "operational", is_archived_bike: "no"]
   }
 
+  measure: number_of_partly_operational_vehicles {
+    group_label: "> Vehicle Status"
+    label: "# Partly Operational Bikes"
+    description: "Number of bikes for which the current status is 'partly operational'. Excluding Archived Bikes."
+    type: count_distinct
+    sql: ${vehicle_id} ;;
+    filters: [operational_status: "partly_operational", is_archived_bike: "no"]
+  }
+
   measure: number_of_in_maintenance_vehicles {
     group_label: "> Vehicle Status"
     label: "# In Maintenance Bikes"

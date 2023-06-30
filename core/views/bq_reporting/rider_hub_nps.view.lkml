@@ -111,7 +111,7 @@ dimension_group: submitted_at {
 }
 
 parameter: date_granularity {
-  group_label: "* Dates and Timestamps *"
+  group_label: "> Dates and Timestamps"
   label: "Date Granularity"
   type: unquoted
   allowed_value: { value: "Day" }
@@ -121,7 +121,7 @@ parameter: date_granularity {
 }
 
 dimension: submitted_at {
-  group_label: "* Dates and Timestamps *"
+  group_label: "> Dates and Timestamps"
   label: "Date (Dynamic)"
   label_from_parameter: date_granularity
   sql:
@@ -319,7 +319,7 @@ dimension: vely_velo {
 
 
 measure: sum_responded_bikes {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -328,7 +328,7 @@ measure: sum_responded_bikes {
 
 
 measure: sum_responded_dockr_cargo_bikes {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -336,7 +336,7 @@ measure: sum_responded_dockr_cargo_bikes {
 }
 
 measure: sum_responded_get_henry_black {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -344,7 +344,7 @@ measure: sum_responded_get_henry_black {
 }
 
 measure: sum_responded_get_henry_white {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -352,7 +352,7 @@ measure: sum_responded_get_henry_white {
 }
 
 measure: sum_responded_movelo {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -360,7 +360,7 @@ measure: sum_responded_movelo {
 }
 
 measure: sum_responded_smartvelo {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -368,7 +368,7 @@ measure: sum_responded_smartvelo {
 }
 
 measure: sum_responded_swapfiets {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -376,7 +376,7 @@ measure: sum_responded_swapfiets {
 }
 
 measure: sum_responded_tier {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -384,7 +384,7 @@ measure: sum_responded_tier {
 }
 
 measure: sum_responded_zoomo {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -392,7 +392,7 @@ measure: sum_responded_zoomo {
 }
 
 measure: sum_responded_moby {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -400,7 +400,7 @@ measure: sum_responded_moby {
 }
 
 measure: sum_responded_dott {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -408,7 +408,7 @@ measure: sum_responded_dott {
 }
 
 measure: sum_responded_kemmrod {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -416,7 +416,7 @@ measure: sum_responded_kemmrod {
 }
 
 measure: sum_responded_vely_velo {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -424,7 +424,7 @@ measure: sum_responded_vely_velo {
 }
 
 measure: sum_responded_i_am_satisfied_with_the_hub_working_conditions_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -432,7 +432,7 @@ measure: sum_responded_i_am_satisfied_with_the_hub_working_conditions_ {
 }
 
 measure: sum_responded_my_hub_adheres_to_the_highest_safety_standards_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -440,7 +440,7 @@ measure: sum_responded_my_hub_adheres_to_the_highest_safety_standards_ {
 }
 
 measure: sum_responded_my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -448,7 +448,7 @@ measure: sum_responded_my_shifts_are_planned_flexibly_taking_into_account_my_res
 }
 
 measure: sum_responded_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -456,7 +456,7 @@ measure: sum_responded_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcom
 }
 
 measure: sum_responded_my_supervisor_s_cares_about_their_employees_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -464,7 +464,7 @@ measure: sum_responded_my_supervisor_s_cares_about_their_employees_ {
 }
 
 measure: sum_responded_my_supervisor_s_treats_everyone_fairly_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -472,7 +472,7 @@ measure: sum_responded_my_supervisor_s_treats_everyone_fairly_ {
 }
 
 measure: sum_responded_i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -480,7 +480,7 @@ measure: sum_responded_i_feel_comfortable_giving_opinions_and_feedback_to_manage
 }
 
 measure: sum_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -488,7 +488,7 @@ measure: sum_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
 }
 
   measure: sum_responded_there_is_a_strong_level_of_teamwork_in_the_hub_ {
-    group_label: "# Responses"
+    group_label: "> # Responses"
     type: count_distinct
     value_format: "0"
     sql: ${uuid};;
@@ -497,7 +497,7 @@ measure: sum_responded_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
 
 
 measure: sum_responded_communication_support {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -506,7 +506,7 @@ measure: sum_responded_communication_support {
 
 
 measure: sum_responded_hub_infrastructure {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -514,7 +514,7 @@ measure: sum_responded_hub_infrastructure {
 }
 
 measure: sum_responded_on_boarding_experience {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -522,7 +522,7 @@ measure: sum_responded_on_boarding_experience {
 }
 
 measure: sum_responded_payments {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -531,7 +531,7 @@ measure: sum_responded_payments {
 
 
 measure: sum_responded_rider_app {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -548,7 +548,7 @@ measure: sum_responded_shift_scheduling {
 
 
 measure: sum_responded_work_duties {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -557,7 +557,7 @@ measure: sum_responded_work_duties {
 
 
 measure: sum_responded_work_environment_atmosphere {
-  group_label: "# Responses"
+  group_label: "> # Responses"
   type: count_distinct
   value_format: "0"
   sql: ${uuid};;
@@ -568,14 +568,14 @@ measure: sum_responded_work_environment_atmosphere {
 ###################################### AVG #############################################
 
 measure: avg_nps {
-  group_label: "NPS"
+  group_label: "> NPS"
   type: average
   value_format: "0"
   sql: ${nps};;
 }
 
 measure: avg_bikes {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "All Bikes"
   type: average
   value_format: "0.0"
@@ -583,7 +583,7 @@ measure: avg_bikes {
 }
 
 measure: avg_dockr_cargo_bikes_ {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Cargo Bikes"
   type: average
   value_format: "0.0"
@@ -593,7 +593,7 @@ measure: avg_dockr_cargo_bikes_ {
 }
 
 measure: avg_get_henry_black_ {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Get Henry Black Bikes"
   type: average
   value_format: "0.0"
@@ -604,7 +604,7 @@ measure: avg_get_henry_black_ {
 
 
 measure: avg_get_henry_white_ {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Get Henry White Bikes"
   type: average
   value_format: "0.0"
@@ -614,7 +614,7 @@ measure: avg_get_henry_white_ {
 }
 
 measure: avg_movelo {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Movelo Bikes"
   type: average
   value_format: "0.0"
@@ -624,7 +624,7 @@ measure: avg_movelo {
 }
 
 measure: avg_smartvelo {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Smartvelo Bikes"
   type: average
   value_format: "0.0"
@@ -634,7 +634,7 @@ measure: avg_smartvelo {
 }
 
 measure: avg_swapfiets {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Swapfiets Bikes"
   type: average
   value_format: "0.0"
@@ -644,7 +644,7 @@ measure: avg_swapfiets {
 }
 
 measure: avg_tier {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Tier Bikes"
   type: average
   value_format: "0.0"
@@ -653,7 +653,7 @@ measure: avg_tier {
 }
 
 measure: avg_zoomo {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Zoomo Bikes"
   type: average
   value_format: "0.0"
@@ -663,7 +663,7 @@ measure: avg_zoomo {
 }
 
 measure: avg_moby {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Moby Bikes"
   type: average
   value_format: "0.0"
@@ -673,7 +673,7 @@ measure: avg_moby {
 }
 
 measure: avg_dott {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Dott Bikes"
   type: average
   value_format: "0.0"
@@ -683,7 +683,7 @@ measure: avg_dott {
 }
 
 measure: avg_kemmrod {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "Kemmrod Bikes"
   type: average
   value_format: "0.0"
@@ -694,7 +694,7 @@ measure: avg_kemmrod {
 
 measure: avg_vely_velo {
   label: "VelyVelo Bikes"
-  group_label: "Bikes"
+  group_label: "> Bikes"
   type: average
   value_format: "0.0"
   sql: ${vely_velo};;
@@ -703,7 +703,7 @@ measure: avg_vely_velo {
 }
 
   measure: avg_i_am_satisfied_with_the_hub_working_conditions_ {
-    group_label: "Hub Infrastructure"
+    group_label: "> Hub Infrastructure"
     label: "I Am Satisfied With The Hub Working Conditions"
     type: average
     value_format: "0.0"
@@ -712,7 +712,7 @@ measure: avg_vely_velo {
   }
 
 measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "I Am Satisfied With The Quality Of Rider Equipment at Flink"
   type: average
   value_format: "0.0"
@@ -720,7 +720,7 @@ measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_ {
 }
 
 measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothing {
-  group_label: "Bikes"
+  group_label: "> Bikes"
   label: "I Am Satisfied With The Quality Of Rider Equipment at Flink (Clothing)"
   type: average
   value_format: "0.0"
@@ -728,7 +728,7 @@ measure: avg_i_am_satisfied_with_the_quality_of_rider_equipment_at_flink_clothin
 }
 
 measure: avg_my_hub_adheres_to_the_highest_safety_standards_ {
-  group_label: "Hub Infrastructure"
+  group_label: "> Hub Infrastructure"
   label: "My Hub Adheres To The Highest Safety Standards"
   type: average
   value_format: "0.0"
@@ -736,7 +736,7 @@ measure: avg_my_hub_adheres_to_the_highest_safety_standards_ {
 }
 
 measure: avg_my_shifts_are_planned_flexibly_taking_into_account_my_responsibilities_outside_of_flink_ {
-  group_label: "Shift Planning"
+  group_label: "> Shift Planning"
   label: "My shifts are Planned Flexibly taking into Account my Responsibilities Outside of Flink"
   type: average
   value_format: "0.0"
@@ -744,7 +744,7 @@ measure: avg_my_shifts_are_planned_flexibly_taking_into_account_my_responsibilit
 }
 
 measure: avg_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts_and_requesting_absences_ {
-  group_label: "Shift Planning"
+  group_label: "> Shift Planning"
   label: "Quinyx is a Good tool for Keeping me Informed about Upcoming Shifts and Requesting Absences"
   type: average
   value_format: "0.0"
@@ -752,7 +752,7 @@ measure: avg_quinyx_is_a_good_tool_for_keeping_me_informed_about_upcoming_shifts
 }
 
 measure: avg_my_supervisor_s_cares_about_their_employees_ {
-  group_label: "Work Environment"
+  group_label: "> Work Environment"
   label: "My Supervisor(s) Cares About Their Employees"
   type: average
   value_format: "0.0"
@@ -760,7 +760,7 @@ measure: avg_my_supervisor_s_cares_about_their_employees_ {
 }
 
 measure: avg_my_supervisor_s_treats_everyone_fairly_ {
-  group_label: "Work Environment"
+  group_label: "> Work Environment"
   label: "My Supervisor(s) Treats Everyone Fairly"
   type: average
   value_format: "0.0"
@@ -768,7 +768,7 @@ measure: avg_my_supervisor_s_treats_everyone_fairly_ {
 }
 
 measure: avg_i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
-  group_label: "Work Environment"
+  group_label: "> Work Environment"
   label: "I Feel Comfortable Giving Opinions and Feedback to Managers"
   type: average
   value_format: "0.0"
@@ -776,7 +776,7 @@ measure: avg_i_feel_comfortable_giving_opinions_and_feedback_to_managers_ {
 }
 
 measure: avg_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
-  group_label: "Work Environment"
+  group_label: "> Work Environment"
   label: "If I do Great Work I Know That it Will Be Recognised"
   type: average
   value_format: "0.0"
@@ -784,7 +784,7 @@ measure: avg_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
 }
 
   measure: avg_there_is_a_strong_level_of_teamwork_in_the_hub_ {
-    group_label: "Work Environment"
+    group_label: "> Work Environment"
     label: "There Is A Strong Level Of Teamwork In The Hub"
     type: average
     value_format: "0.0"
@@ -793,7 +793,7 @@ measure: avg_if_i_do_great_work_i_know_that_it_will_be_recognised_ {
 
 
 measure: avg_communication_support {
-  group_label: "Communication & Support"
+  group_label: "> Communication & Support"
   label: "Communication Support Hub Care Team"
   type: average
   value_format: "0.0"
@@ -801,7 +801,7 @@ measure: avg_communication_support {
 }
 
 measure: avg_hub_infrastructure {
-  group_label: "Hub Infrastructure"
+  group_label: "> Hub Infrastructure"
   label: "Hub Infrastructure"
   type: average
   value_format: "0.0"
@@ -809,7 +809,7 @@ measure: avg_hub_infrastructure {
 }
 
 measure: avg_on_boarding_experience {
-  group_label: "On-Boarding Experience"
+  group_label: "> On-Boarding Experience"
   label: "On-boarding Experience"
   type: average
   value_format: "0.0"
@@ -817,7 +817,7 @@ measure: avg_on_boarding_experience {
 }
 
 measure: avg_payments {
-  group_label: "Payments"
+  group_label: "> Payments"
   label: "Payments"
   type: average
   value_format: "0.0"
@@ -825,7 +825,7 @@ measure: avg_payments {
 }
 
 measure: avg_rider_app {
-  group_label: "Rider App"
+  group_label: "> Rider App"
   label: "Rider App"
   type: average
   value_format: "0.0"
@@ -833,7 +833,7 @@ measure: avg_rider_app {
 }
 
 measure: avg_shift_planning {
-  group_label: "Shift Planning"
+  group_label: "> Shift Planning"
   label: "Shift Scheduling"
   type: average
   value_format: "0.0"
@@ -841,7 +841,7 @@ measure: avg_shift_planning {
 }
 
 measure: avg_work_duties {
-  group_label: "Work Duties"
+  group_label: "> Work Duties"
   label: "Work Duties"
   type: average
   value_format: "0.0"
@@ -849,7 +849,7 @@ measure: avg_work_duties {
 }
 
 measure: avg_work_environment_atmosphere {
-  group_label: "Work Environment"
+  group_label: "> Work Environment"
   label: "Work Atmosphere"
   type: average
   value_format: "0.0"

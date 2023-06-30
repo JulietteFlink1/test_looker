@@ -2384,6 +2384,366 @@ view: flink_to_competitors_prices {
     sql: ${TABLE}.pct_highest_price_delta_with_monoprix_max ;;
   }
 
+# ===========  PICNIC  ==============================================================
+
+  dimension: picnic_product_id {
+
+    label: "Product ID - Picnic"
+    description: "A competitor's unique ID assigned to each product. Similar to Flink's SKU."
+    group_label: "Picnic"
+
+    type: string
+    sql: ${TABLE}.picnic_product_id ;;
+  }
+
+  dimension: picnic_product_name {
+
+    label: "Product Name - Picnic"
+    description: "The product name and unit size provided by the competitor."
+    group_label: "Picnic"
+
+    type: string
+    sql: ${TABLE}.picnic_product_name ;;
+  }
+
+  dimension: picnic_match_type {
+
+    label: "Match Type - Picnic"
+    description: "The type of match between a Flink and a competitor product. Can be a manual match (strongest), EAN or NAN match, or a fuzzy product name match (weakest)."
+    group_label: "Picnic"
+
+    type: string
+    sql: ${TABLE}.picnic_match_type ;;
+  }
+
+  dimension: picnic_match_score {
+
+    label: "Match Score - Picnic"
+    description: "A score ranging from -3.0 to 100.0 to represent the quality of a match between a Flink and a competitor product. Higher score = better match, lower score = worse match."
+    group_label: "Picnic"
+
+    type: number
+    sql: ${TABLE}.picnic_match_score ;;
+  }
+
+  dimension: min_picnic_price {
+
+    label: "Lowest Price - Picnic"
+    description: "Competitor's lowest available price of the product before discount (including VAT)."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.min_picnic_price ;;
+  }
+
+  dimension: avg_picnic_price {
+
+    label: "Average Price - Picnic"
+    description: "Competitor's average price of the product before discount (including VAT)."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.avg_picnic_price ;;
+  }
+
+  dimension: max_picnic_price {
+
+    label: "Highest Price - Picnic"
+    description: "Competitor's highest available price of the product before discount (including VAT)."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.max_picnic_price ;;
+  }
+
+  dimension: picnic_conversion_factor {
+
+    label: "Conversion Factor - Picnic"
+    description: "A multiplier to convert a competitor price to represent an equivalent price to Flink's product price based on product unit size differences if they exist."
+    group_label: "Picnic"
+
+    type: number
+    sql: ${TABLE}.picnic_conversion_factor ;;
+  }
+
+  dimension: is_picnic_prices_converted {
+
+    label: "Is Price Converted - Picnic"
+    description: "Yes, if the competitor price has been converted by the price conversion factor."
+    group_label: "Picnic"
+
+    type: yesno
+    sql: ${TABLE}.is_picnic_prices_converted ;;
+  }
+
+  dimension: low_price_delta_with_picnic_min_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Picnic Min"
+    description: "Flink's low price tier delta with the competitor's lowest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_picnic_min_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_picnic_avg_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Picnic Avg"
+    description: "Flink's low price tier delta with the competitor's average product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_picnic_avg_by_quantity_sold ;;
+  }
+
+  dimension: low_price_delta_with_picnic_max_by_quantity_sold {
+
+    label: "Low Tier Price Delta by Quantity Sold - Picnic Max"
+    description: "Flink's low price tier delta with the competitor's highest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.low_price_delta_with_picnic_max_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_picnic_min_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Picnic Min"
+    description: "Flink's mid price tier delta with the competitor's lowest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_picnic_min_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_picnic_avg_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Picnic Avg"
+    description: "Flink's mid price tier delta with the competitor's average product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_picnic_avg_by_quantity_sold ;;
+  }
+
+  dimension: mid_price_delta_with_picnic_max_by_quantity_sold {
+
+    label: "Mid Tier Price Delta by Quantity Sold - Picnic Max"
+    description: "Flink's mid price tier delta with the competitor's highest product price by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.mid_price_delta_with_picnic_max_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_picnic_min_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Picnic Min"
+    description: "Flink's high price tier delta with the competitor's lowest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_picnic_min_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_picnic_avg_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Picnic Avg"
+    description: "Flink's high price tier delta with the competitor's average product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_picnic_avg_by_quantity_sold ;;
+  }
+
+  dimension: high_price_delta_with_picnic_max_by_quantity_sold {
+
+    label: "High Tier Price Delta by Quantity Sold - Picnic Max"
+    description: "Flink's high price tier delta with the competitor's highest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.high_price_delta_with_picnic_max_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_picnic_min_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Picnic Min"
+    description: "Flink's highest price tier delta with the competitor's lowest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_picnic_min_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_picnic_avg_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Picnic Avg"
+    description: "Flink's highest price tier delta with the competitor's average product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_picnic_avg_by_quantity_sold ;;
+  }
+
+  dimension: highest_price_delta_with_picnic_max_by_quantity_sold {
+
+    label: "Highest Tier Price Delta by Quantity Sold - Picnic Max"
+    description: "Flink's highest price tier delta with the competitor's highest product price weighted by quantity sold."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "€0.00"
+    sql: ${TABLE}.highest_price_delta_with_picnic_max_by_quantity_sold ;;
+  }
+
+  dimension: pct_low_price_delta_with_picnic_min {
+
+    label: "% Low Tier Price Delta - Picnic Min"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's lowest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_picnic_min ;;
+  }
+
+  dimension: pct_low_price_delta_with_picnic_avg {
+
+    label: "% Low Tier Price Delta - Picnic Avg"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's average product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_picnic_avg ;;
+  }
+
+  dimension: pct_low_price_delta_with_picnic_max {
+
+    label: "% Low Tier Price Delta - Picnic Max"
+    description: "The percent difference between Flink's Low Tier product price and the competitor's highest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_low_price_delta_with_picnic_max ;;
+  }
+
+  dimension: pct_mid_price_delta_with_picnic_min {
+
+    label: "% Mid Tier Price Delta - Picnic Min"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's lowest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_picnic_min ;;
+  }
+
+  dimension: pct_mid_price_delta_with_picnic_avg {
+
+    label: "% Mid Tier Price Delta - Picnic Avg"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's average product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_picnic_avg ;;
+  }
+
+  dimension: pct_mid_price_delta_with_picnic_max {
+
+    label: "% Mid Tier Price Delta - Picnic Max"
+    description: "The percent difference between Flink's Mid Tier product price and the competitor's highest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_mid_price_delta_with_picnic_max ;;
+  }
+
+  dimension: pct_high_price_delta_with_picnic_min {
+
+    label: "% High Tier Price Delta - Picnic Min"
+    description: "The percent difference between Flink's High Tier product price and the competitor's lowest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_picnic_min ;;
+  }
+
+  dimension: pct_high_price_delta_with_picnic_avg {
+
+    label: "% High Tier Price Delta - Picnic Avg"
+    description: "The percent difference between Flink's High Tier product price and the competitor's average product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_picnic_avg ;;
+  }
+
+  dimension: pct_high_price_delta_with_picnic_max {
+
+    label: "% High Tier Price Delta - Picnic Max"
+    description: "The percent difference between Flink's High Tier product price and the competitor's highest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_high_price_delta_with_picnic_max ;;
+  }
+
+  dimension: pct_highest_price_delta_with_picnic_min {
+
+    label: "% Highest Tier Price Delta - Picnic Min"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's lowest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_picnic_min ;;
+  }
+
+  dimension: pct_highest_price_delta_with_picnic_avg {
+
+    label: "% Highest Tier Price Delta - Picnic Avg"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's average product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_picnic_avg ;;
+  }
+
+  dimension: pct_highest_price_delta_with_picnic_max {
+
+    label: "% Highest Tier Price Delta - Picnic Max"
+    description: "The percent difference between Flink's Highest Tier product price and the competitor's highest product price."
+    group_label: "Picnic"
+
+    type: number
+    value_format: "0.0%"
+    sql: ${TABLE}.pct_highest_price_delta_with_picnic_max ;;
+  }
+
+
 # ================ Measures ========================================================================================================
 
 # ================ Dynamic Measure Settings ========================================================================================
@@ -2429,6 +2789,10 @@ view: flink_to_competitors_prices {
     allowed_value: {
       label: "Monoprix"
       value: "monoprix"
+    }
+    allowed_value: {
+      label: "Picnic"
+      value: "picnic"
     }
   }
 
@@ -2497,6 +2861,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_low_price_delta_with_monoprix_max}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_low_price_delta_with_picnic_min}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_low_price_delta_with_picnic_avg}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_low_price_delta_with_picnic_max}
     {% endif %};;
   }
 
@@ -2563,6 +2936,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_mid_price_delta_with_monoprix_max}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_mid_price_delta_with_picnic_min}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_mid_price_delta_with_picnic_avg}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_mid_price_delta_with_picnic_max}
     {% endif %};;
   }
 
@@ -2629,6 +3011,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_high_price_delta_with_monoprix_max}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_high_price_delta_with_picnic_min}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_high_price_delta_with_picnic_avg}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_high_price_delta_with_picnic_max}
     {% endif %};;
   }
 
@@ -2695,6 +3086,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
       ${pct_highest_price_delta_with_monoprix_max}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+      ${pct_highest_price_delta_with_picnic_min}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+      ${pct_highest_price_delta_with_picnic_avg}
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+      ${pct_highest_price_delta_with_picnic_max}
     {% endif %};;
   }
 
@@ -2833,6 +3233,27 @@ view: flink_to_competitors_prices {
         +${pct_high_price_delta_with_monoprix_max}
         +${pct_highest_price_delta_with_monoprix_max}
         ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        (${pct_low_price_delta_with_picnic_min}
+        +${pct_mid_price_delta_with_picnic_min}
+        +${pct_high_price_delta_with_picnic_min}
+        +${pct_highest_price_delta_with_picnic_min}
+        ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        (${pct_low_price_delta_with_picnic_avg}
+        +${pct_mid_price_delta_with_picnic_avg}
+        +${pct_high_price_delta_with_picnic_avg}
+        +${pct_highest_price_delta_with_picnic_avg}
+        ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        (${pct_low_price_delta_with_picnic_max}
+        +${pct_mid_price_delta_with_picnic_max}
+        +${pct_high_price_delta_with_picnic_max}
+        +${pct_highest_price_delta_with_picnic_max}
+        ) / 4
     {% endif %};;
   }
 
@@ -2899,6 +3320,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${low_price_delta_with_monoprix_max_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${low_price_delta_with_picnic_min_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${low_price_delta_with_picnic_avg_by_quantity_sold})/sum(${low_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${low_price_delta_with_picnic_max_by_quantity_sold})/sum(${low_quantity_sold})
     {% endif %};;
   }
 
@@ -2965,6 +3395,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${mid_price_delta_with_monoprix_max_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${mid_price_delta_with_picnic_min_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${mid_price_delta_with_picnic_avg_by_quantity_sold})/sum(${mid_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${mid_price_delta_with_picnic_max_by_quantity_sold})/sum(${mid_quantity_sold})
     {% endif %};;
   }
 
@@ -3031,6 +3470,15 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${high_price_delta_with_monoprix_max_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${high_price_delta_with_picnic_min_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${high_price_delta_with_picnic_avg_by_quantity_sold})/sum(${high_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${high_price_delta_with_picnic_max_by_quantity_sold})/sum(${high_quantity_sold})
     {% endif %};;
   }
 
@@ -3097,6 +3545,16 @@ view: flink_to_competitors_prices {
     {% elsif competitor._parameter_value == 'monoprix'
        and competitor_price_value._parameter_value == 'max' %}
         sum(${highest_price_delta_with_monoprix_max_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        sum(${highest_price_delta_with_picnic_min_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        sum(${highest_price_delta_with_picnic_avg_by_quantity_sold})/sum(${highest_quantity_sold})
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        sum(${highest_price_delta_with_picnic_max_by_quantity_sold})/sum(${highest_quantity_sold})
+
     {% endif %};;
   }
 
@@ -3234,6 +3692,27 @@ view: flink_to_competitors_prices {
         +(sum(${mid_price_delta_with_monoprix_max_by_quantity_sold})/sum(${mid_quantity_sold}))
         +(sum(${high_price_delta_with_monoprix_max_by_quantity_sold})/sum(${high_quantity_sold}))
         +(sum(${highest_price_delta_with_monoprix_max_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'min' %}
+        ((sum(${low_price_delta_with_picnic_min_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_picnic_min_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_picnic_min_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_picnic_min_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'avg' %}
+        ((sum(${low_price_delta_with_picnic_avg_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_picnic_avg_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_picnic_avg_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_picnic_avg_by_quantity_sold})/sum(${highest_quantity_sold}))
+        ) / 4
+    {% elsif competitor._parameter_value == 'picnic'
+       and competitor_price_value._parameter_value == 'max' %}
+        ((sum(${low_price_delta_with_picnic_max_by_quantity_sold})/sum(${low_quantity_sold}))
+        +(sum(${mid_price_delta_with_picnic_max_by_quantity_sold})/sum(${mid_quantity_sold}))
+        +(sum(${high_price_delta_with_picnic_max_by_quantity_sold})/sum(${high_quantity_sold}))
+        +(sum(${highest_price_delta_with_picnic_max_by_quantity_sold})/sum(${highest_quantity_sold}))
         ) / 4
     {% endif %};;
   }

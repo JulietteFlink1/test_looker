@@ -43,6 +43,8 @@ set: drill_fields_set {
 
   dimension: report_date_dynamic {
     label: "Report Date (Dynamic)"
+    datatype: date
+    type: date
     sql:
     {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
       ${report_date}
@@ -667,7 +669,7 @@ set: drill_fields_set {
 
   dimension: items_otifiq_stric__desadvs {
     type: number
-    sql: ${TABLE}.sum_of_items_otifiq_stric__desadvs ;;
+    sql: ${TABLE}.sum_of_items_otifiq_stric__desadv ;;
     label: "# OTIFIQ Strict (DESADVs <> Inbounds)"
     group_label: "DESADVs <> Inbounds"
     description: "Number of items, that were delivered on time, in full and in quality (DESADV > Inbound)"

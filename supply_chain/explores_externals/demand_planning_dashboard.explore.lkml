@@ -21,6 +21,7 @@ include: "/core/views/bq_curated/products.view.lkml"
 include: "/supply_chain/views_externals/demand_planning_test_cohort.view.lkml"
 include: "/supply_chain/views_externals/availability_waterfall_actions.view.lkml"
 include: "/supply_chain/views_externals/noos_list.view.lkml"
+include: "/supply_chain/views_externals/availability_waterfall_daily.view.lkml"
 
 
 
@@ -78,8 +79,8 @@ join: key_value_items {
   relationship: many_to_one
 
   sql_on:
-     ${key_value_items.sku} = ${demand_planning_dashboard_explore.parent_sku} and
-     ${key_value_items.kvi_date} >= current_date() - 6
+     ${key_value_items.sku}          =      ${demand_planning_dashboard_explore.parent_sku}     and
+     ${key_value_items.kvi_date}    >=      current_date() - 6
     ;;
 
   fields: [key_value_items.is_kvi, key_value_items.kvi_ranking]
@@ -93,8 +94,8 @@ join: products {
 
   view_label: "Products (CT)"
   sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${products.replenishment_substitute_group_parent_sku} and
-     ${demand_planning_dashboard_explore.country_iso} = ${products.country_iso}
+     ${demand_planning_dashboard_explore.parent_sku}      =       ${products.replenishment_substitute_group_parent_sku}     and
+     ${demand_planning_dashboard_explore.country_iso}     =       ${products.country_iso}
     ;;
   relationship: many_to_one
   type: left_outer
@@ -108,8 +109,8 @@ join: products {
 join: promotions {
   view_label: "Promotions Data"
   sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${promotions.sku} and
-     ${demand_planning_dashboard_explore.report_date} = ${promotions.report_date}
+     ${demand_planning_dashboard_explore.parent_sku}       =       ${promotions.sku}            and
+     ${demand_planning_dashboard_explore.report_date}      =       ${promotions.report_date}
     ;;
   relationship: many_to_one
   type: left_outer
@@ -122,10 +123,10 @@ join: promotions {
 join: availability_waterfall {
   view_label: "Availability waterfall"
   sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall.sku} and
-     ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall.hub_code} and
-     ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall.report_week_week} and
-     ${demand_planning_dashboard_explore.vendor_id} = ${availability_waterfall.supplier_id}
+     ${demand_planning_dashboard_explore.parent_sku}     =    ${availability_waterfall.sku}                 and
+     ${demand_planning_dashboard_explore.hub_code}       =    ${availability_waterfall.hub_code}            and
+     ${demand_planning_dashboard_explore.report_week}    =    ${availability_waterfall.report_week_week}    and
+     ${demand_planning_dashboard_explore.vendor_id}      =    ${availability_waterfall.supplier_id}
     ;;
   relationship: one_to_one
   type: left_outer
@@ -136,9 +137,9 @@ join: availability_waterfall {
   join: demand_planning_test_cohort {
     view_label: "Cohort Testing"
     sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${demand_planning_test_cohort.sku} and
-     ${demand_planning_dashboard_explore.hub_code} = ${demand_planning_test_cohort.hub_code} and
-     ${demand_planning_dashboard_explore.report_date} = ${demand_planning_test_cohort.report_date}
+     ${demand_planning_dashboard_explore.parent_sku}     =    ${demand_planning_test_cohort.sku}            and
+     ${demand_planning_dashboard_explore.hub_code}       =    ${demand_planning_test_cohort.hub_code}       and
+     ${demand_planning_dashboard_explore.report_date}    =    ${demand_planning_test_cohort.report_date}
     ;;
     relationship: many_to_one
     type: left_outer
@@ -151,9 +152,9 @@ join: availability_waterfall {
   join: availability_waterfall_actions {
     view_label: "Availability waterfall Actions"
     sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${availability_waterfall_actions.sku} and
-     ${demand_planning_dashboard_explore.hub_code} = ${availability_waterfall_actions.hub_code} and
-     ${demand_planning_dashboard_explore.report_week} = ${availability_waterfall_actions.reporting_week_week}
+     ${demand_planning_dashboard_explore.parent_sku}     =     ${availability_waterfall_actions.sku}                        and
+     ${demand_planning_dashboard_explore.hub_code}       =     ${availability_waterfall_actions.hub_code}                   and
+     ${demand_planning_dashboard_explore.report_week}    =     ${availability_waterfall_actions.reporting_week_week}
     ;;
     relationship: many_to_one
     type: left_outer
@@ -166,10 +167,26 @@ join: availability_waterfall {
   join: noos_list {
     view_label: "Never Out Of Stock List"
     sql_on:
-     ${demand_planning_dashboard_explore.parent_sku} = ${noos_list.sku} and
-     ${demand_planning_dashboard_explore.hub_code} = ${noos_list.hub_code}
+     ${demand_planning_dashboard_explore.parent_sku}     =    ${noos_list.sku}            and
+     ${demand_planning_dashboard_explore.hub_code}       =    ${noos_list.hub_code}
     ;;
     relationship: many_to_one
+    type: left_outer
+  }
+
+####################################################################################################################################
+###################### Join availability_waterfall_daily in order to get the avail. buckets fields on a daily level #######################################
+####################################################################################################################################
+
+  join: availability_waterfall_daily {
+    view_label: "Availability waterfall (Daily)"
+    sql_on:
+     ${demand_planning_dashboard_explore.parent_sku}     =    ${availability_waterfall_daily.parent_sku}     and
+     ${demand_planning_dashboard_explore.hub_code}       =    ${availability_waterfall_daily.hub_code}       and
+     ${demand_planning_dashboard_explore.report_date}    =    ${availability_waterfall_daily.report_date}    and
+     ${demand_planning_dashboard_explore.vendor_id}      =    ${availability_waterfall_daily.vendor_id}
+    ;;
+    relationship: one_to_one
     type: left_outer
   }
 
