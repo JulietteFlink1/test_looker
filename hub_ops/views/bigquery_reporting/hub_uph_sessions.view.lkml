@@ -320,7 +320,7 @@ view: hub_uph_sessions {
   measure: sum_of_number_of_picked_items {
     group_label: "> Quantities"
     label: "# Picked Items"
-    description: "Number of Items scanned during the picking process. Action can be item picked, skipped, reset or refunded. Based on Hub One data."
+    description: "Number of Items scanned during the picking process. Considering only action item picked. Quantities for actions skipped, reset or refunded are not considered. Based on Hub One data."
     type: sum
     sql: ${number_of_picked_items} ;;
   }
