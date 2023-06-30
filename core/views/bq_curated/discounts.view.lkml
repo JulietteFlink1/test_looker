@@ -5,7 +5,7 @@ view: discounts {
     hidden: yes
     type: string
     sql: ${TABLE}.discount_id ;;
-    group_label: "* IDs *"
+    group_label: "> IDs"
 
   }
 
@@ -14,7 +14,7 @@ view: discounts {
     primary_key: yes
     type: string
     sql: ${TABLE}.discount_uuid ;;
-    group_label: "* IDs *"
+    group_label: "> IDs"
   }
 
   dimension: cart_discount_id {
@@ -22,7 +22,7 @@ view: discounts {
     hidden: yes
     type: string
     sql: ${TABLE}.cart_discount_id ;;
-    group_label: "* IDs *"
+    group_label: "> IDs"
   }
 
   dimension: cart_discount_type {
@@ -34,7 +34,7 @@ view: discounts {
 
   dimension: discount_value_type {
     label: "Discount Value Type"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Discount type. Either percentage, absolute or not available."
     type: string
     sql: ${TABLE}.discount_value_type ;;
@@ -42,14 +42,14 @@ view: discounts {
 
   dimension: backend_source {
     label: "Backend Source"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     type: string
     sql: ${TABLE}.backend_source ;;
   }
 
   dimension: talon_one_campaign {
     label: "Campaign ID"
-    group_label: "* IDs *"
+    group_label: "> IDs"
     description: "Campaign ID for T1 campaigns only."
     type: string
     sql: ${TABLE}.talon_one_campaign ;;
@@ -57,14 +57,14 @@ view: discounts {
 
   dimension: minimum_order_value {
     label: "Minimum Order Value"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     type: number
     sql: ${TABLE}.minimum_order_value ;;
   }
 
   dimension_group: created {
     label: "Discount Code Creation"
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: time
     timeframes: [
       raw,
@@ -80,7 +80,7 @@ view: discounts {
 
   dimension: discount_code {
     label: "Discount Code"
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.discount_code ;;
   }
@@ -94,7 +94,7 @@ view: discounts {
 
   dimension: discount_group {
     label: "Discount Code Group"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Type of users targeted by the campaign."
     type: string
     sql: ${TABLE}.discount_group ;;
@@ -102,7 +102,7 @@ view: discounts {
 
   dimension: discount_name {
     label: "Discount Code Name"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "The marketing channel for the campaign."
     type: string
     sql: ${TABLE}.discount_name ;;
@@ -110,7 +110,7 @@ view: discounts {
 
   dimension: is_active {
     label: "Discount Code Is Active"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     hidden:  yes
     type: yesno
     sql: ${TABLE}.is_active ;;
@@ -118,14 +118,14 @@ view: discounts {
 
   dimension: is_free_delivery_discount {
     label: "Free Delivery Discount"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     type: yesno
     sql: ${TABLE}.is_free_delivery_discount ;;
   }
 
   dimension_group: last_modified {
     label: "Date Discount Code Last Modified At"
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     hidden: yes
     type: time
     timeframes: [
@@ -142,20 +142,20 @@ view: discounts {
 
   dimension: max_applications {
     label: "Max Discount Applications"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     type: number
     sql: ${TABLE}.max_applications ;;
   }
 
   dimension: max_applications_per_customer {
     label: "Max Discount Applications per Customer"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     type: number
     sql: ${TABLE}.max_applications_per_customer ;;
   }
 
   dimension_group: valid_from {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Valid From"
     type: time
     timeframes: [
@@ -172,7 +172,7 @@ view: discounts {
 
   dimension_group: valid_until {
     label: "Valid Until"
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: time
     timeframes: [
       raw,
@@ -188,7 +188,7 @@ view: discounts {
 
   dimension: discount_value {
     label: "Discount Amount"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "Quantity of discount, according to how it is specified in discount value type."
     type: number
     sql: ${TABLE}.discount_value ;;
@@ -197,7 +197,7 @@ view: discounts {
   dimension: use_case {
     alias: [discount_use_case]
     label: "Use Case"
-    group_label: "* Dimensions *"
+    group_label: "> Dimensions"
     description: "  Defined use case for a voucher. On a marketing type granularity."
     type: string
     sql: ${TABLE}.use_case ;;
@@ -212,7 +212,7 @@ view: discounts {
 
 
   measure: count {
-    group_label: "* Generic Measures *"
+    group_label: "> Generic Measures"
     hidden: yes
     type: count
     drill_fields: [discount_id, discount_name]

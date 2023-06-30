@@ -94,7 +94,7 @@ view: pdt_customer_retention {
   }
 
   dimension: has_reordered_within_7_days {
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     description: "Boolean dimension. Takes the value yes if the user has reordered within 7 days after their first order."
     type: yesno
     sql: case when date_diff(next_order_date, first_order_date, day) <= 7 then True else False end;;
@@ -146,7 +146,7 @@ view: pdt_customer_retention {
   }
 
   measure: cnt_number_of_customers {
-    group_label: "* Basic Counts (Orders / Customers etc.) *"
+    group_label: "> Basic Counts (Orders / Customers etc.)"
     type: count_distinct
     sql: ${primary_key} ;;
   }

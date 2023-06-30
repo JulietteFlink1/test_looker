@@ -4,45 +4,45 @@ view: rider_hires {
 
   dimension: applicant_email {
     required_access_grants: [can_access_pii_hub_employees]
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.applicant_email ;;
   }
 
   dimension: applicant_uuid {
+    group_label: "> IDs"
     required_access_grants: [can_access_pii_hub_employees]
-    group_label: "* IDs *"
     primary_key: yes
     type: string
     sql: ${TABLE}.applicant_uuid ;;
   }
 
   dimension: channel {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: type_of_contract {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.type_of_contract ;;
   }
 
   dimension: country {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: applied_at {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -57,7 +57,7 @@ view: rider_hires {
   }
 
   dimension_group: hired_at {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -72,7 +72,7 @@ view: rider_hires {
   }
 
   dimension: position {
-    group_label: "* Applicant Dimensions *"
+    group_label: "> Applicant Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -107,7 +107,7 @@ view: rider_hires {
   ##################### Measures
 
   measure: count_hired_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hired Applicants"
     type: count
     drill_fields: []

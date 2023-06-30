@@ -199,7 +199,7 @@ view: cs_post_delivery_issues {
   }
 
   parameter: problem_group_parameter {
-    group_label: "* Parameter *"
+    group_label: "> Parameter"
     label: "Post-Delivery Issue"
     type: unquoted
     allowed_value: { value: "wrong_order" label: "Wrong Order"}

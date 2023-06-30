@@ -10,7 +10,7 @@ view: ctr_chargeback_orders {
   }
 
   dimension_group: booking {
-    group_label: "Booking Time"
+    group_label: "> Booking Time"
     type: time
     timeframes: [
       month,
@@ -145,7 +145,7 @@ view: ctr_chargeback_orders {
   ### pre-calculations Mastercard
 
   measure: total_chargebacks_transactions_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     sql: ${TABLE}.total_chargebacks_transactions ;;
     value_format_name: decimal_0
@@ -153,7 +153,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_settled_transactions_previous_month_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     hidden: yes
     sql: ${TABLE}.total_settled_transactions_previous_month ;;
@@ -162,7 +162,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_chargeback_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     sql: ${TABLE}.total_main_amount_chargeback ;;
     value_format_name: eur
@@ -170,7 +170,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_settled_previous_month_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     hidden: yes
     sql: ${TABLE}.total_main_amount_settled_previous_month ;;
@@ -179,7 +179,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_settled_transactions_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     sql: ${TABLE}.total_settled_transactions ;;
     value_format_name: decimal_0
@@ -187,7 +187,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_settled_mc {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: sum
     sql: ${TABLE}.total_main_amount_settled ;;
     value_format_name:  eur
@@ -198,7 +198,7 @@ view: ctr_chargeback_orders {
   ### pre-calculations Visa
 
   measure: total_chargebacks_transactions_visa {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: sum
     sql: ${TABLE}.total_chargebacks_transactions ;;
     value_format_name: decimal_0
@@ -206,7 +206,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_settled_transactions_visa {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: sum
     sql: ${TABLE}.total_settled_transactions ;;
     value_format_name: decimal_0
@@ -214,7 +214,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_chargeback_visa {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: sum
     sql: ${TABLE}.total_main_amount_chargeback ;;
     value_format_name: eur
@@ -222,7 +222,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_settled_visa {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: sum
     sql: ${TABLE}.total_main_amount_settled ;;
     value_format_name:  eur
@@ -233,7 +233,7 @@ view: ctr_chargeback_orders {
   ### pre-calculations CTR CBC
 
   measure: total_main_amount_chargeback_previous2_month_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     hidden: yes
     sql: ${TABLE}.total_main_amount_chargeback_previous2_month ;;
@@ -242,7 +242,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_authorised_previous2_month_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     hidden:  yes
     sql: ${TABLE}.total_main_amount_authorised_previous2_month ;;
@@ -251,7 +251,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_chargebacks_transactions_previous2_month_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     hidden:  yes
     sql: ${TABLE}.total_chargebacks_transactions_previous2_month ;;
@@ -260,7 +260,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_authorised_transactions_previous2_month_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     hidden: yes
     sql: ${TABLE}.total_authorised_transactions_previous2_month ;;
@@ -269,7 +269,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_chargebacks_transactions_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     sql: ${TABLE}.total_chargebacks_transactions ;;
     value_format_name: decimal_0
@@ -277,7 +277,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_authorised_transactions_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     sql: ${TABLE}.total_authorised_transactions ;;
     value_format_name: decimal_0
@@ -285,7 +285,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_chargeback_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     sql: ${TABLE}.total_main_amount_chargeback ;;
     value_format_name: eur
@@ -293,7 +293,7 @@ view: ctr_chargeback_orders {
   }
 
   measure: total_main_amount_authorised_cbc {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: sum
     sql: ${TABLE}.total_main_amount_authorised ;;
     value_format_name:  eur
@@ -304,14 +304,14 @@ view: ctr_chargeback_orders {
   ### MasterCard CTR calculations
 
   measure: percentage_ctr_mc_trx {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: number
     sql: NULLIF(${total_chargebacks_transactions_mc},0) / NULLIF(${total_settled_transactions_previous_month_mc},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_mc_amount {
-    group_label: "* MasterCard *"
+    group_label: "> MasterCard"
     type: number
     sql: NULLIF(${total_main_amount_chargeback_mc},0) / NULLIF(${total_main_amount_settled_previous_month_mc},0) ;;
     value_format_name: percent_2
@@ -320,14 +320,14 @@ view: ctr_chargeback_orders {
   ### Visa CTR calculatons
 
   measure: percentage_ctr_visa_trx {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: number
     sql: ${total_chargebacks_transactions_visa} / NULLIF(${total_settled_transactions_visa},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_visa_amount {
-    group_label: "* Visa *"
+    group_label: "> Visa"
     type: number
     sql: ${total_main_amount_chargeback_visa} / NULLIF(${total_main_amount_settled_visa},0) ;;
     value_format_name: percent_2
@@ -336,14 +336,14 @@ view: ctr_chargeback_orders {
   ### CBC CTR calculations
 
   measure: percentage_ctr_cbc_trx {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: number
     sql: NULLIF(${total_chargebacks_transactions_cbc},0) / NULLIF(${total_authorised_transactions_cbc},0) ;;
     value_format_name: percent_2
   }
 
   measure: percentage_ctr_cbc_amount {
-    group_label: "* Cartebancaire *"
+    group_label: "> Cartebancaire"
     type: number
     sql: NULLIF(${total_main_amount_chargeback_cbc},0) / NULLIF(${total_main_amount_authorised},0) ;;
     value_format_name: percent_2
