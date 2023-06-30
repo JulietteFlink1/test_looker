@@ -15,7 +15,7 @@ view: inventory_daily {
   # ~~~~~~~     Parameter & Dynamic Fields     ~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   parameter: date_granularity {
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     label: "Select Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -25,7 +25,7 @@ view: inventory_daily {
   }
 
   dimension: report_date_dynamic {
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     label: "Inventory Report Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -41,7 +41,7 @@ view: inventory_daily {
   parameter: show_oos_formatting {
 
     label:       "Enable conditional formatting for in-stock (oos) rate"
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
 
     type: unquoted
 
@@ -56,7 +56,7 @@ view: inventory_daily {
   #Added this new filter provisory to check if it works
 
   parameter: in_stock_cutoff_hours {
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     label: "Select In Stock Cut Off Hours"
     type: unquoted
     allowed_value: { value: "1" label: "With Cut Off Hours" }
@@ -124,7 +124,7 @@ view: inventory_daily {
 
   # =========  Measures - Dims per Day/Hub/SKU   =========
   dimension: number_of_correction_product_damaged_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_correction_product_damaged ;;
 
@@ -132,7 +132,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_correction_product_expired_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_correction_product_expired ;;
 
@@ -140,7 +140,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_correction_stock_taking_increased_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_correction_stock_taking_increased ;;
 
@@ -148,7 +148,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_correction_stock_taking_reduced_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_correction_stock_taking_reduced ;;
 
@@ -156,7 +156,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_hours_oos_unaggregated {
-    group_label: "OOS-Dimensions"
+    group_label: "> OOS-Dimensions"
     type: number
     sql: ${TABLE}.number_of_hours_oos ;;
 
@@ -164,7 +164,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_hours_open_unaggregated {
-    group_label: "OOS-Dimensions"
+    group_label: "> OOS-Dimensions"
     type: number
     sql: ${TABLE}.number_of_hours_open ;;
 
@@ -172,7 +172,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_outbound_orders_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_outbound_orders ;;
 
@@ -180,7 +180,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_outbound_others_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_outbound_others ;;
 
@@ -188,7 +188,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_total_correction_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_total_correction ;;
 
@@ -196,7 +196,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_total_inbound_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_total_inbound ;;
 
@@ -204,7 +204,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_total_outbound_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_total_outbound ;;
 
@@ -212,7 +212,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_unspecified_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.number_of_unspecified ;;
 
@@ -220,7 +220,7 @@ view: inventory_daily {
   }
 
   dimension: quantity_from_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.quantity_from ;;
 
@@ -228,7 +228,7 @@ view: inventory_daily {
   }
 
   dimension: quantity_to_unaggregated {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     sql: ${TABLE}.quantity_to ;;
 
@@ -247,7 +247,7 @@ view: inventory_daily {
 
 
   dimension: number_of_correction_product_damaged {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -268,7 +268,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_correction_product_expired {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -290,7 +290,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_correction_stock_taking_increased {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -312,7 +312,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_correction_stock_taking_reduced {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -334,7 +334,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_hours_oos {
-    group_label: "OOS-Dimensions"
+    group_label: "> OOS-Dimensions"
     type: number
     hidden: yes
     sql:
@@ -375,7 +375,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_hours_open {
-    group_label: "OOS-Dimensions"
+    group_label: "> OOS-Dimensions"
     type: number
     hidden: yes
     sql:
@@ -418,7 +418,7 @@ view: inventory_daily {
   dimension: availability_distribution {
 
     label:       "Availability"
-    group_label: "OOS-Dimensions"
+    group_label: "> OOS-Dimensions"
 
     type: number
     hidden: yes
@@ -431,7 +431,7 @@ view: inventory_daily {
 
 
   dimension: number_of_outbound_orders {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -452,7 +452,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_outbound_others {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -474,7 +474,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_total_correction {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -496,7 +496,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_total_inbound {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -517,7 +517,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_total_outbound {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -539,7 +539,7 @@ view: inventory_daily {
     }
 
   dimension: number_of_unspecified {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -559,7 +559,7 @@ view: inventory_daily {
     }
 
   dimension: quantity_from {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -580,7 +580,7 @@ view: inventory_daily {
     }
 
   dimension: quantity_to {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -602,7 +602,7 @@ view: inventory_daily {
 
 
   dimension: number_of_correction_product_delivery_damaged {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -623,7 +623,7 @@ view: inventory_daily {
   }
 
   dimension: number_of_correction_product_delivery_expired {
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
     type: number
     hidden: yes
     sql:
@@ -655,7 +655,7 @@ view: inventory_daily {
 
     label: "# Opening Hours"
     description: "The number of hours, a hub was open (hours were customers could buy)"
-    group_label: "OOS-Measures"
+    group_label: "> OOS-Measures"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -667,7 +667,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock"
     description: "The number of business hours, a specific SKU was not available in a hub"
-    group_label: "OOS-Measures"
+    group_label: "> OOS-Measures"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -680,7 +680,7 @@ view: inventory_daily {
 
     label: "% Out Of Stock"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders"
-    group_label: "OOS-Measures"
+    group_label: "> OOS-Measures"
 
     type: number
     sql: ${sum_of_hours_oos} / nullif( ${sum_of_hours_open},0) ;;
@@ -720,7 +720,7 @@ view: inventory_daily {
 
     label: "% In Stock"
     description: "This rate gives the sum of all hours, an SKU was in stock compared to all hours, the hub was open for orders"
-    group_label: "OOS-Measures"
+    group_label: "> OOS-Measures"
 
     type: number
     sql: 1 - ${pct_oos} ;;
@@ -770,7 +770,7 @@ view: inventory_daily {
 
     label: "AVG Inventory Level"
     description: "The average stock level, based on averaged starting and ending inventory level per day and hub"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: average
     sql: ( (${quantity_from} + ${quantity_to}) / 2  ) ;;
@@ -782,7 +782,7 @@ view: inventory_daily {
 
     label: "AVG Inventory Level (Days End)"
     description: "The average stock level of the last known stock level per day, hub and SKU"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: average
     sql: ${quantity_to} ;;
@@ -794,7 +794,7 @@ view: inventory_daily {
 
     label: "AVG Inventory Level (Days Start)"
     description: "The average stock level of the first known stock level per day, hub and SKU"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: average
     sql: ${quantity_from} ;;
@@ -806,7 +806,7 @@ view: inventory_daily {
 
     label:       "# Unique Inbounded SKUs"
     description: "The number of unique products /SKUs, that have been inbounded"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: count_distinct
     sql: ${sku} ;;
@@ -819,7 +819,7 @@ view: inventory_daily {
 
     label: "# Corrections - Total"
     description: "The sum of all inventory corrections"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_total_correction} ;;
@@ -831,7 +831,7 @@ view: inventory_daily {
 
     label: "# Inbound - Total"
     description: "The sum of all inventory re-stockings"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_total_inbound} ;;
@@ -843,7 +843,7 @@ view: inventory_daily {
 
     label: "# Outbound - Total"
     description: "The sum of all inventory outbounds"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_total_outbound} ;;
@@ -856,7 +856,7 @@ view: inventory_daily {
 
     label: "# Corrections - Product Damaged"
     description: "The sum of all inventory corrections due to damaged products"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_product_damaged} ;;
@@ -868,7 +868,7 @@ view: inventory_daily {
 
     label: "# Corrections - Product Expired"
     description: "The sum of all inventory corrections due to expired products"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_product_expired} ;;
@@ -880,7 +880,7 @@ view: inventory_daily {
 
     label: "# Corrections - Product Delivery Damaged"
     description: "The sum of all inventory corrections due to damaged products at the point of inbounding"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_product_delivery_damaged} ;;
@@ -892,7 +892,7 @@ view: inventory_daily {
 
     label: "# Corrections - Product Delivery Expired"
     description: "The sum of all inventory corrections due to expired products at the point of inbounding"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_product_delivery_expired} ;;
@@ -904,7 +904,7 @@ view: inventory_daily {
 
     label: "# Corrections - Stock Taging (Increased)"
     description: "The sum of all inventory corrections due to stock taking activities, that increased the inventory level"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_stock_taking_increased} ;;
@@ -916,7 +916,7 @@ view: inventory_daily {
 
     label: "# Corrections - Stock Taging (Reduced)"
     description: "The sum of all inventory corrections due to stock taking activities, that reduced the inventory level"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_correction_stock_taking_reduced} ;;
@@ -928,7 +928,7 @@ view: inventory_daily {
 
     label: "# Outbound - Orders"
     description: "The number of all inventory changes due to customer orders"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_outbound_orders} ;;
@@ -941,7 +941,7 @@ view: inventory_daily {
     # TODO: what do these entail?
     label: "# Outbound - Others"
     description: "The sum of outbounded items, that are NOT due to customer orders"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_outbound_others} ;;
@@ -955,7 +955,7 @@ view: inventory_daily {
 
     label: "# Unspecified Inventory Changes"
     description: "The sum of all inventory changes, that are not mapped to specific reasons"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: sum
     sql: ${number_of_unspecified} ;;
@@ -967,7 +967,7 @@ view: inventory_daily {
 
     label:       "Product Turnover Rate"
     description: "Defined as the quantity sold per SKU divided by the Average Inventory over the observed period of time"
-    group_label: "Inventory Change"
+    group_label: "> Inventory Change"
 
     type: average
     sql: abs(${number_of_outbound_orders}) / nullif(${quantity_from},0) ;;
@@ -1008,7 +1008,7 @@ view: inventory_daily {
 
     label: "% of products booked in same day"
     description: "Defined as No of products booked in / No of total products per day and hub"
-    group_label: "Inventory Management"
+    group_label: "> Inventory Management"
 
     type: number
     sql: ${number_of_inbounded_skus_per_day_and_hub} / nullif( ${number_of_total_skus_per_day_and_hub} ,0) ;;
@@ -1036,7 +1036,7 @@ view: inventory_daily {
 
     label: "# Opening Hours t-1"
     description: "The number of hours, a hub was open (hours were customers could buy) t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1049,7 +1049,7 @@ view: inventory_daily {
 
     label: "# Opening Hours t-2"
     description: "The number of hours, a hub was open (hours were customers could buy) t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1063,7 +1063,7 @@ view: inventory_daily {
 
     label: "# Opening Hours t-3"
     description: "The number of hours, a hub was open (hours were customers could buy) t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1077,7 +1077,7 @@ view: inventory_daily {
 
     label: "# Opening Hours t-4"
     description: "The number of hours, a hub was open (hours were customers could buy) t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1093,7 +1093,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock t-1"
     description: "The number of business hours, a specific SKU was not available in a hub t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1107,7 +1107,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock t-2"
     description: "The number of business hours, a specific SKU was not available in a hub t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1122,7 +1122,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock t-3"
     description: "The number of business hours, a specific SKU was not available in a hub t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1137,7 +1137,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock t-4"
     description: "The number of business hours, a specific SKU was not available in a hub t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1153,7 +1153,7 @@ view: inventory_daily {
 
     label: "% In Stock t-1"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_t_1} / nullif( ${sum_of_hours_open_t_1},0)) ;;
@@ -1165,7 +1165,7 @@ view: inventory_daily {
 
     label: "% In Stock t-2"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_t_2} / nullif( ${sum_of_hours_open_t_2},0)) ;;
@@ -1177,7 +1177,7 @@ view: inventory_daily {
 
     label: "% In Stock t-3"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_t_3} / nullif( ${sum_of_hours_open_t_3},0)) ;;
@@ -1189,7 +1189,7 @@ view: inventory_daily {
 
     label: "% In Stock t-4"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_t_4} / nullif( ${sum_of_hours_open_t_4},0)) ;;
@@ -1206,7 +1206,7 @@ view: inventory_daily {
 
     label: "# Opening Hours w-1"
     description: "The number of hours, a hub was open (hours were customers could buy) w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1219,7 +1219,7 @@ view: inventory_daily {
 
     label: "# Opening Hours w-2"
     description: "The number of hours, a hub was open (hours were customers could buy) w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1233,7 +1233,7 @@ view: inventory_daily {
 
     label: "# Opening Hours w-3"
     description: "The number of hours, a hub was open (hours were customers could buy) w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1247,7 +1247,7 @@ view: inventory_daily {
 
     label: "# Opening Hours w-4"
     description: "The number of hours, a hub was open (hours were customers could buy) w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1263,7 +1263,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock w-1"
     description: "The number of business hours, a specific SKU was not available in a hub w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1277,7 +1277,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock w-2"
     description: "The number of business hours, a specific SKU was not available in a hub w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1292,7 +1292,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock w-3"
     description: "The number of business hours, a specific SKU was not available in a hub w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1307,7 +1307,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock w-4"
     description: "The number of business hours, a specific SKU was not available in a hub w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1323,7 +1323,7 @@ view: inventory_daily {
 
     label: "% In Stock w-1"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_w_1} / nullif( ${sum_of_hours_open_w_1},0)) ;;
@@ -1335,7 +1335,7 @@ view: inventory_daily {
 
     label: "% In Stock w-2"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_w_2} / nullif( ${sum_of_hours_open_w_2},0)) ;;
@@ -1347,7 +1347,7 @@ view: inventory_daily {
 
     label: "% In Stock w-3"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_w_3} / nullif( ${sum_of_hours_open_w_3},0)) ;;
@@ -1359,7 +1359,7 @@ view: inventory_daily {
 
     label: "% In Stock w-4"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_w_4} / nullif( ${sum_of_hours_open_w_4},0)) ;;
@@ -1372,7 +1372,7 @@ view: inventory_daily {
 
   measure: pct_in_stock_wow_w_1_vs_w_2 {
     label: "% In Stock WOW Growth (w-1 vs w-2) "
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_in_stock_w_1} - ${pct_in_stock_w_2})/nullif(${pct_in_stock_w_2},0)  ;;
@@ -1417,7 +1417,7 @@ view: inventory_daily {
 
     label: "# Opening Hours WtD"
     description: "The number of hours, a hub was open (hours were customers could buy) WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1430,7 +1430,7 @@ view: inventory_daily {
 
     label: "# Opening Hours WtD w-1"
     description: "The number of hours, a hub was open (hours were customers could buy) - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_open} ;;
@@ -1446,7 +1446,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock WtD"
     description: "The number of business hours, a specific SKU was not available in a hub - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1460,7 +1460,7 @@ view: inventory_daily {
 
     label: "# Hours Out-Of-Stock WtD w-1"
     description: "The number of business hours, a specific SKU was not available in a hub - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: sum
     sql: ${number_of_hours_oos} ;;
@@ -1477,7 +1477,7 @@ view: inventory_daily {
 
     label: "% In Stock WtD"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_wtd} / nullif( ${sum_of_hours_open_wtd},0)) ;;
@@ -1489,7 +1489,7 @@ view: inventory_daily {
 
     label: "% In Stock WtD w-1"
     description: "This rate gives the sum of all hours, an SKU was out of stock compared to all hours, the hub was open for orders - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: 1 - (${sum_of_hours_oos_wtd_w_1} / nullif( ${sum_of_hours_open_wtd_w_1},0)) ;;
@@ -1500,7 +1500,7 @@ view: inventory_daily {
 
   measure: pct_in_stock_wow_wtd {
     label: "% In Stock WOW Growth - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_in_stock_wtd} - ${pct_in_stock_wtd_w_1})/nullif(${pct_in_stock_wtd_w_1}, 0)  ;;
@@ -1515,7 +1515,7 @@ view: inventory_daily {
 
     label: "Quantity To - t-1"
     description: "The stock level t-1, at the end of the day per day and hub"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql:  ${inventory_daily.quantity_to} ;;
     filters: [report_date: "yesterday"]
@@ -1528,7 +1528,7 @@ view: inventory_daily {
 
     label: "Quantity To - t-2"
     description: "The stock level t-2, at the end of the day per day and hub"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql:  ${inventory_daily.quantity_to} ;;
     filters: [report_date: "2 days ago"]
@@ -1542,7 +1542,7 @@ view: inventory_daily {
 
     label: "# Current Stock"
     description: "The stock level t-1, at the end of the day per day and hub"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: number
     sql:  coalesce(${quantity_to_t_1}, ${quantity_to_t_2}) ;;
     hidden: yes
@@ -1557,7 +1557,7 @@ view: inventory_daily {
 
     label: "Days Coverage"
     description: "The stock level t-1, at the end of the day per day and hub"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: number
     sql:  (${quantity_to_adjusted} + ${replenishment_purchase_orders.sum_selling_unit_quantity_next_7_days}) / nullif(${orderline.avg_daily_item_quantity_last_14d}, 0) ;;
     hidden: yes
@@ -1574,7 +1574,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) t-1"
     description: "This shows how much money we lost due OOS levels per sku t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_t_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_1}) / nullif(${pct_in_stock_t_1},0)  ;;
@@ -1586,7 +1586,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) t-2"
     description: "This shows how much money we lost due OOS levels per sku t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_t_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_2}) / nullif(${pct_in_stock_t_2},0)  ;;
@@ -1598,7 +1598,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) t-3"
     description: "This shows how much money we lost due OOS levels per sku t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_t_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_3}) / nullif(${pct_in_stock_t_3},0)  ;;
@@ -1610,7 +1610,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) t-4"
     description: "This shows how much money we lost due OOS levels per sku t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_t_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_4}) / nullif(${pct_in_stock_t_4},0)  ;;
@@ -1624,7 +1624,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) w-1"
     description: "This shows how much money we lost due OOS levels per sku w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_1}) / nullif(${pct_in_stock_w_1},0)  ;;
@@ -1636,7 +1636,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) w-2"
     description: "This shows how much money we lost due OOS levels per sku w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_w_2}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_2}) / nullif(${pct_in_stock_w_2},0)  ;;
@@ -1648,7 +1648,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) w-3"
     description: "This shows how much money we lost due OOS levels per sku w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_w_3}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_3}) / nullif(${pct_in_stock_w_3},0)  ;;
@@ -1660,7 +1660,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) w-4"
     description: "This shows how much money we lost due OOS levels per sku w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_w_4}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_4}) / nullif(${pct_in_stock_w_4},0)  ;;
@@ -1675,7 +1675,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) WtD"
     description: "This shows how much money we lost due OOS levels per sku - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_wtd}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd}) / nullif(${pct_in_stock_wtd},0)  ;;
@@ -1687,7 +1687,7 @@ view: inventory_daily {
 
     label: "€ Lost Sales (Gross) WtD w-1"
     description: "This shows how much money we lost due OOS levels per sku - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ((1 - ${pct_in_stock_wtd_w_1}) * ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd_w_1}) / nullif(${pct_in_stock_wtd_w_1},0)  ;;
@@ -1698,7 +1698,7 @@ view: inventory_daily {
 
   measure: pct_lost_sales_wow_wtd {
     label: "% Lost Sales WOW Growth - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${lost_sales_wtd} - ${lost_sales_wtd_w_1})/nullif(${lost_sales_wtd_w_1}, 0)  ;;
@@ -1708,7 +1708,7 @@ view: inventory_daily {
 
   measure: pct_lost_sales_wow_w_1_vs_w_2 {
     label: "% Lost Sales WOW Growth (w-1 vs w-2) "
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${lost_sales_w_1} - ${lost_sales_w_2})/nullif(${lost_sales_w_2},0)  ;;

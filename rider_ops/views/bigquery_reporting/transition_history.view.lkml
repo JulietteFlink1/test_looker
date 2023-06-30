@@ -3,7 +3,7 @@ view: transition_history {
     ;;
 
   dimension: city {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
@@ -15,25 +15,25 @@ view: transition_history {
   }
 
   dimension: country_iso {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension: position {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
 
   dimension: stage_title {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.stage_title ;;
   }
 
   dimension_group: applied {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -49,7 +49,7 @@ view: transition_history {
   }
 
   dimension_group: transition {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -113,7 +113,7 @@ view: transition_history {
 ######## Dynamic Dimensions
 
   dimension: created_date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Start Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -125,7 +125,7 @@ view: transition_history {
   }
 
   dimension: transition_date_ {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Transition Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -139,7 +139,7 @@ view: transition_history {
 ######## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }

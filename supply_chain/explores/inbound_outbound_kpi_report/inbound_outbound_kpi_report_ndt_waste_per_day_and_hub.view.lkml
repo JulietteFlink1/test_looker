@@ -61,7 +61,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "€ Total Waste (Buying Price Net)"
     description: "The sum of wasted items valued by the net buying price."
-    group_label: "Waste Metrics"
+    group_label: "> Waste Metrics"
 
     type: sum
     sql:  - ${outbound_waste_per_buying_price_net};;
@@ -73,7 +73,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "€ Total Waste (Buying Price Gross)"
     description: "The sum of wasted items valued by the gross buying price."
-    group_label: "Waste Metrics"
+    group_label: "> Waste Metrics"
 
     type: sum
     sql:  - ${outbound_waste_per_buying_price_gross};;
@@ -85,7 +85,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "€ AVG Waste per Order (Buying Price Net)"
     description: "The sum of wasted items valued by the net buying price divided by the number of orders."
-    group_label: "Waste Metrics"
+    group_label: "> Waste Metrics"
 
     type: number
     sql:  safe_divide(${sum_waste_per_buying_price_net}, ${orders_cl.cnt_orders}) ;;
@@ -96,7 +96,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "€ AVG Waste per Order (Buying Price Gross)"
     description: "The sum of wasted items valued by the gross buying price divided by the number of orders."
-    group_label: "Waste Metrics"
+    group_label: "> Waste Metrics"
 
     type: number
     sql: safe_divide(${sum_waste_per_buying_price_gross}, ${orders_cl.cnt_orders}) ;;
@@ -107,7 +107,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "AIV Gross Profit (dynamic - Net)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin. All values are net."
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
 
     type: number
     sql:  (${orders_cl.avg_item_value_net_dynamic} * ${erp_buying_prices.pct_total_margin_relative_dynamic})
@@ -119,7 +119,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "AIV Gross Profit (dynamic - Gross)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin. All values are gross."
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
 
     type: number
     sql:  (${orders_cl.avg_item_value_gross_dynamic} * ${erp_buying_prices.pct_total_margin_relative_dynamic})
@@ -134,7 +134,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "AIV Gross Profit after Waste (dynamic - Gross)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin plus by the total fees (containing the delivery and storage fees) deducted by the value of the waste generated per order. All values are gross."
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
 
     type: number
     sql:    ${avg_aiv_profit_gross}
@@ -148,7 +148,7 @@ view: inbound_outbound_kpi_report_ndt_waste_per_day_and_hub {
 
     label:       "AIV Gross Profit after Waste (dynamic - Net)"
     description: "The AVG Item Value (dynamically pre or post discounts) multiplied by the AVG Margin plus by the total fees (containing the delivery and storage fees) deducted by the value of the waste generated per order. All values are net."
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
 
     type: number
     sql:    ${avg_aiv_profit_net}

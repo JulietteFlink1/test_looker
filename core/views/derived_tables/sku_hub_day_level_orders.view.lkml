@@ -70,17 +70,17 @@ view: sku_hub_day_level_orders {
 
   dimension: hub_code {
     label: "Hub Code"
-    # group_label: "* Hubs *"
+    # group_label: "> Hubs"
     hidden: yes
   }
   dimension: hub_name {
     label: "Hub Name"
-    # group_label: "* Hubs *"
+    # group_label: "> Hubs"
     hidden: yes
   }
   dimension: created_date {
     label: "Order Date"
-    # group_label: "* Order Lineitems *"
+    # group_label: "> Order Lineitems"
     description: "Order Placement Date"
     type: date
     hidden: yes
@@ -100,12 +100,12 @@ view: sku_hub_day_level_orders {
   dimension: product_sku {
     type: string
     label: "SKU"
-    # group_label: "* Order Lineitems *"
+    # group_label: "> Order Lineitems"
     hidden: yes
   }
   dimension: product_sku_name {
     label: "SKU + Name"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     link: {
       label: "Check Waste per Hub Split"
       url: "https://goflink.cloud.looker.com/explore/flink_v3/inbound_outbound_kpi_report?qid=MU9F0GjuddR3WYLLVCS6Zk&origin_space=325&toggle=fil,vis&f[products.product_sku_name]={{ value | url_encode }}&f[inventory_changes_daily.inventory_change_date]={{ _filters['inventory_changes_daily.inventory_change_date'] | url_encode }}"
@@ -114,28 +114,28 @@ view: sku_hub_day_level_orders {
   }
   dimension: category {
     label: "Parent Category"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     sql: ${products.category}  ;;
   }
   dimension: product_name {
     label: "Product Name"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     sql: ${products.product_name}  ;;
   }
   dimension: subcategory {
     label: "Sub-Category"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     sql: ${products.subcategory}  ;;
   }
   dimension: substitute_group {
     label: "Substitute Group"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     sql: ${products.substitute_group}  ;;
   }
 
   dimension: exclude_fresh_categories {
     label: "Is Fresh Category"
-    group_label: "* Product Data *"
+    group_label: "> Product Data"
     type: yesno
     sql: case when ${products.category} in (
       'Frisch & Fertig',
@@ -155,7 +155,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled {
     label: "SUM Item Quantity fulfilled"
-    group_label: "* Order Lineitems *"
+    group_label: "> Order Lineitems"
     description: "Quantity of Order Line Items fulfilled"
     value_format_name: decimal_0
     type: sum
@@ -164,7 +164,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross {
     label: "SUM GMV (gross)"
-    group_label: "* Order Lineitems *"
+    group_label: "> Order Lineitems"
     description: "Sum of fulfilled Item prices (incl. VAT)"
     value_format_name: eur
     type: sum
@@ -173,7 +173,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_net {
     label: "SUM GMV (net)"
-    group_label: "* Order Lineitems *"
+    group_label: "> Order Lineitems"
     description: "Sum of fulfilled Item prices (excl. VAT)"
     value_format_name: eur
     type: sum
@@ -182,7 +182,7 @@ view: sku_hub_day_level_orders {
 
   measure: unit_price_gross_amount {
     label: "AVG Unit Price Gross"
-    group_label: "* Order Lineitems *"
+    group_label: "> Order Lineitems"
     type: average
     value_format_name: eur
   }
@@ -197,7 +197,7 @@ view: sku_hub_day_level_orders {
 
   dimension_group: report_date {
     label: "Order Date Timeframe"
-    # group_label: "* Order Lineitems *"
+    # group_label: "> Order Lineitems"
     description: "Order Placement Date"
     type: time
     timeframes: [
@@ -243,7 +243,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_t_1 {
     label: "SUM Item Quantity fulfilled t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled t-1"
     value_format_name: decimal_0
     type: sum
@@ -254,7 +254,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_t_2 {
     label: "SUM Item Quantity fulfilled t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled t-2"
     value_format_name: decimal_0
     type: sum
@@ -265,7 +265,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_t_3 {
     label: "SUM Item Quantity fulfilled t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled t-3"
     value_format_name: decimal_0
     type: sum
@@ -276,7 +276,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_t_4 {
     label: "SUM Item Quantity fulfilled t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled t-4"
     value_format_name: decimal_0
     type: sum
@@ -289,7 +289,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_w_1 {
     label: "SUM Item Quantity fulfilled w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled w-1"
     value_format_name: decimal_0
     type: sum
@@ -300,7 +300,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_w_2 {
     label: "SUM Item Quantity fulfilled w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled w-2"
     value_format_name: decimal_0
     type: sum
@@ -311,7 +311,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_w_3 {
     label: "SUM Item Quantity fulfilled w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled w-3"
     value_format_name: decimal_0
     type: sum
@@ -322,7 +322,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_w_4 {
     label: "SUM Item Quantity fulfilled w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled w-4"
     value_format_name: decimal_0
     type: sum
@@ -337,7 +337,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_t_1 {
     label: "SUM GMV (gross) t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) t-1"
     value_format_name: eur
     type: sum
@@ -348,7 +348,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_t_2 {
     label: "SUM GMV (gross) t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) t-2"
     value_format_name: eur
     type: sum
@@ -359,7 +359,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_t_3 {
     label: "SUM GMV (gross) t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) t-3"
     value_format_name: eur
     type: sum
@@ -370,7 +370,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_t_4 {
     label: "SUM GMV (gross) t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) t-4"
     value_format_name: eur
     type: sum
@@ -383,7 +383,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_w_1 {
     label: "SUM GMV (gross) w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) w-1"
     value_format_name: eur
     type: sum
@@ -394,7 +394,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_w_2 {
     label: "SUM GMV (gross) w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) w-2"
     value_format_name: eur
     type: sum
@@ -405,7 +405,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_w_3 {
     label: "SUM GMV (gross) w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) w-3"
     value_format_name: eur
     type: sum
@@ -416,7 +416,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_w_4 {
     label: "SUM GMV (gross) w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) w-4"
     value_format_name: eur
     type: sum
@@ -431,7 +431,7 @@ view: sku_hub_day_level_orders {
   #Items
   measure: sum_item_quantity_fulfilled_wtd {
     label: "SUM Item Quantity fulfilled WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled - WtD"
     value_format_name: decimal_0
     type: sum
@@ -442,7 +442,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_quantity_fulfilled_wtd_w_1 {
     label: "SUM Item Quantity fulfilled WtD w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Quantity of Order Line Items fulfilled - Previous week WtD"
     value_format_name: decimal_0
     type: sum
@@ -455,7 +455,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_wtd {
     label: "SUM GMV (gross) WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) - WtD"
     value_format_name: eur
     type: sum
@@ -466,7 +466,7 @@ view: sku_hub_day_level_orders {
 
   measure: sum_item_price_fulfilled_gross_wtd_w_1 {
     label: "SUM GMV (gross) WtD w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     description: "Sum of fulfilled Item prices (incl. VAT) - Previous week WtD"
     value_format_name: eur
     type: sum

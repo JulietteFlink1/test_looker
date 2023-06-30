@@ -4,7 +4,7 @@ view: orders_hub_staffing {
 
 
   measure: pct_orders_delivered_by_riders {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "% Orders Delivered by Riders"
     description: "Share of orders delivered by only riders"
     type: number
@@ -43,7 +43,7 @@ view: orders_hub_staffing {
 
 
   measure: KPI {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "KPI - Dynamic"
     label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
@@ -142,7 +142,7 @@ view: orders_hub_staffing {
 
   measure: sum_rider_hours {
     label: "Sum Worked Rider Hours"
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     description: "Sum of completed Rider shift Hours"
     type: number
     sql: NULLIF(${shyftplan_riders_pickers_hours.rider_hours},0);;

@@ -55,7 +55,7 @@ view: order_cohorts_base {
   }
 
   dimension: gmv_gross_tier {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     type: tier
     tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70]
     style: relational
@@ -63,7 +63,7 @@ view: order_cohorts_base {
   }
 
   dimension: gmv_gross_tier_5 {
-    group_label: "* Monetary Values *"
+    group_label: "> Monetary Values"
     type: tier
     tiers: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]
     style: relational
@@ -79,7 +79,7 @@ view: order_cohorts_base {
   ############################## needs to be checked #################################
 
   dimension: tracking_client_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: yes
     type: string
     sql: null ;;
@@ -101,7 +101,7 @@ view: order_cohorts_base {
 
   dimension: anonymous_id {
     type: string
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: no
     sql: ${TABLE}.anonymous_id ;;
   }
@@ -112,14 +112,14 @@ view: order_cohorts_base {
   }
 
   dimension: billing_address_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: yes
     type: number
     sql: ${TABLE}.billing_address_id ;;
   }
 
   dimension: cart_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: yes
     type: string
     sql: ${TABLE}.cart_id ;;
@@ -139,20 +139,20 @@ view: order_cohorts_base {
 
     required_access_grants: [can_access_pii_customers]
 
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     type: string
     sql: ${TABLE}.customer_email ;;
   }
 
   dimension: user_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: no
     type: string
     sql: ${TABLE}.customer_id ;;
   }
 
   dimension: customer_id_mapped {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: no
     type: string
     sql: ${TABLE}.customer_id_mapped ;;
@@ -168,7 +168,7 @@ view: order_cohorts_base {
   }
 
   dimension: shipping_address_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     hidden: yes
     type: string
     sql: ${TABLE}.delivery_address_id ;;
@@ -180,7 +180,7 @@ view: order_cohorts_base {
   }
 
   dimension_group: now {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Now"
     description: "Current Date/Time"
     type: time
@@ -201,7 +201,7 @@ view: order_cohorts_base {
   }
 
   dimension_group: created {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order"
     description: "Order Placement Date"
     type: time
@@ -229,7 +229,7 @@ view: order_cohorts_base {
   }
 
   dimension_group: delivery_eta_timestamp {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: time
     timeframes: [
       raw,
@@ -247,7 +247,7 @@ view: order_cohorts_base {
   }
 
   dimension: delivery_delay_since_eta {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Delta to PDT (min)"
     type: duration_minute
     sql_start: ${delivery_eta_timestamp_raw};;
@@ -256,37 +256,37 @@ view: order_cohorts_base {
 
   dimension: delivery_id {
     hidden: yes
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.delivery_id ;;
   }
 
   dimension: delivery_method {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.delivery_method ;;
   }
 
   dimension: delivery_provider {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.delivery_provider ;;
   }
 
   dimension: delivery_time {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: number
     sql: ${TABLE}.riding_time_minutes ;;
   }
 
   dimension: discount_code {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.discount_code ;;
   }
 
   dimension: voucher_id {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     label: "Cart Discount ID"
     hidden: yes
     type: string
@@ -294,19 +294,19 @@ view: order_cohorts_base {
   }
 
   dimension: discount_name {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.discount_name ;;
   }
 
   dimension: fulfillment_time {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: number
     sql: ${TABLE}.fulfillment_time_minutes ;;
   }
 
   dimension: fulfillment_time_raw_minutes {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: number
     sql: ${TABLE}.fulfillment_time_raw_minutes ;;
   }
@@ -324,7 +324,7 @@ view: order_cohorts_base {
 
 
   dimension: fulfillment_time_tier {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: tier
     tiers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
     style: interval
@@ -333,19 +333,19 @@ view: order_cohorts_base {
 
   dimension: is_delivery_more_than_30_minute {
     label: "Is Riding Above 30min"
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${TABLE}.is_riding_above_30min ;;
   }
 
   dimension: is_delivery_eta_available {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${TABLE}.is_delivery_pdt_available ;;
   }
 
   dimension: is_voucher_order{
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     label: "Is Discounted Order"
     description: "Does the order have any Product or Cart discount?"
     type: yesno
@@ -353,13 +353,13 @@ view: order_cohorts_base {
   }
 
   dimension: is_first_order {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: yesno
     sql: ${TABLE}.is_first_order ;;
   }
 
   dimension: is_fulfillment_more_than_30_minute {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     hidden: yes
     type: yesno
     sql: ${TABLE}.is_fulfillment_above_30min ;;
@@ -367,80 +367,80 @@ view: order_cohorts_base {
 
   dimension: is_fulfillment_less_than_1_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${fulfillment_time} < 1 ;;
   }
 
   dimension: is_acceptance_less_than_0_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${acceptance_time} < 0 ;;
   }
 
   dimension: is_acceptance_more_than_30_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${acceptance_time} > 30 ;;
   }
 
   dimension: is_reaction_less_than_0_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${reaction_time} < 0 ;;
   }
 
   dimension: is_reaction_more_than_30_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${reaction_time} > 30 ;;
   }
 
   dimension: is_delivery_less_than_0_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${delivery_time} < 0 ;;
   }
 
   dimension: is_picking_less_than_0_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${time_diff_between_two_subsequent_fulfillments} < 0 ;;
   }
 
   dimension: is_picking_more_than_30_minute {
     hidden: yes
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${time_diff_between_two_subsequent_fulfillments} > 30 ;;
   }
 
   dimension: is_order_delay_above_10min {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${TABLE}.is_order_delay_above_10min ;;
   }
 
   dimension: is_order_delay_above_5min {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${TABLE}.is_order_delay_above_5min ;;
   }
 
   dimension: is_order_on_time {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: ${TABLE}.is_order_on_time ;;
   }
 
   dimension: is_successful_order {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: yesno
     sql: ${TABLE}.is_successful_order ;;
   }
@@ -462,7 +462,7 @@ view: order_cohorts_base {
   }
 
   dimension_group: last_modified {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: time
     timeframes: [
       raw,
@@ -477,51 +477,51 @@ view: order_cohorts_base {
   }
 
   dimension: latitude {
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     type: number
     sql: ${TABLE}.latitude ;;
   }
 
   dimension: longitude {
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     type: number
     sql: ${TABLE}.longitude ;;
   }
 
   dimension: customer_location {
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     type: location
     sql_latitude: ${latitude} ;;
     sql_longitude: ${longitude} ;;
   }
 
   dimension: customer_type {
-    group_label: "* User Dimensions *"
+    group_label: "> User Dimensions"
     type: string
     sql: CASE WHEN ${is_first_order} is True
       THEN 'New Customer' ELSE 'Existing Customer' END ;;
   }
 
   dimension: no_distinct_skus {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: number
     sql: ${TABLE}.number_of_distinct_skus ;;
   }
 
   dimension: number_of_items {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: number
     sql: ${TABLE}.number_of_items ;;
   }
 
   dimension: quantity_fulfilled {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: number
     sql: ${TABLE}.number_of_items ;;
   }
 
   dimension_group: order_date_30_min_bins {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order Date - 30 min bins"
     sql:SUBSTRING(${created_minute30}, 12, 16);;
   }
@@ -531,14 +531,14 @@ view: order_cohorts_base {
 ##### helping dimensions for hiding incomplete cohorts #####
 
   #dimension_group: time_since_sign_up {
-  #  group_label: "* User Dimensions *"
+  #  group_label: "> User Dimensions"
   #  type: duration
   #  sql_start: ${user_order_facts.first_order_raw} ;;
   #  sql_end: ${created_raw} ;;
   #}
 
   #dimension_group: time_between_sign_up_month_and_now {
-  #  group_label: "* User Dimensions *"
+  #  group_label: "> User Dimensions"
   #  hidden: yes
   #  type: duration
   #  sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, MONTH) ;;
@@ -546,7 +546,7 @@ view: order_cohorts_base {
   #}
 
   #dimension_group: time_between_sign_up_week_and_now {
-  #  group_label: "* User Dimensions *"
+  #  group_label: "> User Dimensions"
   #  hidden: yes
   #  type: duration
   #  sql_start: DATE_TRUNC(${user_order_facts.first_order_raw}, WEEK) ;;
@@ -554,7 +554,7 @@ view: order_cohorts_base {
   #}
 
   dimension_group: time_between_hub_launch_and_order {
-    group_label: "* Hub Dimensions *"
+    group_label: "> Hub Dimensions"
     type: duration
     sql_start: ${hubs_ct.start_date} ;;
     sql_end: ${order_date} ;;
@@ -563,7 +563,7 @@ view: order_cohorts_base {
   }
 
   #dimension: time_since_sign_up_biweekly {
-  #  group_label: "* User Dimensions *"
+  #  group_label: "> User Dimensions"
   #  type: number
   #  sql: floor((${user_order_facts_clean.days_time_since_sign_up} / 14)) ;;
   #  value_format: "0"
@@ -573,14 +573,14 @@ view: order_cohorts_base {
 
 
   dimension: order_date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: date
     datatype: date
     sql: ${TABLE}.order_date ;;
   }
 
   dimension_group: delivery_timestamp {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: time
     timeframes: [
       raw,
@@ -600,19 +600,19 @@ view: order_cohorts_base {
   }
 
   dimension: order_dow {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: string
     sql: ${TABLE}.order_dow ;;
   }
 
   dimension: order_hour {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: number
     sql: ${TABLE}.order_hour ;;
   }
 
   dimension: hour {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: number
     sql: extract(hour from ${created_raw} AT TIME ZONE 'Europe/Berlin') ;;
   }
@@ -624,84 +624,84 @@ view: order_cohorts_base {
   }
 
   dimension: order_month {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: string
     sql: ${TABLE}.order_month ;;
   }
 
   dimension: order_number {
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.order_number ;;
   }
 
   dimension: order_on_route_timestamp {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: date_time
     sql: ${TABLE}.order_on_route_timestamp ;;
   }
 
   dimension: order_packed_timestamp {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: date_time
     sql: ${TABLE}.order_packed_timestamp ;;
   }
 
   dimension: order_picker_accepted_timestamp {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: date_time
     sql: ${TABLE}.order_picker_accepted_timestamp ;;
   }
 
   dimension: order_rider_claimed_timestamp {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: date_time
     sql: ${TABLE}.order_rider_claimed_timestamp ;;
   }
 
   dimension: order_uuid {
     type: string
-    group_label: "* IDs *"
+    group_label: "> IDs"
     primary_key: yes
     hidden: no
     sql: ${TABLE}.order_uuid ;;
   }
 
   dimension: order_week {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: date_time
     convert_tz: no
     sql: ${TABLE}.order_week ;;
   }
 
   dimension: order_year {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: number
     sql: ${TABLE}.order_year ;;
   }
 
   dimension: payment_type {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.payment_type ;;
   }
 
   dimension: picker_id {
     hidden: yes
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.picker_id ;;
   }
 
   dimension: time_diff_between_two_subsequent_fulfillments {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Picking Time Minutes"
     type: number
     sql: ${TABLE}.picking_time_minutes ;;
   }
 
   dimension: reaction_time {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "Reaction Time Minutes"
     type: number
     sql: ${TABLE}.reaction_time_minutes ;;
@@ -709,7 +709,7 @@ view: order_cohorts_base {
 
   dimension: rider_id {
     hidden: yes
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: ${TABLE}.rider_id ;;
   }
@@ -721,26 +721,26 @@ view: order_cohorts_base {
 
   dimension: shipping_method_id {
     hidden: yes
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: number
     sql: ${TABLE}.shipping_method_id ;;
   }
 
   dimension: shipping_method_name {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.shipping_method_name ;;
   }
 
   dimension: status {
-    group_label: "* Order Dimensions *"
+    group_label: "> Order Dimensions"
     type: string
     sql: ${TABLE}.status ;;
   }
 
   dimension: timezone {
     hidden: yes
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: string
     sql: ${TABLE}.timezone ;;
   }
@@ -749,7 +749,7 @@ view: order_cohorts_base {
 
   dimension: token {
     hidden: yes
-    group_label: "* IDs *"
+    group_label: "> IDs"
     type: string
     sql: null ;;
   }
@@ -769,13 +769,13 @@ view: order_cohorts_base {
   }
 
   dimension: is_customer_location_available {
-    group_label: "* Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     type: yesno
     sql: IF(${customer_location::latitude} IS NULL, FALSE, TRUE)  ;;
   }
 
   dimension: is_business_week_completed {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     type: yesno
     sql:  CASE WHEN ${now_day_of_week} = 'Sunday'
               THEN IF (${created_week} <= ${now_week}, TRUE, FALSE)
@@ -788,7 +788,7 @@ view: order_cohorts_base {
   ####### PARAMETERS
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -829,7 +829,7 @@ view: order_cohorts_base {
   ####### DYNAMIC DIMENSIONS
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -859,7 +859,7 @@ view: order_cohorts_base {
   ########## Measures
 
   measure: KPI {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "KPI - Dynamic"
     label_from_parameter: KPI_parameter
     value_format: "#,##0.00"
@@ -955,7 +955,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_promised_eta {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG PDT"
         description: "Average Promised Fulfillment Time (PDT)"
         hidden:  no
@@ -965,7 +965,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_fulfillment_time {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Fulfillment Time (decimal)"
         description: "Average Fulfillment Time (decimal minutes) considering order placement to delivery. Outliers excluded (<1min or >30min)"
         hidden:  no
@@ -975,7 +975,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_fulfillment_time_mm_ss {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Fulfillment Time (MM:SS)"
         description: "Average Fulfillment Time considering order placement to delivery. Outliers excluded (<1min or >30min)"
         type: average
@@ -984,7 +984,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_delivery_time {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Riding Time"
         description: "Average Delivery Time considering delivery start to delivery completion. Outliers excluded (<0min or >30min)"
         hidden:  no
@@ -995,7 +995,7 @@ view: order_cohorts_base {
 
 
       measure: avg_reaction_time {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Reaction Time"
         description: "Average Reaction Time of the Picker considering order placement to first fulfillment created. Outliers excluded (<0min or >30min)"
         hidden:  no
@@ -1005,7 +1005,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_picking_time {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Picking Time"
         description: "Average Picking Time considering first fulfillment to second fulfillment created. Outliers excluded (<0min or >30min)"
         hidden:  no
@@ -1015,7 +1015,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_acceptance_time {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "AVG Acceptance Time"
         description: "Average Acceptance Time of the Rider considering second fulfillment created until Tracking Timestamp. Outliers excluded (<0min or >30min)"
         hidden:  no
@@ -1025,7 +1025,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_order_value_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Order Value (Gross)"
         description: "Average value of orders considering total gross order values. Includes fees (gross), before deducting discounts."
         hidden:  no
@@ -1035,7 +1035,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_order_value_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Order Value (Net)"
         description: "Average value of orders considering total net order values. Includes fees (net), before deducting discounts."
         hidden:  no
@@ -1045,7 +1045,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_product_value_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Product Value (Gross)"
         description: "Average value of product items (incl. VAT). Excludes fees (gross), before deducting discounts."
         hidden:  no
@@ -1055,7 +1055,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_product_value_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Product Value (Net)"
         description: "Average value of product items (excl. VAT). Excludes fees (net), before deducting discounts."
         hidden:  no
@@ -1065,7 +1065,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_delivery_fee_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Delivery Fee (Gross)"
         description: "Average value of Delivery Fees (Gross)"
         hidden:  no
@@ -1075,7 +1075,7 @@ view: order_cohorts_base {
       }
 
       measure: avg_delivery_fee_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "AVG Delivery Fee (Net)"
         description: "Average value of Delivery Fees (Net)"
         hidden:  no
@@ -1089,7 +1089,7 @@ view: order_cohorts_base {
       ##########
 
       measure: sum_gmv_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM GMV (Gross)"
         description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (incl. VAT)"
         hidden:  no
@@ -1099,7 +1099,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_gmv_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM GMV (Net)"
         description: "Sum of Gross Merchandise Value of orders incl. fees and before deduction of discounts (excl. VAT)"
         hidden:  no
@@ -1109,7 +1109,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_revenue_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM Revenue (gross)"
         description: "Sum of Revenue (GMV after subsidies) incl. VAT"
         hidden:  no
@@ -1119,7 +1119,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_revenue_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM Revenue (Net)"
         description: "Sum of Revenue (GMV after subsidies) excl. VAT"
         hidden:  no
@@ -1129,7 +1129,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_discount_amt {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM Discount Amount"
         description: "Sum of Discount amount applied on orders"
         hidden:  no
@@ -1139,7 +1139,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_delivery_fee_gross {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM Delivery Fee (Gross)"
         description: "Sum of Delivery Fees (Gross) paid by Customers"
         hidden:  no
@@ -1149,7 +1149,7 @@ view: order_cohorts_base {
       }
 
       measure: sum_delivery_fee_net {
-        group_label: "* Monetary Values *"
+        group_label: "> Monetary Values"
         label: "SUM Delivery Fee (Net)"
         description: "Sum of Delivery Fees (Net) paid by Customers"
         hidden:  no
@@ -1170,7 +1170,7 @@ view: order_cohorts_base {
       ############
 
       measure: cnt_unique_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Unique Customers"
         description: "Count of Unique Customers identified via their Email"
         hidden:  no
@@ -1180,7 +1180,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_unique_customers_with_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Unique Customers (with Cart or Product Discount)"
         description: "Count of Unique Customers identified via their Email (only considering orders with a Cart or Product Discount)"
         hidden:  no
@@ -1191,7 +1191,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_unique_customers_without_voucher {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Unique Customers (without Cart or Product Discount)"
         description: "Count of Unique Customers identified via their Email (not considering orders with a Cart or Product Discount)"
         hidden:  no
@@ -1202,7 +1202,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_unique_hubs {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Unique Hubs"
         description: "Count of Unique Hubs which received orders"
         hidden:  no
@@ -1212,7 +1212,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Orders"
         description: "Count of successful Orders"
         hidden:  no
@@ -1221,7 +1221,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_with_discount {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Orders with Discount"
         description: "Count of successful Orders with some Discount applied"
         hidden:  no
@@ -1231,7 +1231,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_without_discount {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Orders without Discount"
         description: "Count of successful Orders with no Discount applied"
         hidden:  no
@@ -1241,7 +1241,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_unique_orders_new_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Orders New Customers"
         description: "Count of successful Orders placed by new customers (Acquisitions)"
         hidden:  no
@@ -1251,7 +1251,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_unique_orders_existing_customers {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "# Orders Existing Customers"
         description: "Count of successful Orders placed by returning customers"
         hidden:  no
@@ -1261,9 +1261,9 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_with_delivery_eta_available {
-        # group_label: "* Operations / Logistics *"
+        # group_label: "> Operations / Logistics"
         view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
+        group_label: "> Hub Leaderboard - Order Metrics"
         label: "# Orders with Delivery ETA available"
         description: "Count of Orders where a promised ETA is available"
         hidden:  no
@@ -1273,9 +1273,9 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_delayed_under_0_min {
-        # group_label: "* Operations / Logistics *"
+        # group_label: "> Operations / Logistics"
         view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
+        group_label: "> Hub Leaderboard - Order Metrics"
         label: "# Orders delivered in time"
         description: "Count of Orders delivered no later than promised ETA"
         hidden:  no
@@ -1285,9 +1285,9 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_delayed_over_5_min {
-        # group_label: "* Operations / Logistics *"
+        # group_label: "> Operations / Logistics"
         view_label: "* Hubs *"
-        group_label: "Hub Leaderboard - Order Metrics"
+        group_label: "> Hub Leaderboard - Order Metrics"
         label: "# Orders delivered late >5min"
         description: "Count of Orders delivered >5min later than promised ETA"
         hidden:  no
@@ -1297,7 +1297,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_delayed_over_10_min {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "# Orders delivered late >10min"
         description: "Count of Orders delivered >10min later than promised ETA"
         hidden:  yes
@@ -1307,7 +1307,7 @@ view: order_cohorts_base {
       }
 
       measure: cnt_orders_delayed_over_15_min {
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "# Orders delivered late >15min"
         description: "Count of Orders delivered >15min later than promised ETA"
         hidden:  yes
@@ -1321,7 +1321,7 @@ view: order_cohorts_base {
       ################
 
       measure: pct_acquisition_share {
-        group_label: "* Marketing *"
+        group_label: "> Marketing"
         label: "% Acquisition Share"
         description: "Share of New Customer Acquisitions over Total Orders"
         hidden:  no
@@ -1331,7 +1331,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_discount_order_share {
-        group_label: "* Marketing *"
+        group_label: "> Marketing"
         label: "% Discount Order Share"
         description: "Share of Orders which had some Discount applied"
         hidden:  no
@@ -1341,7 +1341,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_discount_value_of_gross_total{
-        group_label: "* Marketing *"
+        group_label: "> Marketing"
         label: "% Discount Value Share"
         description: "Dividing Total Discount amounts over GMV"
         hidden:  no
@@ -1351,7 +1351,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_delivery_in_time{
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "% Orders delivered in time"
         description: "Share of orders delivered no later than promised ETA (only orders with valid ETA time considered)"
         hidden:  no
@@ -1361,7 +1361,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_delivery_late_over_5_min{
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "% Orders delayed >5min"
         description: "Share of orders delivered >5min later than promised ETA (only orders with valid ETA time considered)"
         hidden:  no
@@ -1371,7 +1371,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_delivery_late_over_10_min{
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "% Orders delayed >10min"
         description: "Share of orders delivered >10min later than promised ETA (only orders with valid ETA time considered)"
         hidden:  no
@@ -1381,7 +1381,7 @@ view: order_cohorts_base {
       }
 
       measure: pct_delivery_late_over_15_min{
-        group_label: "* Operations / Logistics *"
+        group_label: "> Operations / Logistics"
         label: "% Orders delayed >15min"
         description: "Share of orders delivered >15min later than promised ETA (only orders with valid ETA time considered)"
         hidden:  no
@@ -1391,7 +1391,7 @@ view: order_cohorts_base {
       }
 
       measure: percent_of_total_orders {
-        group_label: "* Basic Counts (Orders / Customers etc.) *"
+        group_label: "> Basic Counts (Orders / Customers etc.)"
         label: "% Of Total Orders"
         direction: "column"
         type: percent_of_total
