@@ -294,15 +294,16 @@ view: erp_buying_prices {
 
 
   dimension: amt_logistic_cost_net {
-    label: "Amt Logistic Cost Net"
+    label: "Logistic Cost (Net)"
     description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost."
     type: number
+    hidden: yes
     sql: ${TABLE}.amt_logistic_cost_net ;;
   }
 
 
   dimension: amt_partner_kickback_permanent_net {
-    label: "Amt Partner Kickback Permanent Net"
+    label: "Partner Kickback Permanent (Net)"
     description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
     type: number
     hidden: yes
@@ -311,7 +312,7 @@ view: erp_buying_prices {
 
 
   dimension: amt_partner_kickback_temporary_net {
-    label: "Amt Partner Kickback Temporary Net"
+    label: "Partner Kickback Temporary (Net)"
     description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns.Either an absolute value or a percentage of the net cost."
     type: number
     hidden: yes
@@ -320,7 +321,7 @@ view: erp_buying_prices {
 
 
   dimension: amt_promo_funding_partner_net {
-    label: "Amt Promo Funding Partner Net"
+    label: "Promo Funding Partner (Net)"
     description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
     type: number
     hidden: yes
@@ -329,7 +330,7 @@ view: erp_buying_prices {
 
 
   dimension: amt_promo_funding_marketing_net {
-    label: "Amt Promo Funding Marketing Net"
+    label: "Promo Funding Marketing (Net)"
     description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
     type: number
     hidden: yes
@@ -338,7 +339,7 @@ view: erp_buying_prices {
 
 
   dimension: amt_promo_funding_supplier_net {
-    label: "Amt Promo Funding Supplier Net"
+    label: "Promo Funding Supplier (Net)"
     description: "Promo funding amount accounts for revenues generated from suppliers when offering certain products"
     type: number
     hidden: yes
