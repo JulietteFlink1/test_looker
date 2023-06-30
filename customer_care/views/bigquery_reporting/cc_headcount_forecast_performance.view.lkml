@@ -11,7 +11,7 @@ view: cc_headcount_forecast_performance {
   }
 
   dimension_group: forecasted {
-    group_label: "* Date & Timestamps *"
+    group_label: "> Date & Timestamps"
     description: "Date for which the forecast was run"
     type: time
     timeframes: [
@@ -40,7 +40,7 @@ view: cc_headcount_forecast_performance {
 
   dimension: job_date {
     label: "Job Date"
-    group_label: "* Date & Timestamps *"
+    group_label: "> Date & Timestamps"
     description: "Date on which the forecast was ran."
     type: date
     datatype: date

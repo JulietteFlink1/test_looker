@@ -117,7 +117,7 @@ view: products {
   dimension: fresh_check_frequency {
     label: "Fresh Check Frequency"
     description: "Frequency at which the sku requires a fresh check to be triggered in HubOne. Null if this attribute hasn't been set in Oracle. "
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.fresh_check_frequency ;;
   }
@@ -125,7 +125,7 @@ view: products {
   dimension: extra_check_frequency {
     label: "Extra Check Frequency"
     description: "Frequency at which the sku requires an extra check to be triggered in HubOne. Null if this attribute hasn't been set in Oracle. "
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.extra_check_frequency ;;
   }
@@ -135,7 +135,7 @@ view: products {
     description: "Yes if the sku requires BBD checks to be triggered in HubOne, No otherwise.
     Null if this attribute hasn't been set in Oracle.
     This field is a string - not a boolean, to allow it to be null if the value is not set in Oracle."
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.bbd_check ;;
   }
@@ -412,7 +412,7 @@ view: products {
   # =========  PARAMETER   =========
 
   parameter: product_granularity_parameter {
-    group_label: "* Granularity *"
+    group_label: "> Granularity"
     label: "Product Granularity Parameter"
     type: unquoted
     allowed_value: { value: "Subcategory" }
@@ -748,7 +748,7 @@ view: products {
   dimension: erp_item_brand_name {
     label: "Item Brand Name"
     description: "The brand of a product as defined in the ERP system"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_brand_name ;;
     hidden: no
@@ -757,7 +757,7 @@ view: products {
   dimension: erp_item_division_name {
     label: "Item Division Name"
     description: "Level 1 of new item class hierarchie: indicates, if the product is food or non-food"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_division_name ;;
     hidden: no
@@ -767,7 +767,7 @@ view: products {
   dimension: erp_item_group_name {
     label: "Item Group Name"
     description: "Level 2 of new item class hierarchie: indicates, if the product is e.g. a fresh or dry product"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_group_name ;;
     hidden: no
@@ -777,7 +777,7 @@ view: products {
   dimension: erp_item_department_name {
     label: "Item Department Name"
     description: "Level 3 of new item class hierarchie: indicates a high level class of products (e.g. Milk Alternatives Dry or Chocolate & Confectionary)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_department_name ;;
     hidden: no
@@ -787,7 +787,7 @@ view: products {
   dimension: erp_item_class_name {
     label: "Item Class Name"
     description: "Level 4 of new item class hierarchie: indicates a more specific class of products (e.g. Wine or Heat & Eat)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_class_name ;;
     hidden: no
@@ -797,7 +797,7 @@ view: products {
   dimension: erp_item_subclass_name {
     label: "Item Subclass Name"
     description: "Level 5 of new item class hierarchie: indicates the subclass of a product (e.g. Pizza - Class - SC or Other Sweets)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_item_subclass_name ;;
     hidden: no
@@ -806,7 +806,7 @@ view: products {
   dimension: erp_demand_planning_master_category {
     label: "Demand Planning Master Cateogry"
     description: "The demand planning master category combining logic of the 5 item hierarchie fields. This logic is defined by the Supply Chain team."
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_demand_planning_master_category ;;
   }
@@ -814,7 +814,7 @@ view: products {
   dimension: erp_base_uom {
     label: "Base UOM (ERP)"
     description: "The base unit-of-measure of a product according to our ERP system"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_base_uom ;;
   }
@@ -822,7 +822,7 @@ view: products {
   dimension: erp_ean {
     label: "EAN (ERP)"
     description: "The european article number (EAN) of a product according to our ERP system"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_ean ;;
   }
@@ -831,7 +831,7 @@ view: products {
   dimension: erp_group_company {
     label: "Group Company (ERP)"
     description: "The producing company of a product according to our ERP system"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_group_company ;;
   }
@@ -839,7 +839,7 @@ view: products {
   dimension: erp_hub_type {
     label: "Hub Type (ERP)"
     description: "The hub type indicates, to which kind of hubs a given product is usually assigned to. Hereby, an assignment to an M-hub indicates, that the product is usually offered in all M hubs or bigger (L hubs)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_hub_type ;;
   }
@@ -848,7 +848,7 @@ view: products {
   dimension_group: erp_introduction {
     label: "Item Introduction"
     description: "The date, when a given product was listed initially"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: time
     timeframes: [
       date
@@ -859,7 +859,7 @@ view: products {
   dimension_group: erp_termination {
     label: "Item Termination"
     description: "The date, when a given product was delisted"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: time
     timeframes: [
       date
@@ -870,7 +870,7 @@ view: products {
   dimension: share_of_hubs_with_active_item_status {
     label: "% Hubs With Item-Location Status Active"
     description: "Share of hubs in a country with item-location status ACTIVE"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.share_of_hubs_with_active_item_status ;;
     hidden: no
@@ -880,7 +880,7 @@ view: products {
   dimension: share_of_hubs_with_discontinued_item_status {
     label: "% Hubs With Item-Location Status Discontinued"
     description: "Share of hubs in a country with item-location status DISCONTINUED"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.share_of_hubs_with_discontinued_item_status ;;
     hidden: no
@@ -890,7 +890,7 @@ view: products {
   dimension: share_of_hubs_with_inactive_item_status {
     label: "% Hubs With Item-Location Status Inactive"
     description: "Share of hubs in a country with item-location status INACTIVE"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.share_of_hubs_with_inactive_item_status ;;
     hidden: no
@@ -900,7 +900,7 @@ view: products {
   dimension: share_of_hubs_with_deleted_item_status {
     label: "% Hubs With Item-Location Status Deleted"
     description: "Share of hubs in a country with item-location status DELETED"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.share_of_hubs_with_deleted_item_status ;;
     hidden: no
@@ -910,7 +910,7 @@ view: products {
   dimension: erp_max_shelf_life_days {
     label: "Max Shelf Life Days (ERP)"
     description: "SKU's max amount of days on shelf."
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_max_shelf_life_days ;;
   }
@@ -918,7 +918,7 @@ view: products {
   dimension: erp_shelf_life {
     label: "Erp Shelf Life"
     description: "The overall shelf live in days of a product until its best before date (BBD)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life ;;
     hidden: no
@@ -927,7 +927,7 @@ view: products {
   dimension: erp_shelf_life_hub {
     label: "Erp Shelf Life Hub"
     description: "The shelf live in days of a product defining how long a product can be stored in a hub until its best before date (BBD)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_hub ;;
     hidden: no
@@ -936,7 +936,7 @@ view: products {
   dimension: erp_shelf_life_consumer {
     label: "Erp Shelf Life Consumer"
     description: "The minimum days a product should be consumable for a customer befores its best before date (BBD)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_consumer ;;
     hidden: no
@@ -945,7 +945,7 @@ view: products {
   dimension: erp_shelf_life_dc {
     label: "Erp Shelf Life Dc"
     description: "The shelf live within a distribution center in days of a product until its best before date (BBD)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: number
     sql: ${TABLE}.erp_shelf_life_dc ;;
     hidden: no
@@ -954,7 +954,7 @@ view: products {
   dimension: erp_min_days_to_best_before_date {
     label: "Min Days to BBD (ERP)"
     description: "The minimum duration required between the sale of the product and the BBD (in days)."
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_min_days_to_best_before_date ;;
   }
@@ -962,7 +962,7 @@ view: products {
   dimension: erp_purchase_unit {
     label: "Purchase Unit (ERP)"
     description: "The ERP defined puchase unit code of a product. It defines, which aggregation was bought (examples: STÜCK, PK14, PK06)"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_purchase_unit ;;
   }
@@ -970,7 +970,7 @@ view: products {
   dimension: erp_replenishment_substitute_group {
     label: "Replenishment Substitute Group (ERP)"
     description: "The replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_replenishment_substitute_group ;;
   }
@@ -978,7 +978,7 @@ view: products {
   dimension: erp_shelf_type {
     label: "Shelf Type (ERP)"
     description: "The shelf type provides information on where a product is stored in a hub. An example for a shelf code would be `203 | Fridge 7° | Cooled drinks`"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_shelf_type ;;
   }
@@ -986,7 +986,7 @@ view: products {
   dimension: erp_temperature_zone {
     label: "Temperature Zone (ERP)"
     description: "  Temperature a product needs to have while being delivered and stored in order to be consumable"
-    group_label: "ERP fields"
+    group_label: "> ERP fields"
     type: string
     sql: ${TABLE}.erp_temperature_zone ;;
   }
@@ -997,7 +997,7 @@ view: products {
 
   measure: cnt_sku {
     label: "# SKUs (Total)"
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     description: "Count of Total SKUs in Assortment"
     hidden:  no
     type: count
@@ -1006,7 +1006,7 @@ view: products {
 
   measure: cnt_sku_published {
     label: "# SKUs (Published)"
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     description: "Count of published SKUs in Assortment"
     hidden:  no
     type: count
@@ -1016,7 +1016,7 @@ view: products {
 
   measure: cnt_product_images {
     label: "# Product Images"
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: sum
     value_format_name: decimal_0
     sql: ${TABLE}.cnt_product_images ;;
@@ -1024,7 +1024,7 @@ view: products {
 
   measure: sum_amt_product_price_gross{
     label: "SUM Product Price Gross"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: sum
     value_format: "0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
@@ -1032,7 +1032,7 @@ view: products {
 
   measure: avg_amt_product_price_gross{
     label: "AVG Product Price Gross"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: average
     value_format: "€0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
@@ -1040,7 +1040,7 @@ view: products {
 
   measure: med_amt_product_price_gross{
     label: "MED Product Price Gross"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: median
     value_format: "€0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
@@ -1048,7 +1048,7 @@ view: products {
 
   measure: max_amt_product_price_gross{
     label: "MAX Product Price Gross"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: max
     value_format: "€0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
@@ -1056,7 +1056,7 @@ view: products {
 
   measure: min_amt_product_price_gross{
     label: "MIN Product Price Gross"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: min
     value_format: "€0.00"
     sql: ${TABLE}.amt_product_price_gross ;;
@@ -1065,7 +1065,7 @@ view: products {
   measure: avg_storage_fee {
     label: "AVG Storage Fee"
     description: "A fee charged to customers for certain products that require special treatment"
-    group_label: "* Price Stats *"
+    group_label: "> Price Stats"
     type: average
     sql: ${storage_fee} ;;
     value_format_name: eur

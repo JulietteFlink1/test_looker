@@ -95,7 +95,7 @@ view: reordering_from_order {
 ######## DYNAMIC DIMENSIONS
 
   dimension: date {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -109,7 +109,7 @@ view: reordering_from_order {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: yes
@@ -124,7 +124,7 @@ view: reordering_from_order {
   }
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -134,7 +134,7 @@ view: reordering_from_order {
   }
 
   dimension_group: order_timestamp {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order"
     description: "Order Time/Date"
     type: time
@@ -154,7 +154,7 @@ view: reordering_from_order {
   }
 
   dimension_group: next_order_timestamp {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Next Order"
     description: "Next Order Time/Date"
     type: time
@@ -260,7 +260,7 @@ view: reordering_from_order {
   }
 
   # measure: cnt_cancelled_orders2 {
-  #   group_label: "* Cancelled Orders *"
+  #   group_label: "> Cancelled Orders"
   #   label: "# Cancelled Orders According to status"
   #   hidden:  no
   #   type: count
