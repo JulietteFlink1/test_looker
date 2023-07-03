@@ -464,6 +464,15 @@ view: psp_transactions {
     sql: ${TABLE}.pos_transaction_date ;;
   }
 
+  dimension: shopper_pan {
+    required_access_grants: [can_access_pii_customers]
+    group_label: "> Received Payments"
+    label: "Shopper PAN"
+    type: string
+    description: "Account number of the shopper/consumer. In case of card payments, the last four digits of the card number."
+    sql: ${TABLE}.shopper_pan ;;
+  }
+
 ##################    MEASURES  ###################
 
   measure: sum_main_amount {

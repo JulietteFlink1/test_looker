@@ -24,7 +24,7 @@ view: products_hub_assignment {
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
     label:       "[Availability] Select Aggregation & Assignment Logic"
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     description: "Chose, on what level you want to calculate metrics such as esp. the oos-rate"
 
     type: unquoted
@@ -53,7 +53,7 @@ view: products_hub_assignment {
   }
 
   parameter: date_granularity {
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     label: "Select Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -63,7 +63,7 @@ view: products_hub_assignment {
   }
 
   dimension: report_date_dynamic {
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     label: "Report Date (Dynamic)"
     label_from_parameter: date_granularity
     type: date
@@ -84,7 +84,7 @@ view: products_hub_assignment {
   #  # this paramter either applies SKU-to-Hub Assingment logic according to the Supply Chain (replenishment-facing) or Commercial (customer facing)
 
   #  label:       "Select SKU-to-Hub Assignment Logic"
-  #  group_label: "* Parameters & Dynamic Fields *"
+  #  group_label: "> Parameters & Dynamic Fields"
   #  description: "Chose, if you want to see SKUs, that are assigned to a hub according to Supply Chain needs (what Flink wants to replenish) or Commercial needs (what customers see)"
 
   #  type: unquoted
@@ -184,7 +184,7 @@ view: products_hub_assignment {
     description: "In most cases, this field shows the regular SKU of a product.
                   When a product is part of a substitute group or part of a replenishment substitute group, this field will return the parent/leading SKU of this group,
                   when the parameter 'Select Metric Aggregation Level' is defined accordingly"
-    # group_label: "* Parameters & Dynamic Fields *"
+    # group_label: "> Parameters & Dynamic Fields"
 
     bypass_suggest_restrictions: yes
 
@@ -221,7 +221,7 @@ view: products_hub_assignment {
 
     label:       "SKU Assignment (Based on Paramter 'Select Metric Aggregation Level' )"
     description: "Based on the selection of the parameter 'Select Metric Aggregation Level', either the ERP or CT assignment of SKUs to hubs is applied"
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
 
     type: yesno
 
@@ -248,7 +248,7 @@ view: products_hub_assignment {
 
     label:       "Is most recent record"
     description: "Filters for the latest SKU-to-Hub-Assignment definition (the assignment definitions as of today)"
-    group_label: "SKU to Hub Assignment"
+    group_label: "> SKU to Hub Assignment"
 
     type: yesno
     sql: ${TABLE}.is_most_recent_record ;;
@@ -258,7 +258,7 @@ view: products_hub_assignment {
 
     label: "SKU Assignment (CT)"
     description: "Filters for the SKU-to-Hub-Assignment defined in CommerceTools (the customer-facing definition) for any given historical Report Date"
-    group_label: "SKU to Hub Assignment"
+    group_label: "> SKU to Hub Assignment"
 
     type: yesno
     sql: ${TABLE}.ct_final_decision_is_sku_assigned_to_hub ;;
@@ -268,7 +268,7 @@ view: products_hub_assignment {
 
     label: "SKU Assignment (ERP)"
     description: "Filters for the SKU-to-Hub-Assignment defined in ERP/Lexbizz (the replenishment definition) for any given historical Report Date"
-    group_label: "SKU to Hub Assignment"
+    group_label: "> SKU to Hub Assignment"
 
     type: yesno
     sql: ${TABLE}.erp_final_decision_is_sku_assigned_to_hub ;;
@@ -278,7 +278,7 @@ view: products_hub_assignment {
 
     label: "SKU Assignment (Official)"
     description: "Filters for the Flink-official SKU-to-Hub-Assignment definition (which is basically 'SKU Assignment (ERP)', as the Supply Chain team is owning the related KPIs)"
-    group_label: "SKU to Hub Assignment"
+    group_label: "> SKU to Hub Assignment"
 
     type: yesno
     sql: ${TABLE}.is_sku_assigned_to_hub ;;
@@ -290,27 +290,27 @@ view: products_hub_assignment {
 
   dimension: erp_is_hub_active {
     label: "Is Hub Active"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: yesno
     sql: ${TABLE}.erp_is_hub_active ;;
   }
 
   dimension: erp_is_warehouse_active {
     label: "Is Warehouse Active (Lexbizz)"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: yesno
     sql: ${TABLE}.erp_is_warehouse_active ;;
   }
 
   dimension: erp_item_at_warehouse_status {
     label: "Item At Location Status"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.erp_item_at_warehouse_status ;;
   }
 
   dimension: erp_item_status {
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.erp_item_status ;;
     hidden: yes
@@ -318,14 +318,14 @@ view: products_hub_assignment {
 
   dimension: erp_vendor_id {
     label: "Supplier ID"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.erp_vendor_id ;;
   }
 
   dimension: erp_vendor_location_id {
     label: "Supplier Location ID"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.erp_vendor_location_id ;;
     hidden: yes
@@ -336,7 +336,7 @@ view: products_hub_assignment {
     label: "Supplier Name"
     bypass_suggest_restrictions: yes
     description: "The name of the supplier of a SKU as defined in ERP/lexbizz"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
 
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
@@ -346,7 +346,7 @@ view: products_hub_assignment {
 
     label: "Supplier Status"
     description: "A flag indicating, whether a vendor is still considered active aka delivering SKUs"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
 
     type: string
     sql: ${TABLE}.erp_vendor_status ;;
@@ -357,7 +357,7 @@ view: products_hub_assignment {
     label: "Replenishment Group - Leading SKU"
     bypass_suggest_restrictions: yes
     description: "The parent SKU of a SKU that is part of a replenishment substitute group - these SKUs usually start with 99x"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
 
     type: string
     sql: ${TABLE}.leading_sku_replenishment_substitute_group ;;
@@ -367,7 +367,7 @@ view: products_hub_assignment {
 
     label: "Replenishment Group"
     description: "The replenishment substitute group defined by the Supply Chain team to tag substitute products for replenishment."
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
 
     type: string
     sql: ${TABLE}.replenishment_substitute_group ;;
@@ -377,7 +377,7 @@ view: products_hub_assignment {
   dimension: supplier_parent_name {
     label: "Supplier Parent Name"
     description: "The name of the parent supplier entity in Oracle."
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.supplier_parent_name ;;
     hidden: no
@@ -387,7 +387,7 @@ view: products_hub_assignment {
   dimension: supplier_parent_id {
     label: "Supplier Parent Id"
     description: "Parent supplier ID as defined in Oracle - which is groups every Child Supplier ID and its related supplier-location"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: number
     sql: ${TABLE}.supplier_parent_id ;;
     hidden: no
@@ -397,7 +397,7 @@ view: products_hub_assignment {
   dimension: supplier_site {
     label: "Supplier Site"
     description: "Site of the supplier/vendor of a product, defined as Supplier Name + Location."
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: string
     sql: ${TABLE}.supplier_site ;;
     hidden: no
@@ -407,7 +407,7 @@ view: products_hub_assignment {
   dimension_group: item_introduction {
     label: "Item Introduction"
     description: "Date, when a given product was listed initially"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: time
     timeframes: [
       date
@@ -419,7 +419,7 @@ view: products_hub_assignment {
   dimension_group: item_location_introduction {
     label: "Item Location Introduction"
     description: "Date, when the item was assigned to a location according to our ERP system Oracle"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: time
     timeframes: [
       date
@@ -431,7 +431,7 @@ view: products_hub_assignment {
   dimension_group: item_location_termination {
     label: "Item Location Termination"
     description: "Date, when the item was deleted from a location according to our ERP system Oracle"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
     type: time
     timeframes: [
       date
@@ -448,7 +448,7 @@ view: products_hub_assignment {
 
     label: "Is Published (CT)"
     description: "The global status of a SKU in CommerceTools, that defines if a SKU is published or not"
-    group_label: "CT Fields"
+    group_label: "> CT Fields"
 
     type: yesno
     sql: ${TABLE}.ct_is_published_globally ;;
@@ -458,7 +458,7 @@ view: products_hub_assignment {
 
     label: "Is SKU assigned to Hub (CT)"
     description: "The assignment status of a SKU per hub according to CommerceTools"
-    group_label: "CT Fields"
+    group_label: "> CT Fields"
 
     type: yesno
     sql: ${TABLE}.ct_is_published_per_hub ;;
@@ -468,7 +468,7 @@ view: products_hub_assignment {
 
     label: "Substitute Group (CT)"
     description: "The substitute group according to CommerceTools defining substitute products from the customer perspective"
-    group_label: "CT Fields"
+    group_label: "> CT Fields"
 
     type: string
     sql: ${TABLE}.substitute_group ;;
@@ -478,7 +478,7 @@ view: products_hub_assignment {
 
     label: "Substitute Group - Leading SKU"
     description: "The (artificially generated) parent SKU of a SKU that is part of a CommerceTools substitute group - these SKUs usually end with -SG"
-    group_label: "CT Fields"
+    group_label: "> CT Fields"
 
     type: string
     sql: ${TABLE}.leading_sku_ct_substitute_group ;;
@@ -490,7 +490,7 @@ view: products_hub_assignment {
 
     label: "Filter: Only leading SKU per Replenishment Substitute Group"
     description: "If set to true, this boolean reduces replenshment substitute groups to only show 1 SKU per group"
-    group_label: "ERP Fields"
+    group_label: "> ERP Fields"
 
     type: yesno
     sql: ${TABLE}.filter_one_sku_per_replenishment_substitute_group  ;;
@@ -509,7 +509,7 @@ view: products_hub_assignment {
 
     label: "Filter: Only leading SKU per CT Substitute Group"
     description: "If set to true, this boolean reduces CT substitute groups to only show 1 SKU per group"
-    group_label: "CT Fields"
+    group_label: "> CT Fields"
 
     type: yesno
     sql: ${TABLE}.filter_one_sku_per_substitute_group  ;;
@@ -576,7 +576,7 @@ view: products_hub_assignment {
 
   measure: cnt_unique_skus_today {
     label: "# unique SKUs Today"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: count_distinct
     sql: ${sku_dynamic} ;;
     hidden: yes
@@ -585,7 +585,7 @@ view: products_hub_assignment {
 
   measure: cnt_unique_skus_7_days_ago {
     label: "# unique SKUs - Same day last week"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: count_distinct
     sql: ${sku_dynamic} ;;
     hidden: yes
@@ -594,7 +594,7 @@ view: products_hub_assignment {
 
   measure: pct_unique_skus_dod {
     label: "% Growth unique SKUs Today - Same day last week"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: number
     hidden: yes
     sql: (${cnt_unique_skus_today} - ${cnt_unique_skus_7_days_ago})/ nullif(${cnt_unique_skus_7_days_ago}, 0)  ;;

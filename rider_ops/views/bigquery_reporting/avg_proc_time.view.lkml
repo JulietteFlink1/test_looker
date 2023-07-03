@@ -3,7 +3,7 @@ view: avg_proc_time {
     ;;
 
   dimension: city {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
@@ -15,7 +15,7 @@ view: avg_proc_time {
   }
 
   dimension: country {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
@@ -27,13 +27,13 @@ view: avg_proc_time {
   }
 
   dimension: position {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
 
   dimension: stage_title {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.stage_title ;;
   }
@@ -46,7 +46,7 @@ view: avg_proc_time {
 
   dimension_group: applied {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -109,7 +109,7 @@ view: avg_proc_time {
   ############## Dynamic Dimensions
 
   dimension: date {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -123,7 +123,7 @@ view: avg_proc_time {
 ######## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -134,14 +134,14 @@ view: avg_proc_time {
   ######################## Measure
 
   measure: cnt_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: sum
     label: "# Applicants"
     sql: ${applicants} ;;
   }
 
   measure: avg_days_to_stage {
-    group_label: "* Averages *"
+    group_label: "> Averages"
     type: average
     label: "AVG time to stage (Days)"
     sql: ${days_to_stage} ;;

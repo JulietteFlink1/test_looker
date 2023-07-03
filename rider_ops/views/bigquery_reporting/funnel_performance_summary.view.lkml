@@ -21,13 +21,13 @@ view: funnel_performance_summary {
   }
 
   dimension: channel {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
@@ -45,14 +45,14 @@ view: funnel_performance_summary {
   }
 
   dimension: country {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: report {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       date,
@@ -92,7 +92,7 @@ view: funnel_performance_summary {
   }
 
   dimension: position {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -119,7 +119,7 @@ view: funnel_performance_summary {
 
   dimension_group: updated {
     type: time
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     timeframes: [
       raw,
       time,
@@ -134,7 +134,7 @@ view: funnel_performance_summary {
 
   dimension: channel_label{
     label: "Channel label"
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     case: {
       when: {
         sql: ${channel} = '[utm_source]'
@@ -197,7 +197,7 @@ view: funnel_performance_summary {
 ######## Dynamic Dimensions
 
   dimension: date {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -212,7 +212,7 @@ view: funnel_performance_summary {
 ######## Parameters
 
   parameter: date_granularity {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -223,7 +223,7 @@ view: funnel_performance_summary {
   ################### Measures
 
   measure: amt_spend {
-    group_label: "* Monetary *"
+    group_label: "> Monetary"
     label: "Marketing Spend"
     type: sum
     sql: ${spend} ;;
@@ -231,7 +231,7 @@ view: funnel_performance_summary {
   }
 
   measure: avg_days_to_hire {
-    group_label: "* Averages *"
+    group_label: "> Averages"
     label: "AVG Time to Hire (Days)"
     type: average
     sql: ${days_to_hire} ;;
@@ -239,7 +239,7 @@ view: funnel_performance_summary {
   }
 
   measure: avg_days_to_first_shift {
-    group_label: "* Averages *"
+    group_label: "> Averages"
     label: "AVG Time to First Shift (Days)"
     type: average
     sql: ${days_to_first_shift} ;;
@@ -247,7 +247,7 @@ view: funnel_performance_summary {
   }
 
   measure: cnt_hires {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hires"
     type: sum
     sql: ${hires} ;;
@@ -255,7 +255,7 @@ view: funnel_performance_summary {
   }
 
   measure: cnt_leads {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Leads"
     type: sum
     sql: ${leads} ;;
@@ -263,7 +263,7 @@ view: funnel_performance_summary {
   }
 
   measure: cnt_hires_with_account_created {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hires With Account Created"
     type: sum
     sql: ${hires_with_account_created} ;;
@@ -271,7 +271,7 @@ view: funnel_performance_summary {
   }
 
   measure: cnt_hires_with_first_shift_scheduled {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hires With First Shift Scheduled"
     type: sum
     sql: ${hires_with_first_shift_scheduled} ;;
@@ -279,7 +279,7 @@ view: funnel_performance_summary {
   }
 
   measure: cnt_hires_with_first_shift_completed {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     label: "# Hires With First Shift Completed"
     type: sum
     sql: ${hires_with_first_shift_completed} ;;
@@ -287,7 +287,7 @@ view: funnel_performance_summary {
   }
 
   measure: last_updated_at {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: max
     sql: ${updated_raw}  ;;
   }

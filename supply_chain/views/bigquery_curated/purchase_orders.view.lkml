@@ -67,7 +67,7 @@ view: purchase_orders {
     # this parameter is defined at the products_hub_assignment level, as this view is the base of the Supply Chain explore
 
     label:       "Show details per metric"
-    group_label: "* Parameters & Dynamic Fields *"
+    group_label: "> Parameters & Dynamic Fields"
     description: "Chose yes, if you want to see more details"
 
     type: unquoted
@@ -295,7 +295,7 @@ view: purchase_orders {
   dimension: order_id {
     label: "Order ID"
     description: "Order ID for orders placed by Flink to it's suppliers"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
     type: string
     sql: ${TABLE}.order_id ;;
   }
@@ -303,7 +303,7 @@ view: purchase_orders {
   dimension: order_number {
     label: "Order Number"
     description: "Order Number for orders placed by Flink to it's suppliers"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
     type: number
     sql: safe_cast(${TABLE}.order_number as string) ;;
   }
@@ -311,7 +311,7 @@ view: purchase_orders {
   dimension: flink_buyer_id {
     label: "Buyer ID"
     description: "Buyer ID of the purchase order"
-    group_label: " >> IDs "
+    group_label: " >> IDs"
     type: string
     sql: ${TABLE}.flink_buyer_id ;;
   }
