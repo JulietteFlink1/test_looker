@@ -1431,6 +1431,22 @@ view: orders {
     sql: ${TABLE}.picker_id ;;
   }
 
+  dimension: picker_badge_number {
+    required_access_grants: [can_access_pii_hub_employees]
+    group_label: "> IDs"
+    type: string
+    description: "Quinyx Badge Number of the employee who picked the order. Comes from Hub One events data. In case of multiple picker badge numbers associated with the order, selects the one with the latest event."
+    sql: ${TABLE}.picker_badge_number ;;
+  }
+
+  dimension: rider_badge_number {
+    required_access_grants: [can_access_pii_hub_employees]
+    group_label: "> IDs"
+    type: string
+    description: "Quinyx Badge Number of the rider who was assigned to the order based on the rider ID sent in CT."
+    sql: ${TABLE}.rider_badge_number ;;
+  }
+
   dimension: start_picking_to_first_scan_time_seconds {
     group_label: "> Operations / Logistics"
     label: "Start Picking to First Item Scan Time (Seconds)"
