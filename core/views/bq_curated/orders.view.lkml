@@ -1,8 +1,6 @@
 view: orders {
-  sql_table_name:
-      -- if prod -- `flink-data-prod.curated.orders`
-      -- if dev -- `{{_user_attributes['dbt_dev']}}.orders`
-    ;;
+  sql_table_name:`flink-data-prod.curated.orders`
+  ;;
 
   view_label: "* Orders *"
   drill_fields: [core_dimensions*]
