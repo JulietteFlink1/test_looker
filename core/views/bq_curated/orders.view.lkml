@@ -1,6 +1,6 @@
 view: orders {
-  sql_table_name:`flink-data-prod.curated.orders`
-  ;;
+  sql_table_name: `flink-data-prod.curated.orders`
+   ;;
 
   view_label: "* Orders *"
   drill_fields: [core_dimensions*]
