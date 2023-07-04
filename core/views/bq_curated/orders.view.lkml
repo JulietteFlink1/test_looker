@@ -4311,7 +4311,7 @@ view: orders {
   }
 
   measure: pct_delivery_in_time {
-    label: "% Orders delivered on time"
+    label: "% Orders delivered on time (+ 15% PDT tolerance for ASAP)"
     description: "Share of orders delivered before the PDT + 15% PDT tolerance for ASAP orders and within delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     group_label: "> Operations / Logistics"
     type: number
