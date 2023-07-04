@@ -63,7 +63,8 @@ view: erp_product_hub_vendor_assignment_unfiltered {
 
   dimension_group: item_location_introduction {
     type: time
-    description: "The date, when the item was assigned to a location according to our ERP system Oracle"
+    label: "Item Location Introduction"
+    description: "The date, when the item was assigned to a location for the first time according to our ERP system Oracle"
     group_label: "Item-Location"
     timeframes: [
       raw,
@@ -82,7 +83,7 @@ view: erp_product_hub_vendor_assignment_unfiltered {
     type: time
     datatype: date
     label: "Item Location Termination"
-    description: "The date, when the item was deleted from a location according to our ERP system Oracle"
+    description: "The date,when the item was deleted from a location for the first time  according to our ERP system Oracle"
     group_label: "Item-Location"
     timeframes: [
       date,
@@ -92,6 +93,35 @@ view: erp_product_hub_vendor_assignment_unfiltered {
       year
     ]
     sql: ${TABLE}.item_location_termination_date ;;
+  }
+
+  dimension_group: item_location_introduction_date_updated {
+    type: time
+    label: "Item Location Introduction Updated"
+    description: "The date, when the item was assigned to a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "Item-Location"
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.item_location_introduction_date_updated ;;
+  }
+
+  dimension_group: item_location_termination_date_updated {
+    type: time
+    datatype: date
+    label: "Item Location Termination Updated"
+    description: "The date, when the item was deleted from a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "Item-Location"
+    timeframes: [
+      date,
+      week,
+      month
+    ]
+    sql: ${TABLE}.item_location_termination_date_updated ;;
   }
 
   dimension: source_method {
