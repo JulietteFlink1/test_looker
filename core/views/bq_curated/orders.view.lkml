@@ -3577,7 +3577,7 @@ view: orders {
     alias: [cnt_orders_delayed_under_0_min_raw]
     # group_label: "> Operations / Logistics"
     view_label: "* Hubs *"
-    label: "# Orders delivered on time (+15% Tolerance for ASAP)"
+    label: "# Orders delivered on time"
     description: "Count of orders delivered no later than PDT for ASAP orders and during delivery window for planned orders."
     hidden:  yes
     type: count
