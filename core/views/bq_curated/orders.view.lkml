@@ -495,7 +495,7 @@ view: orders {
   dimension: delivery_delay_minutes {
     alias: [delta_to_pdt_minutes_with_positive_buffer]
     group_label: "* Operations / Logistics *"
-    label: "Delay (min) (+15% PDT Tolerance for ASAP)"
+    label: "Delay (min) (+15% PDT tolerance for ASAP)"
     description: "For ASAP orders, delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
     Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
     Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied. For planned orders, delay in minutes from the the end of the delivery window"
@@ -505,7 +505,7 @@ view: orders {
   }
 
   dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
-    label: "Delay (min) (+/- 15% PDT Tolerance for ASAP)"
+    label: "Delay (min) (+/- 15% PDT tolerance for ASAP)"
     group_label: "> Operations / Logistics"
     description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
     +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early).
@@ -3587,7 +3587,7 @@ view: orders {
     # group_label: "> Operations / Logistics"
     view_label: "* Hubs *"
     group_label: "> Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (+/- 15% PDT Tolerance for ASAP)"
+    label: "# Orders delivered on time (+/- 15% PDT tolerance for ASAP)"
     description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early). For planned orders, count of orders delivered within window."
     hidden:  yes
     type: count
