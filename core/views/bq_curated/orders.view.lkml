@@ -497,7 +497,7 @@ view: orders {
   dimension: delivery_delay_minutes {
     alias: [delta_to_pdt_minutes_with_positive_buffer]
     group_label: "* Operations / Logistics *"
-    label: "Delay (min) (+15% PDT for ASAP)"
+    label: "Delay (min) (+15% PDT Tolerance for ASAP)"
     description: "For ASAP orders, delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
     Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
     Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied. For planned orders, delay in minutes from the the end of the delivery window"
