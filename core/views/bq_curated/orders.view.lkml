@@ -4311,7 +4311,7 @@ view: orders {
   }
 
   measure: pct_delivery_in_time {
-    label: "% Orders delivered on time (+ 15% PDT tolerance for ASAP)"
+    label: "% Orders delivered on time (+15% PDT tolerance for ASAP)"
     description: "Share of orders delivered before the PDT + 15% PDT tolerance for ASAP orders and within delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     group_label: "> Operations / Logistics"
     type: number
@@ -4322,8 +4322,8 @@ view: orders {
   measure: pct_delivery_in_time_with_tolerance_buffer {
     hidden: no
     group_label: "> Operations / Logistics"
-    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
+    label: "% Orders delivered on time (+/- 15% PDT tolerance for ASAP)"
+    description: "Share of orders delivered on time with +/- 15% PDT tolerance for ASAP orders, and within delivery window for planned orders. ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
     Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
     type: number
     sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
