@@ -23,7 +23,7 @@ view: waste_waterfall_daily {
   hidden: no
 }
 
-dimension: country_iso {
+ dimension: country_iso {
   type: string
   sql: ${TABLE}.country_iso ;;
   label: "Country ISO"
@@ -42,7 +42,7 @@ dimension: country_iso {
   dimension: change_reason {
     type: string
     sql: ${TABLE}.change_reason ;;
-    label: "Inventory change reason"
+    label: "Inventory Change Reason"
     description: "Inventory change reason as per Stock Changelog"
     hidden: no
   }
@@ -50,16 +50,16 @@ dimension: country_iso {
   dimension: erp_vendor_id {
     type: string
     sql: ${TABLE}.erp_vendor_id ;;
-    label: "Vendor ID"
-    description: "Vendor ID of product-location"
+    label: "Supplier ID"
+    description: "Supplier ID of product-location"
     hidden: no
   }
 
   dimension: erp_vendor_name {
     type: string
     sql: ${TABLE}.erp_vendor_name ;;
-    label: "Vendor Name"
-    description: "Vendor Name of product-location"
+    label: "Supplier Name"
+    description: "Supplier Name of product-location"
     hidden: no
   }
 
@@ -67,8 +67,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_abnormal_pu ;;
     label: "Abnormal Purchase Units Flag"
-    group_label: "Markers"
-    description: "Marks products which have abnormal purchase units: median purchase units over the last 28 days are smaller than 50% of the purchase units for the report date"
+    group_label: "Flags"
+    description: "Identifies products which have abnormal purchase units: median purchase units over the last 28 days are smaller than 50% of the purchase units for the report date"
     hidden: no
   }
 
@@ -76,8 +76,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_aircon_issue ;;
     label: "Air-conditioner issue Flag"
-    group_label: "Markers"
-    description: "Marks waste caused by air-conditionner issues in spotting abnormal damaged waste on Chocolate as this category is likely to melt when AC issue and high temperature."
+    group_label: "Flags"
+    description: "Identifies waste caused by air-conditionner issues in spotting abnormal damaged waste on Chocolate as this category is likely to melt when AC issue and high temperature."
     hidden: no
   }
 
@@ -85,8 +85,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_delisted ;;
     label: "Delisted Flag"
-    group_label: "Markers"
-    description: "Marks Product-Locations that have been delisted"
+    group_label: "Flags"
+    description: "Identifies Product-Locations that have been delisted"
     hidden: no
   }
 
@@ -94,8 +94,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_dry_drinks ;;
     label: "Dry/Drinks Expired Flag"
-    group_label: "Markers"
-    description: "Marks remainder expired waste for Dry and Drinks products, as it is not likely to happen often (<0.5% waste target)"
+    group_label: "Flags"
+    description: "Identifies remainder expired waste for Dry and Drinks products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
   }
 
@@ -103,8 +103,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_fcst_greater_sales ;;
     label: "Forecast Greater than Sales Flag"
-    group_label: "Markers"
-    description: "Marks if 90% of the total forecast is greater than total corrected sales on a report date level for product-location"
+    group_label: "Flags"
+    description: "Identifies if 90% of the total forecast is greater than total corrected sales on a report date level for product-location"
     hidden: no
   }
 
@@ -112,8 +112,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_freezer_issue ;;
     label: "Fridge/Freezer Breakdown Flag"
-    group_label: "Markers"
-    description: "Marks waste caused by a fridge or freezer breakage in spotting abnormal damaged waste on those products (waste > inbound, several sku in damaged...)"
+    group_label: "Flags"
+    description: "Identifies waste caused by a fridge or freezer breakage in spotting abnormal damaged waste on those products (waste > inbound, several sku in damaged...)"
     hidden: no
   }
 
@@ -121,8 +121,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_frozen ;;
     label: "Frozen Expired Flag"
-    group_label: "Markers"
-    description: "Marks remainder expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
+    group_label: "Flags"
+    description: "Identifies remainder expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
   }
 
@@ -130,16 +130,17 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_incorrect_pu ;;
     label: "Incorrect Purchase Units Flag"
-    group_label: "Markers"
-    description: "Marks product-locations that Have Fill Rate above 150% in more than 10 hubs in that week. 80% of all inbounds must have had an inbound issue"
+    group_label: "Flags"
+    description: "Identifies product-locations that Have Fill Rate above 150% in more than 10 hubs in that week. 80% of all inbounds must have had an inbound issue"
     hidden: no
   }
 
   dimension: flag_low_performer {
     type: yesno
     sql: ${TABLE}.flag_low_performer ;;
-    group_label: "Markers"
-    description: "Marks that product-locations are showing low performance"
+    group_label: "Flags"
+    label: "Low Performer Flag"
+    description: "Identifies that product-locations are showing low performance"
     hidden: no
   }
 
@@ -147,8 +148,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_over_fcst ;;
     label: "Over Forecast flag"
-    group_label: "Markers"
-    description: "Marks over forecasted Product-Locations"
+    group_label: "Flags"
+    description: "Identifies over forecasted Product-Locations"
     hidden: no
   }
 
@@ -156,8 +157,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_over_inbound ;;
     label: "Over Inbound flag"
-    group_label: "Markers"
-    description: "Marks over inbounded Product-Locations"
+    group_label: "Flags"
+    description: "Identifies over inbounded Product-Locations"
     hidden: no
   }
 
@@ -165,8 +166,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_promotion ;;
     label: "Promotion Flag"
-    group_label: "Markers"
-    description: "Marks Product-Locations with promotion + waste "
+    group_label: "Flags"
+    description: "Identifies Product-Locations with promotion + waste "
     hidden: no
   }
 
@@ -174,8 +175,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_sl1_too_early ;;
     label: "Shelf Life 1 Too Early Flag"
-    group_label: "Markers"
-    description: "Marks Shelf Life 1 products outbound expired or Too Good To Go not within the 2h before closing and after 4pm"
+    group_label: "Flags"
+    description: "Identifies Shelf Life 1 products outbound expired or Too Good To Go not within the 2h before closing and after 4pm"
     hidden: no
   }
 
@@ -183,8 +184,8 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_slgreater1_too_early ;;
     label: "Shelf Life >1 Too Early Flag"
-    group_label: "Markers"
-    description: "Marks expired outbound or too good to go outbound before expiry date"
+    group_label: "Flags"
+    description: "Identifies expired outbound or too good to go outbound before expiry date"
     hidden: no
 
   }
@@ -192,7 +193,7 @@ dimension: country_iso {
   dimension: hu_rotation_index {
     type: number
     sql: ${TABLE}.hu_rotation_index ;;
-    label: "HU Rotation"
+    label: "HU Rotation Index"
     description: "Handling Units Rotation for product-location"
     hidden: no
   }
@@ -207,7 +208,7 @@ dimension: country_iso {
 
   dimension_group: ingestion {
     type: time
-    timeframes: [raw, date, week, month, quarter, year]
+    timeframes: [date, week, month, year]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.ingestion_date ;;
@@ -235,7 +236,7 @@ dimension: country_iso {
   dimension: outbound_waste_eur {
     type: number
     sql: ${TABLE}.outbound_waste_eur ;;
-    label: "Sum Outbound Waste (eur)"
+    label: "Sum Outbound Waste (EUR)"
     description: "Amount of Waste for Product-Location"
     hidden: no
   }
@@ -243,7 +244,7 @@ dimension: country_iso {
   dimension: outbound_waste_item {
     type: number
     sql: ${TABLE}.outbound_waste_item ;;
-    label: "Sum Outbound Waste (items)"
+    label: "Sum Outbound Waste (Units)"
     description: "Amount of Items that have been marked as waste for Product-Location"
     hidden: no
   }
@@ -276,7 +277,7 @@ dimension: country_iso {
     type: yesno
     sql: ${TABLE}.flag_robbery ;;
     label: "Robbery Flag"
-    group_label: "Markers"
+    group_label: "Flags"
     description: "Marks potential hub robbery when we saw a high waste peak on several sku for the drinks or Cigarettes."
     hidden: no
   }
@@ -295,7 +296,7 @@ dimension: country_iso {
   dimension: risky_index {
     type: number
     sql: ${TABLE}.risky_index ;;
-    label: "Risky Product Index"
+    label: "Risky Products Index"
     description: "Risky Products' Index for Product-Location"
     hidden: no
   }
