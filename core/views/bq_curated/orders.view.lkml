@@ -4302,7 +4302,7 @@ view: orders {
   }
 
   measure: pct_delivery_in_time_raw {
-    group_label: "> Operations / Logistics *"
+    group_label: "> Operations / Logistics"
     label: "% Orders delivered on time"
     description: "Share of orders delivered on time. No tolerance added."
     type: number
