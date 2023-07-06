@@ -206,6 +206,78 @@ view: hub_staffing {
     sql: ${TABLE}.position_name ;;
   }
 
+  dimension: number_of_online_rider_minutes {
+    type: number
+    label: "# Online Minutes"
+    sql: ${TABLE}.number_of_online_rider_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_hub_one_tasks_minutes {
+    type: number
+    label: "# Hub One Tasks Minutes"
+    sql: ${TABLE}.number_of_rider_hub_one_tasks_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_equipment_issue_minutes {
+    type: number
+    label: "# Equipment Issue Minutes"
+    sql: ${TABLE}.number_of_rider_equipment_issue_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_large_order_support_minutes {
+    type: number
+    label: "# Large Order Support Minutes"
+    sql: ${TABLE}.number_of_rider_large_order_support_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_accident_minutes {
+    type: number
+    label: "# Accident Minutes"
+    sql: ${TABLE}.number_of_rider_accident_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_temporary_offline_break_minutes {
+    type: number
+    label: "# Temporary Offline Break Minutes"
+    sql: ${TABLE}.number_of_rider_temporary_offline_break_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_total_temporary_offline_minutes {
+    type: number
+    label: "# Total Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_total_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_unresponsive_minutes {
+    type: number
+    label: "# Unresponsive Minutes"
+    sql: ${TABLE}.number_of_rider_unresponsive_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
+  dimension: number_of_rider_other_temporary_offline_minutes {
+    type: number
+    label: "# Other Temporary Offline Minutes"
+    sql: ${TABLE}.number_of_rider_other_temporary_offline_minutes ;;
+    value_format_name: decimal_1
+    hidden: yes
+  }
+
   dimension_group: shift {
     type: time
     timeframes: [
@@ -310,39 +382,39 @@ view: hub_staffing {
 
   measure: sum_planned_hours{
     type: sum
-    label:"# Filled Hours (Incl. Deleted Excused No Show)"
-    description: "Number of Scheduled(Assigned) Hours (including deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    label: "# Filled (Assigned) Hours"
+    description: "# Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_planned_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_excluding_deleted_shifts{
     type: number
-    label:"# Filled Hours (excl. Deleted Excused No Show)"
-    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    label:"# Filled Hours without Deleted Excused No Show"
+    description: "Number of Scheduled(Assigned) Hours (excluding deleted shifts with missing punch and absence) Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${sum_planned_hours} - ${number_of_deleted_excused_no_show_minutes};;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external{
     type: sum
-    label: "# Filled External Hours"
-    description: "Number of Scheduled External Hours"
+    label: "# Filled (Assigned) External Hours"
+    description: "# Filled External Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_planned_minutes_external}/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_planned_hours_external_partnership{
     type: sum
-    label: "# Filled External Partnership Hours"
-    description: "Number of Scheduled External Partnership Hours"
+    label: "# Filled External Partnership Hours without Refilled Hours"
+    description: "Number of Scheduled External Partnership Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${TABLE}.number_of_planned_minutes_external_partnership/60;;
     value_format_name: decimal_1
   }
 
   measure: pct_assigned_hours_external_partnership {
-    label: "% Filled External Partnership Hours"
-    description: "Share of External Partnership Hours from total Filled Hours"
+    label: "% Filled External Partnership Hours without Refilled Hours"
+    description: "Share of External Partnership Hours from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${sum_planned_hours_external_partnership}/${sum_planned_hours};;
     value_format_name: percent_1
@@ -350,15 +422,15 @@ view: hub_staffing {
 
   measure: sum_planned_hours_external_one_time{
     type: sum
-    label: "# Filled External One-time Hours"
-    description: "Number of Scheduled External One-time Hours"
+    label: "# Filled External One-time Hours without Refilled Hours"
+    description: "Number of Scheduled External One-time Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql: ${TABLE}.number_of_planned_minutes_external_one_time/60;;
     value_format_name: decimal_1
   }
 
   measure: pct_assigned_hours_external_one_time {
-    label: "% Filled External One-time Hours"
-    description: "Share of External One-time Hours from total Filled Hours"
+    label: "% Filled External One-time Hours without Refilled Hours"
+    description: "Share of External One-time Hours from total Filled Hours Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${sum_planned_hours_external_one_time}/${sum_planned_hours};;
     value_format_name: percent_1
@@ -414,7 +486,7 @@ view: hub_staffing {
 
   measure: number_of_scheduled_hours {
     label: "# Scheduled Hours"
-    description: "# Scheduled Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# Scheduled Hours (Post-Adjustments) (Assigned + Open) Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours}+${sum_planned_hours};;
     value_format_name: decimal_1
@@ -422,7 +494,7 @@ view: hub_staffing {
 
   measure: number_of_scheduled_hours_external {
     label: "# Scheduled External Hours"
-    description: "# Scheduled External Hours (Post-Adjustments) (Assigned + Open)"
+    description: "# Scheduled External Hours (Post-Adjustments) (Assigned + Open) Excl. hours from shifts with project code = 'Refilled shift'"
     type: number
     sql: ${number_of_unassigned_hours_external}+${sum_planned_hours_external};;
     value_format_name: decimal_1
@@ -437,9 +509,9 @@ view: hub_staffing {
   }
 
   measure: pct_assigned_hours{
-    label:"% Assigned Hours"
+    label:"% Filled (Assigned) Hours"
     type: number
-    description: "Assigned Hours / (Assigned Hours + Open Hours)"
+    description: "Filled (Assigned) Hours / (Filled Hours + Open Hours) Excl. hours from shifts with project code = 'Refilled shift'"
     sql:(${sum_planned_hours})/nullif(${sum_planned_hours} + ${number_of_unassigned_hours},0) ;;
     value_format_name: percent_1
   }
@@ -456,7 +528,7 @@ view: hub_staffing {
   measure: number_of_unassigned_hours{
     type: sum
     label:"# Open Hours"
-    description: "Number of Unassigned(Open) Hours"
+    description: "Number of Unassigned(Open) Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:(${number_of_unassigned_minutes_internal}+${number_of_unassigned_minutes_external})/60;;
     value_format_name: decimal_1
   }
@@ -464,7 +536,7 @@ view: hub_staffing {
   measure: number_of_unassigned_hours_external{
     type: sum
     label: "# Open External Hours"
-    description: "Number of Unassigned(Open) External Hours"
+    description: "Number of Unassigned(Open) External Hours Excl. hours from shifts with project code = 'Refilled shift'"
     sql:${number_of_unassigned_minutes_external}/60;;
     value_format_name: decimal_1
   }
@@ -472,13 +544,13 @@ view: hub_staffing {
   measure: sum_no_show_hours{
     label:"# Actual No Show Hours"
     type: sum
-    description: "Sum of No Show Hours"
+    description: "# Shift hours with missing punch with an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')"
     sql:${number_of_no_show_minutes}/60;;
     value_format_name: decimal_1
   }
 
   measure: number_of_excused_no_show_minutes{
-    label:"# Excused No Show Hours (included in No show)"
+    label:"# Excused No Show Hours without Refilled Hours"
     type: sum
     description: "Sum of Excused No Show Hours (shifts with missing punch and absence)"
     sql:${TABLE}.number_of_excused_no_show_minutes/60;;
@@ -486,7 +558,7 @@ view: hub_staffing {
   }
 
   measure: number_of_unexcused_no_show_minutes{
-    label:"# Unexcused No Show Hours (included in No show)"
+    label:"# Unexcused No Show Hours without Refilled Hours"
     type: sum
     description: "Sum of Unexcused No Show Hours (shifts with missing punch and no absence)"
     sql:${TABLE}.number_of_unexcused_no_show_minutes/60;;
@@ -494,25 +566,25 @@ view: hub_staffing {
   }
 
   measure: number_of_deleted_excused_no_show_minutes{
-    label:"# Deleted Excused No Show Hours (included in No show)"
+    label:"# Deleted Excused No Show Hours without Refilled Hours"
     type: sum
-    description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence, where shift date <= deletion date)"
+    description: "Sum of Deleted Excused No Show Hours (deleted shifts with missing punch and absence)"
     sql:${TABLE}.number_of_deleted_excused_no_show_minutes/60;;
     value_format_name: decimal_1
   }
 
   measure: number_of_deleted_unexcused_no_show_minutes{
-    label:"# Deleted Unexcused No Show Hours (not included in No show)"
+    label:"# Deleted Unexcused No Show Hours (not included in No show) without Refilled Hours"
     type: sum
-    description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence, where shift date <= deletion date)"
+    description: "Sum of Deleted Unexcused No Show Hours (deleted shifts with missing punch and no absence)"
     sql:${TABLE}.number_of_deleted_unexcused_no_show_minutes/60;;
     value_format_name: decimal_1
   }
 
   measure: sum_no_show_hours_external{
-    label: "# No Show External Hours"
+    label: "# No Show External Hours without Refilled Hours"
     type: sum
-    description: "Sum of No Show External Hours"
+    description: "# External shift hours with missing punch with an absence applied or approved (incl. deleted shift and excl. shifts with project code = 'Refilled shift')"
     sql:${number_of_no_show_minutes_external}/60;;
     value_format_name: decimal_1
   }
@@ -531,6 +603,87 @@ view: hub_staffing {
     description: "Sum of Planned Break Duration Hours"
     sql:${TABLE}.number_of_planned_break_duration_minutes/60;;
     value_format_name: decimal_1
+  }
+
+  measure: number_of_online_rider_hours {
+    type: sum
+    label: "# Rider Online Hours"
+    description: "Number of hours rider spent online.
+    It is calculated based on rider state change reason in Workforce app."
+    sql: ${number_of_online_rider_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_hub_one_tasks_hours {
+    type: sum
+    label: "# Rider Hub One Tasks Hours"
+    description: "Number of hours rider spent temporary offline due to doing hub one tasks or shelf restocking.
+    It is calculated based on rider state change reason in Workforce app."
+    sql: ${number_of_rider_hub_one_tasks_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_equipment_issue_hours {
+    type: sum
+    label: "# Rider Equipment Issue Hours"
+    description: "Number of hours rider spent temporary offline due to equipment issues.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_large_order_support_hours {
+    type: sum
+    label: "# Rider Large Order Support Hours"
+    description: "Number of hours rider spent temporary offline due to supporting large orders.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_large_order_support_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_accident_hours {
+    type: sum
+    label: "# Rider Accident Hours"
+    description: "Number of hours rider spent temporary offline due to an accident.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_equipment_issue_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_temporary_offline_break_hours {
+    type: sum
+    label: "# Rider Temporary Offline Break Hours"
+    description: "Number of hours rider spent temporary offline due to taking break.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_temporary_offline_break_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_total_temporary_offline_hours {
+    type: sum
+    label: "# Rider Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_total_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_other_temporary_offline_hours {
+    type: sum
+    label: "# Rider Other Temporary Offline Break Hours"
+    description: "Number of hours rider spent temporary offline due to doing other tasks than hub one tasks, shelf restocking, equipment issues, supporting large orders, accident and breaks.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_other_temporary_offline_minutes}/60 ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_rider_unresponsive_hours {
+    type: sum
+    label: "# Temporary Offline Hours"
+    description: "Number of hours rider spent temporary offline due to: doing hub one tasks, equipment issues, supporting large orders, accidend and breaks.
+    It is calculated based on rider state change reason."
+    sql: ${number_of_rider_unresponsive_minutes}/60 ;;
+    value_format_name: decimal_2
   }
 
 }

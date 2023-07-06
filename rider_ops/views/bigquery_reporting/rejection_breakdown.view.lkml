@@ -4,7 +4,7 @@ view: rejection_breakdown {
 
   dimension: city {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
@@ -17,14 +17,14 @@ view: rejection_breakdown {
 
   dimension: country {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: applied {
     hidden: yes
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -40,7 +40,7 @@ view: rejection_breakdown {
   }
 
   dimension_group: rejection {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -57,14 +57,14 @@ view: rejection_breakdown {
 
   dimension: position {
     hidden: yes
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
 
   dimension: rejection_reason {
     hidden: no
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.rejection_reason ;;
   }
@@ -80,7 +80,7 @@ view: rejection_breakdown {
 
   dimension: date {
     hidden: yes
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -95,7 +95,7 @@ view: rejection_breakdown {
 
   parameter: date_granularity {
     hidden: yes
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Week" }
@@ -106,7 +106,7 @@ view: rejection_breakdown {
   ################### Measures
 
   measure: cnt_rejected_applicants {
-    group_label: "* Basic Counts *"
+    group_label: "> Basic Counts"
     type: sum
     #sql_distinct_key: concat(${country}, ${city}, ${position}, ${rejection_date}) ;;
     label: "# Rejected Applicants"

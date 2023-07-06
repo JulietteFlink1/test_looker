@@ -6,7 +6,7 @@ include: "/**/*.explore"
 explore: orders_discounts {
   extends: [order_orderline_cl]
   hidden: no
-  group_label: "03) Cart Discounts"
+  group_label: "Cart Discounts"
   label: "Order Cart Discounts"
   description: "Order data around Discount Codes created in the backend"
 

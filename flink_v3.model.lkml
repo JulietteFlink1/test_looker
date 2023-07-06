@@ -57,6 +57,11 @@ access_grant: can_access_pricing_margins {
   allowed_values: [ "Yes" ]
 }
 
+access_grant: can_access_pl {
+  user_attribute: access_pl
+  allowed_values: [ "Yes" ]
+}
+
 # END ------------------------ access_grant rules ----------------------------
 
 

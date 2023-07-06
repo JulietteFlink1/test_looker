@@ -51,6 +51,9 @@ view: vat_order {
   }
 
   dimension: user_email {
+
+    required_access_grants: [can_access_pii_customers]
+
     type: string
     sql: ${TABLE}.user_email ;;
   }

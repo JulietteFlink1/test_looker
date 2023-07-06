@@ -354,7 +354,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_wrong_delivery {
     label: "# Outbounded Items (Wrong Delivery)"
     description: "The number of inventory changes, that are based on wrong deliveries"
-    group_label: "* Inventory Changes Daily *"
+    group_label: "> Inventory Changes Daily"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [change_reason: "wrong-delivery"]
@@ -366,7 +366,7 @@ view: inventory_changes_daily {
   measure: sum_inventory_correction {
     label: "# Inventory Correction"
     description: "The sum of inventory changes related to inventory corrections"
-    group_label: "* Inventory Changes Daily *"
+    group_label: "> Inventory Changes Daily"
     type: sum
     sql: case when abs(${quantity_change}) <= 200 then  abs(${quantity_change}) end;; # remove outlier - requested by @Fabian Hardenberg
     filters: [change_reason: "inventory-correction"]
@@ -554,7 +554,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_t_1 {
     label: "# Outbounded Items (Waste) t-1"
     description: "The sum of all inventory changes, that ar related to waste t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "yesterday"]
@@ -565,7 +565,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_t_2 {
     label: "# Outbounded Items (Waste) t-2"
     description: "The sum of all inventory changes, that ar related to waste t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "2 days ago"]
@@ -576,7 +576,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_t_3 {
     label: "# Outbounded Items (Waste) t-3"
     description: "The sum of all inventory changes, that ar related to waste t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "3 days ago"]
@@ -587,7 +587,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_t_4 {
     label: "# Outbounded Items (Waste) t-4"
     description: "The sum of all inventory changes, that ar related to waste t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "4 days ago"]
@@ -600,7 +600,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_w_1 {
     label: "# Outbounded Items (Waste) w-1"
     description: "The sum of all inventory changes, that ar related to waste w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "1 week ago"]
@@ -611,7 +611,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_w_2 {
     label: "# Outbounded Items (Waste) w-2"
     description: "The sum of all inventory changes, that ar related to waste w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "2 weeks ago"]
@@ -622,7 +622,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_w_3 {
     label: "# Outbounded Items (Waste) w-3"
     description: "The sum of all inventory changes, that ar related to waste w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "3 weeks ago"]
@@ -633,7 +633,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_w_4 {
     label: "# Outbounded Items (Waste) w-4"
     description: "The sum of all inventory changes, that ar related to waste w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "4 week ago"]
@@ -648,7 +648,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_t_1 {
     label: "€ Outbounded Items (Waste) t-1"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "yesterday"]
@@ -659,7 +659,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_t_2 {
     label: "€ Outbounded Items (Waste) t-2"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "2 days ago"]
@@ -670,7 +670,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_t_3 {
     label: "€ Outbounded Items (Waste) t-3"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "3 days ago"]
@@ -681,7 +681,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_t_4 {
     label: "€ Outbounded Items (Waste) t-4"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "4 days ago"]
@@ -694,7 +694,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_w_1 {
     label: "€ Outbounded Items (Waste) w-1"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "1 week ago"]
@@ -705,7 +705,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_w_2 {
     label: "€ Outbounded Items (Waste) w-2"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "2 weeks ago"]
@@ -716,7 +716,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_w_3 {
     label: "€ Outbounded Items (Waste) w-3"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "3 weeks ago"]
@@ -727,7 +727,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_w_4 {
     label: "€ Outbounded Items (Waste) w-4"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "4 weeks ago"]
@@ -740,7 +740,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_wtd {
     label: "# Outbounded Items (Waste) WtD"
     description: "The sum of all inventory changes, that ar related to waste - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "this week", until_today: "yes"]
@@ -751,7 +751,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_wtd_w_1 {
     label: "# Outbounded Items (Waste) WtD w-1"
     description: "The sum of all inventory changes, that ar related to waste - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) ;;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "1 week ago", until_today: "yes"]
@@ -764,7 +764,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_wtd {
     label: "€ Outbounded Items (Waste) WtD"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "this week", until_today: "yes"]
@@ -776,7 +776,7 @@ view: inventory_changes_daily {
   measure: sum_outbound_waste_eur_wtd_w_1 {
     label: "€ Outbounded Items (Waste) WtD w-1"
     description: "The quantity '# Outbound (Waste)' multiplied by the latest product price (gross) - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
     type: sum
     sql: abs(${quantity_change}) * ${price_gross};;
     filters: [is_outbound_waste: "Yes", inventory_change_date: "1 week ago", until_today: "yes"]
@@ -793,7 +793,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_t_1 {
     label: "% Waste Quote (# Items) t-1"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_t_1} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_t_1} , 0 ) ;;
@@ -804,7 +804,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_t_2 {
     label: "% Waste Quote (# Items) t-2"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_t_2} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_t_2} , 0 ) ;;
@@ -815,7 +815,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_t_3 {
     label: "% Waste Quote (# Items) t-3"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_t_3} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_t_3} , 0 ) ;;
@@ -826,7 +826,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_t_4 {
     label: "% Waste Quote (# Items) t-4"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_t_4} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_t_4} , 0 ) ;;
@@ -839,7 +839,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_w_1 {
     label: "% Waste Quote (# Items) w-1"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_w_1} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_w_1} , 0 ) ;;
@@ -850,7 +850,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_w_2 {
     label: "% Waste Quote (# Items) w-2"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_w_2} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_w_2} , 0 ) ;;
@@ -861,7 +861,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_w_3 {
     label: "% Waste Quote (# Items) w-3"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_w_3} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_w_3} , 0 ) ;;
@@ -872,7 +872,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_w_4 {
     label: "% Waste Quote (# Items) w-4"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination w-2=4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_w_4} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_w_4} , 0 ) ;;
@@ -884,7 +884,7 @@ view: inventory_changes_daily {
     label: "% Waste Quote (# Items) WOW Growth (w-1 vs w-2)"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled
                   items in the same hub-sku-date combination - WoW Growth (w-1 vs w-2)"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_waste_quote_items_w_1} - ${pct_waste_quote_items_w_2}) / nullif( ${pct_waste_quote_items_w_2} , 0 ) ;;
@@ -901,7 +901,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) t-1"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination t-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_t_1} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_1} , 0 ) ;;
@@ -913,7 +913,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) t-2"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination  t-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_t_2} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_2} , 0 ) ;;
@@ -925,7 +925,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) t-3"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination  t-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_t_3} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_3} , 0 ) ;;
@@ -937,7 +937,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) t-4"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination  t-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_t_4} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_t_4} , 0 ) ;;
@@ -951,7 +951,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) w-1"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination w-1"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_w_1} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_1} , 0 ) ;;
@@ -963,7 +963,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) w-2"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination w-2"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_w_2} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_2} , 0 ) ;;
@@ -975,7 +975,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) w-3"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination w-3"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_w_3} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_3} , 0 ) ;;
@@ -987,7 +987,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) w-4"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination w-4"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_w_4} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_w_4} , 0 ) ;;
@@ -1000,7 +1000,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) WOW Growth (w-1 vs w-2)"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination - WOW Growth (w-1 vs w-2)"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_waste_quote_gmv_w_1} - ${pct_waste_quote_gmv_w_2}) / nullif( ${pct_waste_quote_gmv_w_2} , 0 ) ;;
@@ -1015,7 +1015,7 @@ view: inventory_changes_daily {
   measure: pct_waste_quote_items_wtd {
     label: "% Waste Quote (# Items) WtD"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled items in the same hub-sku-date combination - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_wtd} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_wtd} , 0 ) ;;
@@ -1027,7 +1027,7 @@ view: inventory_changes_daily {
     label: "% Waste Quote (# Items) WtD w-1"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled
                   items in the same hub-sku-date combination - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_wtd_w_1} / nullif( ${sku_hub_day_level_orders.sum_item_quantity_fulfilled_wtd_w_1} , 0 ) ;;
@@ -1040,7 +1040,7 @@ view: inventory_changes_daily {
     label: "% Waste Quote (# Items) WOW Growth - WtD"
     description: "The sum of out bounded inventory as waste divided by the number of fulfilled
                   items in the same hub-sku-date combination - WOW Growth - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_waste_quote_items_wtd} - ${pct_waste_quote_items_wtd_w_1})/nullif(${pct_waste_quote_items_wtd_w_1}, 0 ) ;;
@@ -1054,7 +1054,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) WtD"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_wtd} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd} , 0 ) ;;
@@ -1066,7 +1066,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) WtD w-1"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination - Previous week WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: ${sum_outbound_waste_eur_wtd_w_1} / nullif( ${sku_hub_day_level_orders.sum_item_price_fulfilled_gross_wtd_w_1} , 0 ) ;;
@@ -1078,7 +1078,7 @@ view: inventory_changes_daily {
     label: "% Waste Ratio (Item-Revenue) WOW Growth - WtD"
     description: "The value of out bounded products as waste (defined by the number out bounded * item price)
                   divided by the item revenue of sold products in the same hub-sku-date combination - WOW Growth - WtD"
-    group_label: "Demand Planning"
+    group_label: "> Demand Planning"
 
     type: number
     sql: (${pct_waste_quote_gmv_wtd}-${pct_waste_quote_gmv_wtd_t_1})/nullif( ${pct_waste_quote_gmv_wtd_t_1} , 0 ) ;;

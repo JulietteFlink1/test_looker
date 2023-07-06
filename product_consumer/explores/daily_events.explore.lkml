@@ -152,7 +152,11 @@ explore: daily_events {
             event_checkout_viewed.products,
             event_checkout_viewed.shipping_method_id,
             event_checkout_viewed.cart_id,
-            event_checkout_viewed.delivery_pdt]
+            event_checkout_viewed.delivery_pdt,
+            event_checkout_viewed.is_pdt_shown,
+            event_checkout_viewed.is_planned_delivery,
+            event_checkout_viewed.timeslot_start_hour,
+            event_checkout_viewed.timeslot_end_hour]
     sql_on: ${event_checkout_viewed.event_uuid} = ${daily_events.event_uuid}
       and {% condition global_filters_and_parameters.datasource_filter %} ${event_checkout_viewed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -211,7 +215,11 @@ explore: daily_events {
             event_order_placed.discount_value,
             event_order_placed.number_of_products_ordered,
             event_order_placed.amt_revenue_eur,
-            event_order_placed.rider_tip_value]
+            event_order_placed.rider_tip_value,
+            event_order_placed.is_pdt_shown,
+            event_order_placed.is_planned_delivery,
+            event_order_placed.timeslot_start_hour,
+            event_order_placed.timeslot_end_hour]
     sql_on: ${event_order_placed.event_id} = ${daily_events.event_uuid}
             and {% condition global_filters_and_parameters.datasource_filter %} ${event_order_placed.event_timestamp_date} {% endcondition %};;
     type: left_outer
@@ -243,14 +251,20 @@ explore: daily_events {
 
   join: event_sponsored_product_impressions {
     view_label: "Event: Sponsored Product Impressions"
-    fields: [event_sponsored_product_impressions.category_name, event_sponsored_product_impressions.category_id,
+    fields: [event_sponsored_product_impressions.category_name,
+      event_sponsored_product_impressions.category_id,
       event_sponsored_product_impressions.sub_category_name,
       event_sponsored_product_impressions.screen_name,
       event_sponsored_product_impressions.product_sku,
-      event_sponsored_product_impressions.product_placement, event_sponsored_product_impressions.product_position,
-      event_sponsored_product_impressions.ad_decision_id,event_sponsored_product_impressions.event_timestamp_date,
-      event_sponsored_product_impressions.number_of_ad_decisions_ids,event_sponsored_product_impressions.events,
+      event_sponsored_product_impressions.product_placement,
+      event_sponsored_product_impressions.product_position,
+      event_sponsored_product_impressions.ad_decision_id,
+      event_sponsored_product_impressions.event_timestamp_date,
+      event_sponsored_product_impressions.is_sponsored_product,
+      event_sponsored_product_impressions.number_of_ad_decisions_ids,
+      event_sponsored_product_impressions.events,
       event_sponsored_product_impressions.all_users,
+      event_sponsored_product_impressions.categories_with_reco_highlights
       ]
     sql_on: ${event_sponsored_product_impressions.event_id} = ${daily_events.event_uuid}
            and {% condition global_filters_and_parameters.datasource_filter %} ${event_sponsored_product_impressions.event_timestamp_date} {% endcondition %}  ;;
@@ -287,14 +301,19 @@ join: daily_violations_aggregates {
              daily_user_aggregates.users_with_cart_viewed, daily_user_aggregates.users_with_home_viewed,
              daily_user_aggregates.users_with_add_to_cart,
              daily_user_aggregates.users_with_address,
+            daily_user_aggregates.users_with_category_selected,
              daily_user_aggregates.daily_users_with_address,
              daily_user_aggregates.daily_users_with_product_search_viewed,
             daily_user_aggregates.daily_users_with_cart_viewed,
             daily_user_aggregates.daily_users_with_add_to_cart,
             daily_user_aggregates.daily_users_with_home_viewed,
             daily_user_aggregates.daily_users_with_product_details_viewed,
+            daily_user_aggregates.daily_users_with_category_selected,
+            daily_user_aggregates.is_category_selected,
             daily_user_aggregates.is_active_user,
-            daily_user_aggregates.daily_active_users
+            daily_user_aggregates.daily_active_users,
+            daily_user_aggregates.is_pdt_shown,
+            daily_user_aggregates.is_planned_delivery
     ]
     sql_on: ${daily_user_aggregates.user_uuid} = ${daily_events.anonymous_id}
       and ${daily_user_aggregates.event_date_at_date} = ${daily_events.event_date}

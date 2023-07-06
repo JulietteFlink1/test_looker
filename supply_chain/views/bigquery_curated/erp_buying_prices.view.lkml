@@ -25,6 +25,46 @@ view: erp_buying_prices {
     ]
   }
 
+  # all non-orderline related fields
+  set: erp_buying_prices_base {
+    fields: [
+      erp_vendor_name,
+      supplier_site,
+      erp_item_name,
+      is_price_promotional,
+      vendor_price,
+      amt_buying_price_net_eur,
+      amt_weighted_average_cost_net_eur,
+      amt_base_cost_net,
+      amt_net_cost_net,
+      amt_net_net_cost_net,
+      amt_dead_net_net_cost_net,
+      amt_pricing_cost_net,
+      report_date,
+      country_iso,
+      erp_vendor_id,
+      hub_code,
+      sku,
+      ctn_skus,
+      avg_vendor_price,
+      avg_amt_base_cost_net,
+      avg_amt_net_cost_net,
+      avg_amt_net_net_cost_net,
+      avg_amt_dead_net_net_cost_net,
+      avg_amt_pricing_cost_net,
+      avg_amt_base_cost_net,
+      avg_amt_net_cost_net,
+      avg_amt_logistic_cost_net,
+      avg_amt_net_net_cost_net,
+      avg_amt_partner_kickback_permanent_net,
+      avg_amt_partner_kickback_temporary_net,
+      avg_amt_dead_net_net_cost_net,
+      avg_amt_promo_funding_partner_net,
+      avg_amt_promo_funding_marketing_net,
+      avg_amt_promo_funding_supplier_net,
+      avg_amt_pricing_cost_net
+    ]
+  }
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Dimensions     ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -196,6 +236,116 @@ view: erp_buying_prices {
     value_format_name: decimal_4
     hidden: yes
   }
+
+
+  dimension: amt_base_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Amt Base Cost Net"
+    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    type: number
+    sql: ${TABLE}.amt_base_cost_net ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
+
+  dimension: amt_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Amt Net Cost Net"
+    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    type: number
+    sql: ${TABLE}.amt_net_cost_net ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
+
+  dimension: amt_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Amt Net Net Cost Net"
+    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    type: number
+    sql: ${TABLE}.amt_net_net_cost_net ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
+
+  dimension: amt_dead_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Amt Dead Net Net Cost Net"
+    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    type: number
+    sql: ${TABLE}.amt_dead_net_net_cost_net ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
+
+  dimension: amt_pricing_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Amt Pricing Cost Net"
+    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    type: number
+    sql: ${TABLE}.amt_pricing_cost_net ;;
+    value_format_name: decimal_4
+    hidden: yes
+  }
+
+
+  dimension: amt_logistic_cost_net {
+    label: "Logistic Cost (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_logistic_cost_net ;;
+  }
+
+
+  dimension: amt_partner_kickback_permanent_net {
+    label: "Partner Kickback Permanent (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_partner_kickback_permanent_net ;;
+  }
+
+
+  dimension: amt_partner_kickback_temporary_net {
+    label: "Partner Kickback Temporary (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns.Either an absolute value or a percentage of the net cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_partner_kickback_temporary_net ;;
+  }
+
+
+  dimension: amt_promo_funding_partner_net {
+    label: "Promo Funding Partner (Net)"
+    description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_partner_net ;;
+  }
+
+
+  dimension: amt_promo_funding_marketing_net {
+    label: "Promo Funding Marketing (Net)"
+    description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_marketing_net ;;
+  }
+
+
+  dimension: amt_promo_funding_supplier_net {
+    label: "Promo Funding Supplier (Net)"
+    description: "Promo funding amount accounts for revenues generated from suppliers when offering certain products"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_supplier_net ;;
+  }
+
 
   # =========  hidden   =========
   dimension: currency {
@@ -506,6 +656,116 @@ view: erp_buying_prices {
     ${sum_total_cost}
     {% endif %}
     ;;
+  }
+
+
+
+  measure: avg_amt_base_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Base Cost (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_base_cost_net} ;;
+    value_format_name: decimal_4
+  }
+
+
+  measure: avg_amt_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Net Cost (Net)"
+    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_net_cost_net} ;;
+    value_format_name: decimal_4
+  }
+
+
+  measure: avg_amt_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Net Net Cost (Net)"
+    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_net_net_cost_net} ;;
+    value_format_name: decimal_4
+  }
+
+
+  measure: avg_amt_dead_net_net_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Dead Net Net Cost (Net)"
+    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_dead_net_net_cost_net} ;;
+    value_format_name: decimal_4
+  }
+
+
+  measure: avg_amt_pricing_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Pricing Cost (Net)"
+    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_pricing_cost_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_logistic_cost_net {
+    label: "AVG Logistic Cost (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_logistic_cost_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_partner_kickback_permanent_net {
+    label: "AVG Partner Kickback Permanent (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_partner_kickback_permanent_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_partner_kickback_temporary_net {
+    label: "AVG Partner Kickback Temporary (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns.Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_partner_kickback_temporary_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_promo_funding_partner_net {
+    label: "AVG Promo Funding Partner (Net)"
+    description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_promo_funding_partner_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_promo_funding_marketing_net {
+    label: "AVG Promo Funding Marketing (Net)"
+    description: "Promo funding amount accounts for revenues generated from partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_promo_funding_marketing_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_promo_funding_supplier_net {
+    label: "AVG Promo Funding Supplier (Net)"
+    description: "Promo funding amount accounts for revenues generated from suppliers when offering certain products"
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_promo_funding_supplier_net} ;;
+    value_format_name: eur
   }
 
 
