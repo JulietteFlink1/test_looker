@@ -95,7 +95,7 @@ view: waste_waterfall_daily {
     sql: ${TABLE}.flag_dry_drinks ;;
     label: "Dry/Drinks Expired Flag"
     group_label: "Flags"
-    description: "Identifies remainder expired waste for Dry and Drinks products, as it is not likely to happen often (<0.5% waste target)"
+    description: "Identifies remaining expired waste for Dry and Drinks products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
   }
 
@@ -122,7 +122,7 @@ view: waste_waterfall_daily {
     sql: ${TABLE}.flag_frozen ;;
     label: "Frozen Expired Flag"
     group_label: "Flags"
-    description: "Identifies remainder expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
+    description: "Identifies remaining expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
   }
 
