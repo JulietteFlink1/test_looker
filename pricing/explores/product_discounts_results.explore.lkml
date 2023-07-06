@@ -1,6 +1,6 @@
 include: "/**/*.view"
 
-  # this explore was created by Bruno Wolfram
+  # this explore was created by Bruno Wolfram - July.23
   # it is based on the ticket https://goflink.atlassian.net/browse/DATA-6001
   # ... and aims to make it easier to check and compare for promotion performance
 
@@ -9,6 +9,25 @@ explore: product_discounts_results {
   group_label: "Pricing"
   label: "Product Discounts Results"
   hidden: no
+
+  sql_always_where:{% condition global_filters_and_parameters.datasource_filter %} ${product_discounts_results.valid_from} {% endcondition %};;
+
+  access_filter: {
+    field: product_discounts_results.country_iso
+    user_attribute: country_iso
+  }
+
+  always_filter: {
+    filters: [
+      global_filters_and_parameters.datasource_filter: "last 7 days",
+      product_discounts_results.country_iso: ""
+    ]
+  }
+
+  join: global_filters_and_parameters {
+    sql: ;;
+  relationship: one_to_one
+}
 
   # ~~~~~~~~~~~~~~~~~~~~~~ Hub Tiers  ~~~~~~~~~~~~~~~~~~~~~~ #
   join: geographic_pricing_hub_cluster {

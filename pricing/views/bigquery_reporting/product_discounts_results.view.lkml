@@ -1,7 +1,7 @@
 view: product_discounts_results {
   sql_table_name: `flink-data-prod.reporting.product_discounts_results`
   ;;
-  # this view was created by Bruno Wolfram
+  # this view was created by Bruno Wolfram - July.23
   # it is based on the ticket https://goflink.atlassian.net/browse/DATA-6001
   # ... and aims to make it easier to check and compare for promotion performance
 
