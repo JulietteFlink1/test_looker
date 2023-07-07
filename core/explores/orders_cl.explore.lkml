@@ -20,8 +20,8 @@ explore: orders_cl {
   hidden: no
 
   group_label: "01) Performance"
-  label: "Orders"
-  description: "General Business Performance - Orders, Revenue, etc."
+  label: "Orders (order-level data)"
+  description: "This explore contains all attributes of an order, and can be used for general business performance - order volumes, GMV, etc."
 
   view_label: "Orders"
 

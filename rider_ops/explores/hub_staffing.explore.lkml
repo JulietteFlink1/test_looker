@@ -2,7 +2,7 @@ include: "/**/hub_staffing.view"
 include: "/**/hubs_ct.view"
 
 explore: hub_staffing {
-  group_label: "Rider Ops"
+  group_label: "Last Mile & WFM"
   view_label: "* Hub Staffing *"
   label: "Hub Staffing"
   description: "Hub Staffing KPIs such as # worked hours,# planned hours, # no_show etc ."
