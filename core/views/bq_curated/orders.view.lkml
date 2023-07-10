@@ -3844,36 +3844,36 @@ view: orders {
     alias: [sum_total_fees]
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Gross)"
-    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross) and Late Night Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross), Late Night Fees (Gross) and SUP Fees (Gross)"
     type: number
-    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross};;
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross} + ${sum_amt_sup_fee_gross_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_gross {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Gross)"
-    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + and Late Night Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + Late Night Fees (Gross) + SUP Fees (Gross)"
     type: average
-    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross}) ;;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross} + ${amt_sup_fee_gross_eur}) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_total_fees_net {
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Net)"
-    description: "Sum of Delivery Fees (Net), Storage Fees (Net) and Late Night Fees (Net)"
+    description: "Sum of Delivery Fees (Net), Storage Fees (Net), Late Night Fees (Net) and SUP Fees (Net)"
     type: number
-    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net};;
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net} + ${sum_amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_net {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Net)"
-    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net) + SUP Fees (Net)"
     type: average
-    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0);;
+    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0) + ${amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
