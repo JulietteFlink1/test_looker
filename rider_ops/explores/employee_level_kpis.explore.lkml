@@ -3,7 +3,7 @@ include: "/**/hubs_ct.view"
 
 explore: employee_level_kpis {
   group_label: "Last Mile & WFM"
-  view_label: "Last Mile & WFM"
+  view_label: "Employee Level KPIs"
   label: "Employee Level KPIs"
   description: "Daily aggregation of shift, ops and NPS related kpis as well as employment info in per distinct hub employee and position excluding one-time externals since they dont have Quinyx accounts"
   hidden: no
