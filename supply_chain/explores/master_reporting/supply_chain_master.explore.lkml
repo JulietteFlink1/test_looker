@@ -26,7 +26,7 @@ explore: supply_chain_master {
 
   hidden: no
 
-  persist_with: flink_daily_datagroup
+  persist_with: supply_chain_daily_datagroup
 
   label: "Supply Chain Master Explore"
   group_label: "Supply Chain"
