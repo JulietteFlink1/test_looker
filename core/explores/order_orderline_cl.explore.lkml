@@ -7,7 +7,7 @@ explore: order_orderline_cl {
   extends: [orders_cl]
 
   group_label: "01) Performance"
-  label:       "Orders & Lineitems (lineitem-level data)"
+  label:       "Orders & Line Items (incl. SKU / Item / Category data)"
   description: "This explore contains data on a lineitem-level. It's used to monitor product quantities sold, their prices, margins, GMV, etc."
   hidden: no
 
