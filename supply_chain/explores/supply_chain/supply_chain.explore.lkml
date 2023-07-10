@@ -33,7 +33,7 @@ explore: supply_chain {
 
   tags: ["supply_chain_explore"]
 
-  persist_with: flink_daily_datagroup
+  persist_with: supply_chain_daily_datagroup
 
 
 
