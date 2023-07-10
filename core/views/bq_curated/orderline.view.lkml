@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.order_lineitems`
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -616,6 +616,36 @@ view: orderline {
     sql: ${TABLE}.number_of_products_with_post_delivery_issues ;;
   }
 
+  ########### SINGLE USE PLASTIC FEES ##########
+
+  dimension: amt_sup_fee_gross_eur {
+    type: number
+    label: "AMT SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_sup_fee_net_eur {
+    type: number
+    label: "AMT SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_gross_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_net_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_net_eur ;;
+  }
+
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # ~~~~~~~~~~~~~~~     Measures     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -774,6 +804,44 @@ view: orderline {
     type: sum
     value_format_name: euro_accounting_2_precision
     group_label: "> Monetary Metrics"
+  }
+
+############### SINGLE USE PLASTIC FEES ################
+
+  measure: sum_amt_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Metrics"
+    label: "SUM SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Metrics"
+    label: "SUM SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Metrics"
+    label: "SUM Refund SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Metrics"
+    label: "SUM Refund SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
   }
 
 

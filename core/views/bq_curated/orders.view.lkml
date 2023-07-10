@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: `flink-data-prod.curated.orders`
+  sql_table_name: `flink-data-dev.dbt_vbreda_curated.orders`
     ;;
 
   view_label: "* Orders *"
@@ -1913,6 +1913,37 @@ view: orders {
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
+  ########### SINGLE USE PLASTIC FEES ##########
+
+  dimension: amt_sup_fee_gross_eur {
+    type: number
+    label: "AMT SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_sup_fee_net_eur {
+    type: number
+    label: "AMT SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_gross_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_net_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_net_eur ;;
+  }
+
+
   ########### LATE NIGHT FEES ##########
 
   dimension: amt_late_night_fee_gross {
@@ -3681,6 +3712,82 @@ view: orders {
 
     type: average
     sql: ${amt_storage_fee_net};;
+    value_format_name: euro_accounting_2_precision
+  }
+
+############### SINGLE USE PLASTIC FEES ################
+
+  measure: sum_amt_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  #### Averages
+
+  measure: avg_amt_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
     value_format_name: euro_accounting_2_precision
   }
 
