@@ -2936,7 +2936,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM SUP Fee (Gross)"
-    description: "Gross amount of Single Use Plastic fee paid by the customer."
+    description: "Gross amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_sup_fee_gross_eur} ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -2945,7 +2946,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM SUP Fee (Net)"
-    description: "Net amount of Single Use Plastic fee paid by the customer."
+    description: "Net amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_sup_fee_net_eur} ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -2954,7 +2956,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM VAT SUP Fee"
-    description: "VAT amount of Single Use Plastic fee paid by the customer. "
+    description: "VAT amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_vat_sup_fee_total} ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -2965,7 +2968,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM Refund SUP Fee (Gross)"
-    description: "Gross amount of Single Use Plastic fee refunded to the customer."
+    description: "Gross amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_refund_sup_fee_gross_eur} ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -2974,7 +2978,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM Refund SUP Fee (Net)"
-    description: "Net amount of Single Use Plastic fee refunded to the customer."
+    description: "Net amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_refund_sup_fee_net_eur} ;;
     value_format_name: euro_accounting_2_precision
   }
@@ -2983,7 +2988,8 @@ view: vat_order {
     type: sum
     group_label: "> Single Use Plastic Fee"
     label: "SUM VAT Refund SUP Fee"
-    description: "VAT amount of Single Use Plastic fee refunded to the customer."
+    description: "VAT amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
     sql: ${amt_vat_refund_sup_fee_total} ;;
     value_format_name: euro_accounting_2_precision
   }
