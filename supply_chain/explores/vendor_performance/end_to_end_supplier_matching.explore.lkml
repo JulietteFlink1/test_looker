@@ -10,6 +10,8 @@ include: "/core/views/bq_curated/hubs_ct.view"
 
 explore: end_to_end_supplier_matching {
 
+  persist_with: supply_chain_daily_datagroup
+
   label: "Supplier End-to-End matching"
   description: "This Explores provides matching data for PO to DESADV to Inbounds and consideres also inbounds on different dates then the promised delivery dates of DESADV or PO"
   group_label: "Supply Chain"
