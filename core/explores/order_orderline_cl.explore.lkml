@@ -7,8 +7,8 @@ explore: order_orderline_cl {
   extends: [orders_cl]
 
   group_label: "01) Performance"
-  label:       "Orders & Lineitems"
-  description: "Orderline Items sold quantities, prices, gmv, etc."
+  label:       "Orders & Line Items (incl. SKU / Item / Category data)"
+  description: "This explore contains data on a lineitem-level. It's used to monitor product quantities sold, their prices, margins, GMV, etc."
   hidden: no
 
   # take all fields except those in the pricing_fields_refined set in erp_product_hub_vendor_assignment_v2_buying_prices.view
