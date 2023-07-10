@@ -30,7 +30,7 @@ view: orders_with_ops_metrics {
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
       column: avg_delivery_time_estimate {}
-      column: avg_promised_eta {}
+      column: avg_promised_pdt {}
       column: avg_pdt_mm_ss {}
       column: avg_pick_pack_handling_time_minutes {}
       column: avg_potential_rider_handling_time_without_stacking {}
@@ -544,7 +544,8 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_promised_eta {
+  measure: avg_promised_pdt {
+    alias: [avg_promised_eta]
     group_label: "> Operations / Logistics"
     label: "AVG PDT"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"
