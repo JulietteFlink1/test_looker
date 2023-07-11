@@ -3,25 +3,25 @@ view: rider_marketing_spend {
     ;;
 
   dimension: channel {
-    group_label: "* Channel Dimensions *"
+    group_label: "> Channel Dimensions"
     type: string
     sql: ${TABLE}.channel ;;
   }
 
   dimension: city {
-    group_label: "* Channel Dimensions *"
+    group_label: "> Channel Dimensions"
     type: string
     sql: ${TABLE}.city ;;
   }
 
   dimension: country {
-    group_label: "* Channel Dimensions *"
+    group_label: "> Channel Dimensions"
     type: string
     sql: ${TABLE}.country_iso ;;
   }
 
   dimension_group: report {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     type: time
     timeframes: [
       raw,
@@ -37,7 +37,7 @@ view: rider_marketing_spend {
   }
 
   dimension: position {
-    group_label: "* Funnel Dimensions *"
+    group_label: "> Funnel Dimensions"
     type: string
     sql: ${TABLE}.position ;;
   }
@@ -58,7 +58,7 @@ view: rider_marketing_spend {
   ################ Measures
 
   measure: amt_spend {
-    group_label: "* Monetary *"
+    group_label: "> Monetary"
     type: number
     label: "Marketing Spend"
     sql: ${spend} ;;

@@ -7,7 +7,7 @@ include: "/**/hub_uph_compliance.view"
 explore: hub_uph_sessions {
   view_name: hub_uph_sessions
   view_label: "Hub UPH Sessions"
-  group_label: "Hub Ops"
+  group_label: "Operations"
   label: "Hub UPH Sessions"
   description: "This Explore is on employee, shift and session level. It is based on Hub One events and Quinyx data. It contains hub productivity metrics (UPH) as well as the breakdown of hub worked hours between direct and idle."
 

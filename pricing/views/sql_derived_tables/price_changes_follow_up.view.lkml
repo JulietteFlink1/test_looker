@@ -588,7 +588,7 @@ from pre_final a
 
 
   dimension_group: created {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Order"
     description: "Order Placement Date"
     type: time
@@ -627,7 +627,7 @@ from pre_final a
 
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -637,7 +637,7 @@ from pre_final a
   }
 
   dimension: valid_from {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:

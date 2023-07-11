@@ -215,14 +215,14 @@ left join shifts_assigned
 
 
   dimension: date {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     type: date
     datatype: date
     sql: ${TABLE}.date ;;
   }
 
   dimension_group: block_starts_at {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     type: time
     timeframes: [
       time
@@ -232,7 +232,7 @@ left join shifts_assigned
 
 
   dimension_group: block_ends_at {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     type: time
     timeframes: [
       time
@@ -241,7 +241,7 @@ left join shifts_assigned
   }
 
   dimension: block_starts_pivot {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     label: "Block"
     type: date_time
     sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin"),
@@ -250,7 +250,7 @@ left join shifts_assigned
   }
 
   dimension: block_ends_pivot {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     label: "Block ends at pivot"
     type: date_time
     sql: TIMESTAMP(concat("2021-01-01", " ", extract(hour from ${TABLE}.block_ends_at AT TIME ZONE "Europe/Berlin"),
@@ -295,7 +295,7 @@ left join shifts_assigned
   }
 
   dimension: required_rider_hours {
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     label: "# Required Rider Hours"
     hidden: yes
     sql: coalesce(${orders} / NULLIF(({% parameter rider_UTR %}/2), 0), 0)  ;;
@@ -418,7 +418,7 @@ left join shifts_assigned
   }
 
   dimension: forecasted_dimension {
-    #group_label: "* Dynamic KPI Fields *"
+    #group_label: "> Dynamic KPI Fields"
     #label: "Forecasted"
     hidden: yes
     #label_from_parameter: KPI_parameter
@@ -442,7 +442,7 @@ left join shifts_assigned
 
 
   dimension: filled_dimension {
-    #group_label: "* Dynamic KPI Fields *"
+    #group_label: "> Dynamic KPI Fields"
     #label: "Filled"
     hidden: yes
     #label_from_parameter: KPI_parameter
@@ -490,7 +490,7 @@ left join shifts_assigned
   ###### Parameters
 
   parameter: rider_UTR{
-    group_label: " * Parameters * "
+    group_label: ">  Parameters"
     label: "Rider UTR"
     type: unquoted
     allowed_value: { value: "1" }
@@ -504,7 +504,7 @@ left join shifts_assigned
   }
 
   parameter: timeline_base {
-    group_label: " * Parameters * "
+    group_label: ">  Parameters"
     label: "Timeline Base"
     type: unquoted
     allowed_value: { value: "Date" }
@@ -514,7 +514,7 @@ left join shifts_assigned
 
   parameter: KPI_parameter {
     label: "* KPI Parameter *"
-    group_label: " * Parameters * "
+    group_label: ">  Parameters"
     type: unquoted
     allowed_value: { value: "rider_hours" label: "# Rider Hours"}
     allowed_value: { value: "riders" label: "# Riders"}
@@ -525,7 +525,7 @@ left join shifts_assigned
   }
 
   dimension: picker_utr {
-    group_label: " * Parameters * "
+    group_label: ">  Parameters"
     label: "Picker UTR"
     type: number
     sql: {% parameter rider_UTR %} * 5 ;;
@@ -540,84 +540,84 @@ left join shifts_assigned
   }
 
   measure: sum_predicted_orders {
-    group_label: " * Orders * "
+    group_label: ">  Orders"
     label: "# Forecasted Orders"
     sql: ${predicted_orders} ;;
     type: sum
   }
 
   measure: sum_orders {
-    group_label: " * Orders * "
+    group_label: ">  Orders"
     label: "# Orders"
     sql: ${orders} ;;
     type: sum
   }
 
   measure: sum_required_rider_hours {
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     label: "# Required Rider Hours"
     sql: ${required_rider_hours} ;;
     type: sum
   }
 
   measure: sum_predicted_orders_lower_bound {
-    group_label: " * Orders * "
+    group_label: ">  Orders"
     label: "# Predicted Orders Lower Bound"
     sql: ${lower_bound} ;;
     type: sum
   }
 
   measure: sum_predicted_orders_upper_bound {
-    group_label: " * Orders * "
+    group_label: ">  Orders"
     label: "# Predicted Orders Upper Bound"
     sql: ${upper_bound} ;;
     type: sum
   }
 
   measure: sum_planned_riders {
-    group_label: " * Riders * "
+    group_label: ">  Riders"
     label: "# Planned Riders"
     sql: ${planned_riders} ;;
     type: sum
   }
 
   measure: sum_planned_pickers {
-    group_label: " * Pickers * "
+    group_label: ">  Pickers"
     label: "# Planned Pickers"
     sql: ${planned_pickers} ;;
     type: sum
   }
 
   measure: sum_filled_riders {
-    group_label: " * Riders * "
+    group_label: ">  Riders"
     label: "# Filled Riders"
     sql: ${filled_riders} ;;
     type: sum
   }
 
   measure: sum_filled_pickers {
-    group_label: " * Pickers * "
+    group_label: ">  Pickers"
     label: "# Filled Pickers"
     sql: ${filled_pickers} ;;
     type: sum
   }
 
   measure: sum_planned_rider_hours {
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     label: "# Planned Rider Hours"
     sql: ${planned_rider_hours} ;;
     type: sum
   }
 
   measure: sum_planned_picker_hours {
-    group_label: " * Picker Hours * "
+    group_label: ">  Picker Hours"
     label: "# Planned Picker Hours"
     sql: ${planned_picker_hours} ;;
     type: sum
   }
 
   measure: sum_filled_rider_hours {
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     label: "# Filled Rider Hours"
     sql: ${filled_rider_hours} ;;
     type: sum
@@ -625,7 +625,7 @@ left join shifts_assigned
 
 
   measure: sum_filled_picker_hours {
-    group_label: " * Picker Hours * "
+    group_label: ">  Picker Hours"
     label: "# Filled Picker Hours"
     sql: ${filled_picker_hours} ;;
     type: sum
@@ -633,28 +633,28 @@ left join shifts_assigned
 
 
   measure: sum_forecasted_riders {
-    group_label: " * Riders * "
+    group_label: ">  Riders"
     label: "# Forecasted Riders"
     type: sum
     sql: ${forecasted_riders} ;;
   }
 
   measure: sum_forecasted_pickers {
-    group_label: " * Pickers * "
+    group_label: ">  Pickers"
     label: "# Forecasted Pickers"
     type: sum
     sql: ${forecasted_pickers} ;;
   }
 
   measure: sum_forecasted_rider_hours {
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     label: "# Forecasted Rider Hours"
     type: sum
     sql: ${forecasted_rider_hours} ;;
   }
 
   measure: sum_forecasted_picker_hours {
-    group_label: " * Picker Hours * "
+    group_label: ">  Picker Hours"
     label: "# Forecasted Picker Hours"
     type: sum
     sql: ${forecasted_picker_hours} ;;
@@ -676,7 +676,7 @@ left join shifts_assigned
   }
 
   dimension: start_time {
-    group_label: " * Dates * "
+    group_label: ">  Dates"
     label: "Start time"
     type: string
     sql:cast(extract(time from ${TABLE}.block_starts_at AT TIME ZONE "Europe/Berlin") as string) ;;
@@ -699,7 +699,7 @@ left join shifts_assigned
   ####### Dynamic Measures
 
   measure: KPI_forecasted {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "Forecasted"
     #label_from_parameter: KPI_parameter
     #value_format: "#,##0.00"
@@ -721,7 +721,7 @@ left join shifts_assigned
   }
 
   measure: KPI_planned {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "Planned"
     #label_from_parameter: KPI_parameter
     #value_format: "#,##0.00"
@@ -743,7 +743,7 @@ left join shifts_assigned
   }
 
   measure: KPI_filled {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "Filled"
     #label_from_parameter: KPI_parameter
     #value_format: "#,##0.00"
@@ -768,7 +768,7 @@ left join shifts_assigned
   #  #type: number
   #  sql: ${delta_hours_actuals} ;;
   #  label: "Delta Between Filled and Required Rider Hours"
-  #  group_label: " * Rider Hours * "
+  #  group_label: ">  Rider Hours"
   #}
 
   measure: count_blocks {
@@ -876,7 +876,7 @@ left join shifts_assigned
 
   measure: sum_punched_rider_hours {
     label: "# Punched Rider Hours"
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     type: sum
     sql: ${punched_rider_hours} ;;
     value_format_name: decimal_1
@@ -884,7 +884,7 @@ left join shifts_assigned
 
   measure: sum_punched_picker_hours {
     label: "# Punched Picker Hours"
-    group_label: " * Picker Hours * "
+    group_label: ">  Picker Hours"
     type: sum
     sql: ${punched_picker_hours} ;;
     value_format_name: decimal_1
@@ -893,7 +893,7 @@ left join shifts_assigned
   measure: delta_filled_required_hours {
     description: "Delta Between Filled and Required Rider Hours"
     label: "Delta Between Filled and Required Rider Hours"
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     type: sum
     hidden: no
     sql: ${filled_rider_hours} - ${required_rider_hours};;
@@ -903,7 +903,7 @@ left join shifts_assigned
   measure: delta_punched_required_hours {
     description: "Delta Between Punched and Required Rider Hours"
     label: "Delta Between Punched and Required Rider Hours"
-    group_label: " * Rider Hours * "
+    group_label: ">  Rider Hours"
     type: sum
     hidden: no
     sql: ${punched_rider_hours} - ${required_rider_hours};;
@@ -914,7 +914,7 @@ left join shifts_assigned
   ####### Measures Hub-Leaderboard
   measure: sum_filled_ext_rider_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: Filled Ext. Rider"
     sql: ${TABLE}.filled_ext_rider_hours ;;
     hidden: no
@@ -924,7 +924,7 @@ left join shifts_assigned
 
   measure: sum_filled_no_show_rider_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: No Show Rider"
     sql: ${TABLE}.filled_no_show_rider_hours ;;
     hidden: no
@@ -934,7 +934,7 @@ left join shifts_assigned
 
   measure: sum_filled_ext_picker_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: Filled Ext. Pickers"
     sql: ${TABLE}.filled_ext_picker_hours ;;
     hidden: no
@@ -943,7 +943,7 @@ left join shifts_assigned
   }
   measure: sum_filled_no_show_picker_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: No Show Pickers"
     sql: ${TABLE}.filled_no_show_picker_hours ;;
     hidden: no
@@ -953,7 +953,7 @@ left join shifts_assigned
 
   measure: sum_unfilled_picker_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: Unfilled Pickers"
     type: number
     value_format_name: decimal_1
@@ -966,7 +966,7 @@ left join shifts_assigned
 
   measure: sum_unfilled_rider_hours {
     view_label: "Hub Leaderboard"
-    group_label: "Hub Leaderboard - Shift Metrics"
+    group_label: "> Hub Leaderboard - Shift Metrics"
     label: "Hours: Unfilled Riders"
     type: number
     value_format_name: decimal_1

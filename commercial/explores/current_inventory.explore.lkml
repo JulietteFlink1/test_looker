@@ -86,7 +86,7 @@ explore: current_inventory {
       ;;
     relationship: one_to_many
     type: left_outer
-    sql_where: (${inventory.is_most_recent_record} = TRUE) ;;
+
   }
 
   join: order_lineitems {

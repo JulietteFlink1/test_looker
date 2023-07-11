@@ -25,6 +25,11 @@ datagroup: flink_hourly_datagroup {
   sql_trigger: SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP());;
 }
 
+datagroup: supply_chain_daily_datagroup {
+  # once per day at 8 a.m. UTC
+  sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*  8  )/(60*60*24));;
+}
+
 datagroup: flink_daily_datagroup {
   # once per day at 3 a.m. UTC
   sql_trigger: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*  3  )/(60*60*24));;
@@ -54,6 +59,11 @@ access_grant: can_access_pii_hub_employees {
 
 access_grant: can_access_pricing_margins {
   user_attribute: access_pricing_margins
+  allowed_values: [ "Yes" ]
+}
+
+access_grant: can_access_pl {
+  user_attribute: access_pl
   allowed_values: [ "Yes" ]
 }
 

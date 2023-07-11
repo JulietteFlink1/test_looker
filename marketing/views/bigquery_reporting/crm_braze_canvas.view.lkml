@@ -178,7 +178,7 @@ view: crm_braze_canvas {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: sum_total_emails_sent {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unique Sents"
     description: "The number of unique recipients of an email canvas"
     type: sum
@@ -187,7 +187,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_emails_bounced {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Bounces"
     description: "The number of emails that have been bounced by the customers email provider"
     type: sum
@@ -196,7 +196,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_emails_delivered {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Deliveries"
     description: "The number of emails that have been delivered to the customer (aka they have been received)"
     type: sum
@@ -205,7 +205,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_unique_emails_opened {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unique Opens"
     description: "The number of unique opens of an email - one customer can be counted only once per a send-out"
     type: sum
@@ -214,7 +214,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_emails_opened {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Total Opens"
     description: "The number of unique opens of an email - one customer can be counted N times per a send-out"
     type: sum
@@ -223,7 +223,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_unique_emails_clicked {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unique Clicks"
     description: "The number of unique clicks of an email - one customer can be counted only once per a send-out"
     type: sum
@@ -232,7 +232,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_emails_clicked {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Total Clicks"
     description: "The number of unique clicks of an email - one customer can be counted N times per a send-out"
     type: sum
@@ -241,7 +241,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_unique_unsubscribed {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unsubscribes"
     description: "The number of customers that have clicked on the unsubscribe-link"
     type: sum
@@ -250,7 +250,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_unique_users_orders {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unique Users with Orders "
     description: "Number of unique users with at leats 1 order that happened in the 12h window after the last email opening"
     type: sum
@@ -259,7 +259,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_orders {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Total Orders "
     description: "Number of orders that happened in the 12h window after the last email opening"
     type: sum
@@ -268,7 +268,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_orders_with_vouchers {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Total Orders with Discount Code"
     description: "Number of orders with Discount Code that happened in the 12h window after the last email opening"
     type: sum
@@ -278,7 +278,7 @@ view: crm_braze_canvas {
 
   measure: sum_unique_users_denominator {
     hidden:  yes
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Unique Deliveries or Opens"
     description: "Denominator for Order Rate"
     type: sum
@@ -287,7 +287,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_vouchers_sent {
-    group_label: "Absolute"
+    group_label: "> Absolute"
     label: "# Total Discount Code Sent"
     description: "Number of Discount Code that sent in orders that happened in the 12h after the last email open"
     type: sum
@@ -296,7 +296,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_discount_amount {
-    group_label: "Monetary"
+    group_label: "> Monetary"
     label: "Cart Discount Amount"
     description: "Total Value of Cart Discounts"
     type: sum
@@ -305,7 +305,7 @@ view: crm_braze_canvas {
   }
 
   measure: sum_total_gmv_gross {
-    group_label: "Monetary"
+    group_label: "> Monetary"
     label: "Total GMV (gross) "
     description: "Total GMV (gross) of orders"
     type: sum
@@ -315,7 +315,7 @@ view: crm_braze_canvas {
 
   measure: avg_order_rate {
     hidden:  yes
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Order Rate "
     description: "Average Order Rate"
     type: average
@@ -328,7 +328,7 @@ view: crm_braze_canvas {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: bounce_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Bounce Rate"
     description: "Percentage: how many emails have been bounced based on all emails sent"
     type: number
@@ -337,7 +337,7 @@ view: crm_braze_canvas {
   }
 
   measure: deliveries_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Deliveries Rate"
     description: "Percentage: how many emails have been delivered based on all emails sent"
     type: number
@@ -346,7 +346,7 @@ view: crm_braze_canvas {
   }
 
   measure: total_opens_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Total Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
@@ -355,7 +355,7 @@ view: crm_braze_canvas {
   }
 
   measure: unique_opens_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Unique Opens Rate"
     description: "Percentage: how many emails have been delivered based on all emails delivered"
     type: number
@@ -364,7 +364,7 @@ view: crm_braze_canvas {
   }
 
   measure: total_clicks_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Total Clicks Rate"
     description: "Percentage: number of emails clicked divided by the number of emails delivered"
     type: number
@@ -373,7 +373,7 @@ view: crm_braze_canvas {
   }
 
   measure: unique_clicks_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Unique Clicks Rate"
     description: "Percentage: number of unique emails clicked divided by the number of emails delivered"
     type: number
@@ -382,7 +382,7 @@ view: crm_braze_canvas {
   }
 
   measure: unsubscribe_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Unsubscribes Rate"
     description: "Percentage: number of emails clicked on unsubscribe-link divided by the number of emails delivered"
     type: number
@@ -391,7 +391,7 @@ view: crm_braze_canvas {
   }
 
   measure: total_order_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Total Order Rate"
     description: "Percentage: number of orders made in the 12h after the last opening of the email divided by the number of emails opened (or sent)"
     type: number
@@ -400,7 +400,7 @@ view: crm_braze_canvas {
   }
 
   measure: unique_order_rate {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Unique Order Rate"
     description: "Percentage: number of users who made at least 1 order in the 12h after the last opening of the email divided by the number of emails opened (or sent)"
     type: number
@@ -409,7 +409,7 @@ view: crm_braze_canvas {
   }
 
   measure: order_rate_with_voucher {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Total Order Rate with Cart Discounts"
     description: "Percentage: number of orders made in the 12h after sending an email divided by the number of emails opened (or sent)"
     type: number
@@ -418,7 +418,7 @@ view: crm_braze_canvas {
   }
 
   measure: discount_order_share {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Discount Code Order Share"
     description: "Percentage: number of orders with Discount Code divided by the total number of ordres made in the 12h after the last opening of the email"
     type: number
@@ -427,7 +427,7 @@ view: crm_braze_canvas {
     }
 
   measure: discount_value_share {
-    group_label: "Relative"
+    group_label: "> Relative"
     label: "% Cart Discount Value Share "
     description: "Percentage: total of Cart Discounts divided by the total gmv (gross) of ordres made in the 12h after the last opening of the email"
     type: number
@@ -436,7 +436,7 @@ view: crm_braze_canvas {
     }
 
   measure: average_order_value {
-    group_label: "Monetary"
+    group_label: "> Monetary"
     label: "Average Order Value"
     description: "Average GMV (gross) based on Total Orders"
     type: number
@@ -451,7 +451,7 @@ view: crm_braze_canvas {
 
   parameter: reporting_parameter {
     label: "* Granularity Parameter *"
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     type: unquoted
     allowed_value: { value: "total"                  label: "Totals"}
     allowed_value: { value: "unique"                label: "Unique"}
@@ -460,7 +460,7 @@ view: crm_braze_canvas {
 
   parameter: KPI_absolute {
     label: "* Absolute KPI Parameter *"
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     type: unquoted
     allowed_value: { value: "emails_sent"                     label: "Emails Sent"}
     allowed_value: { value: "emails_delivered"                label: "Deliveries"}
@@ -479,7 +479,7 @@ view: crm_braze_canvas {
 
   parameter: KPI_rates {
     label: "* Rates KPI Parameter *"
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     type: unquoted
     allowed_value: { value: "deliveries_rate"                 label: "Deliveries Rate"}
     allowed_value: { value: "bounce_rate"                     label: "Bounce Rate"}
@@ -500,7 +500,7 @@ view: crm_braze_canvas {
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   measure: emails_opened_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Opened {% else %} Total Opens {% endif%}"
     type: number
     hidden: yes
@@ -514,7 +514,7 @@ view: crm_braze_canvas {
   }
 
   measure: emails_clicked_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Emails Clicked {% else %} Total Clicks {% endif%}"
     type: number
     hidden: yes
@@ -528,7 +528,7 @@ view: crm_braze_canvas {
   }
 
   measure: orders_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Users Ordered {% else %} Total Orders {% endif%}"
     type: number
     hidden: yes
@@ -542,7 +542,7 @@ view: crm_braze_canvas {
   }
 
   measure: opens_rate_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Open Rate {% else %} Total Open Rate {% endif%}"
     type: number
     hidden: yes
@@ -556,7 +556,7 @@ view: crm_braze_canvas {
   }
 
   measure: click_rate_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Click Rate {% else %} Total Click Rate {% endif%}"
     type: number
     hidden: yes
@@ -570,7 +570,7 @@ view: crm_braze_canvas {
   }
 
   measure: order_rate_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label: "{% if reporting_parameter._parameter_value == \"unique\"%} Unique Order Rate {% else %} Total Order Rate {% endif%}"
     type: number
     hidden: yes
@@ -584,7 +584,7 @@ view: crm_braze_canvas {
   }
 
   measure: KPI_absolute_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label_from_parameter: KPI_absolute
     hidden: yes
     value_format_name: decimal_2
@@ -618,7 +618,7 @@ view: crm_braze_canvas {
 
 
   measure: KPI_rates_dynamic {
-    group_label: "* Dynamic KPI Fields *"
+    group_label: "> Dynamic KPI Fields"
     label_from_parameter: KPI_rates
     hidden: yes
     value_format: "0.0%"

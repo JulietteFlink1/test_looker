@@ -77,7 +77,7 @@ view: daily_post_order_contact_rate_aggregates {
   # ======= IDs ======= #
 
   dimension: user_id {
-    group_label: "IDs"
+    group_label: "> IDs"
     label: "User UUID"
     type: string
     hidden: yes
@@ -86,7 +86,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: anonymous_id {
-    group_label: "IDs"
+    group_label: "> IDs"
     label: "Anonymous ID"
     type: string
     hidden: yes
@@ -95,7 +95,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: order_id {
-    group_label: "IDs"
+    group_label: "> IDs"
     label: "Order ID"
     type: string
     hidden: yes
@@ -104,7 +104,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: order_uuid {
-    group_label: "IDs"
+    group_label: "> IDs"
     label: "Order UUID"
     primary_key: yes
     type: string
@@ -118,7 +118,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: app_version {
     label: "App Version"
-    group_label: "Device information"
+    group_label: "> Device information"
     type: string
     hidden: no
     description: "Version of the app released, available for apps only."
@@ -127,7 +127,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: device_type {
     label: "Device Type"
-    group_label: "Device information"
+    group_label: "> Device information"
     type: string
     hidden: yes
     description: "Type of the device used, e.i. ios, android, windows etc."
@@ -136,7 +136,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: platform {
     label: "Platform"
-    group_label: "Device information"
+    group_label: "> Device information"
     type: string
     hidden: no
     description: "Platform which user used, can be 'web' or 'app'."
@@ -147,7 +147,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: country_iso {
     label: "Country ISO"
-    group_label: "Order attributes"
+    group_label: "> Order attributes"
     type: string
     hidden: no
     description: "Country ISO based on 'hub_code'."
@@ -156,7 +156,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: delivery_timeliness {
     label: "Delivery timeliness"
-    group_label: "Order attributes"
+    group_label: "> Order attributes"
     type: string
     description: "Whether the order was delivered early, on time or was late"
     sql: ${TABLE}.delivery_timeliness ;;
@@ -164,7 +164,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: hub_code {
     label: "Hub Code"
-    group_label: "Order attributes"
+    group_label: "> Order attributes"
     type: string
     hidden: yes
     description: "Code of a hub identical to back-end source tables."
@@ -173,7 +173,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: order_state {
     label: "Order State"
-    group_label: "Order attributes"
+    group_label: "> Order attributes"
     type: string
     description: "Whether the order was completed, cancelled, confirmed, etc."
     sql: ${TABLE}.order_state ;;
@@ -182,7 +182,7 @@ view: daily_post_order_contact_rate_aggregates {
 # ======= Flags ======= #
 
   dimension: is_first_order {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is First Order"
     type: yesno
     description: "Is an order a first one"
@@ -190,7 +190,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: next_7_days_order_uuid {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Next Order UUID"
     type: string
     description: "The next order UUID during 7 day window "
@@ -198,7 +198,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: has_next_order {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is the customer placed another order in next 7 days "
     type: yesno
     description: "Whether the customer has placed an order after the current order during 7 days "
@@ -206,7 +206,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_order_tracking_viewed {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Order Tracking Viewed"
     type: yesno
     description: "Whether status of the order tracked by a customer"
@@ -214,7 +214,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_order_tracking_viewed_status_confirmation {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Order Tracking Viewed Confirmation"
     type: yesno
     description: "Whether status of the order tracked by a customer while the order_status = 'confirmation'"
@@ -222,7 +222,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_order_tracking_viewed_status_packing {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Order Tracking Viewed Packing"
     type: yesno
     description: "Whether status of the order tracked by a customer while the order_status = 'packing'"
@@ -230,7 +230,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_order_tracking_viewed_status_on_way {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Order Tracking Viewed On Way"
     type: yesno
     description: "Whether status of the order tracked by a customer while the order_status = 'on way'"
@@ -238,7 +238,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_order_tracking_viewed_status_delivered {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Order Tracking Viewed Delivered"
     type: yesno
     description: "Whether status of the order tracked by a customer while the order_status = 'delivered'"
@@ -246,7 +246,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_contact_cs {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Contact Customer Service Selected"
     type: yesno
     description: "Whether a customer triggered contact_customer_service_selected after the order was placed"
@@ -254,7 +254,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_contact_cs_status_confirmation {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Contact Customer Service Selected Confirmation"
     type: yesno
     description: "Whether a customer triggered contact_customer_service_selected while the order_status = 'confirmation'"
@@ -262,7 +262,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_contact_cs_status_packing {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Contact Customer Service Selected Packing"
     type: yesno
     description: "Whether a customer triggered contact_customer_service_selected while the order_status = 'packing'"
@@ -270,7 +270,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_contact_cs_status_on_way {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Contact Customer Service Selected On Way"
     type: yesno
     description: "Whether a customer triggered contact_customer_service_selected while the order_status = 'on way'"
@@ -278,7 +278,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: is_contact_cs_status_delivered {
-    group_label: "Flags"
+    group_label: "> Flags"
     label: "Is Contact Customer Service Selected Delivered"
     type: yesno
     description: "Whether a customer triggered contact_customer_service_selected while the order_status = 'delivered'"
@@ -289,7 +289,7 @@ view: daily_post_order_contact_rate_aggregates {
   # =======  Date Timestamp ======= #
 
   dimension_group: event_date {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "Event Date"
     type: time
     timeframes: [
@@ -306,7 +306,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: order_placed_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "Timestamp Order Placed"
     type: time
     description: "Timestamp when an order was placed, as available in the back-end model 'orders'"
@@ -326,7 +326,7 @@ view: daily_post_order_contact_rate_aggregates {
 
 
   dimension_group: first_order_tracking_viewed_status_confirmation_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Order Tracking Viewed Confirmation Timestamp"
     type: time
     description: "First timetsamp when a customer triggered order_tracking_viewed while the order_status = 'confirmation'"
@@ -345,7 +345,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_order_tracking_viewed_status_packing_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Order Tracking Viewed Packing Timestamp"
     type: time
     description: "First timetsamp when a customer triggered order_tracking_viewed while the order_status = 'packing'"
@@ -364,7 +364,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_order_tracking_viewed_status_on_way_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Order Tracking Viewed On Way Timestamp"
     type: time
     description: "First timetsamp when a customer triggered order_tracking_viewed while the order_status = 'on way'"
@@ -383,7 +383,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_order_tracking_viewed_status_delivered_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Order Tracking Viewed Delivered Timestamp"
     type: time
     description: "First timetsamp when a customer triggered order_tracking_viewed while the order_status = 'delivered'"
@@ -402,7 +402,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_contact_cs_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Contact Customer Support Timestamp"
     type: time
     description: "First timetsamp when a customer triggered contact_customer_support for the placed order"
@@ -421,7 +421,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_contact_cs_status_confirmation_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Contact Customer Support Confirmation Timestamp"
     type: time
     description: "First timetsamp when a customer triggered contact_customer_support while the order_status = 'confirmation'"
@@ -440,7 +440,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_contact_cs_status_packing_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Contact Customer Support Packing Timestamp"
     type: time
     description: "First timetsamp when a customer triggered contact_customer_support while the order_status = 'packing'"
@@ -459,7 +459,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_contact_cs_status_on_way_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Contact Customer Support On Way Timestamp"
     type: time
     description: "First timetsamp when a customer triggered contact_customer_support while the order_status = 'on way'"
@@ -478,7 +478,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension_group: first_contact_cs_status_delivered_timestamp {
-    group_label: "Date Timestamp"
+    group_label: "> Date Timestamp"
     label: "First Contact Customer Support Delivered Timestamp"
     type: time
     description: "First timetsamp when a customer triggered contact_customer_support while the order_status = 'delivered'"
@@ -589,7 +589,7 @@ view: daily_post_order_contact_rate_aggregates {
 ######## * Percentages * ########
 
   measure: pct_orders_ccs_intent {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent"
     description: "# orders with CCS intent divided by the total # orders."
     type: number
@@ -598,7 +598,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   measure: pct_orders_ccs_intent_step1 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Confirmation"
     description: "# orders with CCS intent on the order confirmation step divided by the total # orders."
     type: number
@@ -607,7 +607,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   measure: pct_orders_ccs_intent_step2 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Packing"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -616,7 +616,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   measure: pct_orders_ccs_intent_step3 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order On Way"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -625,7 +625,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   measure: pct_orders_ccs_intent_step4 {
-    group_label: "* Percentages *"
+    group_label: "> Percentages"
     label: "% CCS Intent On Order Delivered"
     description: "The number of orders with CCS intent on the order confirmation step divided by the total number of orders."
     type: number
@@ -637,7 +637,7 @@ view: daily_post_order_contact_rate_aggregates {
 
   dimension: time_ccs_intent_since_order_duration {
     label: "Time CCS Intent Since Order (minutes)"
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     description: "# minutes since the order was placed."
     type: duration_minute
     sql_start: ${order_placed_timestamp_raw} ;;
@@ -645,7 +645,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: time_since_order_tiers {
-    group_label: "* Times & Durations *"
+    group_label: "> Times & Durations"
     label: "Time Since Order Tiers (minutes)"
     description: "Tiers of Time Since Order [0, >60)"
     type: tier
@@ -657,7 +657,7 @@ view: daily_post_order_contact_rate_aggregates {
 
 
   parameter: date_granularity {
-    group_label: "* Dates and Timestamps *"
+    group_label: "> Dates and Timestamps"
     label: "Date Granularity"
     type: unquoted
     allowed_value: { value: "Day" }
@@ -668,7 +668,7 @@ view: daily_post_order_contact_rate_aggregates {
 ######## DYNAMIC DIMENSIONS
 
   dimension: date {
-    group_label: "* Dates & Timestamps *"
+    group_label: "> Dates & Timestamps"
     label: "Contact Date (Dynamic)"
     label_from_parameter: date_granularity
     sql:
@@ -682,7 +682,7 @@ view: daily_post_order_contact_rate_aggregates {
   }
 
   dimension: date_granularity_pass_through {
-    group_label: "* Parameters *"
+    group_label: "> Parameters"
     description: "To use the parameter value in a table calculation (e.g WoW, % Growth) we need to materialize it into a dimension "
     type: string
     hidden: no # yes

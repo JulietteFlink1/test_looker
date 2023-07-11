@@ -16,7 +16,8 @@ include: "/**/*.view"
 
 explore: vendor_performance {
 
-  hidden: no
+  hidden: yes
+  persist_with: supply_chain_daily_datagroup
 
   label: "Vendor Performance"
   group_label: "Supply Chain"
