@@ -22,13 +22,7 @@ view: product_placement_performance {
     type: string
     sql: ${TABLE}.platform ;;
   }
-  dimension: device_type {
-    group_label: "Device Dimensions"
-    label: "Device Type"
-    description: "Type of the device used"
-    type: string
-    sql: ${TABLE}.device_type ;;
-  }
+
  dimension: app_version {
     group_label: "Device Dimensions"
     label: "App Version"
