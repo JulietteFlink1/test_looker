@@ -144,6 +144,15 @@ view: ops_associate_staffing {
     value_format_name: decimal_0
   }
 
+  measure: sum_number_of_forecasted_orders_adjusted {
+    group_label: "> Forecasted Orders"
+    label: "# Adjusted Forecasted OA Orders"
+    description: "Total number of orders forecasted for Ops Associates including adjustment made by the WFM team."
+    type: sum
+    sql: ${number_of_forecasted_orders_adjusted} ;;
+    value_format_name: decimal_0
+  }
+
   ############ Half Hourly forecats
 
   measure: sum_number_of_manual_input_ops_associates {
