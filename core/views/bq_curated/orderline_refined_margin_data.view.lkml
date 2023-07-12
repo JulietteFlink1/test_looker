@@ -93,6 +93,25 @@ view: +orderline {
     sql: ${TABLE}.amt_net_cost_net ;;
   }
 
+
+  dimension: amt_supplier_invoice_discount_wac_based_net {
+    label: "Amt Supplier Invoice Discount Wac Based Net"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_invoice_discount_wac_based_net ;;
+  }
+
+
+  dimension: amt_supplier_kickback_wac_based_net {
+    label: "Amt Supplier Kickback Wac Based Net"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_kickback_wac_based_net ;;
+  }
+
+
   dimension: amt_logistic_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Logistic Cost (Net)"
@@ -444,6 +463,27 @@ view: +orderline {
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_net_cost_net} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_supplier_invoice_discount_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Supplier Invoice Discount Wac Based (Net)"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_invoice_discount_wac_based_net} ;;
+    value_format_name: eur
+  }
+
+
+  measure: avg_amt_supplier_kickback_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Supplier Kickback Wac Based (Net)"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_kickback_wac_based_net} ;;
     value_format_name: eur
   }
 
