@@ -13,7 +13,7 @@
          # GMV
 
 
-include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/views/bigquery_reporting/supply_chain_master_report.view"
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_waste_risk_index_calculation.view"
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_handling_unit_rotation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
