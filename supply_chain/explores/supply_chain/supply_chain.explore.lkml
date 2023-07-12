@@ -25,7 +25,7 @@ include: "/**/shipping_methods_ct.view"
 explore: supply_chain {
 
 
-  label:       "SKU-Level - SCM Explore"
+  label:       "SCM Explore (SKU-level)"
   description: "This explore covers inventory data based on CommerceTools
                 and Stock Changelogs provided by Hub-Tech. It is enrichted with reporting tables to measure the
                 vendor performance"

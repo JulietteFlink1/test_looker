@@ -28,7 +28,7 @@ explore: supply_chain_master {
 
   persist_with: supply_chain_daily_datagroup
 
-  label: "Supply Chain Master Explore"
+  label: "SCM Master Explore (RSG-level)"
   group_label: "Supply Chain"
 
   from: supply_chain_master_report
