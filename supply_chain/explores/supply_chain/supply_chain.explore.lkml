@@ -318,7 +318,7 @@ explore: supply_chain {
   join: erp_master_data {
 
     from: erp_product_hub_vendor_assignment
-    view_label: "07 ERP Master Data"
+    view_label: ""
 
     type: left_outer
     relationship: many_to_one
