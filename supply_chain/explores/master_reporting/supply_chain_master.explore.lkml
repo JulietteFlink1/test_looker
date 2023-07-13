@@ -30,6 +30,8 @@ explore: supply_chain_master {
 
   label: "SCM Master Explore (RSG-level)"
   group_label: "Supply Chain"
+  description: "This explore shows on RSG granularity, key dimensions of SCM such as Availability, Waste, GMV.
+    Additionally, it incorporates OTIFIQ metrics, which help in evaluating supplier performance."
 
   from: supply_chain_master_report
 

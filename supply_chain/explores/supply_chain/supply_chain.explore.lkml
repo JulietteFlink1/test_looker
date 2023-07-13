@@ -110,7 +110,7 @@ explore: supply_chain {
   # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   join: inventory_daily {
 
-    view_label: "02 Stock-Level (Daily)"
+    view_label: "02 Stock Levels (Daily)"
 
     type: left_outer
     relationship: many_to_one
@@ -141,7 +141,7 @@ explore: supply_chain {
 
   join: inventory_hourly {
 
-    view_label: "03 Stock-Level - last 8 days (Hourly)"
+    view_label: "03 Stock Levels (Hourly) - last 8 days"
 
     type: left_outer
     relationship: one_to_many
@@ -210,7 +210,7 @@ explore: supply_chain {
 
   join: inventory_changes_daily {
 
-    view_label: "04 Stock-Level Updates with Update Reason (Daily)"
+    view_label: "04 Stock Level Updates with Update Reason (Daily)"
     from: inventory_changes_daily_extended
 
     type: left_outer
@@ -226,7 +226,7 @@ explore: supply_chain {
       join: sku_hub_day_level_orders {
         type: left_outer
         relationship: many_to_one
-        view_label: "04 Stock-Level Updates with Update Reason (Daily)"
+        view_label: "04 Stock Level Updates with Update Reason (Daily)"
 
         sql_on:
             ${sku_hub_day_level_orders.product_sku}   =  ${inventory_changes_daily.sku} and
@@ -333,7 +333,7 @@ explore: supply_chain {
 
   join: erp_buying_prices {
 
-      view_label: "08 ERP Vendor Prices *"
+      view_label: "08 ERP Vendor Prices"
 
 
       type: left_outer
@@ -366,7 +366,7 @@ explore: supply_chain {
 
 
   join: top_50_skus_per_gmv_supply_chain_explore {
-    view_label: "09 Top Selling Products (last 14days)"
+    view_label: "09 Top Selling Products - last 14 days"
     sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
         and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
     ;;
