@@ -1,5 +1,5 @@
 view: vat_order {
-  sql_table_name:`flink-data-dev.dbt_vbreda_reporting.vat_order`
+  sql_table_name:`flink-data-prod.reporting.vat_order`
       ;;
 
   dimension: order_uuid {
