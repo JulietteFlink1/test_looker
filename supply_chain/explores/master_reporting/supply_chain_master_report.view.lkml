@@ -184,7 +184,7 @@ set: drill_fields_set {
     type: time
     datatype: date
     label: "Item Location Termination"
-    description: "The date,when the item was deleted from a location for the first time  according to our ERP system Oracle."
+    description: "The date, when the item was deleted from a location for the first time  according to our ERP system Oracle."
     group_label: "Product Data"
     timeframes: [
       date
