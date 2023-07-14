@@ -1190,6 +1190,51 @@ view: vat_order {
     sql: ${TABLE}.amt_vat_refund_late_night_fee_total ;;
   }
 
+############### SINGLE USE PLASTIC FEES ################
+
+  dimension: amt_sup_fee_gross_eur {
+    type: number
+    label: "AMT SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_sup_fee_net_eur {
+    type: number
+    label: "AMT SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_vat_sup_fee_total {
+    type: number
+    label: "AMT VAT SUP Fee"
+    hidden: yes
+    sql: ${TABLE}.amt_vat_sup_fee_total ;;
+  }
+
+############### REFUND SINGLE USE PLASTIC FEES ################
+
+  dimension: amt_refund_sup_fee_gross_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_net_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_vat_refund_sup_fee_total {
+    type: number
+    label: "AMT VAT Refund SUP Fee"
+    hidden: yes
+    sql: ${TABLE}.amt_vat_refund_sup_fee_total ;;
+  }
 
   ############################  MARKETPLACE INTEGRATIONS   #######################
 
@@ -2881,6 +2926,72 @@ view: vat_order {
     value_format_name: euro_accounting_2_precision
     type:  sum
     sql: ${amt_vat_refund_late_night_fee_total} ;;
+  }
+
+
+############### SINGLE USE PLASTIC FEES ################
+
+
+  measure: sum_amt_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_sup_fee_net_eur {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_vat_sup_fee_total {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM VAT SUP Fee"
+    description: "VAT amount of Single Use Plastic fee paid by the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_vat_sup_fee_total} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+############### REFUND SINGLE USE PLASTIC FEES ################
+
+  measure: sum_amt_refund_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM Refund SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_net_eur {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM Refund SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_vat_refund_sup_fee_total {
+    type: sum
+    group_label: "> Single Use Plastic Fee"
+    label: "SUM VAT Refund SUP Fee"
+    description: "VAT amount of Single Use Plastic fee refunded to the customer.
+    No breakdown between the different tax rates as only the Standard tax rate applies."
+    sql: ${amt_vat_refund_sup_fee_total} ;;
+    value_format_name: euro_accounting_2_precision
   }
 
 ############################  MARKETPLACE INTEGRATIONS   #######################
