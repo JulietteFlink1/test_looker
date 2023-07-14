@@ -42,7 +42,7 @@ explore: supply_chain {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   from  :     products_hub_assignment
   view_name:  products_hub_assignment
-  view_label: "01 Products Hub Assignment"
+  view_label: "Products Hub Assignment"
 
 
 
@@ -110,7 +110,7 @@ explore: supply_chain {
   # ~ ~ ~ ~ ~ ~  START: NEW AVAILIABILITY FILERING APPROACH ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
   join: inventory_daily {
 
-    view_label: "02 Stock Levels (Daily)"
+    view_label: "Stock Levels (Daily)"
 
     type: left_outer
     relationship: many_to_one
@@ -141,7 +141,7 @@ explore: supply_chain {
 
   join: inventory_hourly {
 
-    view_label: "03 Stock Levels (Hourly) - last 8 days"
+    view_label: "Stock Levels (Hourly) - last 8 days"
 
     type: left_outer
     relationship: one_to_many
@@ -198,7 +198,7 @@ explore: supply_chain {
   }
 
   join: oracle_item_location_fact {
-    view_label: "01 Products Hub Assignment"
+    view_label: "Products Hub Assignment"
     type: left_outer
     relationship: many_to_one
     sql_on:
@@ -210,7 +210,7 @@ explore: supply_chain {
 
   join: inventory_changes_daily {
 
-    view_label: "04 Stock Level Updates with Update Reason (Daily)"
+    view_label: "Stock Level Updates with Update Reason (Daily)"
     from: inventory_changes_daily_extended
 
     type: left_outer
@@ -226,7 +226,7 @@ explore: supply_chain {
       join: sku_hub_day_level_orders {
         type: left_outer
         relationship: many_to_one
-        view_label: "04 Stock Level Updates with Update Reason (Daily)"
+        view_label: "Stock Level Updates with Update Reason (Daily)"
 
         sql_on:
             ${sku_hub_day_level_orders.product_sku}   =  ${inventory_changes_daily.sku} and
@@ -238,7 +238,7 @@ explore: supply_chain {
 
   join: inventory_changes {
 
-    view_label: "05 Inventory Change-Logs"
+    view_label: "Inventory Change Logs"
 
     type:         left_outer
     relationship: one_to_many
@@ -270,7 +270,7 @@ explore: supply_chain {
 
     from: orderline
 
-    view_label: "06 Order Lineitems"
+    view_label: "Order Lineitems"
 
     type: left_outer
     relationship: one_to_many
@@ -333,7 +333,7 @@ explore: supply_chain {
 
   join: erp_buying_prices {
 
-      view_label: "08 ERP Vendor Prices"
+      view_label: "ERP Vendor Prices"
 
 
       type: left_outer
@@ -366,7 +366,7 @@ explore: supply_chain {
 
 
   join: top_50_skus_per_gmv_supply_chain_explore {
-    view_label: "09 Top Selling Products - last 14 days"
+    view_label: "Top Selling Products - last 14 days"
     sql_on: ${top_50_skus_per_gmv_supply_chain_explore.sku}         = ${products_hub_assignment.sku}
         and ${top_50_skus_per_gmv_supply_chain_explore.country_iso} = ${products_hub_assignment.country_iso}
     ;;
@@ -377,7 +377,7 @@ explore: supply_chain {
 
   join: key_value_items {
 
-    view_label: "10 Key Value Items"
+    view_label: "Key Value Items"
 
     type: left_outer
     relationship: many_to_one
@@ -392,7 +392,7 @@ explore: supply_chain {
 
   join: product_prices_daily {
 
-    view_label: "11 Product Prices"
+    view_label: "Product Prices"
 
     type: left_outer
     relationship: one_to_one
@@ -406,7 +406,7 @@ explore: supply_chain {
 
   join: geographic_pricing_hub_cluster{
 
-    view_label: "12 Pricing Cluster"
+    view_label: "Pricing Cluster"
 
     type: left_outer
     relationship: many_to_one
@@ -463,7 +463,7 @@ explore: supply_chain {
   }
 
   join: erp_product_hub_vendor_assignment_unfiltered {
-    view_label: "13 Product-Hub Data (historized)"
+    view_label: "Product-Hub Data (historized)"
     sql_on:
         ${erp_product_hub_vendor_assignment_unfiltered.sku}            = ${products_hub_assignment.sku}
     and ${erp_product_hub_vendor_assignment_unfiltered.hub_code}       = ${products_hub_assignment.hub_code}
@@ -476,7 +476,7 @@ explore: supply_chain {
 
   join: erp_product_hub_vendor_assignment_unfiltered_current {
     from: erp_product_hub_vendor_assignment_unfiltered
-    view_label: "13 Product-Hub Data (as of today)"
+    view_label: "Product-Hub Data (as of today)"
     sql_on:
         ${erp_product_hub_vendor_assignment_unfiltered_current.sku}            = ${products_hub_assignment.sku}
     and ${erp_product_hub_vendor_assignment_unfiltered_current.hub_code}       = ${products_hub_assignment.hub_code}
