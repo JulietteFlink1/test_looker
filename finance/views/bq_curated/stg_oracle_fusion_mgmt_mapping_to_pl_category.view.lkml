@@ -26,7 +26,8 @@ view: stg_oracle_fusion_mgmt_mapping_to_pl_category {
     #   }' %}
     #   {{ link }}&vis_config={{ vis_config | encode_uri }}&toggle=dat,pik,vis&limit=5000"
     # }
-    drill_fields: [oracle_fusion_general_ledger_mapping.general_ledger_name,
+    drill_fields: [oracle_fusion_general_ledger_mapping.mgmt_mapping,
+      oracle_fusion_general_ledger_mapping.general_ledger_name,
       oracle_fusion_general_ledger_mapping.hub_code,
       oracle_fusion_general_ledger_mapping.cost_center_name,
       oracle_fusion_general_ledger_mapping.party_name]
