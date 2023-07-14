@@ -254,6 +254,29 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.number_of_distinct_products_dropped ;;
   }
 
+  measure: number_of_distinct_products_verified {
+    group_label: "Total Metrics"
+    type: sum
+    description: "Sum of quantity of distinct products veriied."
+    sql: ${TABLE}.number_of_distinct_products_verified ;;
+  }
+
+  measure: number_of_distinct_products_added_to_outbounded {
+    type: sum
+    label: "Number of Distinct Products Added to Outbounded"
+    group_label: "Total Metrics"
+    description: "Sum of distinct number of products added to outbounded"
+    sql: ${TABLE}.number_of_distinct_products_added_to_outbounded  ;;
+  }
+
+  measure: number_of_distinct_products_outbounded {
+    type: sum
+    label: "Number of Distinct Products Outbounded"
+    group_label: "Total Metrics"
+    description: "Sum of distinct number of products outbounded"
+    sql: ${TABLE}.number_of_distinct_products_outbounded  ;;
+  }
+
   # =========  Number of products   =========
 
   measure: number_of_products_added_to_list {
@@ -284,11 +307,20 @@ view: hub_one_inbounding_aggregates {
     sql: ${TABLE}.number_of_products_dropped ;;
   }
 
-  measure: number_of_distinct_products_verified {
-    group_label: "Total Metrics"
+  measure: number_of_products_added_to_outbounded {
     type: sum
-    description: "Sum of quantity of distinct products veriied."
-    sql: ${TABLE}.number_of_distinct_products_verified ;;
+    label: "Number of Products Added to Outbounded"
+    group_label: "Total Metrics"
+    description: "Sum of number of products added to outbounded"
+    sql: ${TABLE}.number_of_products_added_to_outbounded  ;;
+  }
+
+  measure: number_of_products_outbounded {
+    type: sum
+    label: "Number of Products Outbounded"
+    group_label: "Total Metrics"
+    description: "Sum of number of products outbounded"
+    sql: ${TABLE}.number_of_products_outbounded  ;;
   }
 
   measure: number_of_products_quantity_modified {

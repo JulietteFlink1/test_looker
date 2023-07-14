@@ -6,7 +6,7 @@ include: "/**/hiring_summary.view"
 include: "/**/hubs_ct.view"
 
 explore: hiring_summary {
-  group_label: "Rider Ops"
+  group_label: "Last Mile & WFM"
   label: "Hiring Summary"
   description: "Hiring summary breakdown by country, city, hub code, channel etc."
   # It is possible in Hiring Summary table to have country/city but not hub code. Therefore, we do not need those fields from Hub Data

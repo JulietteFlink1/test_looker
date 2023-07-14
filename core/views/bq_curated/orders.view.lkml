@@ -322,7 +322,8 @@ view: orders {
     sql: ${TABLE}.delivery_address_id ;;
   }
 
-  dimension: delivery_eta_minutes {
+  dimension: delivery_pdt_minutes {
+    alias: [delivery_eta_minutes]
     group_label: "> Operations / Logistics"
     label: "Delivery PDT (min)"
     description: "Promised Delivery Time as shown to customer"
@@ -476,47 +477,54 @@ view: orders {
   }
 
   dimension: delta_to_pdt_minutes {
+    label: "Delta to PDT (min)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer). Negative value is an indication of an earlier delivery than PDT. Null for planned orders."
     group_label: "> Operations / Logistics"
-    label: "Delay (min)"
-    description: "Delay in minutes from the promised delivery time (as shown to customer). Negative value is an indication of an earlier delivery than PDT."
     type: number
     sql: ${TABLE}.delta_to_pdt_minutes ;;
   }
 
-  dimension: delta_to_pdt_minutes_with_positive_buffer {
+  dimension: delivery_delay_raw_minutes {
+    label: "Delay (min)"
+    description: "Delay in minutes from the promised delivery time (as shown to customer) for ASAP orders and from the end of the delivery window for planned orders. No tolerance added."
     group_label: "> Operations / Logistics"
-    label: "Delay (min) (with + 15% PDT tolerance)"
-    description: "Delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
-    Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
-    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
     type: number
-    sql:timestamp_diff(
-          ${delivery_timestamp_raw},
-          -- add 15% of pdt as tolerance buffer
-          timestamp_add(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
-          second
-        )/60 ;;
+    sql: ${TABLE}.delivery_delay_raw_minutes;;
+  }
+
+  dimension: delivery_delay_minutes {
+    alias: [delta_to_pdt_minutes_with_positive_buffer]
+    group_label: "* Operations / Logistics *"
+    label: "Delay (min) (+15% PDT tolerance for ASAP)"
+    description: "For ASAP orders, delay in minutes from the promised delivery time (as shown to customer) + 15% of PDT tolerance buffer.
+    Delay for delayed deliveries will look smaller, and the earlier deliveries will appear even earlier.
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied. For planned orders, delay in minutes from the the end of the delivery window"
+    type: number
+    sql:${TABLE}.delivery_delay_minutes;;
     value_format_name: decimal_1
   }
 
   dimension: delta_to_pdt_minutes_with_positive_and_negative_buffer {
+    label: "Delay (min) (+/- 15% PDT tolerance for ASAP)"
     group_label: "> Operations / Logistics"
-    label: "Delay (min) (with +/- 15% PDT tolerance)"
     description: "Delay in minutes from the promised delivery time (as shown to customer) +/- 15% of PDT tolerance buffer.
     +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early).
-    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied"
+    Negative value is an indication of either: 1) earlier delivery 2) delay with the 15% tolerance applied. For planned orders, delay in minutes from the the end of the delivery window"
     type: number
     sql:case
           when
+            ${is_planned_order}
+            then ${delivery_delay_minutes}
+          when
             ${delivery_pdt_timestamp_raw} > ${delivery_timestamp_raw}
-          then
+            then
             timestamp_diff(
               -- subtract 15% of pdt as tolerance buffer
-              timestamp_sub(${delivery_pdt_timestamp_raw}, interval cast(${delivery_eta_minutes}*60*0.15 as int64) second),
+              timestamp_sub(${delivery_pdt_timestamp_raw}, interval cast(${delivery_pdt_minutes}*60*0.15 as int64) second),
               ${delivery_timestamp_raw},
               second
             )/60
-          else ${delta_to_pdt_minutes_with_positive_buffer}
+          else ${delivery_delay_minutes}
         end;;
     value_format_name: decimal_1
   }
@@ -749,14 +757,14 @@ view: orders {
   dimension: is_critical_pdt_underestimation {
     description: "The actual fulfillment took more than 10min longer than the PDT"
     type:  yesno
-    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_eta_minutes}) ;;
+    sql: ${fulfillment_time_raw_minutes} > (10 + ${delivery_pdt_minutes}) ;;
     hidden: yes
   }
 
   dimension: is_critical_pdt_overestimation {
     description: "The actual fulfillment took more than 10min less than the PDT"
     type:  yesno
-    sql: ${fulfillment_time_raw_minutes} < (${delivery_eta_minutes} - 10) ;;
+    sql: ${fulfillment_time_raw_minutes} < (${delivery_pdt_minutes} - 10) ;;
     hidden: yes
   }
 
@@ -1005,7 +1013,15 @@ view: orders {
   dimension: is_order_on_time {
     group_label: "> Operations / Logistics"
     type: yesno
+    description: "Yes if the order arrived before the PDT with a 15% tolerance buffer added for ASAP orders or if the order arrived within the delivery window for planned orders."
     sql: ${TABLE}.is_order_on_time ;;
+  }
+
+  dimension: is_order_on_time_raw {
+    group_label: "* Operations / Logistics *"
+    type: yesno
+    description: "Yes if the order arrived before the PDT for ASAP orders or if the order arrived within the delivery window for planned orders. No tolerance added."
+    sql: ${TABLE}.is_order_on_time_raw ;;
   }
 
   dimension: is_successful_order {
@@ -1897,6 +1913,37 @@ view: orders {
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
+  ########### SINGLE USE PLASTIC FEES ##########
+
+  dimension: amt_sup_fee_gross_eur {
+    type: number
+    label: "AMT SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_sup_fee_net_eur {
+    type: number
+    label: "AMT SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_gross_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_net_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_net_eur ;;
+  }
+
+
   ########### LATE NIGHT FEES ##########
 
   dimension: amt_late_night_fee_gross {
@@ -2089,13 +2136,14 @@ view: orders {
     drill_fields: [translated_discount_name, shipping_method_name, warehouse_name, discount_name]
   }
 
-  measure: avg_promised_eta {
+  measure: avg_promised_pdt {
+    alias: [avg_promised_eta]
     group_label: "> Operations / Logistics"
     label: "AVG PDT"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"
     hidden:  no
     type: average
-    sql: ${delivery_eta_minutes};;
+    sql: ${delivery_pdt_minutes};;
     value_format_name: decimal_1
   }
 
@@ -2104,7 +2152,7 @@ view: orders {
     label: "AVG PDT (MM:SS)"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"
     type: average
-    sql: ${delivery_eta_minutes} * 60 / 86400.0;;
+    sql: ${delivery_pdt_minutes} * 60 / 86400.0;;
     value_format: "mm:ss"
   }
 
@@ -3542,25 +3590,27 @@ view: orders {
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min {
-    # group_label: "> Operations / Logistics"
+  measure: number_of_orders_on_time {
+    # group_label: "> Operations / Logistics *"
+    alias: [cnt_orders_delayed_under_0_min]
     view_label: "* Hubs *"
-    label: "# Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
+    label: "# Orders delivered on time (+15% Tolerance for ASAP)"
+    description: "Count of all ASAP orders delivered before the PDT + 15% PDT tolerance and during delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes_with_positive_buffer:"<=0"]
+    filters: [is_order_on_time: "yes"]
     value_format: "0"
   }
 
-  measure: cnt_orders_delayed_under_0_min_raw {
+  measure: number_of_orders_on_time_raw {
+    alias: [cnt_orders_delayed_under_0_min_raw]
     # group_label: "> Operations / Logistics"
     view_label: "* Hubs *"
-    label: "# Orders delivered on time "
-    description: "Count of orders delivered no later than PDT."
+    label: "# Orders delivered on time"
+    description: "Count of orders delivered no later than PDT for ASAP orders and during delivery window for planned orders."
     hidden:  yes
     type: count
-    filters: [delta_to_pdt_minutes:"<=0"]
+    filters: [is_order_on_time_raw: "yes"]
     value_format: "0"
   }
 
@@ -3568,8 +3618,8 @@ view: orders {
     # group_label: "> Operations / Logistics"
     view_label: "* Hubs *"
     group_label: "> Hub Leaderboard - Order Metrics"
-    label: "# Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early)."
+    label: "# Orders delivered on time (+/- 15% PDT tolerance for ASAP)"
+    description: "Count of orders delivered no later than PDT (with +/- 15% PDT tolerance).  +/- 15% implies that we add tolerance to both delayed and earlier deliveries (delayed deliveries will look less delayed, earlier deliveries will look less early). For planned orders, count of orders delivered within window."
     hidden:  yes
     type: count
     filters: [delta_to_pdt_minutes_with_positive_and_negative_buffer:"<=0"]
@@ -3665,6 +3715,82 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+############### SINGLE USE PLASTIC FEES ################
+
+  measure: sum_amt_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  #### Averages
+
+  measure: avg_amt_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
 ############### LATE NIGHT FEES ################
 
   measure: sum_amt_late_night_fee_gross {
@@ -3718,36 +3844,36 @@ view: orders {
     alias: [sum_total_fees]
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Gross)"
-    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross) and Late Night Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross), Late Night Fees (Gross) and SUP Fees (Gross)"
     type: number
-    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross};;
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross} + ${sum_amt_sup_fee_gross_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_gross {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Gross)"
-    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + and Late Night Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + Late Night Fees (Gross) + SUP Fees (Gross)"
     type: average
-    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross}) ;;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross} + ${amt_sup_fee_gross_eur}) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_total_fees_net {
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Net)"
-    description: "Sum of Delivery Fees (Net), Storage Fees (Net) and Late Night Fees (Net)"
+    description: "Sum of Delivery Fees (Net), Storage Fees (Net), Late Night Fees (Net) and SUP Fees (Net)"
     type: number
-    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net};;
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net} + ${sum_amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_net {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Net)"
-    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net) + SUP Fees (Net)"
     type: average
-    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0);;
+    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0) + ${amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
@@ -4285,27 +4411,27 @@ view: orders {
   measure: pct_delivery_in_time_raw {
     group_label: "> Operations / Logistics"
     label: "% Orders delivered on time"
-    description: "Share of orders delivered on time."
+    description: "Share of orders delivered on time. No tolerance added."
     type: number
-    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
   measure: pct_delivery_in_time {
+    label: "% Orders delivered on time (+15% PDT tolerance for ASAP)"
+    description: "Share of orders delivered before the PDT + 15% PDT tolerance for ASAP orders and within delivery window for planned orders. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     group_label: "> Operations / Logistics"
-    label: "% Orders delivered on time (with + 15% PDT tolerance)"
-    description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
-    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
   measure: pct_delivery_in_time_with_tolerance_buffer {
+    hidden: no
     group_label: "> Operations / Logistics"
-    label: "% Orders delivered on time (with +/- 15% PDT tolerance)"
-    description: "Share of orders delivered on time (with +/- 15% PDT tolerance). ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
+    label: "% Orders delivered on time (+/- 15% PDT tolerance for ASAP)"
+    description: "Share of orders delivered on time with +/- 15% PDT tolerance for ASAP orders, and within delivery window for planned orders. ‘+/- 15%’ tolerance means that delayed deliveries will look less delayed, and earlier deliveries will look less early.
     Deliveries that are earlier that 15% of PDT won't be counted as 'on time'."
-    hidden:  no
     type: number
     sql: ${cnt_orders_delayed_under_0_min_with_tolerance_buffer} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
@@ -4669,6 +4795,7 @@ view: orders {
       time,
       minute30,
       hour,
+      hour_of_day,
       date
     ]
   }
@@ -4683,7 +4810,7 @@ view: orders {
       minute30,
       hour,
       date
-      ]
+    ]
   }
 
   dimension: delivery_timeslot_description {
@@ -4717,6 +4844,69 @@ view: orders {
     sql: ${order_uuid};;
     filters: [is_planned_order: "yes"]
     description: "The count of distinct planned orders."
+  }
+
+  dimension: is_delayed_planned_order {
+    group_label: "> Planned Orders"
+    type: yesno
+    sql: ${is_planned_order} and ${delivery_delay_raw_minutes} > 0 ;;
+    description: "Yes if the rider completed the delivery after the planned delivery window end time."
+  }
+
+  measure: number_of_planned_orders_delivered_within_delivery_window {
+    group_label: "> Planned Orders"
+    label: "# Planned Orders Delivered within Window"
+    hidden: yes
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_order_on_time: "yes", is_planned_order: "yes"]
+    description: "The count of planned orders that were delivered during the delivery window. No tolerance added."
+  }
+
+  measure: number_of_delayed_planned_orders {
+    group_label: "> Planned Orders"
+    label: "# Delayed Planned Orders"
+    hidden: yes
+    type: count_distinct
+    sql: ${order_uuid};;
+    filters: [is_delayed_planned_order: "yes", delivery_delay_raw_minutes: ">0"]
+    description: "The number of planned orders that were delivered after the planned delivery window end time."
+  }
+
+  measure: share_of_planned_orders_over_flink_delivered_orders {
+    group_label: "> Planned Orders"
+    label: "% Planned Orders"
+    type: number
+    sql: safe_divide(${number_of_unique_planned_orders},${number_of_unique_flink_delivered_orders});;
+    description: "The number of planned orders divided by the number of Flink delivered Orders"
+    value_format_name: percent_1
+  }
+
+  measure: share_of_planned_orders_delivered_within_delivery_window_over_planned_orders {
+    group_label: "> Planned Orders"
+    label: "% Planned Orders Delivered within Window"
+    type: number
+    sql: safe_divide(${number_of_planned_orders_delivered_within_delivery_window},${number_of_unique_planned_orders});;
+    description: "The number of planned orders that were delivered during the delivery window divided by number of planned orders"
+    value_format_name: percent_1
+  }
+
+  measure: avg_time_between_order_placed_and_planned {
+    group_label: "> Planned Orders"
+    label: "AVG Time Between Order Placed and Planned Window (minutes)"
+    type: average
+    sql: datetime_diff(datetime(${planned_delivery_window_start_time}),datetime(${created_time}),minute);;
+    description: "The average number of minutes between order creation and start of the planned delivery window timestamps."
+    value_format_name: decimal_1
+  }
+
+  measure: share_of_delayed_planned_orders_over_planned_orders {
+    group_label: "> Planned Orders"
+    label: "% Delayed Planned Orders"
+    type: number
+    sql: safe_divide(${number_of_delayed_planned_orders},${number_of_unique_planned_orders});;
+    description: "The number of planned orders that were delivered during the delivery window divided by number of planned orders"
+    value_format_name: percent_1
   }
 
 }

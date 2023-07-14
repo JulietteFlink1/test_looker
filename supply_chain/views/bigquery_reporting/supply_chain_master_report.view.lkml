@@ -184,52 +184,13 @@ set: drill_fields_set {
     type: time
     datatype: date
     label: "Item Location Termination"
-    description: "The date, when the item was deleted from a location for the first time  according to our ERP system Oracle."
+    description: "The date, when a given product was delisted in the location."
     group_label: "Product Data"
     timeframes: [
       date
     ]
     sql: ${TABLE}.item_location_termination_date ;;
   }
-
-  dimension_group: item_location_introduction {
-    type: time
-    datatype: date
-    label: "Item Location Introduction"
-    description: "The date, when the item was assigned to a location for the first time according to our ERP system Oracle."
-    group_label: "Product Data"
-    timeframes: [
-      date
-    ]
-    sql: ${TABLE}.item_location_introduction_date ;;
-  }
-
-
-  dimension_group: item_location_introduction_updated {
-    type: time
-    datatype: date
-    label: "Item Location Introduction Updated"
-    description: "The date, when the item was assigned to a location according to our ERP system Oracle - Use by SC team for different use cases."
-    group_label: "Product Data"
-    timeframes: [
-      date
-    ]
-    sql: ${TABLE}.item_location_introduction_date_updated ;;
-  }
-
-
-  dimension_group: item_location_termination_updated {
-    type: time
-    datatype: date
-    label: "Item Location Termination Updated"
-    description: "The date, when the item was deleted from a location according to our ERP system Oracle - Use by SC team for different use cases."
-    group_label: "Product Data"
-    timeframes: [
-      date
-    ]
-    sql: ${TABLE}.item_location_termination_date_updated ;;
-  }
-
 
   dimension: vendor_name {
     type: string
