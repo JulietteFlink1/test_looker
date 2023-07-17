@@ -3,7 +3,7 @@
 # This view simply contains a mapping between mgmt_mapping and to which P&L category they belong to
 # It is joined to oracle_fusion_general_ledger_mapping in the financial_pl explore
 view: stg_oracle_fusion_mgmt_mapping_to_pl_category {
-  sql_table_name: `flink-data-dev.dbt_vbreda_staging.stg_oracle_fusion_mgmt_mapping_to_pl_category` ;;
+  sql_table_name: `flink-data-prod.curated.oracle_fusion_mgmt_mapping_to_pl_category` ;;
 
   dimension: mgmt_mapping {
     hidden: yes
