@@ -9,7 +9,7 @@
 # - All questions around demand planning
 # - Questions around availability, waste and OTIFIQ topics
 
-include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/views/bigquery_reporting/supply_chain_master_report.view"
 include: "/supply_chain/views_externals/availability_waterfall.view.lkml"
 include: "/supply_chain/views_externals/promotions.view.lkml"
 include: "/**/products_hub_assignment.view"
