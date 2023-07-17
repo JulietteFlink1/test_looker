@@ -1,5 +1,5 @@
 
-include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/views/bigquery_reporting/supply_chain_master_report.view"
 
 view: +supply_chain_master_report {
 
