@@ -62,7 +62,11 @@ view: erp_buying_prices {
       avg_amt_promo_funding_partner_net,
       avg_amt_promo_funding_marketing_net,
       avg_amt_promo_funding_supplier_net,
-      avg_amt_pricing_cost_net
+      avg_amt_pricing_cost_net,
+      avg_amt_supplier_invoice_discount_wac_based_net,
+      avg_amt_supplier_invoice_discount_net_cost_based_net,
+      avg_amt_supplier_kickback_wac_based_net,
+      avg_amt_supplier_kickback_net_cost_based_net,
     ]
   }
 
@@ -345,6 +349,44 @@ view: erp_buying_prices {
     hidden: yes
     sql: ${TABLE}.amt_promo_funding_supplier_net ;;
   }
+
+
+  dimension: amt_supplier_invoice_discount_wac_based_net {
+    label: "Amt Supplier Invoice Discount Wac Based Net"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_invoice_discount_wac_based_net ;;
+  }
+
+
+  dimension: amt_supplier_invoice_discount_net_cost_based_net {
+    label: "Amt Supplier Invoice Discount Net Cost Based Net"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the net-cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_invoice_discount_net_cost_based_net ;;
+  }
+
+
+  dimension: amt_supplier_kickback_wac_based_net {
+    label: "Amt Supplier Kickback Wac Based Net"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_kickback_wac_based_net ;;
+  }
+
+
+  dimension: amt_supplier_kickback_net_cost_based_net {
+    label: "Amt Supplier Kickback Net Cost Based Net"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the net cost"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_kickback_net_cost_based_net ;;
+  }
+
+
 
 
   # =========  hidden   =========
@@ -768,5 +810,43 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
+  measure: avg_amt_supplier_invoice_discount_wac_based_net {
+    label: "AVG Supplier Invoice Discount Wac Based (Net)"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_invoice_discount_wac_based_net} ;;
+    value_format_name: eur
+  }
+
+
+  measure: avg_amt_supplier_invoice_discount_net_cost_based_net {
+    label: "AVG Supplier Invoice Discount Net Cost Based (Net)"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the net-cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_invoice_discount_net_cost_based_net} ;;
+    value_format_name: eur
+  }
+
+
+  measure: avg_amt_supplier_kickback_wac_based_net {
+    label: "AVG Supplier Kickback Wac Based (Net)"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_kickback_wac_based_net} ;;
+    value_format_name: eur
+  }
+
+
+  measure: avg_amt_supplier_kickback_net_cost_based_net {
+    label: "AVG Supplier Kickback Net Cost Based (Net)"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the net cost"
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_supplier_kickback_net_cost_based_net} ;;
+    value_format_name: eur
+  }
 
 }

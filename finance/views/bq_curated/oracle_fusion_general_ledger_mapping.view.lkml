@@ -27,6 +27,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "Code of a hub identical to back-end source tables."
     sql: ${TABLE}.hub_code ;;
+    drill_fields: [general_ledger_name, cost_center_name, party_name, line_description]
   }
 
 
@@ -109,6 +110,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "Name of the supplier/customer."
     sql: ${TABLE}.party_name ;;
+    drill_fields: [line_description]
   }
 
   dimension: party_site_name {
@@ -133,6 +135,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "Name of the department the expense originates from."
     sql: ${TABLE}.cost_center_name ;;
+    drill_fields: [hub_code, general_ledger_name, party_name, line_description]
   }
 
   dimension: general_ledger_name {
@@ -141,6 +144,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "Name of the General Ledger account the transaction was posted into."
     sql: ${TABLE}.general_ledger_name ;;
+    drill_fields: [hub_code, cost_center_name, party_name, line_description]
   }
 
 
@@ -152,6 +156,7 @@ view: oracle_fusion_general_ledger_mapping {
     type: string
     description: "P&L category the expense line is mapped to."
     sql: ${TABLE}.mgmt_mapping ;;
+    drill_fields: [hub_code, general_ledger_name, cost_center_name, party_name]
   }
 
 
@@ -349,7 +354,10 @@ view: oracle_fusion_general_ledger_mapping {
   measure: sum_amt_accounted_value_eur {
     label: "SUM Accounted Value"
     description: "Sum of the recorded values of the transactions. Calculated as debited amount minus credited amount."
-    type: sum
+    # We are joining the P&L category in the explore, and transactions can be part of multiple P&L categories, which duplicates the rows
+    # We thus use a sum_distinct to ensure the sums are correctly computed at any granularity
+    # No need to define sql_distinct_key as table_uuid is defined as the primary key
+    type: sum_distinct
     sql: ${amt_accounted_value_eur} ;;
     value_format_name: eur
   }
@@ -357,7 +365,8 @@ view: oracle_fusion_general_ledger_mapping {
   measure: avg_amt_accounted_value_eur {
     label: "AVG Accounted Value"
     description: "Average of the recorded values of the transactions. Calculated as debited amount minus credited amount."
-    type: average
+    # Same applies here
+    type: average_distinct
     sql: ${amt_accounted_value_eur} ;;
     value_format_name: eur
   }
