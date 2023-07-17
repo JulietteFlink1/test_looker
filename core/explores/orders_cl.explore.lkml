@@ -21,7 +21,7 @@ explore: orders_cl {
 
   group_label: "01) Performance"
   label: "Orders"
-  description: "General Business Performance - Orders, Revenue, etc."
+  description: "This explore contains all attributes of an order, and can be used for general business performance - order volumes, GMV, etc."
 
   view_label: "Orders"
 
