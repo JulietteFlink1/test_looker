@@ -47,7 +47,7 @@ join: hubs {
 join: stg_oracle_fusion_mgmt_mapping_to_pl_category {
   view_label: "Oracle Fusion"
   sql_on: lower(${stg_oracle_fusion_mgmt_mapping_to_pl_category.mgmt_mapping}) = lower(${oracle_fusion_general_ledger_mapping.mgmt_mapping}) ;;
-  relationship: many_to_one
+  relationship: one_to_many
   type: left_outer
 }
 
