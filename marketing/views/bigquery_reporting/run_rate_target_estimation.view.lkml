@@ -1,5 +1,5 @@
 view: run_rate_target_estimation {
-  sql_table_name: `flink-data-prod.reporting.run_rate_target_estimation`;;
+  sql_table_name: `flink-data-dev.dbt_jdavies_reporting.run_rate_target_estimation`;;
 
   ##DIMENSIONS
 
@@ -50,7 +50,7 @@ view: run_rate_target_estimation {
     group_label: "> Dimensions"
     label: "Daily Cumulative Amount"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.daily_cumulative_amount ;;
   }
 
@@ -75,7 +75,7 @@ view: run_rate_target_estimation {
     group_label: "> Dimensions"
     label: "Target Monthly Value"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.target_monthly_value ;;
   }
 
@@ -83,7 +83,7 @@ view: run_rate_target_estimation {
     group_label: "> Dimensions"
     label: "AVG Monthly Completed Goal Completion"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.percent_of_monthly_goal_completed_rolling_average ;;
   }
 
@@ -92,7 +92,7 @@ view: run_rate_target_estimation {
     group_label: "> Dimensions"
     label: "Expected Daily Completion Value"
     type: number
-    hidden: no
+    hidden: yes
     sql: ${TABLE}.historic_expected_completion_rate ;;
   }
 
@@ -105,12 +105,20 @@ view: run_rate_target_estimation {
   }
 
 
-  dimension: end_of_month_projected_value_target_monthly_value_delta {
+  dimension: end_of_month_projected_value_target_monthly_value_delta_absolute {
     group_label: "> Dimensions"
-    label: "Projected End of Month Value Target Monthly Value Delta"
+    label: "Projected End of Month Value Target Monthly Value Delta Absolute"
     type: number
     hidden: yes
-    sql: ${TABLE}.end_of_month_projected_value_target_monthly_value_delta ;;
+    sql: ${TABLE}.end_of_month_projected_value_target_monthly_value_delta_absolute ;;
+  }
+
+  dimension: end_of_month_projected_value_target_monthly_value_delta_percent {
+    group_label: "> Dimensions"
+    label: "Projected End of Month Value Target Monthly Value Delta Percent"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.end_of_month_projected_value_target_monthly_value_delta_percent ;;
   }
 
   ## Measures
@@ -151,22 +159,22 @@ view: run_rate_target_estimation {
     value_format_name: decimal_2
   }
 
-  measure: percent_delta_end_of_month_projected_value_target_monthly_value {
-    group_label: "> Measures"
-    label: "% Delta EOM Projected Value to Target Monthly Value"
-    type: sum
-    hidden: no
-    sql: (${end_of_month_projected_value}-${target_monthly_value})/${target_monthly_value} ;;
-    value_format_name: percent_0
-  }
-
-  measure: absolute_delta_end_of_month_projected_value_target_monthly_value {
+  measure: sum_end_of_month_projected_value_target_monthly_value_delta_absolute {
     group_label: "> Measures"
     label: "Absolute Delta EOM Projected Value to Target Monthly Value"
     type: sum
     hidden: no
-    sql: ${end_of_month_projected_value}-${target_monthly_value} ;;
-    value_format_name: decimal_2
+    sql: ${end_of_month_projected_value_target_monthly_value_delta_absolute} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_end_of_month_projected_value_target_monthly_value_delta_percent {
+    group_label: "> Measures"
+    label: "% Delta EOM Projected Value to Target Monthly Value"
+    type: sum
+    hidden: no
+    sql: ${end_of_month_projected_value_target_monthly_value_delta_percent} ;;
+    value_format_name: percent_0
   }
 
 
