@@ -95,6 +95,7 @@ view: +orderline {
 
 
   dimension: amt_supplier_invoice_discount_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
     label: "Amt Supplier Invoice Discount Wac Based Net"
     description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
     type: number
@@ -104,6 +105,7 @@ view: +orderline {
 
 
   dimension: amt_supplier_kickback_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
     label: "Amt Supplier Kickback Wac Based Net"
     description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
     type: number
