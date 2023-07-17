@@ -1,7 +1,7 @@
 include: "/marketing/views/bigquery_reporting/run_rate_target_estimation.view.lkml"
 
 explore: run_rate_target_estimation {
-  hidden: no
+  hidden: yes
   label: "Run Rates Forecasting"
   view_label: "Targets"
   group_label: "Marketing"
