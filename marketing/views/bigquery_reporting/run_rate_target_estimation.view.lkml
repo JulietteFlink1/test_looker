@@ -46,6 +46,14 @@ view: run_rate_target_estimation {
     sql: ${TABLE}.run_rate_metric ;;
   }
 
+  dimension: run_rate_metric_customer_status {
+    group_label: "> Dimensions"
+    label: "Marketing Metric"
+    type: string
+    hidden: no
+    sql: concat(${TABLE}.customer_monthly_activity_status, " ",${TABLE}.run_rate_metric );;
+  }
+
   dimension: daily_cumulative_amount {
     group_label: "> Dimensions"
     label: "Daily Cumulative Amount"
@@ -129,7 +137,7 @@ view: run_rate_target_estimation {
     hidden: no
     type: sum
     sql: ${daily_cumulative_amount} ;;
-    value_format_name: decimal_2
+    value_format: "[>=10]0; 0.00"
   }
 
   measure: sum_historic_expected_completion_rate {
@@ -147,7 +155,7 @@ view: run_rate_target_estimation {
     type: sum
     hidden: no
     sql: ${end_of_month_projected_value} ;;
-    value_format_name: decimal_2
+    value_format: "[>=10]0; 0.00"
   }
 
   measure: sum_target_monthly_value {
@@ -156,7 +164,7 @@ view: run_rate_target_estimation {
     type: sum
     hidden: no
     sql: ${target_monthly_value} ;;
-    value_format_name: decimal_2
+    value_format: "[>=10]0; 0.00"
   }
 
   measure: sum_end_of_month_projected_value_target_monthly_value_delta_absolute {
