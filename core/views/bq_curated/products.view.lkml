@@ -266,6 +266,24 @@ view: products {
     sql: ${TABLE}.organic_control_number ;;
   }
 
+  dimension: is_product_bundle {
+    label: "Is Product Bundle"
+    description: "True, if an SKU is a bundled SKU (only frontend-facing concept) that consists of multiple products and/or product quantities."
+    group_label: "> Product Attributes"
+    type: yesno
+    sql: ${TABLE}.is_product_bundle ;;
+  }
+
+
+  dimension: bundled_items {
+    label: "Bundled Items"
+    description: "For bundled products, this field shows the SKUs a bundle is build of. A possible value could be `2x 11010205, 6x 11012024`"
+    group_label: "> Product Attributes"
+    type: string
+    sql: ${TABLE}.bundled_items ;;
+  }
+
+
   ####### Product Compliance Report Fields ########
 
   dimension: is_ingredients_missing {
