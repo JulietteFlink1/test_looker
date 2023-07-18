@@ -66,7 +66,7 @@ view: waste_waterfall_daily {
   dimension: flag_abnormal_pu {
     type: yesno
     sql: ${TABLE}.flag_abnormal_pu ;;
-    label: "Abnormal Purchase Units Flag"
+    label: "Is Abnormal Purchase Units Flag"
     group_label: "Flags"
     description: "Identifies products which have abnormal purchase units: median purchase units over the last 28 days are smaller than 50% of the purchase units for the report date"
     hidden: no
@@ -75,7 +75,7 @@ view: waste_waterfall_daily {
   dimension: flag_aircon_issue {
     type: yesno
     sql: ${TABLE}.flag_aircon_issue ;;
-    label: "Air-conditioner issue Flag"
+    label: "Is Air-conditioner issue Flag"
     group_label: "Flags"
     description: "Identifies waste caused by air-conditionner issues in spotting abnormal damaged waste on Chocolate as this category is likely to melt when AC issue and high temperature."
     hidden: no
@@ -84,7 +84,7 @@ view: waste_waterfall_daily {
   dimension: flag_delisted {
     type: yesno
     sql: ${TABLE}.flag_delisted ;;
-    label: "Delisted Flag"
+    label: "Is Delisted Flag"
     group_label: "Flags"
     description: "Identifies Product-Locations that have been delisted"
     hidden: no
@@ -102,7 +102,7 @@ view: waste_waterfall_daily {
   dimension: flag_fcst_greater_sales {
     type: yesno
     sql: ${TABLE}.flag_fcst_greater_sales ;;
-    label: "Forecast Greater than Sales Flag"
+    label: "Is Forecast Greater than Sales Flag"
     group_label: "Flags"
     description: "Identifies if 90% of the total forecast is greater than total corrected sales on a report date level for product-location"
     hidden: no
@@ -120,7 +120,7 @@ view: waste_waterfall_daily {
   dimension: flag_frozen {
     type: yesno
     sql: ${TABLE}.flag_frozen ;;
-    label: "Frozen Expired Flag"
+    label: "Is Frozen Expired Flag"
     group_label: "Flags"
     description: "Identifies remaining expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
@@ -129,7 +129,7 @@ view: waste_waterfall_daily {
   dimension: flag_incorrect_pu {
     type: yesno
     sql: ${TABLE}.flag_incorrect_pu ;;
-    label: "Incorrect Purchase Units Flag"
+    label: "Is Incorrect Purchase Units Flag"
     group_label: "Flags"
     description: "Identifies product-locations that Have Fill Rate above 150% in more than 10 hubs in that week. 80% of all inbounds must have had an inbound issue"
     hidden: no
@@ -139,7 +139,7 @@ view: waste_waterfall_daily {
     type: yesno
     sql: ${TABLE}.flag_low_performer ;;
     group_label: "Flags"
-    label: "Low Performer Flag"
+    label: "Is Low Performer Flag"
     description: "Identifies that product-locations are showing low performance"
     hidden: no
   }
@@ -147,7 +147,7 @@ view: waste_waterfall_daily {
   dimension: flag_over_fcst {
     type: yesno
     sql: ${TABLE}.flag_over_fcst ;;
-    label: "Over Forecast flag"
+    label: "Is Over Forecast flag"
     group_label: "Flags"
     description: "Identifies over forecasted Product-Locations"
     hidden: no
@@ -165,7 +165,7 @@ view: waste_waterfall_daily {
   dimension: flag_promotion {
     type: yesno
     sql: ${TABLE}.flag_promotion ;;
-    label: "Promotion Flag"
+    label: "Is in Promotion Flag"
     group_label: "Flags"
     description: "Identifies Product-Locations with promotion + waste "
     hidden: no
@@ -174,7 +174,7 @@ view: waste_waterfall_daily {
   dimension: flag_human_error {
     type: yesno
     sql: ${TABLE}.flag_human_error ;;
-    label: "Human Error Flag"
+    label: "Is Human Error Flag"
     group_label: "Flags"
     description: "Identifies Product-Locations on which an operator did a important positive correction before outbounding the whole quantity "
     hidden: no
@@ -183,7 +183,7 @@ view: waste_waterfall_daily {
   dimension: flag_co_mrp {
     type: yesno
     sql: ${TABLE}.flag_co_mrp ;;
-    label: "Co MRP Flag"
+    label: "Is Co MRP Flag"
     group_label: "Flags"
     description: "Enables us to track Effective Order Model from Relex (ordering constraint)"
     hidden: no
@@ -294,7 +294,7 @@ view: waste_waterfall_daily {
   dimension: flag_robbery {
     type: yesno
     sql: ${TABLE}.flag_robbery ;;
-    label: "Robbery Flag"
+    label: "Is Robbery Flag"
     group_label: "Flags"
     description: "Marks potential hub robbery when we saw a high waste peak on several sku for the drinks or Cigarettes."
     hidden: no
