@@ -18,7 +18,7 @@ view: waste_waterfall_daily {
  dimension: bucket {
   type: string
   sql: ${TABLE}.bucket ;;
-  label: "Out of Stock Bucket (Daily level)"
+  label: "Bucket (Daily level)"
   description: "Bucket allocated to product-location for waste topics based on MECE Logic (mutually exclusive and collectively exhaustive)"
   hidden: no
 }
@@ -171,6 +171,24 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
+  dimension: flag_human_error {
+    type: yesno
+    sql: ${TABLE}.flag_human_error ;;
+    label: "Human Error Flag"
+    group_label: "Flags"
+    description: "Identifies Product-Locations on which an operator did a important positive correction before outbounding the whole quantity "
+    hidden: no
+  }
+
+  dimension: flag_co_mrp {
+    type: yesno
+    sql: ${TABLE}.flag_co_mrp ;;
+    label: "Co MRP Flag"
+    group_label: "Flags"
+    description: "Enables us to track Effective Order Model from Relex (ordering constraint)"
+    hidden: no
+  }
+
   dimension: flag_sl1_too_early {
     type: yesno
     sql: ${TABLE}.flag_sl1_too_early ;;
@@ -299,6 +317,20 @@ view: waste_waterfall_daily {
     label: "Risky Products Index"
     description: "Risky Products' Index for Product-Location"
     hidden: no
+  }
+
+  dimension: report_date_dynamic {
+    label: "Report Date (Dynamic)"
+    datatype: date
+    type: date
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${report_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
   }
 
   dimension: sku {
