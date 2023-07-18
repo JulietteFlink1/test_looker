@@ -418,7 +418,7 @@ view: products_hub_assignment {
 
   dimension_group: item_location_introduction {
     label: "Item Location Introduction"
-    description: "Date, when the item was assigned to a location according to our ERP system Oracle"
+    description: "The date, when the item was assigned to a location for the first time according to our ERP system Oracle"
     group_label: "> ERP Fields"
     type: time
     timeframes: [
@@ -430,7 +430,7 @@ view: products_hub_assignment {
 
   dimension_group: item_location_termination {
     label: "Item Location Termination"
-    description: "Date, when the item was deleted from a location according to our ERP system Oracle"
+    description: "The date,when the item was deleted from a location for the first time  according to our ERP system Oracle"
     group_label: "> ERP Fields"
     type: time
     timeframes: [
@@ -440,8 +440,29 @@ view: products_hub_assignment {
     sql: ${TABLE}.item_location_termination_date ;;
   }
 
+  dimension_group: item_location_introduction_updated {
+    label: "Item Location Introduction Updated"
+    description: "The date, when the item was assigned to a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "> ERP Fields"
+    type: time
+    timeframes: [
+      date
+    ]
+    datatype: date
+    sql: ${TABLE}.item_location_introduction_date_updated ;;
+  }
 
-
+  dimension_group: item_location_termination_updated {
+    label: "Item Location Termination Updated"
+    description: "The date, when the item was deleted from a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "> ERP Fields"
+    type: time
+    timeframes: [
+      date
+    ]
+    datatype: date
+    sql: ${TABLE}.item_location_termination_date_updated ;;
+}
 
   # =========  CT Data   =========
   dimension: ct_is_published_globally {

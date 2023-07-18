@@ -23,7 +23,7 @@ include: "/**/hub_bottleneck_30min.view"
 
 explore: ops {
   from: staffing
-  group_label: "Rider Ops"
+  group_label: "Last Mile & WFM"
   view_label: "Staffing"
   label: "Ops"
   hidden: no

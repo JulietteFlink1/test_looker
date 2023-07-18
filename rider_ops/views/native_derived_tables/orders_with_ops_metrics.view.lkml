@@ -30,7 +30,7 @@ view: orders_with_ops_metrics {
       column: avg_estimated_riding_time_minutes {}
       column: avg_fulfillment_time_mm_ss {}
       column: avg_delivery_time_estimate {}
-      column: avg_promised_eta {}
+      column: avg_promised_pdt {}
       column: avg_pdt_mm_ss {}
       column: avg_pick_pack_handling_time_minutes {}
       column: avg_potential_rider_handling_time_without_stacking {}
@@ -45,8 +45,8 @@ view: orders_with_ops_metrics {
       column: cnt_stacked_orders_triple_stack {}
       column: created_date {}
       column: created_minute30 {}
-      column: cnt_orders_delayed_under_0_min {}
-      column: cnt_orders_delayed_under_0_min_raw {}
+      column: number_of_orders_on_time {}
+      column: number_of_orders_on_time_raw {}
       column: cnt_orders_delayed_under_0_min_with_tolerance_buffer {}
       column: cnt_external_orders {}
       column: cnt_orders_with_delivery_eta_available {}
@@ -234,7 +234,7 @@ view: orders_with_ops_metrics {
     label: "% Orders delivered on time"
     description: "Share of orders delivered on time."
     type: number
-    sql: ${cnt_orders_delayed_under_0_min_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time_raw} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
     value_format: "0%"
   }
 
@@ -244,7 +244,7 @@ view: orders_with_ops_metrics {
     description: "Share of orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
     type: number
     value_format_name: percent_0
-    sql: ${cnt_orders_delayed_under_0_min} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
+    sql: ${number_of_orders_on_time} / NULLIF(${cnt_orders_with_delivery_eta_available}, 0);;
   }
 
   measure: pct_delivery_in_time_with_tolerance_buffer {
@@ -348,7 +348,8 @@ view: orders_with_ops_metrics {
     value_format_name: euro_accounting_2_precision
   }
 
-  measure: cnt_orders_delayed_under_0_min {
+  measure: number_of_orders_on_time {
+    alias: [cnt_orders_delayed_under_0_min]
     group_label: "> Operations / Logistics"
     label: "# Orders delivered on time (with + 15% PDT tolerance)"
     description: "Count of all orders delivered before the PDT + 15% PDT tolerance. ‘+ 15%’ tolerance means that delayed deliveries will look less delayed. Earlier deliveries are counted as 'on time'."
@@ -356,7 +357,8 @@ view: orders_with_ops_metrics {
     hidden: yes
   }
 
-  measure: cnt_orders_delayed_under_0_min_raw {
+  measure: number_of_orders_on_time_raw {
+    alias: [cnt_orders_delayed_under_0_min_raw]
     group_label: "> Operations / Logistics"
     label: "# Orders delivered on time "
     description: "Count of orders delivered no later than PDT."
@@ -544,7 +546,8 @@ view: orders_with_ops_metrics {
     type: average
   }
 
-  measure: avg_promised_eta {
+  measure: avg_promised_pdt {
+    alias: [avg_promised_eta]
     group_label: "> Operations / Logistics"
     label: "AVG PDT"
     description: "Average Promised Fulfillment Time (PDT) a shown to customer"

@@ -2,7 +2,7 @@ include: "/**/micro_no_show_forecast_vs_actuals.view"
 include: "/**/hubs_ct.view"
 
 explore: micro_no_show_forecast_vs_actuals {
-  hidden: no
+  hidden: yes
   label: "No-show forecast error"
   view_label: "* No-show forecast error *"
   group_label: "Rider Ops"
