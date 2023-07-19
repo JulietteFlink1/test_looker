@@ -15,6 +15,9 @@ explore: really_long_term_adjusted_intro_date_explore {
   view_name: really_long_term_adjusted_intro_date
   group_label: "Supply Chain"
   label: "Really Long Term Adjusted Introduction Date Explore (Owned by Supply Chain)"
+  description: "This explore shows on item-location-date level information regarding products that have suffered shifts to their introduction dates as part of a process owned by Supply Chain.
+  This adjustment ensures that the product will not be displayed on the app, improving the customer experience.
+  Additionally, it allows the supplier sufficient time to replenish the stock in collaboration with Flink's Supplier and Commercial teams."
   hidden: no
 
   access_filter: {

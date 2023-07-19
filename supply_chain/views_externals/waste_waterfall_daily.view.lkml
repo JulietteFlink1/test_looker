@@ -63,7 +63,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_abnormal_pu {
+  dimension: is_abnormal_pu {
     type: yesno
     sql: ${TABLE}.flag_abnormal_pu ;;
     label: "Is Abnormal Purchase Units Flag"
@@ -72,7 +72,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_aircon_issue {
+  dimension: is_aircon_issue {
     type: yesno
     sql: ${TABLE}.flag_aircon_issue ;;
     label: "Is Air-conditioner issue Flag"
@@ -81,7 +81,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_delisted {
+  dimension: is_delisted {
     type: yesno
     sql: ${TABLE}.flag_delisted ;;
     label: "Is Delisted Flag"
@@ -90,7 +90,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_dry_drinks {
+  dimension: is_dry_drinks {
     type: yesno
     sql: ${TABLE}.flag_dry_drinks ;;
     label: "Dry/Drinks Expired Flag"
@@ -99,7 +99,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_fcst_greater_sales {
+  dimension: is_fcst_greater_sales {
     type: yesno
     sql: ${TABLE}.flag_fcst_greater_sales ;;
     label: "Is Forecast Greater than Sales Flag"
@@ -108,7 +108,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_freezer_issue {
+  dimension: is_freezer_issue {
     type: yesno
     sql: ${TABLE}.flag_freezer_issue ;;
     label: "Fridge/Freezer Breakdown Flag"
@@ -117,7 +117,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_frozen {
+  dimension: is_frozen {
     type: yesno
     sql: ${TABLE}.flag_frozen ;;
     label: "Is Frozen Expired Flag"
@@ -126,7 +126,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_incorrect_pu {
+  dimension: is_incorrect_pu {
     type: yesno
     sql: ${TABLE}.flag_incorrect_pu ;;
     label: "Is Incorrect Purchase Units Flag"
@@ -135,7 +135,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_low_performer {
+  dimension: is_low_performer {
     type: yesno
     sql: ${TABLE}.flag_low_performer ;;
     group_label: "Flags"
@@ -144,7 +144,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_over_fcst {
+  dimension: is_over_fcst {
     type: yesno
     sql: ${TABLE}.flag_over_fcst ;;
     label: "Is Over Forecast flag"
@@ -153,7 +153,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_over_inbound {
+  dimension: is_over_inbound {
     type: yesno
     sql: ${TABLE}.flag_over_inbound ;;
     label: "Over Inbound flag"
@@ -162,7 +162,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_promotion {
+  dimension: is_promotion {
     type: yesno
     sql: ${TABLE}.flag_promotion ;;
     label: "Is in Promotion Flag"
@@ -171,7 +171,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_human_error {
+  dimension: is_human_error {
     type: yesno
     sql: ${TABLE}.flag_human_error ;;
     label: "Is Human Error Flag"
@@ -180,7 +180,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_co_mrp {
+  dimension: is_co_mrp {
     type: yesno
     sql: ${TABLE}.flag_co_mrp ;;
     label: "Is Co MRP Flag"
@@ -189,7 +189,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_sl1_too_early {
+  dimension: is_sl1_too_early {
     type: yesno
     sql: ${TABLE}.flag_sl1_too_early ;;
     label: "Shelf Life 1 Too Early Flag"
@@ -198,7 +198,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_slgreater1_too_early {
+  dimension: is_slgreater1_too_early {
     type: yesno
     sql: ${TABLE}.flag_slgreater1_too_early ;;
     label: "Shelf Life >1 Too Early Flag"
@@ -291,7 +291,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_robbery {
+  dimension: is_robbery {
     type: yesno
     sql: ${TABLE}.flag_robbery ;;
     label: "Is Robbery Flag"
