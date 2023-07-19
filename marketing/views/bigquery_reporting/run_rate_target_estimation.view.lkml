@@ -137,6 +137,14 @@ view: run_rate_target_estimation {
     value_format: "[>=10]0; 0.00"
   }
 
+  measure: sum_percent_of_monthly_goal_completed_rolling_average {
+    group_label: "> Estimated Measures"
+    label: "AVG Monthly Completed Goal Completion"
+    type: sum
+    hidden: no
+    sql: ${percent_of_monthly_goal_completed_rolling_average} ;;
+  }
+
   measure: sum_historic_expected_completion_rate {
     group_label: "> Estimated Measures"
     label: "SUM Expected Daily Completion Value"
