@@ -268,7 +268,7 @@ view: products {
 
   dimension: is_product_bundle {
     label: "Is Product Bundle"
-    description: "True, if an SKU is a bundled SKU (only frontend-facing concept) that consists of multiple products and/or product quantities."
+    description: "Yes, if an SKU is a bundled SKU (only frontend-facing concept) that consists of multiple products and/or product quantities."
     group_label: "> Product Attributes"
     type: yesno
     sql: ${TABLE}.is_product_bundle ;;
