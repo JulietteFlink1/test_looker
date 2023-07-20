@@ -1913,6 +1913,37 @@ view: orders {
     sql: ${TABLE}.amt_storage_fee_net ;;
   }
 
+  ########### SINGLE USE PLASTIC FEES ##########
+
+  dimension: amt_sup_fee_gross_eur {
+    type: number
+    label: "AMT SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_sup_fee_net_eur {
+    type: number
+    label: "AMT SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_sup_fee_net_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_gross_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Gross)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_gross_eur ;;
+  }
+
+  dimension: amt_refund_sup_fee_net_eur {
+    type: number
+    label: "AMT Refund SUP Fee (Net)"
+    hidden: yes
+    sql: ${TABLE}.amt_refund_sup_fee_net_eur ;;
+  }
+
+
   ########### LATE NIGHT FEES ##########
 
   dimension: amt_late_night_fee_gross {
@@ -3684,6 +3715,82 @@ view: orders {
     value_format_name: euro_accounting_2_precision
   }
 
+############### SINGLE USE PLASTIC FEES ################
+
+  measure: sum_amt_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_gross_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Gross)"
+    description: "Gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: sum_amt_refund_sup_fee_net_eur {
+    type: sum
+    group_label: "> Monetary Values"
+    label: "SUM Refund SUP Fee (Net)"
+    description: "Net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  #### Averages
+
+  measure: avg_amt_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee paid by the customer."
+    sql: ${amt_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_gross_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Gross)"
+    description: "Average gross amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_gross_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
+  measure: avg_amt_refund_sup_fee_net_eur {
+    type: average
+    group_label: "> Monetary Values"
+    label: "AVG Refund SUP Fee (Net)"
+    description: "Average net amount of Single Use Plastic fee refunded to the customer."
+    sql: ${amt_refund_sup_fee_net_eur} ;;
+    value_format_name: euro_accounting_2_precision
+  }
+
 ############### LATE NIGHT FEES ################
 
   measure: sum_amt_late_night_fee_gross {
@@ -3737,36 +3844,36 @@ view: orders {
     alias: [sum_total_fees]
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Gross)"
-    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross) and Late Night Fees (Gross)"
+    description: "Sum of Delivery Fees (Gross), Storage Fees (Gross), Late Night Fees (Gross) and SUP Fees (Gross)"
     type: number
-    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross};;
+    sql: ${sum_delivery_fee_gross} + ${sum_amt_storage_fee_gross} + ${sum_amt_late_night_fee_gross} + ${sum_amt_sup_fee_gross_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_gross {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Gross)"
-    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + and Late Night Fees (Gross)"
+    description: "Average value of Delivery Fees (Gross) + Storage Fees (Gross) + Late Night Fees (Gross) + SUP Fees (Gross)"
     type: average
-    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross}) ;;
+    sql: (${shipping_price_gross_amount} + ${amt_storage_fee_gross} + ${amt_late_night_fee_gross} + ${amt_sup_fee_gross_eur}) ;;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: sum_total_fees_net {
     group_label: "> Monetary Values"
     label: "SUM Total Fees (Net)"
-    description: "Sum of Delivery Fees (Net), Storage Fees (Net) and Late Night Fees (Net)"
+    description: "Sum of Delivery Fees (Net), Storage Fees (Net), Late Night Fees (Net) and SUP Fees (Net)"
     type: number
-    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net};;
+    sql: ${sum_delivery_fee_net} + ${sum_amt_storage_fee_net} + ${sum_amt_late_night_fee_net} + ${sum_amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
   measure: avg_total_fees_net {
     group_label: "> Monetary Values"
     label: "AVG Total Fees (Net)"
-    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net)"
+    description: "Average value of Delivery Fees (Net) + Storage Fees (Net) + Late Night Fees (Net) + SUP Fees (Net)"
     type: average
-    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0);;
+    sql: ${shipping_price_net_amount} + ${amt_storage_fee_net} + coalesce(${amt_late_night_fee_net},0) + ${amt_sup_fee_net_eur};;
     value_format_name: euro_accounting_2_precision
   }
 
