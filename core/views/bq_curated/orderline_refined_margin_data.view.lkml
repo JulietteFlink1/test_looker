@@ -26,7 +26,7 @@ view: +orderline {
             null)
     ;;
     value_format_name: eur
-    hidden: no
+    hidden: yes
   }
 
   dimension: amt_net_income_after_product_discount_net_eur {
@@ -54,7 +54,7 @@ view: +orderline {
     type: number
     sql: ${amt_net_income_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
     value_format_name: eur
-    hidden: no
+    hidden: yes
   }
 
   dimension: amt_margin_after_product_discount_net_eur {
