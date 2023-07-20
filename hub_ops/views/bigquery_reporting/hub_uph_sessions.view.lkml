@@ -90,7 +90,7 @@ view: hub_uph_sessions {
   }
 
   dimension: quinyx_badge_number {
-    required_access_grants: [can_access_pii_hub_employees]
+    #required_access_grants: [can_access_pii_hub_employees]
     hidden: yes
     description: "Unique employee identifier in Quinyx."
     type: string
