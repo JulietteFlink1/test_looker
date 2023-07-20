@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 view: erp_buying_prices {
 
-  sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
+  sql_table_name: `flink-data-dev.dbt_lruiz_curated.erp_buying_prices`;;
 
   required_access_grants: [can_access_pricing_margins]
 
@@ -67,6 +67,12 @@ view: erp_buying_prices {
       avg_amt_supplier_invoice_discount_net_cost_based_net,
       avg_amt_supplier_kickback_wac_based_net,
       avg_amt_supplier_kickback_net_cost_based_net,
+      avg_amt_uc_0_net,
+      avg_amt_uc_1_net,
+      avg_amt_uc_2_net,
+      avg_amt_uc_3_net,
+      avg_amt_uc_4_net,
+      avg_amt_full_cost_net,
     ]
   }
 
@@ -166,7 +172,7 @@ view: erp_buying_prices {
   dimension: erp_vendor_name {
     label: "Supplier Name"
     type: string
-    sql: ${TABLE}.erp_vendor_name ;;
+    sql: ${TABLE}.erp_supplier_name ;;
 
     # this field is not part of the refactored table anymore, but can be derived from e.g. erp_product_hub_vendor_assignment_v2
     hidden: no
@@ -386,7 +392,59 @@ view: erp_buying_prices {
     sql: ${TABLE}.amt_supplier_kickback_net_cost_based_net ;;
   }
 
+  dimension: amt_uc_0_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "UC0 (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_uc_0_net ;;
+  }
 
+  dimension: amt_uc_1_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "UC1 (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location with Supplier Invoice Discount deducted."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_uc_1_net ;;
+  }
+
+  dimension: amt_uc_2_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "UC2 (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_uc_2_net ;;
+  }
+
+  dimension: amt_uc_3_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "UC3 (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_uc_3_net ;;
+  }
+
+  dimension: amt_uc_4_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "UC4 (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_uc_4_net ;;
+  }
+
+  dimension: amt_full_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Full Cost (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding."
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_full_cost_net ;;
+  }
 
 
   # =========  hidden   =========
@@ -428,7 +486,7 @@ view: erp_buying_prices {
   dimension: erp_vendor_id {
     label: "Supplier ID"
     type: string
-    sql: ${TABLE}.erp_vendor_id ;;
+    sql: ${TABLE}.erp_supplier_id ;;
     # for joining only
     hidden: yes
   }
@@ -700,7 +758,9 @@ view: erp_buying_prices {
     ;;
   }
 
-
+########################################
+############ Spot Cost #################
+########################################
 
   measure: avg_amt_base_cost_net {
     required_access_grants: [can_access_pricing_margins]
@@ -847,6 +907,66 @@ view: erp_buying_prices {
     type: average
     sql: ${amt_supplier_kickback_net_cost_based_net} ;;
     value_format_name: eur
+  }
+
+  measure: avg_amt_uc_0_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG UC0 (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_uc_0_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_uc_1_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG UC1 (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_uc_1_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_uc_2_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG UC2 (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_uc_2_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_uc_3_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG UC3 (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_uc_3_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_uc_4_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG UC4 (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_uc_4_net} ;;
+    value_format_name: decimal_4
+  }
+
+  measure: avg_amt_full_cost_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Full Cost (Net)"
+    description: ""
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_full_cost_net} ;;
+    value_format_name: decimal_4
   }
 
 }

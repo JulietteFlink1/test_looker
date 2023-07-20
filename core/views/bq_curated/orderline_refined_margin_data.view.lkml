@@ -26,7 +26,7 @@ view: +orderline {
             null)
     ;;
     value_format_name: eur
-    hidden: yes
+    hidden: no
   }
 
   dimension: amt_net_income_after_product_discount_net_eur {
@@ -54,7 +54,7 @@ view: +orderline {
     type: number
     sql: ${amt_net_income_net_eur} - ${amt_weighted_average_cost_net_eur} ;;
     value_format_name: eur
-    hidden: yes
+    hidden: no
   }
 
   dimension: amt_margin_after_product_discount_net_eur {
@@ -78,121 +78,362 @@ view: +orderline {
   dimension: amt_base_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Base Cost (Net)"
-    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_base_cost_net ;;
+    sql: ${TABLE}.amt_base_cost_net_unit_cost ;;
+  }
+
+  dimension: amt_base_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Base Cost (Net)"
+    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_base_cost_net_total_cost ;;
   }
 
   dimension: amt_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Net Cost (Net)"
-    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL  - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_net_cost_net ;;
+    sql: ${TABLE}.amt_net_cost_net_unit_cost ;;
+  }
+
+  dimension: amt_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Net Cost (Net)"
+    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_net_cost_net_total_cost ;;
   }
 
 
   dimension: amt_supplier_invoice_discount_wac_based_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Amt Supplier Invoice Discount Wac Based Net"
-    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_supplier_invoice_discount_wac_based_net ;;
+    sql: ${TABLE}.amt_supplier_invoice_discount_wac_based_net_unit_cost ;;
   }
 
+  dimension: amt_supplier_invoice_discount_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Amt Supplier Invoice Discount Wac Based Net"
+    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_invoice_discount_wac_based_net_total_cost ;;
+  }
 
   dimension: amt_supplier_kickback_wac_based_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Amt Supplier Kickback Wac Based Net"
-    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_supplier_kickback_wac_based_net ;;
+    sql: ${TABLE}.amt_supplier_kickback_wac_based_net_unit_cost ;;
   }
 
+  dimension: amt_supplier_kickback_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Amt Supplier Kickback Wac Based Net"
+    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_supplier_kickback_wac_based_net_total_cost ;;
+  }
 
   dimension: amt_logistic_cost_net {
     required_access_grants: [can_access_pricing_margins]
-    label: "Logistic Cost (Net)"
-    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    label: "Logistic Cost Net Cost Based (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_logistic_cost_net ;;
+    sql: ${TABLE}.amt_logistic_net_cost_based_net_unit_cost ;;
+  }
+
+  dimension: amt_logistic_net_cost_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Logistic Cost Net Cost Based (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_logistic_net_cost_based_net_total_cost ;;
+  }
+
+  dimension: amt_logistic_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Logistic Cost WAC Based (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_logistic_wac_based_net_unit_cost ;;
+  }
+
+  dimension: amt_logistic_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Logistic Cost WAC Based (Net)"
+    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_logistic_wac_based_net_total_cost ;;
   }
 
   dimension: amt_net_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Net Net Cost (Net)"
-    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_net_net_cost_net ;;
+    sql: ${TABLE}.amt_net_net_cost_net_unit_cost ;;
+  }
+
+  dimension: amt_net_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Net Net Cost (Net)"
+    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_net_net_cost_net_total_cost ;;
   }
 
   dimension: amt_partner_kickback_permanent_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Partner Kickback Permanent (Net)"
-    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_partner_kickback_permanent_net ;;
+    sql: ${TABLE}.amt_partner_kickback_permanent_net_unit_cost ;;
+  }
+
+  dimension: amt_partner_kickback_permanent_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Partner Kickback Permanent (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_partner_kickback_permanent_net_total_cost ;;
   }
 
   dimension: amt_partner_kickback_temporary_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Partner Kickback Temporary (Net)"
-    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost."
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_partner_kickback_temporary_net ;;
+    sql: ${TABLE}.amt_partner_kickback_temporary_net_unit_cost ;;
+  }
+
+  dimension: amt_partner_kickback_temporary_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Partner Kickback Temporary (Net)"
+    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_partner_kickback_temporary_net_total_cost ;;
   }
 
   dimension: amt_dead_net_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Dead Net Net Cost (Net)"
-    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_dead_net_net_cost_net ;;
+    sql: ${TABLE}.amt_dead_net_net_cost_net_unit_cost ;;
+  }
+
+  dimension: amt_dead_net_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Dead Net Net Cost (Net)"
+    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_dead_net_net_cost_net_total_cost ;;
   }
 
   dimension: amt_promo_funding_partner_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Promo Funding Partner (Net)"
-    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_promo_funding_partner_net ;;
+    sql: ${TABLE}.amt_promo_funding_partner_net_unit_cost ;;
+  }
+
+  dimension: amt_promo_funding_partner_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Promo Funding Partner (Net)"
+    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_partner_net_total_cost ;;
   }
 
   dimension: amt_promo_funding_marketing_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Promo Funding Marketing (Net)"
-    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_promo_funding_marketing_net ;;
+    sql: ${TABLE}.amt_promo_funding_marketing_net_unit_cost ;;
+  }
+
+  dimension: amt_promo_funding_marketing_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Promo Funding Marketing (Net)"
+    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_marketing_net_total_cost ;;
   }
 
   dimension: amt_promo_funding_supplier_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Promo Funding Supplier (Net)"
-    description: "Promo funding amount accounts for revenues generated by suppliers when offering certain products"
+    description: "Promo funding amount accounts for revenues generated by suppliers when offering certain products. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_promo_funding_supplier_net ;;
+    sql: ${TABLE}.amt_promo_funding_supplier_net_unit_cost ;;
+  }
+
+  dimension: amt_promo_funding_supplier_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Promo Funding Supplier (Net)"
+    description: "Promo funding amount accounts for revenues generated by suppliers when offering certain products. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_promo_funding_supplier_net_total_cost ;;
   }
 
   dimension: amt_pricing_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "Pricing Cost (Net)"
-    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions. - Per Unit"
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_pricing_cost_net ;;
+    sql: ${TABLE}.amt_pricing_cost_net_unit_cost ;;
+  }
+
+  dimension: amt_pricing_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Pricing Cost (Net)"
+    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_pricing_cost_net_total_cost ;;
+  }
+
+  dimension: amt_wac_0_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "WAC0 (Net)"
+    description: "Average value of our current stock before any deductions. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_0_net_unit_cost ;;
+  }
+
+  dimension: amt_wac_0_net_total_cost  {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total WAC0 (Net)"
+    description: "Average value of our current stock before any deductions. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_0_net_total_cost ;;
+  }
+
+  dimension: amt_wac_1_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "WAC1 (Net)"
+    description: "Average value of our current stock with Supplier Invoice Discount deducted. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_1_net_unit_cost ;;
+  }
+
+  dimension: amt_wac_1_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total WAC1 (Net)"
+    description: "Average value of our current stock with Supplier Invoice Discount deducted. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_1_net_total_cost ;;
+  }
+
+  dimension: amt_wac_2_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "WAC2 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_2_net_unit_cost ;;
+  }
+
+  dimension: amt_wac_2_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total WAC2 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_2_net_total_cost ;;
+  }
+
+  dimension: amt_wac_3_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "WAC3 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_3_net_unit_cost ;;
+  }
+
+  dimension: amt_wac_3_net_total_cost  {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total WAC3 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_3_net_total_cost ;;
+  }
+
+  dimension: amt_wac_4_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "WAC4 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_4_net_unit_cost ;;
+  }
+
+  dimension: amt_wac_4_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total WAC4 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback. - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_wac_4_net_total_cost ;;
+  }
+
+  dimension: amt_full_wac_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Full WAC (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding. - Per Unit"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_full_wac_net_unit_cost ;;
+  }
+
+  dimension: amt_full_wac_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "Total Full WAC (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding.  - Total cost as result of unit cost * quantity sold"
+    type: number
+    hidden: yes
+    sql: ${TABLE}.amt_full_wac_net_total_cost ;;
   }
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -451,133 +692,405 @@ view: +orderline {
   measure: avg_amt_base_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Base Cost (Net)"
-    description: "Base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    description: "Average base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_base_cost_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_base_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Base Cost (Net)"
+    description: "Sum of the total base cost of the SKU/supplier/country at the given location. This is the same cost that is on the item_supp_country table."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_base_cost_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Net Cost (Net)"
-    description: "Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    description: "Average Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_net_cost_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Net Cost (Net)"
+    description: "Sum of the total Net cost of the SKU/supplier/country at the given location. This is the base cost minus any deal components designated as applying to net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_net_cost_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_supplier_invoice_discount_wac_based_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Supplier Invoice Discount Wac Based (Net)"
-    description: "The discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    description: "Average discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_supplier_invoice_discount_wac_based_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_supplier_invoice_discount_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Supplier Invoice Discount Wac Based (Net)"
+    description: "Sum of the total discount on the supplier invoice, that mainly entails a standard refund for missing/wrong goods delivered. This metric is a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_supplier_invoice_discount_wac_based_net_total_cost} ;;
+    value_format_name: eur
+  }
 
   measure: avg_amt_supplier_kickback_wac_based_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Supplier Kickback Wac Based (Net)"
-    description: "Contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    description: "Average contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_supplier_kickback_wac_based_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_supplier_kickback_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Supplier Kickback Wac Based (Net)"
+    description: "Sum of the total contractural refund of a supplier, given certain conditions are met. These conditions are defined in Oracle deals tables. Can either be an absolute value or a percentage of the weighted average cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_supplier_kickback_wac_based_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_logistic_cost_net {
     required_access_grants: [can_access_pricing_margins]
-    label: "AVG Logistic Cost (Net)"
-    description: "Logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    label: "AVG Logistic Cost Net Cost Based (Net)"
+    description: "Average of logistic cost demanded by the supplier. Calculated as a share of the net cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_logistic_cost_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_logistic_net_cost_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Logistic Cost Net Cost Based (Net)"
+    description: "Sum of total logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_logistic_net_cost_based_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_logistic_wac_based_net {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Logistic Cost WAC Based (Net)"
+    description: "Average of logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    group_label: "> Spot Costs"
+    type: average
+    sql: ${amt_logistic_wac_based_net} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_logistic_wac_based_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Logistic Cost WAC Based (Net)"
+    description: "Sum of total logistic cost demanded by the supplier. Calculated as a share of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_logistic_wac_based_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_net_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Net Net Cost (Net)"
-    description: "Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    description: "Average of Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_net_net_cost_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_net_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Net Net Cost (Net)"
+    description: "Sum of total Net net cost of the SKU/supplier/country at the given location. This is the net cost minus any deal components designated as applying to net net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_net_net_cost_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_partner_kickback_permanent_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Partner Kickback Permanent (Net)"
-    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
+    description: "Average of kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_partner_kickback_permanent_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_partner_kickback_permanent_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Partner Kickback Permanent (Net)"
+    description: "Sum of total kickback (refunded) amount from partners (not suppiers) when meeting some sales targets. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_partner_kickback_permanent_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_partner_kickback_temporary_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Partner Kickback Temporary (Net)"
-    description: "Kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost."
+    description: "Average of kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_partner_kickback_temporary_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_partner_kickback_temporary_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Partner Kickback Temporary (Net)"
+    description: "Sum of total kickback (refunded) amount from partners (not suppiers) when meeting some sales targets for temporary campaigns. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_partner_kickback_temporary_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_dead_net_net_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Dead Net Net Cost (Net)"
-    description: "Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    description: "Average of Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_dead_net_net_cost_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_dead_net_net_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Dead Net Net Cost (Net)"
+    description: "Sum of total Dead net net cost of the SKU/supplier/country at the given location. This is the net net cost minus any deal components designated as applying to dead net net cost on DEAL_DETAIL."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_dead_net_net_cost_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_promo_funding_partner_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Promo Funding Partner (Net)"
-    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    description: "Average of promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_promo_funding_partner_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_promo_funding_partner_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Promo Funding Partner (Net)"
+    description: "Sum of total promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_promo_funding_partner_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_promo_funding_marketing_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Promo Funding Marketing (Net)"
-    description: "Promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    description: "Average of promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_promo_funding_marketing_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_promo_funding_marketing_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Promo Funding Marketing (Net)"
+    description: "Sum of total promo funding amount accounts for revenues generated by partners (not suppliers) when offering their products in special app positions. Either an absolute value or a percentage of the net cost."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_promo_funding_marketing_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_promo_funding_supplier_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Promo Funding Supplier (Net)"
-    description: "Promo funding amount accounts for revenues generated by suppliers when offering certain products"
+    description: "Average of promo funding amount accounts for revenues generated by suppliers when offering certain products"
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_promo_funding_supplier_net} ;;
     value_format_name: eur
   }
 
+  measure: sum_of_amt_promo_funding_supplier_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Promo Funding Supplier (Net)"
+    description: "Sum of total promo funding amount accounts for revenues generated by suppliers when offering certain products"
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_promo_funding_supplier_net_total_cost} ;;
+    value_format_name: eur
+  }
+
   measure: avg_amt_pricing_cost_net {
     required_access_grants: [can_access_pricing_margins]
     label: "AVG Pricing Cost (Net)"
-    description: "Cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    description: "Average of cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
     group_label: "> Spot Costs"
     type: average
     sql: ${amt_pricing_cost_net} ;;
     value_format_name: eur
   }
+
+  measure: sum_of_amt_pricing_cost_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Pricing Cost (Net)"
+    description: "Sum of total cost to be used to in pricing reviews. Pricing cost is the cost that will be interfaced with Oracle Price Management for use in pricing decisions."
+    group_label: "> Spot Costs"
+    type: sum
+    sql: ${amt_pricing_cost_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+
+  measure: avg_amt_wac_0_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG WAC0 (Net)"
+    description: "Average value of our current stock before any deductions."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_wac_0_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_wac_0_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total WAC0 (Net)"
+    description: "Sum of total value of our current stock before any deductions."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_wac_0_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_wac_1_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG WAC1 (Net)"
+    description: "Average value of our current stock with Supplier Invoice Discount deducted."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_wac_1_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_wac_1_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total WAC1 (Net)"
+    description: "Sum of total value of our current stock with Supplier Invoice Discount deducted."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_wac_1_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_wac_2_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG WAC2 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_wac_2_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_wac_2_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total WAC2 (Net)"
+    description: "Sum of total value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_wac_2_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_wac_3_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG WAC3 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_wac_3_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_wac_3_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total WAC3 (Net)"
+    description: "Sum of total value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_wac_3_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_wac_4_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG WAC4 (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_wac_4_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_wac_4_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total WAC4 (Net)"
+    description: "Sum of total value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_wac_4_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: avg_amt_full_wac_net_unit_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "AVG Full WAC (Net)"
+    description: "Average value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding."
+    group_label: "> WAC Calculations"
+    type: average
+    sql: ${amt_full_wac_net_unit_cost} ;;
+    value_format_name: eur
+  }
+
+  measure: sum_of_amt_full_wac_net_total_cost {
+    required_access_grants: [can_access_pricing_margins]
+    label: "SUM Total Full WAC (Net)"
+    description: "Sum of total value of our current stock with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding."
+    group_label: "> WAC Calculations"
+    type: sum
+    sql: ${amt_full_wac_net_total_cost} ;;
+    value_format_name: eur
+  }
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 }

@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.order_lineitems`
+  sql_table_name: `flink-data-dev.dbt_lruiz_curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -422,11 +422,43 @@ view: orderline {
     description: "Buying price, that can be used for product sales. It resembles the weighted buying price of the current stock. This is done (in Oracle) to ensure that we value the inventory at any given day with the average value of our current stock (and not with the most recent buying price to place a supplier order). ℹ️ Before 27th. of Jan 2023, this field is using the simple unit cost."
     group_label: "> Monetary Metrics (P&L)"
     type: number
-    sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    #sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
+    sql:
+    {% if wac_method_calculation._parameter_value == 'wac0' %}
+    ${TABLE}.amt_wac_0_net_unit_cost
+    {% elsif wac_method_calculation._parameter_value == 'wac1' %}
+    ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur -- = amt_wac_1_net_unit_cost
+    {% elsif wac_method_calculation._parameter_value == 'wac2' %}
+    ${TABLE}.amt_wac_2_net_unit_cost
+    {% elsif wac_method_calculation._parameter_value == 'wac3' %}
+    ${TABLE}.amt_wac_3_net_unit_cost
+    {% elsif wac_method_calculation._parameter_value == 'wac4' %}
+    ${TABLE}.amt_wac_4_net_unit_cost
+    {% elsif wac_method_calculation._parameter_value == 'full_wac' %}
+    ${TABLE}.amt_full_wac_net_unit_cost
+    {% endif %};;
+
     value_format_name: decimal_4
     hidden: yes
   }
 
+  ##### Parameters ######
+
+  parameter: wac_method_calculation {
+    hidden: no
+
+    label: "WAC Method"
+    group_label: "Parameters"
+    type: unquoted
+    allowed_value: { value: "wac0" label: "WAC0 (Net)"}
+    allowed_value: { value: "wac1" label: "WAC1 (Net)"}
+    allowed_value: { value: "wac2" label: "WAC2 (Net)"}
+    allowed_value: { value: "wac3" label: "WAC3 (Net)"}
+    allowed_value: { value: "wac4" label: "WAC4 (Net)"}
+    allowed_value: { value: "full_wac" label: "Full WAC (Net)"}
+
+    default_value: "wac1"
+  }
 
   # =========  Admin Dims   =========
   dimension: backend_source {
