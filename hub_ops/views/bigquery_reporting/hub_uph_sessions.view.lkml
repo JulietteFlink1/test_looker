@@ -90,7 +90,7 @@ view: hub_uph_sessions {
   }
 
   dimension: quinyx_badge_number {
-    #required_access_grants: [can_access_pii_hub_employees]
+    #required_access_grants: [can_access_pii_hub_employees] ### COMMENTED OUT because it is only classified as indirect PII data by Legal department and we do not need to protect it necessarily
     hidden: yes
     description: "Unique employee identifier in Quinyx."
     type: string

@@ -11,7 +11,7 @@ view: rider_applicants {
 
   dimension: applicant_uuid {
     group_label: "> IDs"
-    #required_access_grants: [can_access_pii_hub_employees]
+    #required_access_grants: [can_access_pii_hub_employees] ### COMMENTED OUT because it is only classified as indirect PII data by Legal department and we do not need to protect it necessarily
     primary_key: yes
     type: string
     sql: ${TABLE}.applicant_uuid ;;
