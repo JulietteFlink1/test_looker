@@ -3,7 +3,7 @@
  # Purpose: Provide up to date progression against monthly targets.
 
 view: run_rate_target_estimation {
-  sql_table_name: `flink-data-dev.dbt_jdavies_reporting.run_rate_target_estimation`;;
+  sql_table_name: `flink-data-prod.reporting.run_rate_target_estimation`;;
 
   ##DIMENSIONS
 
