@@ -63,7 +63,7 @@ view: noos_list {
   }
 
   dimension: rank_basket_starter {
-    type: string
+    type: number
     sql: ${TABLE}.rank_basket_starter ;;
     label: "Basket Starter Ranking"
     description: "Ranks items in descending order based on the count of orders for items that are first added (rank 1) in the basket"

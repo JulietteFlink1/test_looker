@@ -13,7 +13,7 @@
          # GMV
 
 
-include: "/supply_chain/explores/master_reporting/supply_chain_master_report.view"
+include: "/supply_chain/views/bigquery_reporting/supply_chain_master_report.view"
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_waste_risk_index_calculation.view"
 include: "/supply_chain/explores/master_reporting/native_derived_tables/ndt_handling_unit_rotation.view"
 include: "/core/views/config/global_filters_and_parameters.view"
@@ -28,8 +28,10 @@ explore: supply_chain_master {
 
   persist_with: supply_chain_daily_datagroup
 
-  label: "Supply Chain Master Explore"
+  label: "SCM Master Explore (RSG-level)"
   group_label: "Supply Chain"
+  description: "This explore shows on RSG granularity, key dimensions of SCM such as Availability, Waste, GMV.
+    Additionally, it incorporates OTIFIQ metrics, which help in evaluating supplier performance."
 
   from: supply_chain_master_report
 

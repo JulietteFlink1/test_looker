@@ -18,7 +18,7 @@ view: waste_waterfall_daily {
  dimension: bucket {
   type: string
   sql: ${TABLE}.bucket ;;
-  label: "Out of Stock Bucket (Daily level)"
+  label: "Bucket (Daily level)"
   description: "Bucket allocated to product-location for waste topics based on MECE Logic (mutually exclusive and collectively exhaustive)"
   hidden: no
 }
@@ -63,34 +63,34 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_abnormal_pu {
+  dimension: is_abnormal_pu {
     type: yesno
     sql: ${TABLE}.flag_abnormal_pu ;;
-    label: "Abnormal Purchase Units Flag"
+    label: "Is Abnormal Purchase Units Flag"
     group_label: "Flags"
     description: "Identifies products which have abnormal purchase units: median purchase units over the last 28 days are smaller than 50% of the purchase units for the report date"
     hidden: no
   }
 
-  dimension: flag_aircon_issue {
+  dimension: is_aircon_issue {
     type: yesno
     sql: ${TABLE}.flag_aircon_issue ;;
-    label: "Air-conditioner issue Flag"
+    label: "Is Air-conditioner issue Flag"
     group_label: "Flags"
     description: "Identifies waste caused by air-conditionner issues in spotting abnormal damaged waste on Chocolate as this category is likely to melt when AC issue and high temperature."
     hidden: no
   }
 
-  dimension: flag_delisted {
+  dimension: is_delisted {
     type: yesno
     sql: ${TABLE}.flag_delisted ;;
-    label: "Delisted Flag"
+    label: "Is Delisted Flag"
     group_label: "Flags"
     description: "Identifies Product-Locations that have been delisted"
     hidden: no
   }
 
-  dimension: flag_dry_drinks {
+  dimension: is_dry_drinks {
     type: yesno
     sql: ${TABLE}.flag_dry_drinks ;;
     label: "Dry/Drinks Expired Flag"
@@ -99,16 +99,16 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_fcst_greater_sales {
+  dimension: is_fcst_greater_sales {
     type: yesno
     sql: ${TABLE}.flag_fcst_greater_sales ;;
-    label: "Forecast Greater than Sales Flag"
+    label: "Is Forecast Greater than Sales Flag"
     group_label: "Flags"
     description: "Identifies if 90% of the total forecast is greater than total corrected sales on a report date level for product-location"
     hidden: no
   }
 
-  dimension: flag_freezer_issue {
+  dimension: is_freezer_issue {
     type: yesno
     sql: ${TABLE}.flag_freezer_issue ;;
     label: "Fridge/Freezer Breakdown Flag"
@@ -117,43 +117,43 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_frozen {
+  dimension: is_frozen {
     type: yesno
     sql: ${TABLE}.flag_frozen ;;
-    label: "Frozen Expired Flag"
+    label: "Is Frozen Expired Flag"
     group_label: "Flags"
     description: "Identifies remaining expired waste for Frozen products, as it is not likely to happen often (<0.5% waste target)"
     hidden: no
   }
 
-  dimension: flag_incorrect_pu {
+  dimension: is_incorrect_pu {
     type: yesno
     sql: ${TABLE}.flag_incorrect_pu ;;
-    label: "Incorrect Purchase Units Flag"
+    label: "Is Incorrect Purchase Units Flag"
     group_label: "Flags"
     description: "Identifies product-locations that Have Fill Rate above 150% in more than 10 hubs in that week. 80% of all inbounds must have had an inbound issue"
     hidden: no
   }
 
-  dimension: flag_low_performer {
+  dimension: is_low_performer {
     type: yesno
     sql: ${TABLE}.flag_low_performer ;;
     group_label: "Flags"
-    label: "Low Performer Flag"
+    label: "Is Low Performer Flag"
     description: "Identifies that product-locations are showing low performance"
     hidden: no
   }
 
-  dimension: flag_over_fcst {
+  dimension: is_over_fcst {
     type: yesno
     sql: ${TABLE}.flag_over_fcst ;;
-    label: "Over Forecast flag"
+    label: "Is Over Forecast flag"
     group_label: "Flags"
     description: "Identifies over forecasted Product-Locations"
     hidden: no
   }
 
-  dimension: flag_over_inbound {
+  dimension: is_over_inbound {
     type: yesno
     sql: ${TABLE}.flag_over_inbound ;;
     label: "Over Inbound flag"
@@ -162,16 +162,34 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_promotion {
+  dimension: is_promotion {
     type: yesno
     sql: ${TABLE}.flag_promotion ;;
-    label: "Promotion Flag"
+    label: "Is in Promotion Flag"
     group_label: "Flags"
     description: "Identifies Product-Locations with promotion + waste "
     hidden: no
   }
 
-  dimension: flag_sl1_too_early {
+  dimension: is_human_error {
+    type: yesno
+    sql: ${TABLE}.flag_human_error ;;
+    label: "Is Human Error Flag"
+    group_label: "Flags"
+    description: "Identifies Product-Locations on which an operator did a important positive correction before outbounding the whole quantity "
+    hidden: no
+  }
+
+  dimension: is_co_mrp {
+    type: yesno
+    sql: ${TABLE}.flag_co_mrp ;;
+    label: "Is Co MRP Flag"
+    group_label: "Flags"
+    description: "Enables us to track Effective Order Model from Relex (ordering constraint)"
+    hidden: no
+  }
+
+  dimension: is_sl1_too_early {
     type: yesno
     sql: ${TABLE}.flag_sl1_too_early ;;
     label: "Shelf Life 1 Too Early Flag"
@@ -180,7 +198,7 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_slgreater1_too_early {
+  dimension: is_slgreater1_too_early {
     type: yesno
     sql: ${TABLE}.flag_slgreater1_too_early ;;
     label: "Shelf Life >1 Too Early Flag"
@@ -273,10 +291,10 @@ view: waste_waterfall_daily {
     hidden: no
   }
 
-  dimension: flag_robbery {
+  dimension: is_robbery {
     type: yesno
     sql: ${TABLE}.flag_robbery ;;
-    label: "Robbery Flag"
+    label: "Is Robbery Flag"
     group_label: "Flags"
     description: "Marks potential hub robbery when we saw a high waste peak on several sku for the drinks or Cigarettes."
     hidden: no
@@ -299,6 +317,20 @@ view: waste_waterfall_daily {
     label: "Risky Products Index"
     description: "Risky Products' Index for Product-Location"
     hidden: no
+  }
+
+  dimension: report_date_dynamic {
+    label: "Report Date (Dynamic)"
+    datatype: date
+    type: date
+    sql:
+    {% if global_filters_and_parameters.timeframe_picker._parameter_value == 'Date' %}
+      ${report_date}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Week' %}
+      ${report_week}
+    {% elsif global_filters_and_parameters.timeframe_picker._parameter_value == 'Month' %}
+      ${report_month}
+    {% endif %};;
   }
 
   dimension: sku {

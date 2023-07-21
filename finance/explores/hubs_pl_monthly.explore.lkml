@@ -7,6 +7,7 @@ explore: hubs_pl_monthly {
   view_name:  hub_pl_monthly
   view_label: "* Hubs P&Ls *"
   group_label: "Finance"
+  hidden: yes
 
   required_access_grants: [can_access_pricing_margins]
 
