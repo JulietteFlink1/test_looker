@@ -7,7 +7,7 @@ explore: oracle_spot_cost {
   label: "Oracle Spot Costs"
   group_label: "Commercial"
   description: "This table exposes data from the Oracle future_cost table and shows prices both, for current and future states"
-
+  hidden: yes
   from: oracle_future_cost_fact
   view_name: oracle_future_cost_fact
 
