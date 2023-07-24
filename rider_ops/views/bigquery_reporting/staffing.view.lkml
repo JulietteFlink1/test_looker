@@ -1176,23 +1176,16 @@ view: staffing {
   measure: sum_number_of_planned_hours_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Filled (Assigned) Hub Manager Hours"
+    description: "Number of hours assigned to Hub Managers."
     type: sum
     sql: ${number_of_planned_minutes_hub_manager}/60 ;;
-    value_format_name: decimal_1
-  }
-
-  measure: sum_number_of_availability_hours_hub_manager {
-    group_label: "> Hub Manager Measures"
-    label: "# Hub Manager Availability Hours"
-    description:"Number of hours that were provided as available by the employee (Rider)"
-    type: sum
-    sql: ${number_of_availability_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
   }
 
   measure: sum_number_of_worked_hours_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Punched Hub Manager Hours"
+    description: "Number of hours punched by Hub Managers."
     type: sum
     sql: ${number_of_worked_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
@@ -1201,41 +1194,66 @@ view: staffing {
   measure: sum_number_of_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# No Show Hub Manager Hours"
+    description: "Number of hours considered as No Show from Hub Managers.
+    Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_no_show_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
+    link: {label: "Read more about No Show"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
+    }
   }
 
   measure: sum_number_of_excused_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Excused No Show Hub Manager Hours"
+    description: "Number of hours considered as Excused No Show from Hub Managers.
+    Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_excused_no_show_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
+    link: {label: "Read more about No Show"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
+    }
   }
 
   measure: sum_number_of_unexcused_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Unexcused No Show Hub Manager Hours"
+    description: "Number of hours considered as Unexcused No Show from Hub Managers.
+    Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_unexcused_no_show_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
+    link: {label: "Read more about No Show"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
+    }
   }
 
   measure: sum_number_of_deleted_excused_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Deleted Excused No Show Hub Manager Hours"
+    description: "Number of hours considered as Deleted Excused No Show from Hub Managers.
+    Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_deleted_excused_no_show_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
+    link: {label: "Read more about No Show"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
+    }
   }
 
   measure: sum_number_of_deleted_unexcused_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# Deleted Unexcused No Show Hub Manager Hours"
+    description: "Number of hours considered as Deleted Unexcused No Show from Hub Managers.
+    Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_deleted_unexcused_no_show_minutes_hub_manager}/60 ;;
     value_format_name: decimal_1
+    link: {label: "Read more about No Show"
+      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
+    }
   }
 
   measure: sum_number_of_unassigned_minutes_internal_hub_manager {
@@ -1249,8 +1267,8 @@ view: staffing {
 
   measure: sum_number_of_scheduled_hours_hub_manager {
     group_label: "> Hub Manager Measures"
-    label: "# Scheduled Shift Hub Manager Hours"
-    description: "# Scheduled Hub Manager Hours (Assigned + Unassigned)"
+    label: "# Scheduled Hub Manager Hours"
+    description: "# Filled (Assigned) Hub Manager Hours + # Unassigned Hub Manager Hours"
     type: sum
     sql: (${number_of_unassigned_minutes_internal_hub_manager}+${number_of_planned_minutes_hub_manager})/60;;
     value_format_name: decimal_1
@@ -1259,6 +1277,7 @@ view: staffing {
   measure: pct_fill_rate_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "% Fill Rate Hub Manager"
+    description: "# Filled (Assigned) Hub Manager Hours / # Scheduled Hub Manager Hour"
     type: number
     sql: ${sum_number_of_planned_hours_hub_manager} / nullif(${sum_number_of_scheduled_hours_hub_manager},0) ;;
     value_format_name: percent_2
@@ -1554,7 +1573,8 @@ view: staffing {
   measure: number_of_worked_hours_hub_staff_only_punch_excluding_hm {
     group_label: "> Hub Staff Measures"
     label: "# Punched Hub Staff Hours (excl. HM)"
-    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Ops Associate +) + # Punched Shift Lead hours + # Rider Hub One Tasks Hours "
+    description: "# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${number_of_worked_hours_ops_associate}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate_plus} + ${number_of_hub_one_tasks_hours_rider};;
     value_format_name: decimal_1
@@ -1563,7 +1583,8 @@ view: staffing {
   measure: number_of_worked_hours_hub_staff_only_punch_including_hm {
     group_label: "> Hub Staff Measures"
     label: "# Punched Hub Staff Hours (incl. HM)"
-    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Ops Associate +) + # Punched Shift Lead hours + # Rider Hub One Tasks Hours + Punched HM Hours "
+    description: "# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours + # Punched Hub Manager Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${number_of_worked_hours_ops_associate}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate_plus} + ${number_of_hub_one_tasks_hours_rider} + ${sum_number_of_worked_hours_hub_manager};;
     value_format_name: decimal_1
@@ -1572,7 +1593,8 @@ view: staffing {
   measure: number_of_worked_hours_all_staff_excluding_hm {
     group_label: "> All Staff Measures"
     label: "# Punched All Staff Hours (excl. HM)"
-    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Ops Associate +) + # Punched Shift Lead hours + # Punched Rider Hours  + # Punched Onboarding Hours"
+    description: "# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours + # Punched Rider Hours # Punched Onboarding Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${number_of_worked_hours_ops_associate}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate_plus} + ${number_of_worked_hours_rider} + ${number_of_worked_hours_onboarding};;
     value_format_name: decimal_1
@@ -1581,10 +1603,31 @@ view: staffing {
   measure: number_of_worked_hours_all_staff_including_hm {
     group_label: "> All Staff Measures"
     label: "# Punched All Staff Hours (incl. HM)"
-    description: "# Punched Ops Associate Hours (Picker, WH, Ops Associate, Rider Captain and Ops Associate +) + # Punched Shift Lead hours + # Punched Rider Hours  + # Punched Onboarding Hours + Punched HM Hours"
+    description: "# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours + # Punched Rider Hours # Punched Onboarding Hours + # Punched Hub Manager Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${number_of_worked_hours_ops_associate}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate_plus} + ${number_of_worked_hours_rider} + ${number_of_worked_hours_onboarding} + ${sum_number_of_worked_hours_hub_manager};;
     value_format_name: decimal_1
+  }
+
+  measure: number_of_operational_rider_hours {
+    # we've got too many metrics in the Ops explore. Will unhide it if requested by stakeholders
+    hidden: yes
+    label: "# Operational Rider Hours "
+    description: "Number of punched hours riders effectively spent delivering orders.
+    Calculated as: # Punched Rider Hours (incl. Onboarding) - # Rider Hub One Tasks Hours"
+    type: number
+    sql: ${number_of_worked_hours_rider} + ${number_of_worked_hours_onboarding} - ${number_of_hub_one_tasks_hours_rider}  ;;
+  }
+
+  measure: number_of_operational_ops_staff_hours {
+    # we've got too many metrics in the Ops explore. Will unhide it if requested by stakeholders
+    hidden: yes
+    label: "# Operational Ops Staff Hours"
+    description: "Number of punched hours Ops Staff spent on hub related tasks. Ops Staff includes OA and Riders who are performing Hub tasks.
+    Calculated as: # Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours + # Rider Hub One Tasks Hours"
+    type: number
+    sql: ${number_of_worked_hours_ops_associate} + ${number_of_hub_one_tasks_hours_rider}  ;;
   }
 
   ##### External
@@ -3150,17 +3193,6 @@ view: staffing {
     value_format_name: decimal_2
   }
 
-  # put somewhere else in the code
-  measure: number_of_operational_rider_hours {
-    # we've got too many metrics in the Ops explore. Will unhide it if requested by stakeholders
-    hidden: yes
-    label: "# Operational Rider Hours "
-    description: "Number of punched hours riders effectively spent delivering orders.
-    Calculated as: # Punched Rider Hours (incl. Onboarding) - # Rider Hub One Tasks Hours"
-    type: number
-    sql: ${number_of_worked_hours_rider} + ${number_of_worked_hours_onboarding} - ${number_of_hub_one_tasks_hours_rider}  ;;
-  }
-
   parameter: slp_parameter_coefficient_a {
     label: "SLP Parameter A"
     type: number
@@ -3207,7 +3239,8 @@ view: staffing {
     group_label: "> All Staff Measures"
     label: "All Staff Operational UTR (excl.HM)"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Picker, WH Ops, Rider Captain, Ops Associate, Shift Lead, Ops Associate +, excluding Hub Manager) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Punched Rider Hours (including Onboarding).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate. Hub manager punched hours are not included."
     sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_all_staff_excluding_hm}, 0);;
     value_format_name: decimal_2
   }
@@ -3216,7 +3249,8 @@ view: staffing {
     group_label: "> All Staff Measures"
     label: "All Staff Operational UTR (incl.HM)"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Picker, WH Ops, Rider Captain, Ops Associate, Shift Lead, Ops Associate +, and including Hub Manager) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Punched Rider Hours (including Onboarding) + Punched Hub Manager Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_all_staff_including_hm}, 0);;
     value_format_name: decimal_2
   }
@@ -3241,7 +3275,8 @@ view: staffing {
   measure: hub_staff_operational_utr_excluding_hm {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (excl. HM)"
-    description: "# Orders (incl. Click & Collect and External Orders) /(# Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, OA+, Shift Lead) + # Rider Hub One Tasks Hours)"
+    description: "# Orders (incl. Click & Collect and External Orders) / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_hub_staff_only_punch_excluding_hm}, 0) ;;
     value_format_name: decimal_2
@@ -3250,7 +3285,8 @@ view: staffing {
   measure: hub_staff_operational_utr_including_hm {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (incl. HM)"
-    description: "# Orders (incl. Click & Collect and External Orders) /(# Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, OA+, Shift Lead) + # Rider Hub One Tasks Hours + Hub Manager Hours)"
+    description: "# Orders (incl. Click & Collect and External Orders) / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours + # Punched Hub Manager Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_hub_staff_only_punch_including_hm}, 0) ;;
     value_format_name: decimal_2
@@ -3269,21 +3305,21 @@ view: staffing {
   measure: ops_staff_operational_utr {
     group_label: "> Ops Associate Measures"
     label: "Ops Staff Operational UTR"
-    description: "# Orders (incl. Click & Collect and External Orders) / (# Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours + # Rider Hub One Tasks Hours)"
+    description: "# Orders (incl. Click & Collect and External Orders) / (# Punched Ops Associate Hours + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_operational_ops_staff_hours}, 0) ;;
     value_format_name: decimal_2
   }
 
-  # put somewhere else in the code
-  measure: number_of_operational_ops_staff_hours {
-    # we've got too many metrics in the Ops explore. Will unhide it if requested by stakeholders
-    hidden: yes
-    label: "# Operational Ops Staff Hours"
-    description: "Number of punched hours Ops Staff spent on hub related tasks. Ops Staff includes OA and Riders who are performing Hub tasks.
-    Calculated as: # Punched Ops Associate(Picker, WH, Rider Captain, Ops Associate) Hours + # Rider Hub One Tasks Hours"
+  measure: ops_staff_financial_utr {
+    group_label: "> Ops Associate Measures"
+    label: "Ops Staff Financial UTR"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched Ops Associate Hours.
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
-    sql: ${number_of_worked_hours_ops_associate} + ${number_of_hub_one_tasks_hours_rider}  ;;
+    sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_ops_associate}, 0) ;;
+    value_format_name: decimal_2
   }
 
   measure: hub_staff_utr_all_items {
@@ -3298,7 +3334,8 @@ view: staffing {
   measure: hub_staff_operational_utr_all_items {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (excl. HM) - All Items"
-    description: "Hub Staff Operational UTR (# All inventory Changes/Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "# All inventory Changes / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: abs(${inventory_changes_daily.sum_quantity_change})/nullif(${number_of_worked_hours_hub_staff_only_punch_excluding_hm},0) ;;
     value_format_name: decimal_2
@@ -3316,7 +3353,8 @@ view: staffing {
   measure: hub_staff_operational_utr_inbounded_handling_units {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (excl. HM) - Inbounded Handling Units"
-    description: "Hub Staff Operational UTR (# All inventory Changes/Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "# Inbounded Handling Units / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: abs(${inventory_changes_daily.sum_inbound_inventory_handling_units})/nullif(${number_of_worked_hours_hub_staff_only_punch_excluding_hm},0) ;;
     value_format_name: decimal_2
@@ -3334,7 +3372,8 @@ view: staffing {
   measure: hub_staff_operational_utr_picked_items {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (excl. HM) - Ordered Items"
-    description: "Hub Staff Operational UTR (# Ordered Items/Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "# Ordered Items / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: abs(${inventory_changes_daily.sum_outbound_orders})/nullif(${number_of_worked_hours_hub_staff_only_punch_excluding_hm},0) ;;
     value_format_name: decimal_2
@@ -3353,7 +3392,8 @@ view: staffing {
   measure: hub_staff_operational_utr_outbounded_items {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff Operational UTR (excl. HM) - Outbounded Items"
-    description: "Hub Staff Operational UTR (# Outbounded Items (Waste, Orders, Too good to go,Wrong delivery)/Hub Staff Punched Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "# Outbounded Items (Waste, Orders, Too Good To Go, Wrong delivery) / (# Punched Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead) + # Rider Hub One Tasks Hours).
+    Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: abs(${inventory_changes_daily.sum_outbound_too_good_to_go}+${inventory_changes_daily.sum_outbound_waste}+${inventory_changes_daily.sum_outbound_wrong_delivery}+${inventory_changes_daily.sum_outbound_orders})
       /nullif(${number_of_worked_hours_hub_staff_only_punch_excluding_hm},0) ;;
