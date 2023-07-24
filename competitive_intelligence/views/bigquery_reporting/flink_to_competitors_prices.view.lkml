@@ -5,7 +5,7 @@
 
 view: flink_to_competitors_prices {
   view_label: "Flink to Competitor Prices"
-  sql_table_name: `flink-data-prod.reporting.flink_to_competitors_prices` ;;
+  sql_table_name: `flink-data-prod.reporting.flink_to_competitors_prices_history` ;;
 
 
 # ===========  Metadata  =====================================================================
