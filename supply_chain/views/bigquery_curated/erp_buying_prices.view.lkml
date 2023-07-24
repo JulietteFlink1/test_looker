@@ -2,7 +2,7 @@ include: "/**/*.view"
 
 view: erp_buying_prices {
 
-  sql_table_name: `flink-data-prod.curated.erp_buying_prices`;;
+  sql_table_name: `flink-data-dev.dbt_lruiz_curated.erp_buying_prices`;;
 
   required_access_grants: [can_access_pricing_margins]
 
@@ -67,12 +67,12 @@ view: erp_buying_prices {
       avg_amt_supplier_invoice_discount_net_cost_based_net,
       avg_amt_supplier_kickback_wac_based_net,
       avg_amt_supplier_kickback_net_cost_based_net,
-      avg_amt_uc_0_net,
-      avg_amt_uc_1_net,
-      avg_amt_uc_2_net,
-      avg_amt_uc_3_net,
-      avg_amt_uc_4_net,
-      avg_amt_full_cost_net,
+      avg_amt_unit_cost_0_net,
+      avg_amt_unit_cost_1_net,
+      avg_amt_unit_cost_2_net,
+      avg_amt_unit_cost_3_net,
+      avg_amt_unit_cost_4_net,
+      avg_amt_full_unit_cost_net,
     ]
   }
 
@@ -392,58 +392,52 @@ view: erp_buying_prices {
     sql: ${TABLE}.amt_supplier_kickback_net_cost_based_net ;;
   }
 
-  dimension: amt_uc_0_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "UC0 (Net)"
+  dimension: amt_unit_cost_0_net {
+    label: "Unit Cost 0 - UC0 (Net)"
     description: "Base cost of the SKU/supplier/country at the given location."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_uc_0_net ;;
+    sql: ${TABLE}.amt_unit_cost_0_net ;;
   }
 
-  dimension: amt_uc_1_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "UC1 (Net)"
+  dimension: amt_unit_cost_1_net {
+    label: "Unit Cost 1 - UC1 (Net)"
     description: "Base cost of the SKU/supplier/country at the given location with Supplier Invoice Discount deducted."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_uc_1_net ;;
+    sql: ${TABLE}.amt_unit_cost_1_net ;;
   }
 
-  dimension: amt_uc_2_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "UC2 (Net)"
+  dimension: amt_unit_cost_2_net {
+    label: "Unit Cost 2 - UC2 (Net)"
     description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_uc_2_net ;;
+    sql: ${TABLE}.amt_unit_cost_2_net ;;
   }
 
-  dimension: amt_uc_3_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "UC3 (Net)"
+  dimension: amt_unit_cost_3_net {
+    label: "Unit Cost 3 - UC3 (Net)"
     description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_uc_3_net ;;
+    sql: ${TABLE}.amt_unit_cost_3_net ;;
   }
 
-  dimension: amt_uc_4_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "UC4 (Net)"
+  dimension: amt_unit_cost_4_net {
+    label: "Unit Cost 4 - UC4 (Net)"
     description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_uc_4_net ;;
+    sql: ${TABLE}.amt_unit_cost_4_net ;;
   }
 
-  dimension: amt_full_cost_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "Full Cost (Net)"
+  dimension: amt_full_unit_cost_net {
+    label: "Full Unit Cost (Net)"
     description: "Base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding."
     type: number
     hidden: yes
-    sql: ${TABLE}.amt_full_cost_net ;;
+    sql: ${TABLE}.amt_full_unit_cost_net ;;
   }
 
 
@@ -909,63 +903,57 @@ view: erp_buying_prices {
     value_format_name: eur
   }
 
-  measure: avg_amt_uc_0_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG UC0 (Net)"
-    description: ""
+  measure: avg_amt_unit_cost_0_net {
+    label: "AVG UC0 - Unit Cost 0 (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_uc_0_net} ;;
+    sql: ${amt_unit_cost_0_net} ;;
     value_format_name: decimal_4
   }
 
-  measure: avg_amt_uc_1_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG UC1 (Net)"
-    description: ""
+  measure: avg_amt_unit_cost_1_net {
+    label: "AVG UC1 - Unit Cost 1 (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location with Supplier Invoice Discount deducted."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_uc_1_net} ;;
+    sql: ${amt_unit_cost_1_net} ;;
     value_format_name: decimal_4
   }
 
-  measure: avg_amt_uc_2_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG UC2 (Net)"
-    description: ""
+  measure: avg_amt_unit_cost_2_net {
+    label: "AVG UC2 - Unit Cost 2 (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback and Logistic Cost."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_uc_2_net} ;;
+    sql: ${amt_unit_cost_2_net} ;;
     value_format_name: decimal_4
   }
 
-  measure: avg_amt_uc_3_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG UC3 (Net)"
-    description: ""
+  measure: avg_amt_unit_cost_3_net {
+    label: "AVG UC3 - Unit Cost 3 (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost and Permanent Partner Kickback."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_uc_3_net} ;;
+    sql: ${amt_unit_cost_3_net} ;;
     value_format_name: decimal_4
   }
 
-  measure: avg_amt_uc_4_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG UC4 (Net)"
-    description: ""
+  measure: avg_amt_unit_cost_4_net {
+    label: "AVG UC4 - Unit Cost 4 (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_uc_4_net} ;;
+    sql: ${amt_unit_cost_4_net} ;;
     value_format_name: decimal_4
   }
 
-  measure: avg_amt_full_cost_net {
-    required_access_grants: [can_access_pricing_margins]
-    label: "AVG Full Cost (Net)"
-    description: ""
+  measure: avg_amt_full_unit_cost_net {
+    label: "AVG UC - Full Unit Cost (Net)"
+    description: "Average base cost of the SKU/supplier/country at the given location with the deduction of Supplier Invoice Discount, Supplier Kickback, Logistic Cost, Permanent and Temporary Partner Kickback, Supplier Promo Funding, Partner Promo Funding and Marketing Promo Funding."
     group_label: "> Spot Costs"
     type: average
-    sql: ${amt_full_cost_net} ;;
+    sql: ${amt_full_unit_cost_net} ;;
     value_format_name: decimal_4
   }
 

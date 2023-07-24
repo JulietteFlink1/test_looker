@@ -1,5 +1,5 @@
 view: orderline {
-  sql_table_name: `flink-data-prod.curated.order_lineitems`
+  sql_table_name: `flink-data-dev.dbt_lruiz_curated.order_lineitems`
     ;;
   view_label: "* Order Lineitems *"
   drill_fields: [id]
@@ -425,17 +425,23 @@ view: orderline {
     #sql: ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur ;;
     sql:
     {% if wac_method_calculation._parameter_value == 'wac0' %}
-    ${TABLE}.amt_wac_0_net_unit_cost
+    ${TABLE}.amt_unit_wac_0_net
+
     {% elsif wac_method_calculation._parameter_value == 'wac1' %}
-    ${TABLE}.amt_buying_price_weighted_rolling_average_net_eur -- = amt_wac_1_net_unit_cost
+    ${TABLE}.amt_unit_wac_1_net -- this refers to the old amt_buying_price_weighted_rolling_average_net_eur
+
     {% elsif wac_method_calculation._parameter_value == 'wac2' %}
-    ${TABLE}.amt_wac_2_net_unit_cost
+    ${TABLE}.amt_unit_wac_2_net
+
     {% elsif wac_method_calculation._parameter_value == 'wac3' %}
-    ${TABLE}.amt_wac_3_net_unit_cost
+    ${TABLE}.amt_unit_wac_3_net
+
     {% elsif wac_method_calculation._parameter_value == 'wac4' %}
-    ${TABLE}.amt_wac_4_net_unit_cost
+    ${TABLE}.amt_unit_wac_4_net
+
     {% elsif wac_method_calculation._parameter_value == 'full_wac' %}
-    ${TABLE}.amt_full_wac_net_unit_cost
+    ${TABLE}.amt_unit_full_wac_net
+
     {% endif %};;
 
     value_format_name: decimal_4
@@ -450,11 +456,11 @@ view: orderline {
     label: "WAC Method"
     group_label: "Parameters"
     type: unquoted
-    allowed_value: { value: "wac0" label: "WAC0 (Net)"}
-    allowed_value: { value: "wac1" label: "WAC1 (Net)"}
-    allowed_value: { value: "wac2" label: "WAC2 (Net)"}
-    allowed_value: { value: "wac3" label: "WAC3 (Net)"}
-    allowed_value: { value: "wac4" label: "WAC4 (Net)"}
+    allowed_value: { value: "wac0" label: "WAC-0 (Net)"}
+    allowed_value: { value: "wac1" label: "WAC-1 (Net)"}
+    allowed_value: { value: "wac2" label: "WAC-2 (Net)"}
+    allowed_value: { value: "wac3" label: "WAC-3 (Net)"}
+    allowed_value: { value: "wac4" label: "WAC-4 (Net)"}
     allowed_value: { value: "full_wac" label: "Full WAC (Net)"}
 
     default_value: "wac1"
