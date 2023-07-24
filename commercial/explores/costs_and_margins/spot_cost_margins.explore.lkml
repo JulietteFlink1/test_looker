@@ -8,6 +8,7 @@ explore: spot_cost_margins {
 
   from:  erp_buying_prices
   view_name: erp_buying_prices
+  group_label: "Commercial"
   view_label: "ERP Buying Prices"
   description: "This Explore contains spot cost data and selling price data (unrelated to orders, inventory, etc.) to calculate spot margins."
 
