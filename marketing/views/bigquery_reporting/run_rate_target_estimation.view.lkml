@@ -143,6 +143,7 @@ view: run_rate_target_estimation {
     type: sum
     hidden: no
     sql: ${percent_of_monthly_goal_completed_rolling_average} ;;
+    value_format_name: percent_0
   }
 
   measure: sum_historic_expected_completion_rate {
@@ -151,7 +152,7 @@ view: run_rate_target_estimation {
     type: sum
     hidden: no
     sql: ${historic_expected_completion_rate} ;;
-    value_format_name: decimal_2
+    value_format: "[>=10]0; 0.00"
   }
 
   measure: sum_end_of_month_projected_value {
@@ -187,7 +188,7 @@ view: run_rate_target_estimation {
     type: sum
     hidden: no
     sql: ${end_of_month_projected_value_target_monthly_value_delta_percent} ;;
-    value_format_name: percent_0
+    value_format_name: percent_2
   }
 
 
