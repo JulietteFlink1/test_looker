@@ -3194,11 +3194,10 @@ view: staffing {
           end;;
     value_format_name: decimal_2
   }
-
   measure: all_staff_utr {
     label: "All Staff UTR [Deprecated]"
     type: number
-    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Picker, WH Ops, Rider Captain, Ops Associate, Shift Lead, and Ops Associate +) Hours"
+    description: "# Orders (incl. Click & Collect and External Orders) / # Punched All Staff (incl. Rider, Onboarding, Ops Associate, Ops Associate + and Shift Leads) Hours. Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate. "
     sql: ${orders_with_ops_metrics.sum_orders} / nullif(${number_of_worked_hours_rider}+${number_of_worked_hours_shift_lead}+${number_of_worked_hours_ops_associate}+${number_of_worked_hours_ops_associate_plus}+${number_of_worked_hours_onboarding}, 0);;
     value_format_name: decimal_2
     group_label: "> All Staff Measures"
@@ -3233,7 +3232,7 @@ view: staffing {
   measure: utr_hub_staff {
     group_label: "> Hub Staff Measures"
     label: "Hub Staff UTR [Deprecated]"
-    description: "Hub Staff UTR (# Orders (incl. Click & Collect and External Orders) /Hub Staff Hours (Picker, WH, Rider Captain, Ops Associate, Shift Lead))"
+    description: "# Orders (incl. Click & Collect and External Orders / # Hub Staff Hours (Ops Associate, Ops Associate+, Shift Lead). Using Worked hours for OA and OA+ and planned hours for SL. Deprecated WH, Picker and Rider Captain positions are mapped to Ops Associate."
     type: number
     sql: ${orders_with_ops_metrics.sum_orders}/ nullif(${number_of_worked_hours_hub_staff}, 0) ;;
     value_format_name: decimal_2
