@@ -3,6 +3,7 @@
 # This view was created as part of my onboarding task. It was created from James Davies' table as I don't have access to dbt.
 # Link here: https://goflink.atlassian.net/wiki/spaces/DATA/pages/362481154/Onboarding+Task
 
+#test test test
 view: juliette_onboarding_task {
 
   sql_table_name: flink-data-dev.dbt_jdavies_sandbox.james_onboarding_task ;;
