@@ -1,5 +1,6 @@
 include: "/*/**/oracle_fusion_general_ledger_mapping.view.lkml"
 include: "/**/hubs_ct.view"
+include: "/**/stg_oracle_fusion_mgmt_mapping_to_pl_category.view.lkml"
 
 # This explore provides information about the profits and losses. As of 2023-06-22, all of the data comes from Oracle Fusion.
 # Author: Victor Breda
@@ -40,6 +41,13 @@ join: hubs {
   view_label: "Hubs"
   sql_on: ${oracle_fusion_general_ledger_mapping.hub_code} = ${hubs.hub_code} ;;
   relationship: many_to_one
+  type: left_outer
+}
+
+join: stg_oracle_fusion_mgmt_mapping_to_pl_category {
+  view_label: "Oracle Fusion"
+  sql_on: lower(${stg_oracle_fusion_mgmt_mapping_to_pl_category.mgmt_mapping}) = lower(${oracle_fusion_general_ledger_mapping.mgmt_mapping}) ;;
+  relationship: one_to_many
   type: left_outer
 }
 

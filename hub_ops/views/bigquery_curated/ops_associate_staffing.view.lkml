@@ -55,7 +55,7 @@ view: ops_associate_staffing {
   dimension: number_of_external_and_cc_orders {
     hidden: yes
     type: number
-    description: "Number of Click&Collect orders and orders that were created through an external provider (e.g. Wolt, UberEats)."
+    description: "Number of forecasted Click&Collect and external orders (e.g. Wolt, UberEats)."
     sql: ${TABLE}.number_of_external_and_cc_orders ;;
   }
 
@@ -137,10 +137,19 @@ view: ops_associate_staffing {
 
   measure: sum_number_of_external_and_cc_orders {
     group_label: "> Forecasted Orders"
-    label: "# External and C&C Orders"
-    description: "Number of Click&Collect orders and orders that were created through an external provider (e.g. Wolt, UberEats)."
+    label: "# Forecasted External and C&C Orders"
+    description: "Number of forecasted Click&Collect and external orders (e.g. Wolt, UberEats)."
     type: sum
     sql: ${number_of_external_and_cc_orders} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: sum_number_of_forecasted_orders_adjusted {
+    group_label: "> Forecasted Orders"
+    label: "# Adjusted Forecasted OA Orders"
+    description: "Total number of orders forecasted for Ops Associates including adjustment made by the WFM team."
+    type: sum
+    sql: ${number_of_forecasted_orders_adjusted} ;;
     value_format_name: decimal_0
   }
 

@@ -90,7 +90,7 @@ view: hub_uph_sessions {
   }
 
   dimension: quinyx_badge_number {
-    required_access_grants: [can_access_pii_hub_employees]
+    #required_access_grants: [can_access_pii_hub_employees] ### COMMENTED OUT because it is only classified as indirect PII data by Legal department and we do not need to protect it necessarily
     hidden: yes
     description: "Unique employee identifier in Quinyx."
     type: string
@@ -320,7 +320,7 @@ view: hub_uph_sessions {
   measure: sum_of_number_of_picked_items {
     group_label: "> Quantities"
     label: "# Picked Items"
-    description: "Number of Items scanned during the picking process. Action can be item picked, skipped, reset or refunded. Based on Hub One data."
+    description: "Number of Items scanned during the picking process. Considering only action item picked. Quantities for actions skipped, reset or refunded are not considered. Based on Hub One data."
     type: sum
     sql: ${number_of_picked_items} ;;
   }

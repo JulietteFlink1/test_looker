@@ -883,6 +883,22 @@ view: advanced_supplier_matching {
     sql: ${TABLE}.item_location_termination_date ;;
   }
 
+  dimension: item_location_introduction_date_updated  {
+    type: string
+    label: "Item Location Introduction Date Updated"
+    description: "The date, when the item was assigned to a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_location_introduction_date_updated ;;
+  }
+
+  dimension: item_location_termination_date_updated {
+    type: string
+    label: "Item Location Termination Date Updated"
+    description: "The date, when the item was deleted from a location according to our ERP system Oracle - Use by SC team for different use cases."
+    group_label: "Special Use Cases"
+    sql: ${TABLE}.item_location_termination_date_updated ;;
+  }
+
   dimension: item_at_location_status {
     type: string
     label: "Item at Location Status"

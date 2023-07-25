@@ -9,7 +9,7 @@ include: "/**/global_filters_and_parameters.view"
 
 explore: hub_closures_reporting {
   view_name: hub_turf_closures_30min
-  group_label: "Rider Ops"
+  group_label: "Last Mile & WFM"
   label: "Hub Closures"
   view_label: "Hub Closures (30min)"
 
