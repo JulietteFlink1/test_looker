@@ -582,16 +582,12 @@ view: staffing {
     hidden: yes
   }
 
+########## HUB MANAGER ###########
+
   dimension: number_of_planned_minutes_hub_manager {
     hidden: yes
     type: number
     sql: ${TABLE}.number_of_planned_minutes_hub_manager ;;
-  }
-
-  dimension: number_of_availability_minutes_hub_manager {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_availability_minutes_hub_manager ;;
   }
 
   dimension: number_of_worked_minutes_hub_manager {
@@ -604,18 +600,6 @@ view: staffing {
     hidden: yes
     type: number
     sql: ${TABLE}.number_of_no_show_minutes_hub_manager ;;
-  }
-
-  dimension: number_of_excused_no_show_minutes_hub_manager {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_excused_no_show_minutes_hub_manager ;;
-  }
-
-  dimension: number_of_unexcused_no_show_minutes_hub_manager {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.number_of_unexcused_no_show_minutes_hub_manager ;;
   }
 
   dimension: number_of_deleted_excused_no_show_minutes_hub_manager {
@@ -1194,7 +1178,7 @@ view: staffing {
   measure: sum_number_of_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
     label: "# No Show Hub Manager Hours"
-    description: "Number of hours considered as No Show from Hub Managers.
+    description: "Number of hours considered as No Show from Hub Managers. Includes Excused/Unexcused and Deleted Excused No Show hours.
     Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
     sql: ${number_of_no_show_minutes_hub_manager}/60 ;;
@@ -1204,52 +1188,13 @@ view: staffing {
     }
   }
 
-  measure: sum_number_of_excused_no_show_minutes_hub_manager {
+  measure: sum_number_of_deleted_no_show_minutes_hub_manager {
     group_label: "> Hub Manager Measures"
-    label: "# Excused No Show Hub Manager Hours"
-    description: "Number of hours considered as Excused No Show from Hub Managers.
+    label: "# Deleted No Show Hub Manager Hours"
+    description: "Number of hours considered as Deleted No Show from Hub Managers (includes both Unexcused and Excused).
     Read more about it on Confluence within the linked page -> click on the metric value."
     type: sum
-    sql: ${number_of_excused_no_show_minutes_hub_manager}/60 ;;
-    value_format_name: decimal_1
-    link: {label: "Read more about No Show"
-      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
-    }
-  }
-
-  measure: sum_number_of_unexcused_no_show_minutes_hub_manager {
-    group_label: "> Hub Manager Measures"
-    label: "# Unexcused No Show Hub Manager Hours"
-    description: "Number of hours considered as Unexcused No Show from Hub Managers.
-    Read more about it on Confluence within the linked page -> click on the metric value."
-    type: sum
-    sql: ${number_of_unexcused_no_show_minutes_hub_manager}/60 ;;
-    value_format_name: decimal_1
-    link: {label: "Read more about No Show"
-      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
-    }
-  }
-
-  measure: sum_number_of_deleted_excused_no_show_minutes_hub_manager {
-    group_label: "> Hub Manager Measures"
-    label: "# Deleted Excused No Show Hub Manager Hours"
-    description: "Number of hours considered as Deleted Excused No Show from Hub Managers.
-    Read more about it on Confluence within the linked page -> click on the metric value."
-    type: sum
-    sql: ${number_of_deleted_excused_no_show_minutes_hub_manager}/60 ;;
-    value_format_name: decimal_1
-    link: {label: "Read more about No Show"
-      url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
-    }
-  }
-
-  measure: sum_number_of_deleted_unexcused_no_show_minutes_hub_manager {
-    group_label: "> Hub Manager Measures"
-    label: "# Deleted Unexcused No Show Hub Manager Hours"
-    description: "Number of hours considered as Deleted Unexcused No Show from Hub Managers.
-    Read more about it on Confluence within the linked page -> click on the metric value."
-    type: sum
-    sql: ${number_of_deleted_unexcused_no_show_minutes_hub_manager}/60 ;;
+    sql: (${number_of_deleted_excused_no_show_minutes_hub_manager}+${number_of_deleted_unexcused_no_show_minutes_hub_manager})/60 ;;
     value_format_name: decimal_1
     link: {label: "Read more about No Show"
       url: "https://goflink.atlassian.net/wiki/spaces/DATA/pages/595296392/No+Show+Reporting+Logic"
